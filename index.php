@@ -456,9 +456,9 @@
                 <h1 class="text-primary">THE HIDDEN DEN</h1>
             </div>
 
-            <div class='row mt-3 justify-content-center'>
-                <div class="col-lg-10 col-md-12 row">
-                <p class="text-justify">
+            <div class="row mt-3 justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                    <p class="text-justify mb-0">
                 Hurrah! You've reached the third destination. This is very special. Inside the Hidden Den, you can discover exciting things that make learning feel just like play! Step inside and explore what you want to learn while Edi guides you step-by-step. Now, you're ready to face any challenge with total confidence!</p>
                 </div>
             </div>
@@ -495,25 +495,27 @@
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-center">
-                <button class="btn newgreen1-btn px-4 rounded" onclick="location.href='./blogs'"><b>COME IN</b></button>
+            <div class="row justify-content-center mt-4">
+                <div class="col-12 text-center">
+                    <button type="button" class="btn newgreen1-btn px-4 rounded" onclick="location.href='./blogs'"><b>COME IN</b></button>
+                </div>
             </div>
         </div>
     </div>
     <!-- Blog End -->
 
-    <div class="container-fluid py-5" id="challenge-section" style="background-color: #FFFFFF ; margin-top:-50px; max-width:1200px;">
+    <section id="challenge-section" class="py-5 bg-white w-100 clearfix" style="margin-top:0;">
     <div class="container">
         <div class="text-center mb-4">
             <h1 class="text-primary" style="font-weight: bold;">BRAVE HEART CHALLENGE</h1>
-            
-            <div class='row mt-3 justify-content-center'>
-                <div class="col-lg-10 col-md-12 row">
-                <p class="text-justify" style='max-width:1000px;'>
+        </div>
+
+            <div class="row mt-3 justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                <p class="text-justify mb-0" style="max-width:1000px;margin-left:auto;margin-right:auto;">
                 Explorer! We’ve reached the end of the adventure. It’s time to show off your amazing talents and celebrate everything you’ve learned along the way. I’ve set new missions with exciting challenges to test your skills! Grab your tools, join the fun, and you could even win a special prize. Let’s see what you can do!</p>
                 </div>
             </div>
-        </div>
 
         <?php if ($recentChallenge): ?>
         <div class="row justify-content-center mt-4">
@@ -542,7 +544,7 @@
             </div>
         <?php endif; ?>
     </div>
-</div>
+    </section>
 
     
     <!-- PDF Start -->
@@ -758,7 +760,10 @@ if (dot) dot.style.display = 'block';
     for(var i=0;i<n;i++) setTimeout(spawn, i*(400+Math.random()*500));
     setTimeout(burst, 7000+Math.random()*10000);
   }
-  setTimeout(burst, 2500);
+    const MAX_ON_SCREEN = 4;
+    let activeCount = 0;
+    if (activeCount >= MAX_ON_SCREEN) return;
+    setTimeout(burst, 2500);
 })();
 </script>
 <script>
