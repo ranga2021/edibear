@@ -6,25 +6,39 @@
   $adminHeader = new HEADER("add-product"); // Set active page for sidebar
   $user = new USER();
 
+  $product_subcategories = [];
   try {
     $catStmt = $user->runQuery("SELECT * FROM product_categories ORDER BY name ASC");
     $catStmt->execute();
     $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $subCatStmt = $user->runQuery("SELECT * FROM sub_category ORDER BY title ASC");
+    $subCatStmt = $user->runQuery(
+        "SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC"
+    );
     $subCatStmt->execute();
-    $sub_categories = $subCatStmt->fetchAll(PDO::FETCH_ASSOC);
+    $product_subcategories = $subCatStmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $categories = [];
-    $sub_categories = [];
+    $product_subcategories = [];
 }
 
   
 
   // Handle Form Submission
   if (isset($_POST['btn-add-product'])) {
-      $sub_category_id = $_POST['sub_category'];
-      $category_id = $_POST['category'];
+      $product_subcategory_id = isset($_POST['product_subcategory']) ? trim((string) $_POST['product_subcategory']) : '';
+      $product_subcategory_id = $product_subcategory_id === '' ? null : (int) $product_subcategory_id;
+      $category_id = (int) $_POST['category'];
+      if ($product_subcategory_id !== null) {
+          $pair = $user->fetchAll(
+              ["id"],
+              ["product_subcategories"],
+              ["id" => $product_subcategory_id, "product_category_id" => $category_id]
+          );
+          if (empty($pair)) {
+              $product_subcategory_id = null;
+          }
+      }
       $brand       = $_POST['brand'];
       $age_group   = $_POST['age_group'];
       $price       = $_POST['price'];
@@ -42,10 +56,10 @@
       move_uploaded_file($_FILES['main_image']['tmp_name'], $target);
 
       try {
-          $stmt = $user->runQuery("INSERT INTO products (category_id, sub_category_id, brand, product_name, price, discount_percentage, discounted_price, age_group, description, language, author, stock, image, status) 
-                                 VALUES (:cid, :scid, :brand, :pname, :price, :disc, :dprice, :age, :desc, :lang, :auth, :stock, :img, 1)");
+          $stmt = $user->runQuery("INSERT INTO products (category_id, sub_category_id, product_subcategory_id, brand, product_name, price, discount_percentage, discounted_price, age_group, description, language, author, stock, image, status) 
+                                 VALUES (:cid, NULL, :pscid, :brand, :pname, :price, :disc, :dprice, :age, :desc, :lang, :auth, :stock, :img, 1)");
           $stmt->execute(array(
-              ":cid"=>$category_id, ":scid"=>$sub_category_id, ":brand"=>$brand, ":pname"=>$p_name, ":price"=>$price, 
+              ":cid"=>$category_id, ":pscid"=>$product_subcategory_id, ":brand"=>$brand, ":pname"=>$p_name, ":price"=>$price, 
               ":disc"=>$discount, ":dprice"=>$disc_price, ":age"=>$age_group, ":desc"=>$description, 
               ":lang"=>$language, ":auth"=>$author, ":stock"=>$stock, ":img"=>$main_image
           ));
@@ -94,7 +108,7 @@
                 <div class="row">
                   <div class="col-md-4">
              <label>Category</label>
-            <select name="category" class="form-control" required>
+            <select name="category" id="product_category_select" class="form-control" required>
            <option value="">Select Category</option>
            <?php foreach($categories as $cat): ?>
             <option value="<?php echo $cat['id']; ?>">
@@ -106,10 +120,13 @@
 
 <div class="col-md-3">
         <label>Subcategory</label>
-        <select name="sub_category" class="form-control">
+        <select name="product_subcategory" id="product_subcategory_select" class="form-control">
             <option value="">Select Subcategory</option>
-            <?php foreach($sub_categories as $sub): ?>
-                <option value="<?php echo $sub['id']; ?>"><?php echo htmlspecialchars($sub['title']); ?></option>
+            <?php foreach ($product_subcategories as $sub): ?>
+                <option value="<?php echo (int) $sub['id']; ?>"
+                    data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>">
+                    <?php echo htmlspecialchars($sub['title']); ?>
+                </option>
             <?php endforeach; ?>
         </select>
     </div>
@@ -207,12 +224,6 @@
     </div>
   </main>
 
-  <div class="col-md-4">
-    <label>Discounted Price (Auto cal)</label>
-    <input type="text" id="discounted_price_display" class="form-control" readonly>
-    <input type="hidden" name="discounted_price" id="discounted_price_value">
-</div>
-
 <script>
     const priceInput = document.getElementById('price');
     const discInput = document.getElementById('discount');
@@ -232,6 +243,29 @@
 
     priceInput.addEventListener('input', calculate);
     discInput.addEventListener('input', calculate);
+
+    (function () {
+        const cat = document.getElementById('product_category_select');
+        const sub = document.getElementById('product_subcategory_select');
+        if (!cat || !sub) return;
+        function syncSubcategories() {
+            const cid = String(cat.value || '');
+            for (let i = 0; i < sub.options.length; i++) {
+                const opt = sub.options[i];
+                if (opt.value === '') {
+                    opt.disabled = false;
+                    continue;
+                }
+                const ok = cid !== '' && opt.getAttribute('data-product-category-id') === cid;
+                opt.disabled = !ok;
+                if (!ok && opt.selected) {
+                    sub.selectedIndex = 0;
+                }
+            }
+        }
+        cat.addEventListener('change', syncSubcategories);
+        syncSubcategories();
+    })();
 </script>
 
   <?php echo $adminHeader->printAdminFooterJS(); ?>

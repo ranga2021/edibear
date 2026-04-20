@@ -14,6 +14,8 @@
   --edi-gold-dark: #e6b820;
   --edi-heading: #f65247;
   --edi-body: #606062;
+  /* Home category explorer strip: min height for `Search image.webp` banner (tune to match asset) */
+  --explorer-search-area-min-height: 200px;
 }
 
 /* ----- Base text ----- */

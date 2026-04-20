@@ -9,6 +9,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE `cart`;
 TRUNCATE TABLE `orders`;
 TRUNCATE TABLE `products`;
+TRUNCATE TABLE `product_subcategories`;
 TRUNCATE TABLE `product_categories`;
 TRUNCATE TABLE `ad1_descriptions`;
 TRUNCATE TABLE `ad1_details`;

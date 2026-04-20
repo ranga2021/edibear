@@ -227,8 +227,7 @@
     background-position: center;
     background-size: 100% 100%; 
     
-    /* Optional: Set a specific max-height if you want it even tighter */
-    min-height: 150px; 
+    min-height: var(--explorer-search-area-min-height, 200px); 
 }
 
 /* selects */

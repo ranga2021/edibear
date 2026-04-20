@@ -690,7 +690,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <link href='./assets/css/nucleo-icons.css' rel='stylesheet' />
             <link href='./assets/css/nucleo-svg.css' rel='stylesheet' />
             <script src='https://kit.fontawesome.com/42d5adcbca.js' crossorigin='anonymous'></script>
-            <link href='./assets/css/nucleo-svg.css' rel='stylesheet' />
+            <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css' rel='stylesheet' crossorigin='anonymous' />
             <link id='pagestyle' href='./assets/css/argon-dashboard.css?v=2.0.4' rel='stylesheet' />
             <link href='./assets/css/edibear-admin-theme.css?" . @filemtime(__DIR__ . "/../admin-area/assets/css/edibear-admin-theme.css") . "' rel='stylesheet' />
             <style>

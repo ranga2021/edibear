@@ -116,3 +116,21 @@ footer.footer.edibear-admin-footer {
 .edibear-admin-footer-link:hover {
   color: #ffcc29 !important;
 }
+
+/* Argon sets .icon-shape i { color: #fff } — invisible on white sidenav */
+#sidenav-main .navbar-nav > .nav-item > .nav-link .icon.icon-shape i,
+.sidenav .navbar-nav > .nav-item > .nav-link .icon.icon-shape i {
+  opacity: 1 !important;
+  top: 0 !important;
+  position: relative !important;
+}
+
+#sidenav-main .navbar-nav > .nav-item > .nav-link:not(.active) .icon.icon-shape i,
+.sidenav .navbar-nav > .nav-item > .nav-link:not(.active) .icon.icon-shape i {
+  color: #33a675 !important;
+}
+
+#sidenav-main .navbar-nav > .nav-item > .nav-link.active .icon.icon-shape i,
+.sidenav .navbar-nav > .nav-item > .nav-link.active .icon.icon-shape i {
+  color: #fff !important;
+}

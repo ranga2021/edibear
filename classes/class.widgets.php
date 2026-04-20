@@ -60,11 +60,11 @@ class WIDGETS{
         $img = $this->createCachelessImage("./img/Web pic/$img");
         $html = "
             <div class='col-md-4 mb-2 px-xl- text-center'>
-                <div class='cursor-pointer pt-5 pb-3 border blog-item' onclick=location.href='#'>
+                <div class='pt-5 pb-3 border blog-item'>
                     <img class='img-fluid' src='$img' alt='$topic' style='height: 180px;'><br>
                     <h5 class='font-weight-bold coloring-pages text-uppercase pt-4 mb-2'>$topic</h5>
                     <span>Explore fun activities for your <br>
-                    lesure time.</span>
+                    leisure time.</span>
                     <div class='pt-md-3 pt-sm-1'>
                    
                     </div>
@@ -78,7 +78,7 @@ class WIDGETS{
         $img = $this->createCachelessImage("./img/Web pic/$img");
         $html = "
             <div class='col-md-4 mb-2 px-xl- text-center'>
-                <div class='cursor-pointer pt-5 pb-3 border blog-item' onclick=location.href='#'>
+                <div class='pt-5 pb-3 border blog-item'>
                     <img class='img-fluid' src='$img' alt='$topic' style='height: 180px;'><br>
                     <h5 class='font-weight-bold books-paper text-uppercase pt-4 mb-2'>$topic</h5>
                     <span>Secrets to grow your <br>memory and thinking skills.</span>
@@ -95,7 +95,7 @@ class WIDGETS{
         $img = $this->createCachelessImage("./img/Web pic/$img");
         $html = "
             <div class='col-md-4 mb-2 px-xl- text-center'>
-                <div class='cursor-pointer pt-5 pb-3 border blog-item' onclick=location.href='#'>
+                <div class='pt-5 pb-3 border blog-item'>
                     <img class='img-fluid' src='$img' alt='$topic' style='height: 180px;'><br>
                     <h5 class='font-weight-bold homeworks text-uppercase pt-4 mb-2'>$topic</h5>
                     <span>Discover a variety of worksheets <br>for learning.</span>
