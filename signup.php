@@ -99,12 +99,17 @@ if (isset($_POST['signupSubmit'])) {
 <?php echo $userHeader->printUserNav(); ?>
 <div class="page-header-bg"></div>
 
-<div class="container-fluid py-5 page-header-content" style="margin-top: 20px !important;">
+<div class="container-fluid py-5 page-header-content">
     <div class="container">
-        <i class="fa fa-home pt-1 pr-2 text-primary1"></i>
+        <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+        <i class="fa fa-home pt-1 pr-2" aria-hidden="true"></i>
         <a href="./">Home</a>
-        <i class="fa fa-angle-right pt-1 px-2 text-primary1"></i>Sign Up
-        <h4 class="text-warning mt-2">Create Account</h4>
+        <i class="fa fa-angle-right pt-1 px-2" aria-hidden="true"></i><span>Sign Up</span>
+        </nav>
+        <div class="edi-page-title-row">
+            <h1>Create Account</h1>
+            <div class="edi-page-title-rule" role="presentation"></div>
+        </div>
 
         <div class="row mt-4 justify-content-center">
             <div class="col-md-6">

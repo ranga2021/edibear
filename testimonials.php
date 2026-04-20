@@ -32,22 +32,21 @@
 
     
     <!-- Testimonials -->
-    <div class="container-fluid pt-4 pb-5 page-header-content" style="margin-top: -30px !important;">
+    <div class="container-fluid pt-4 pb-5 page-header-content">
         <div class="container pt-5 pb-5">
-            <i class="fa fa-home pt-1 pr-2 text-primary1"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2 text-primary1"></i>Testimonials
+            <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+            <i class="fa fa-home pt-1 pr-2" aria-hidden="true"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2" aria-hidden="true"></i><span>Testimonials</span>
+            </nav>
             
              <!-- Title + Line -->
-        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
-            <h2 style="font-weight:700; margin:0;">TRAIL OF TALES</h2>
-            <div style="flex:1; height:2px; background:#f4b400;"></div>
+        <div class="edi-page-title-row">
+            <h1>TRAIL OF TALES</h1>
+            <div class="edi-page-title-rule" role="presentation"></div>
         </div>
-            <div class="text-center mt-4 pt-4"> 
-                <h1 class="text-primary font-weight-bold">TRAIL OF TALES</h1>
-            </div>
 
-            <div class='row mt-3 justify-content-center'>
-                <div class="col-lg-10 col-md-12 row">
-                <p class="text-justify">
+            <div class="row mt-3 justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                <p class="text-justify mb-0">
                 It’s time to see what our early buddies and parents think about Edi’s adventure! In a busy life, it can be hard to meet all your child’s learning and entertainment needs, but I am here to help you every step of the way. Nothing makes me happier than seeing my Little Buddies succeed!</p>
                 </div>
             </div>

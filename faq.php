@@ -21,21 +21,21 @@ $widgets = new WIDGETS();
 <div class="page-header-bg"></div>
 
 <!-- PAGE START -->
-<div class="container-fluid page-header-content" style="margin-top:0px; min-height:600px;">
+<div class="container-fluid page-header-content">
     <div class="container">
 
         <!-- Breadcrumb -->
-        <div style="margin-bottom:10px;">
-            <i class="fa fa-home" style="color:#8bc34a;"></i>
-            <a href="./" style="color:#666; text-decoration:none;"> Home</a>
-            <span style="color:#999;"> » </span>
-            <span style="color:#666;">FAQ</span>
-        </div>
+        <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+            <i class="fa fa-home" aria-hidden="true"></i>
+            <a href="./">Home</a>
+            <span class="edi-bc-sep"> » </span>
+            <span>FAQ</span>
+        </nav>
 
         <!-- Title + Line -->
-        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
-            <h2 style="font-weight:700; margin:0;">FAQ</h2>
-            <div style="flex:1; height:2px; background:#f4b400;"></div>
+        <div class="edi-page-title-row">
+            <h1>FAQ</h1>
+            <div class="edi-page-title-rule" role="presentation"></div>
         </div>
 
         <!-- EMPTY CONTENT AREA -->

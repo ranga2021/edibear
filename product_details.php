@@ -55,14 +55,20 @@ if ($totalReviews > 0) {
 <body>
     <?php echo $userHeader->printUserNav(); ?>
 
-    <div class="container mt-5" style="margin-top: 110px !important;">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-transparent p-0">
-                <li class="breadcrumb-item"><a href="index.php" class="text-success"><i class="fa fa-home"></i> Home</a></li>
-                <li class="breadcrumb-item"><a href="product_page.php" class="text-success">The Honey Market</a></li>
+    <div class="page-header-bg"></div>
+    <div class="container mt-5 page-header-content">
+        <nav class="edi-breadcrumb" aria-label="breadcrumb">
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <li class="breadcrumb-item"><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
+                <li class="breadcrumb-item"><a href="product_page.php">The Honey Market</a></li>
                 <li class="breadcrumb-item active"><?= strtoupper($product['product_name']) ?></li>
             </ol>
         </nav>
+
+        <div class="edi-page-title-row">
+            <h1><?= strtoupper($product['product_name']) ?></h1>
+            <div class="edi-page-title-rule" role="presentation"></div>
+        </div>
 
         <!-- Product Details Section -->
         <div class="row">
@@ -70,7 +76,6 @@ if ($totalReviews > 0) {
                 <img src="./img/products/<?= $product['image'] ?>" class="img-fluid main-product-image">
             </div>
             <div class="col-md-6">
-                <h2><?= strtoupper($product['product_name']) ?></h2>
                 <p><strong>Description: </strong><?= $product['description'] ?></p>
                 <div class="price-box">
                     <?php if ($product['discounted_price'] > 0): ?>

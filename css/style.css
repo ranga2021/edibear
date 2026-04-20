@@ -12284,12 +12284,12 @@ h6,
 }
 
 .social-icon-box i {
-    font-size: 23px; /* Larger icon inside the box */
+    font-size: 18px; /* Larger icon inside the box */
     color: #33a675;
 }
 
 .social-icon-box img {
-    width: 23px; /* Size for the TikTok image icon */
+    width: 18px; /* Size for the TikTok image icon */
 }
 
 .social-icon-box:hover {

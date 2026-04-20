@@ -57,11 +57,11 @@ if (userSession) {
 }
 </script>
 
-<div class="container-fluid py-5 page-header-content" style="margin-top: 20px !important;">
+<div class="container-fluid py-5 page-header-content">
 <div class="container text-center">
 
         <!-- TITLE -->
-        <h2 style="color:#F65247; font-weight:700;">Welcome Home!</h2>
+        <h2>Welcome Home!</h2>
 
         <p style="max-width:800px; margin:15px auto; color:#666; text-align:left;">
             Step inside to collect and track your treasures, complete your favorite challenges,and meet Edi’s family! 
@@ -80,7 +80,7 @@ if (userSession) {
             border:1px solid #eee;
         ">
 
-            <h4 style="color:#F65247; font-weight:700;">SIGN IN</h4>
+            <h4>SIGN IN</h4>
 
             <form action="" method="post">
 

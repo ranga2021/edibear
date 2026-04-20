@@ -82,13 +82,15 @@
     <div class="page-header-bg"></div>
 
     <!-- Blog Start -->
-    <div class="container-fluid py-3 page-header-content" style="margin-top: 0px !important;">
+    <div class="container-fluid py-3 page-header-content">
         <div class="container pt-3">
-            <i class="fa fa-home pt-1 pr-2 text-primary1"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2 text-primary1"></i>The Hidden Den
+            <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+            <i class="fa fa-home pt-1 pr-2" aria-hidden="true"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2" aria-hidden="true"></i><span>The Hidden Den</span>
+            </nav>
              <!-- Title + Line -->
-        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
-            <h2 style="font-weight:700; margin:0;">EXCITING THINGS</h2>
-            <div style="flex:1; height:2px; background:#f4b400;"></div>
+        <div class="edi-page-title-row">
+            <h2>EXCITING THINGS</h2>
+            <div class="edi-page-title-rule" role="presentation"></div>
         </div>
             
             <h6>Hand crafts, Letter practicing, Drawings</h6>

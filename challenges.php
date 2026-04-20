@@ -76,9 +76,9 @@
     <?php echo $userHeader->printUserNav(); ?>
     <div class="page-header-bg"></div>
 
-    <div class="container mt-4 page-header-content" style="margin-top: 0px !important;">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb bg-transparent p-0">
+    <div class="container mt-4 page-header-content">
+        <nav class="edi-breadcrumb" aria-label="breadcrumb">
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
                 <li class="breadcrumb-item"><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
                 <li class="breadcrumb-item active">Brave Heart Challenge</li>
             </ol>
@@ -86,9 +86,9 @@
 
         
          <!-- Title + Line -->
-        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
-            <h2 style="font-weight:700; margin:0;">CHALLENGES</h2>
-            <div style="flex:1; height:2px; background:#f4b400;"></div>
+        <div class="edi-page-title-row">
+            <h2>CHALLENGES</h2>
+            <div class="edi-page-title-rule" role="presentation"></div>
         </div>
         
         <div class="category-nav mt-2 mb-4">

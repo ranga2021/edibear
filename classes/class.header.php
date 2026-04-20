@@ -611,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-            <div class='container-fluid pl-0 pr-0' style='background-color:#237a52;'>
+            <div class='container-fluid pl-0 pr-0' style='background-color:#004924;'>
                 
                     <div class='col-lg-12 text-center '>
                         <p class='copyrighttext text-white mb-0'>Copyright &copy; <a href='./' class='text-white'>edibear</a>. All Rights Reserved.</a>

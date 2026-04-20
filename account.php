@@ -160,14 +160,16 @@ our beautiful country. So reserve your tour with us.' />
     ?>
     <div class="page-header-bg"></div>
 
-    <div class="container-fluid py-4 page-header-content" style="margin-top: 70px !important;">
+    <div class="container-fluid py-4 page-header-content">
         <div class="container">
-            <i class="fa fa-home pt-1 pr-2 text-primary1"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2 text-primary1"></i>Account
+            <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+            <i class="fa fa-home pt-1 pr-2" aria-hidden="true"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2" aria-hidden="true"></i><span>Account</span>
+            </nav>
             
              <!-- Title + Line -->
-        <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px;">
-            <h2 style="font-weight:700; margin:0;">Account</h2>
-            <div style="flex:1; height:2px; background:#f4b400;"></div>
+        <div class="edi-page-title-row">
+            <h1>Account</h1>
+            <div class="edi-page-title-rule" role="presentation"></div>
         </div>
             <div class="text-right mb-3">
                 <a href="./logout.php" class="btn btn-danger">

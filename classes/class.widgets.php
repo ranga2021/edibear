@@ -53,7 +53,19 @@ class WIDGETS{
     
 
     public function createCachelessImage($imageURL) {
-        return $imageURL . "?" . filemtime("$imageURL");
+        if ($imageURL === '' || $imageURL === null) {
+            return '';
+        }
+        $candidates = array($imageURL);
+        if (strpos($imageURL, './') === 0) {
+            $candidates[] = dirname(__DIR__) . '/' . substr($imageURL, 2);
+        }
+        foreach ($candidates as $path) {
+            if (is_file($path) && is_readable($path)) {
+                return $imageURL . '?' . filemtime($path);
+            }
+        }
+        return $imageURL;
     }
 
     public function displayHowItWorksBlock($topic, $txt, $img) {
