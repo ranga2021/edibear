@@ -57,6 +57,16 @@ class HEADER {
             "redirect"=>"./products",
             "icon"=>"fas fa-box-open text-danger"
         ),
+        "manage-product-categories"=>array(
+            "name"=>"Product categories",
+            "redirect"=>"./manage-product-categories",
+            "icon"=>"fas fa-tags text-info"
+        ),
+        "manage-product-subcategories"=>array(
+            "name"=>"Product subcategories",
+            "redirect"=>"./manage-product-subcategories",
+            "icon"=>"fas fa-sitemap text-info"
+        ),
 
         "add-blog"=>array(
             "name"=>"Add Blog",
@@ -828,7 +838,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class='col-lg-6 mb-lg-0 mb-4'>
                     <div class='copyright text-center text-sm text-lg-start edibear-admin-footer-copy'>
                         © $year, Designed & Developed by
-                        <a href='https://virtualpensar.com' class='font-weight-bold edibear-admin-footer-link' target='_blank' rel='noopener noreferrer'>Groovymark Pvt Ltd</a>.
+                        <a href='https://groovymark.com' class='font-weight-bold edibear-admin-footer-link' target='_blank' rel='noopener noreferrer'>Groovymark Pvt Ltd</a>.
                     </div>
                     </div>
                     <div class='col-lg-6'>
