@@ -7,6 +7,8 @@
  */
 
 :root {
+  /* Same stack as Google Fonts Poppins in the header; keeps cards/paragraphs consistent */
+  --edi-font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --edi-green: #33a675;
   --edi-green-dark: #2a8f61;
   --edi-green-darker: #237a52;
@@ -30,6 +32,13 @@
 /* ----- Base text ----- */
 body {
   color: var(--edi-body) !important;
+  font-family: var(--edi-font-sans) !important;
+}
+
+/* Paragraphs inherit body font; explicit rule wins over nested component styles */
+p {
+  font-family: inherit;
+  font-weight: 400;
 }
 
 /* ----- Accent utility (coral): non-heading elements only ----- */
@@ -503,10 +512,13 @@ h6.text-primary:not(.text-white),
   flex: 1 1 auto;
   min-height: 0;
   text-align: left;
+  font-family: var(--edi-font-sans);
 }
 
 .edi-blog-tag {
   font-size: 0.75rem;
+  font-weight: 400;
+  font-family: inherit;
   color: var(--edi-body);
   margin-bottom: 0.35rem;
   display: flex;
@@ -521,6 +533,7 @@ h6.text-primary:not(.text-white),
 .edi-blog-title {
   font-size: 0.9375rem;
   font-weight: 700;
+  font-family: inherit;
   line-height: 1.25;
   text-transform: uppercase;
   margin: 0 0 0.5rem;
@@ -528,6 +541,7 @@ h6.text-primary:not(.text-white),
 }
 
 .edi-blog-title a {
+  font-family: inherit;
   color: inherit !important;
   text-decoration: none;
 }
@@ -538,6 +552,8 @@ h6.text-primary:not(.text-white),
 
 .edi-blog-excerpt {
   font-size: 0.8125rem;
+  font-family: inherit;
+  font-weight: 400;
   line-height: 1.5;
   color: var(--edi-body);
   margin: 0 0 0.65rem;
@@ -561,7 +577,8 @@ h6.text-primary:not(.text-white),
 }
 
 .edi-blog-readmore {
-  font-weight: 700;
+  font-family: inherit;
+  font-weight: 500;
   font-size: 0.8125rem;
   color: var(--edi-green) !important;
   text-decoration: none;

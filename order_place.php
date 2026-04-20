@@ -66,6 +66,7 @@ $createdAt = date('Y-m-d H:i:s');
 
 // Insert order (Updated to include user_id if your table has it, otherwise keeps mapping clean)
 $paymentStatus = 'pending';
+$orderStatus = 'Order Placed';
 
 $user->insertTable(
     "orders",
@@ -83,6 +84,7 @@ $user->insertTable(
         "mobile"         => $mobile,
         "payment_method" => $paymentMethod,
         "payment_status" => $paymentStatus,
+        "order_status"   => $orderStatus,
         "subtotal"       => $total,
         "shipping"       => $shipping,
         "total"          => $orderTotal,

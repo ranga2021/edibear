@@ -453,6 +453,7 @@ CREATE TABLE `orders` (
   `mobile` varchar(50) NOT NULL,
   `payment_method` enum('cod','bank_transfer','card') NOT NULL,
   `payment_status` enum('pending','paid','failed') NOT NULL DEFAULT 'pending',
+  `order_status` varchar(50) NOT NULL DEFAULT 'Order Placed',
   `subtotal` decimal(10,2) NOT NULL,
   `shipping` decimal(10,2) NOT NULL,
   `total` decimal(10,2) NOT NULL,
