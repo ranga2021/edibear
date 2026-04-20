@@ -1,0 +1,435 @@
+[12-Feb-2025 03:57:03 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ළ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 03:58:26 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ළ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 03:58:26 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ළ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 03:58:41 UTC] PHP Warning:  unlink(../img/pdf/82.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 03:59:55 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - හ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:00:16 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - හ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:00:16 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - හ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:01:11 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ස in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:01:51 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ස in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:01:51 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ස): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:02:21 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ව in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:02:43 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ව in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:02:43 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ව): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:03:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ල in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:03:48 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ල in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:03:48 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ල): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:04:22 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ර in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:04:46 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ර in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:04:46 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ර): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:05:16 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ය in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:06:36 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ය in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:06:36 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ය): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:07:12 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ම in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:08:23 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ම in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:08:23 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ම): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:09:39 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - බ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:10:52 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - බ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:10:52 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - බ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:11:50 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ප in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:12:14 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ප in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:12:14 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ප): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:13:45 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - න in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:14:04 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - න in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:14:04 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - න): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:14:41 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ද in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:15:02 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ද in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:15:02 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ද): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:15:30 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ත in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:16:02 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ත in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:16:02 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ත): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:16:32 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ණ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:16:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ණ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:16:54 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ණ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:17:30 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඩ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:17:51 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඩ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:17:51 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ඩ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:19:15 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ට in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:19:42 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ට in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:19:42 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ට): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:20:37 UTC] PHP Warning:  unlink(../img/pdf/67.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:21:17 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ජ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:34:45 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ජ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:34:45 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ජ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:35:40 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ච in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:36:05 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ච in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:36:05 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ච): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:36:42 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ග in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:37:04 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ග in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:37:04 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ග): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:37:40 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ක in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:37:59 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ක in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:37:59 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ක): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:38:52 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඕ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:39:17 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඕ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:39:17 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ඕ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:39:56 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඔ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:40:18 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඔ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:40:18 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ඔ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:41:09 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඒ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:41:31 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඒ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:41:31 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ඒ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:42:10 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - එ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:42:31 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - එ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:42:31 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - එ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:43:05 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඌ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:43:53 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඌ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:43:53 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ඌ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:44:41 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - උ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:45:04 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - උ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:45:04 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - උ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:45:36 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඊ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:46:04 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඊ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:46:04 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ඊ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:46:43 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඉ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:47:09 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඉ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:47:09 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ඉ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:47:42 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඈ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:48:13 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඈ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:48:13 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ඈ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:48:48 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඇ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:49:20 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ඇ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:49:20 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ඇ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:50:11 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ආ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:50:28 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - ආ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:50:28 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - ආ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:51:54 UTC] PHP Warning:  unlink(../img/pdf/50.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 04:52:22 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - අ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:52:41 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Sinhala Letter - අ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 04:52:41 UTC] PHP Warning:  unlink(../img/pdf/Sinhala Letter - අ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 07:10:22 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet Sinha in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:10:49 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet Sinha in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:11:20 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet Sinha in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:11:30 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet Sinha in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:11:47 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet - Mul in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:11:55 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet - Mul in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:12:44 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet Sinha in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:13:04 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet Sinha in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:13:04 UTC] PHP Warning:  unlink(../img/pdf/Math Worksheet Sinha): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 07:13:34 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet - Mul in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:13:49 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Math Worksheet - Mul in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:13:49 UTC] PHP Warning:  unlink(../img/pdf/Math Worksheet - Mul): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 07:17:23 UTC] PHP Warning:  unlink(../img/pdf/subtraction.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 07:19:33 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Subtraction-01 Sinha in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:19:47 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Subtraction-01 Sinha in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 07:19:47 UTC] PHP Warning:  unlink(../img/pdf/Subtraction-01 Sinha): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:17:51 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - அ.j in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:19:04 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - அ.j in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:19:04 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - அ.j): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:20:30 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஆ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:21:20 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஆ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:21:20 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ஆ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:22:46 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - இ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:23:09 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - இ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:23:09 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - இ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:24:18 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஈ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:24:38 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஈ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:24:38 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ஈ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:25:29 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - உ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:26:48 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - உ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:26:48 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - உ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:28:35 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஊ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:28:58 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஊ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:28:58 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ஊ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:30:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - எ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:30:53 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - எ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:30:53 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - எ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:31:33 UTC] PHP Warning:  unlink(../img/pdf/89.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:49:33 UTC] PHP Warning:  unlink(../img/pdf/89.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:50:00 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஏ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:50:50 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஏ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:50:50 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ஏ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:51:34 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஐ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:52:30 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஐ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:52:30 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ஐ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:53:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஒ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:54:13 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஒ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:54:13 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ஒ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:55:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஓ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:55:48 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ஓ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 12:55:48 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ஓ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:56:06 UTC] PHP Warning:  unlink(../img/pdf/94.jpg): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:56:49 UTC] PHP Warning:  unlink(../img/pdf/89.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 12:58:55 UTC] PHP Warning:  unlink(../img/pdf/95.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:02:15 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - க.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:02:37 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - க.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:02:37 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - க.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:03:41 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ச.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:03:59 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ச.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:03:59 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ச.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:04:43 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ட.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:05:41 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ட.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:05:41 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ட.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:06:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ண.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:07:11 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ண.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:07:11 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ண.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:07:46 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - த.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:08:36 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - த.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:08:36 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - த.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:09:52 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ந.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:10:10 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ந.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:10:10 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ந.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:11:15 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ப.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:11:37 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ப.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:11:37 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ப.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:12:41 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ம.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:13:00 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ம.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:13:00 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ம.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:14:26 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ய.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:14:58 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ய.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:14:58 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ய.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:16:18 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ர.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:16:37 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ர.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:16:37 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ர.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:18:08 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ல.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:19:17 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ல.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:19:17 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ல.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:20:36 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - வ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:20:53 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - வ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:20:53 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - வ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:21:33 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ழ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:22:19 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ழ.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:22:19 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ழ.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:23:11 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ள.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:23:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ள.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:23:27 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ள.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:23:59 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ற.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:24:16 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ற.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:24:16 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ற.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:26:46 UTC] PHP Warning:  unlink(../img/pdf/110.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:27:46 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ன.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:28:02 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Tamil Letter - ன.p in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Feb-2025 13:28:02 UTC] PHP Warning:  unlink(../img/pdf/Tamil Letter - ன.p): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:37:18 UTC] PHP Warning:  unlink(../img/pdf/108.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:37:58 UTC] PHP Warning:  unlink(../img/pdf/109.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:38:38 UTC] PHP Warning:  unlink(../img/pdf/110.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Feb-2025 13:39:18 UTC] PHP Warning:  unlink(../img/pdf/111.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[09-Mar-2025 04:03:06 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - උ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 04:03:23 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - උ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 04:03:23 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - උ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 04:11:11 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - එ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 04:11:28 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - එ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 04:11:28 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - එ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 04:12:56 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/134.jpg in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 04:13:07 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/134.jpg in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 04:13:07 UTC] PHP Warning:  unlink(../img/homework/134.jpg): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 86
+[09-Mar-2025 09:31:37 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ස in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:32:29 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ස in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:32:29 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ස): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 09:33:05 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ව in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:36:39 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ව in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:36:39 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ව): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 09:37:19 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ල in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:38:43 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ල in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:38:43 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ල): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 09:40:03 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ර in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:42:01 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ර in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:42:01 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ර): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 09:49:10 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ය in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:49:50 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ය in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:49:50 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ය): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 09:50:24 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඹ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:52:39 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඹ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 09:52:39 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඹ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:06:46 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/117.jpg in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:06:56 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/117.jpg in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:06:56 UTC] PHP Warning:  unlink(../img/homework/117.jpg): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 86
+[09-Mar-2025 10:07:30 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ම in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:08:03 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ම in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:08:03 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ම): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:08:48 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - බ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:09:29 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - බ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:09:29 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - බ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:10:32 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ප in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:11:15 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ප in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:11:15 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ප): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:11:44 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - න in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:12:14 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - න in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:12:14 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - න): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:12:48 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ද in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:13:21 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ද in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:13:21 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ද): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:13:51 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ත in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:14:19 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ත in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:14:19 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ත): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:14:49 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ණ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:15:32 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ණ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:15:32 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ණ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:16:22 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඩ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:16:58 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඩ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:16:58 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඩ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:17:38 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ට in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:18:18 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ට in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:18:18 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ට): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:18:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ජ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:19:48 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ජ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:19:48 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ජ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:20:23 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ච in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:21:17 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ච in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:21:17 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ච): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:21:56 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ග in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:22:31 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ග in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:22:32 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ග): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:23:09 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ක in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:23:46 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ක in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:23:46 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ක): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:24:19 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඕ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:24:44 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඕ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:24:44 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඕ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:25:25 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඔ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:25:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඔ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:25:54 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඔ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:26:23 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඒ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:27:02 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඒ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:27:02 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඒ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:28:23 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - එ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:28:53 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - එ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:28:53 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - එ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:30:55 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඌ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:31:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඌ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:31:27 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඌ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:32:05 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - උ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:32:42 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - උ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:32:42 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - උ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:33:20 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඉ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:33:53 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඉ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:33:53 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඉ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:35:17 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඉ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:35:46 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඉ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:35:46 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඉ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:37:51 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඈ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:38:19 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඈ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:38:19 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඈ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:38:50 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඇ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:39:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ඇ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:39:27 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ඇ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:40:03 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ආ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:40:38 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - ආ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:40:38 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - ආ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[09-Mar-2025 10:41:17 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - අ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:41:37 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Sinhala Letter - අ in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[09-Mar-2025 10:41:37 UTC] PHP Warning:  unlink(../img/homework/Sinhala Letter - අ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[10-Mar-2025 03:59:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Flash Card M.pdf in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[10-Mar-2025 04:00:16 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Flash Card M.pdf in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[10-Mar-2025 04:03:36 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Flash Card M.pdf in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[10-Mar-2025 04:03:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Flash Card M.pdf in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[10-Mar-2025 04:03:54 UTC] PHP Warning:  unlink(../img/homework/Flash Card M.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[11-Mar-2025 12:09:40 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in S in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 12:14:24 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in S in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:34:18 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in S in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:34:24 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in S in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:39:13 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in E in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:40:47 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in E in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:41:28 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Kitchen utensils in  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:42:36 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Kitchen utensils in  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:43:00 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/List of Mammals Engl in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:45:17 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/List of Mammals Engl in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:55:17 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Farm Animals English in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:56:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Farm Animals English in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:57:39 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Kitchen utensils in  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:57:48 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Kitchen utensils in  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:58:23 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of vehicles.pd in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 13:59:19 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of vehicles.pd in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 14:01:24 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of vegetables. in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 14:02:30 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of vegetables. in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 14:05:38 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in S in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[11-Mar-2025 14:06:21 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in S in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 10:10:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in E in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 10:11:35 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in E in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 10:11:35 UTC] PHP Warning:  unlink(../img/homework/Names of Sports in E): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 10:12:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in S in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 10:13:19 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Sports in S in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 10:13:19 UTC] PHP Warning:  unlink(../img/homework/Names of Sports in S): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 10:17:32 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Kitchen utensils in  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 10:17:55 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Kitchen utensils in  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 10:17:55 UTC] PHP Warning:  unlink(../img/homework/Kitchen utensils in ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 10:18:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Kitchen utensils in  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 10:19:37 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Kitchen utensils in  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 10:19:37 UTC] PHP Warning:  unlink(../img/homework/Kitchen utensils in ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 12:10:22 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Music Instruments_01 in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:11:34 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Music Instruments_01 in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:12:10 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Music Instruments_01 in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:12:10 UTC] PHP Warning:  unlink(../img/homework/Music Instruments_01): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 12:15:57 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of Plast in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:16:54 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of Plast in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:16:54 UTC] PHP Warning:  unlink(../img/homework/Things made of Plast): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 12:18:15 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made by Metal in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:21:29 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made by Metal in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:21:29 UTC] PHP Warning:  unlink(../img/homework/Things made by Metal): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 12:22:16 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of Rubbe in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:24:58 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of Rubbe in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:24:58 UTC] PHP Warning:  unlink(../img/homework/Things made of Rubbe): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 12:26:22 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of wood. in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:27:04 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of wood. in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:27:04 UTC] PHP Warning:  unlink(../img/homework/Things made of wood.): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 12:32:14 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Vehicles in in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:33:32 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Vehicles in in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:33:37 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of Vehicles in in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:34:20 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Home Appliances - Si in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:41:24 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Home Appliances - Si in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:41:24 UTC] PHP Warning:  unlink(../img/homework/Home Appliances - Si): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 12:45:08 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/List of Mammals Sinh in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:47:02 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/List of Mammals Sinh in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:47:02 UTC] PHP Warning:  unlink(../img/homework/List of Mammals Sinh): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 12:59:24 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/List of Mammals Engl in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:59:56 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/List of Mammals Engl in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 12:59:56 UTC] PHP Warning:  unlink(../img/homework/List of Mammals Engl): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 13:01:58 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Farm Animals English in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 13:02:20 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Farm Animals English in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 13:02:20 UTC] PHP Warning:  unlink(../img/homework/Farm Animals English): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 13:03:05 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of vehicles.pd in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 13:03:31 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of vehicles.pd in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 13:03:31 UTC] PHP Warning:  unlink(../img/homework/Names of vehicles.pd): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 13:10:08 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of vegetables. in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 13:10:38 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Names of vegetables. in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 13:10:38 UTC] PHP Warning:  unlink(../img/homework/Names of vegetables.): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[13-Mar-2025 13:13:57 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Shapes Names.pdf in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 13:14:24 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Shapes Names.pdf in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[13-Mar-2025 13:14:24 UTC] PHP Warning:  unlink(../img/homework/Shapes Names.pdf): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[30-Mar-2025 03:27:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of Wood. in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 03:27:58 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of Wood. in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 03:27:58 UTC] PHP Warning:  unlink(../img/homework/Things made of Wood.): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[30-Mar-2025 03:40:09 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of Rubbe in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 03:40:18 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of Rubbe in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 03:40:18 UTC] PHP Warning:  unlink(../img/homework/Things made of Rubbe): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[30-Mar-2025 03:59:20 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of metal in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 03:59:29 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of metal in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 03:59:29 UTC] PHP Warning:  unlink(../img/homework/Things made of metal): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[30-Mar-2025 04:15:35 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of plast in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 04:15:49 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Things made of plast in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 04:15:49 UTC] PHP Warning:  unlink(../img/homework/Things made of plast): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[30-Mar-2025 04:51:20 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Music Instruments.pd in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 04:51:35 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Music Instruments.pd in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 04:51:35 UTC] PHP Warning:  unlink(../img/homework/Music Instruments.pd): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[30-Mar-2025 05:10:08 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Parts of the body.pd in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 05:10:18 UTC] PHP Warning:  filemtime(): stat failed for ../img/homework/Parts of the body.pd in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[30-Mar-2025 05:10:18 UTC] PHP Warning:  unlink(../img/homework/Parts of the body.pd): No such file or directory in /home/traveylo/edibear.com/admin-area/add-homework.php on line 93
+[12-Jun-2025 09:27:41 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 01 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 09:27:50 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 01 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 09:27:50 UTC] PHP Warning:  unlink(../img/pdf/Number 01 Tracing &amp; ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Jun-2025 13:46:42 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 02 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:46:48 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 02 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:46:48 UTC] PHP Warning:  unlink(../img/pdf/Number 02 Tracing &amp; ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Jun-2025 13:48:15 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 03 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:48:28 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 03 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:48:28 UTC] PHP Warning:  unlink(../img/pdf/Number 03 Tracing &amp; ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Jun-2025 13:49:44 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 04 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:49:53 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 04 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:49:53 UTC] PHP Warning:  unlink(../img/pdf/Number 04 Tracing &amp; ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Jun-2025 13:51:13 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 05 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:51:13 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 05 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:51:20 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 05 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:51:20 UTC] PHP Warning:  unlink(../img/pdf/Number 05 Tracing &amp; ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Jun-2025 13:52:53 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 06 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:52:53 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 06 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:53:02 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 06 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:53:02 UTC] PHP Warning:  unlink(../img/pdf/Number 06 Tracing &amp; ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Jun-2025 13:54:06 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 07 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:54:13 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 07 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:54:13 UTC] PHP Warning:  unlink(../img/pdf/Number 07 Tracing &amp; ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Jun-2025 13:56:17 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 08 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:56:27 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 08 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:56:27 UTC] PHP Warning:  unlink(../img/pdf/Number 08 Tracing &amp; ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94
+[12-Jun-2025 13:57:26 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 09 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:57:34 UTC] PHP Warning:  filemtime(): stat failed for ../img/books/Number 09 Tracing &amp;  in /home/traveylo/edibear.com/classes/class.widgets.php on line 41
+[12-Jun-2025 13:57:34 UTC] PHP Warning:  unlink(../img/pdf/Number 09 Tracing &amp; ): No such file or directory in /home/traveylo/edibear.com/admin-area/add-books.php on line 94

@@ -1,0 +1,128 @@
+
+/*================================
+Top Header
+===================================*/
+.top-header {
+    padding: 10px 0;
+    height: 80px;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+
+}
+
+.top-header .container{
+    padding: 10px 5px;
+    
+}
+.top-header-bg {
+    background-color: #FBA303;
+}
+.top-header-bg-two {
+    background-color: transparent;
+    z-index: 1;
+    position: relative;
+}
+.top-header-bg-3 {
+    background-color: #9dbc5c;
+}
+.header-left {
+    text-align: left;
+    z-index: 1;
+    position: relative;
+
+}
+
+.header-left .header-left-card ul {
+    padding-left: 0;
+    margin-bottom: 0;
+    list-style-type: none;
+    
+}
+
+.header-left .header-left-card ul li {
+    display: inline-block;
+    text-align: left;
+    position: relative;
+    padding-left: 7px;
+    color: #fff;
+    margin-right: 35px;
+    
+}
+
+.header-left .header-left-card ul li:last-child {
+    margin-right: 0;
+}
+
+.header-left .header-left-card ul li .head-icon {
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+    position: absolute;
+    left: 0;
+    top: 52%;
+    transition: .5s;
+    transform: translateY(-50%);
+}
+.header-left .header-left-card ul li a {
+    display: inline-block;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 25px;
+}
+
+.header-left .header-left-card ul li .head-icon:hover {
+        color: #fff;
+    }
+.header-left .header-left-card ul li a:hover {
+        color: #34460e;
+    }
+
+
+
+
+
+
+.header-right {
+    float: right;
+}
+
+.top-social-link {
+    float: right;
+    
+}
+
+.top-social-link ul li a:hover {
+    background-color: #fff;
+    color: #9dbc5c;
+}
+
+.top-social-link ul li a {
+    width: 30px;
+    height: 30px;
+    line-height: 32px;
+    text-align: center;
+    color: #fff;
+    border-radius: 50px;
+    
+}
+
+.top-social-link ul li {
+    display: inline-block;
+    margin-right: 5px;
+    
+}
+
+.top-social-link ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    
+}
+
+
+
+/*================================
+Top Header End
+===================================*/

@@ -1,0 +1,227 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+// âœ… SESSION FIX (very important for your server)
+if (!is_dir('/tmp')) {
+    mkdir('/tmp', 0777, true);
+}
+session_save_path('/tmp');
+session_start();
+
+require_once("../classes/class.user.php");
+require_once("../classes/class.header.php");
+require_once("../classes/class.widgets.php");
+
+$adminHeader = new HEADER("add-books");
+$user = new USER();
+$widgets = new WIDGETS();
+
+$editMode = false;
+$currentbooksID = 0;
+
+$currentbooksTag = "";
+$currentbooksTitle = "";
+$currentbooksMainDescription = "";
+$currentbooksVideoUrl = "";
+$currentbooksVideoStatus = "";
+$currentbooksMainImage = "";
+
+// ================= EDIT MODE =================
+if (isset($_GET['id']) && $_GET['id'] > 0) {
+
+    $currentbooksID = (int)$_GET['id'];
+
+    if ($user->CountRows("books_details", array("id"=>$currentbooksID))) {
+
+        $editMode = true;
+
+        $booksDetailsArr = $user->fetchAll(
+            array("tag","title","image","description","video","video_status","pdfupload"),
+            array("books_details"),
+            array("id"=>$currentbooksID)
+        )[0];
+
+        $currentbooksTag = $booksDetailsArr['tag'];
+        $currentbooksTitle = $booksDetailsArr['title'];
+        $currentbooksMainDescription = $booksDetailsArr['description'];
+        $currentbooksVideoUrl = $booksDetailsArr['video'];
+        $currentbooksVideoStatus = ($booksDetailsArr['video_status']=='1') ? "checked" : "";
+
+        if (!empty($booksDetailsArr['image'])) {
+            $currentbooksMainImage = "src='".$widgets->createCachelessImage("../img/books/".$booksDetailsArr['image'])."'";
+        }
+
+    } else {
+        $user->redirect("./add-books");
+    }
+}
+
+// ================= FORM SUBMIT =================
+if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
+
+    $inputbooksTag = htmlspecialchars($_POST['inputbooksTag'] ?? "");
+    $inputbooksTitle = htmlspecialchars($_POST['inputbooksTitle'] ?? "");
+    $inputbooksMainDescription = strip_tags($_POST['inputbooksMainDescription'] ?? "", "<br>");
+    $inputbooksVideoUrl = htmlspecialchars($_POST['inputbooksVideoUrl'] ?? "");
+    $booksVideoStatus = $_POST['booksVideoStatus'] ?? 0;
+
+    // ================= ADD =================
+    if (isset($_POST['addNewbooksSubmit'])) {
+
+        // ðŸ”¥ IMAGE FIRST (IMPORTANT FIX)
+        $imageName = "";
+        if (!empty($_FILES["inputbooksMainImage"]["name"])) {
+
+            $ext = pathinfo($_FILES["inputbooksMainImage"]["name"], PATHINFO_EXTENSION);
+            $imageName = time().".".$ext;
+
+            move_uploaded_file($_FILES["inputbooksMainImage"]["tmp_name"], "../img/books/".$imageName);
+        }
+
+        // PDF
+        $pdfName = "";
+        if (!empty($_FILES["inputbookspdfupload"]["name"])) {
+
+            $ext = pathinfo($_FILES["inputbookspdfupload"]["name"], PATHINFO_EXTENSION);
+            $pdfName = time()."_pdf.".$ext;
+
+            move_uploaded_file($_FILES["inputbookspdfupload"]["tmp_name"], "../img/books/".$pdfName);
+        }
+
+        // ðŸ”¥ INSERT WITH IMAGE (MAIN FIX)
+        $booksID = $user->insertTable("books_details", array(
+            "tag"=>$inputbooksTag,
+            "title"=>$inputbooksTitle,
+            "description"=>$inputbooksMainDescription,
+            "video"=>$inputbooksVideoUrl,
+            "video_status"=>$booksVideoStatus,
+            "image"=>$imageName,
+            "pdfupload"=>$pdfName,
+            "status"=>1,
+            "download_count"=>0,
+            "main_cat_id"=>1,
+            "sub_cat_id"=>1
+        ), true);
+
+        echo "<script>alert('Book added successfully');location.href='./createSiteMap?redirect=books'</script>";
+    }
+
+    // ================= UPDATE =================
+    if (isset($_POST['updatebooksSubmit'])) {
+
+        $user->updateTable("books_details", array(
+            "tag"=>$inputbooksTag,
+            "title"=>$inputbooksTitle,
+            "description"=>$inputbooksMainDescription,
+            "video"=>$inputbooksVideoUrl,
+            "video_status"=>$booksVideoStatus
+        ), array("id"=>$currentbooksID));
+
+        // IMAGE UPDATE
+        if (!empty($_FILES["inputbooksMainImage"]["name"])) {
+
+            if (!empty($booksDetailsArr['image']) && file_exists("../img/books/".$booksDetailsArr['image'])) {
+                unlink("../img/books/".$booksDetailsArr['image']);
+            }
+
+            $ext = pathinfo($_FILES["inputbooksMainImage"]["name"], PATHINFO_EXTENSION);
+            $imageName = $currentbooksID.".".$ext;
+
+            move_uploaded_file($_FILES["inputbooksMainImage"]["tmp_name"], "../img/books/".$imageName);
+
+            $user->updateTable("books_details", array("image"=>$imageName), array("id"=>$currentbooksID));
+        }
+
+        // PDF UPDATE
+        if (!empty($_FILES["inputbookspdfupload"]["name"])) {
+
+            if (!empty($booksDetailsArr['pdfupload']) && file_exists("../img/books/".$booksDetailsArr['pdfupload'])) {
+                unlink("../img/books/".$booksDetailsArr['pdfupload']);
+            }
+
+            $ext = pathinfo($_FILES["inputbookspdfupload"]["name"], PATHINFO_EXTENSION);
+            $pdfName = $currentbooksID.".".$ext;
+
+            move_uploaded_file($_FILES["inputbookspdfupload"]["tmp_name"], "../img/books/".$pdfName);
+
+            $user->updateTable("books_details", array("pdfupload"=>$pdfName), array("id"=>$currentbooksID));
+        }
+
+        echo "<script>alert('Book updated successfully');location.href='./createSiteMap?redirect=books'</script>";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<?php echo $adminHeader->printAdminHeader(); ?>
+</head>
+
+<body class="g-sidenav-show bg-gray-100">
+
+<?php echo $adminHeader->printAdminNav(); ?>
+
+<main class="main-content position-relative border-radius-lg">
+
+<?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit books" : "Add books"); ?>
+
+<div class="container-fluid py-4">
+<div class="card p-3">
+
+<form method="post" enctype="multipart/form-data">
+
+<div class="row">
+<?php
+echo $widgets->inputGroup("books Tag", "inputbooksTag", "col-md-6", $currentbooksTag);
+echo $widgets->inputGroup("books Title", "inputbooksTitle", "col-md-6", $currentbooksTitle);
+?>
+</div>
+
+<div class="row mt-3">
+<div class="col-md-6">
+<label>Main Image</label>
+<input type="file" name="inputbooksMainImage" class="form-control" <?php echo !$editMode ? "required" : ""; ?>>
+</div>
+
+<div class="col-md-6">
+<img id="outputbooksMainImage" <?php echo $currentbooksMainImage; ?> style="max-height:200px;">
+</div>
+</div>
+
+<div class="row mt-3">
+<div class="col-md-6">
+<label>Main PDF</label>
+<input type="file" name="inputbookspdfupload" class="form-control" <?php echo !$editMode ? "required" : ""; ?>>
+</div>
+</div>
+
+<div class="row mt-3">
+<div class="col-12">
+<label>Description</label>
+<textarea name="inputbooksMainDescription" class="form-control" required><?php echo $currentbooksMainDescription;?></textarea>
+</div>
+</div>
+
+<div class="mt-4">
+<?php
+if ($editMode) {
+    echo "<button type='submit' name='updatebooksSubmit' class='btn btn-primary'>Update</button>";
+} else {
+    echo "<button type='submit' name='addNewbooksSubmit' class='btn btn-success'>Add</button>";
+}
+?>
+</div>
+
+</form>
+
+</div>
+</div>
+
+</main>
+
+<?php echo $adminHeader->printAdminFooterJS(); ?>
+
+</body>
+</html>

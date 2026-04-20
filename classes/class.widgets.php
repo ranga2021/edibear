@@ -1,0 +1,1261 @@
+<?php
+
+class WIDGETS{
+    private $bootstrapColWidth;
+
+    public function setBootstrapColWidth( $bootstrapColWidth ){
+        $this->bootstrapColWidth = $bootstrapColWidth;
+    }
+
+    public function userHeaderImage() {
+        return "
+            <div class='container-fluid page-header' style='margin-top: -200px;'>
+                <div class='container'>
+                    <div class='d-flex flex-column align-items-center justify-content-center page-header-height headerImageHeight'>
+                    </div>
+                </div>
+            </div>
+        ";
+    }
+
+    public function displayHomeMainVideo($homeMainVideoURL) {
+    // 1. Extract the Video ID using Regex to ensure a clean ID
+    // This handles: youtube.com/watch?v=ID, youtu.be/ID, and youtube.com/embed/ID
+    $videoId = '';
+    if (preg_match('%(?:youtube(?:-nocookie)?\.com/(?:[^/]+/.+/|(?:v|e(?:mbed)?)/|.*[?&]v=)|youtu\.be/)([^"&?/\s]{11})%i', $homeMainVideoURL, $match)) {
+        $videoId = $match[1];
+    }
+
+    // 2. Only build the iframe if we found a valid ID
+    if (!empty($videoId)) {
+        $embedURL = "https://www.youtube.com/embed/" . $videoId;
+        
+        return "
+            <div class='container-fluid py-5 blog-video'>
+                <div class='container pt-1'>
+                    <div class='row justify-content-center'>
+                        <div class='col-lg-10'>
+                            <div class='embed-responsive embed-responsive-16by9 text-center'>
+                                <iframe class='embed-responsive-item' 
+                                        src='$embedURL' 
+                                        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        ";
+    }
+    return "";
+}
+    
+
+    public function createCachelessImage($imageURL) {
+        return $imageURL . "?" . filemtime("$imageURL");
+    }
+
+    public function displayHowItWorksBlock($topic, $txt, $img) {
+        $img = $this->createCachelessImage("./img/Web pic/$img");
+        $html = "
+            <div class='col-md-4 mb-2 px-xl- text-center'>
+                <div class='cursor-pointer pt-5 pb-3 border blog-item' onclick=location.href='#'>
+                    <img class='img-fluid' src='$img' alt='$topic' style='height: 180px;'><br>
+                    <h5 class='font-weight-bold coloring-pages text-uppercase pt-4 mb-2'>$topic</h5>
+                    <span>Explore fun activities for your <br>
+                    lesure time.</span>
+                    <div class='pt-md-3 pt-sm-1'>
+                   
+                    </div>
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    public function displayHowItWorksBlock2($topic, $txt, $img) {
+        $img = $this->createCachelessImage("./img/Web pic/$img");
+        $html = "
+            <div class='col-md-4 mb-2 px-xl- text-center'>
+                <div class='cursor-pointer pt-5 pb-3 border blog-item' onclick=location.href='#'>
+                    <img class='img-fluid' src='$img' alt='$topic' style='height: 180px;'><br>
+                    <h5 class='font-weight-bold books-paper text-uppercase pt-4 mb-2'>$topic</h5>
+                    <span>Secrets to grow your <br>memory and thinking skills.</span>
+                    <div class='pt-md-3 pt-sm-1'>
+                    
+                    </div>
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    public function displayHowItWorksBlock3($topic, $txt, $img) {
+        $img = $this->createCachelessImage("./img/Web pic/$img");
+        $html = "
+            <div class='col-md-4 mb-2 px-xl- text-center'>
+                <div class='cursor-pointer pt-5 pb-3 border blog-item' onclick=location.href='#'>
+                    <img class='img-fluid' src='$img' alt='$topic' style='height: 180px;'><br>
+                    <h5 class='font-weight-bold homeworks text-uppercase pt-4 mb-2'>$topic</h5>
+                    <span>Discover a variety of worksheets <br>for learning.</span>
+                    <div class='pt-md-3 pt-sm-1'>
+                    
+                    </div>
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    
+
+    public function displayToursBriefInHome($dataArr) {
+        $imageName = $this->createCachelessImage("./img/tours/".$dataArr['image_name']);
+        $redirectURL = "./tour?id=".$dataArr['id'];
+        $tourDescription = $dataArr['description'];
+        if ( strlen($tourDescription) > 220 ) {
+            $tourDescription = substr($tourDescription, 0, 220);
+            if ( substr($tourDescription, -1) == " " ) {
+                $tourDescription = substr($tourDescription, 0, -1) . "...";
+            } else {
+                $tourDescription .= "...";
+            }
+        }
+        $html = "
+            <div class='col-lg-4 col-md-6 mb-3' style='cursor:pointer;' onclick=location.href='$redirectURL'>
+                <div class='package-item bg-white mb-2'>
+                    <img class='img-fluid mb-1' src='$imageName' alt=''>
+                    <div class='p-1' style='line-height: 1.25;'>
+                        <span class='text-primary' style='line-height: 1.8;'>".$dataArr['no']."</span><br>
+                        <span class='text-warning'><b>".$dataArr['title']."</b></span><br>
+                        <small>".$dataArr['type']."</small>
+                    </div>
+                    <p class='px-1 my-3 text-justify'>$tourDescription <a href='$redirectURL'><br>Read More</a></p>
+                    <div class='col-12 py-1 pl-3 text-white bg-primary'>
+                        <small><i class='fa fa-calendar-alt mr-2'></i> ".$dataArr['duration']."</small>
+                    </div>
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    public function displayTourCarousel($mainImage, $subImgsArr) {
+        $html = "
+            <img id=featured src='$mainImage'>
+            <div id='slide-wrapper'>
+                <div id='slider' class='justify-content-center'>
+                    <img class='thumbnail active' src='$mainImage'>";
+                    foreach ( $subImgsArr as $row ) {
+                        $imageName = $this->createCachelessImage("./img/tours/".$row['image_name']);
+                        $html .= "<img class='thumbnail' src='$imageName'>";
+                    }
+        $html .= "
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    public function displayTourBlock01($icon, $text, $class) {
+        $html = "
+            <div class='col-md-4 text-left mb-2 $class'>
+                <div class='col-12 border py-2'>
+                    <i class='$icon text-primary pr-3'></i>$text
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    public function displayTourBlock02($topic, $text, $class) {
+        $html = "
+            <div class='col-md-6 text-left mb-2 $class'>
+                <div class='col-12 border py-1'>
+                    <span class='font-weight-bold text-primary'>$topic</span>
+                    <span class='row col mt-1'>$text</span>
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    public function displayTourServicesBlock($topic, $dataArr, $icon, $class) {
+        $html = "
+            <div class='col-md-6 text-left mb-2 $class'>
+                <div class='col-12 border py-1'>
+                    <span class='font-weight-bold text-primary'>$topic</span><br>";
+                    foreach ( $dataArr as $val ) {
+                        $html .= "<span><i class='$icon text-warning px-1'></i>$val</span><br>";
+                    }
+        $html .= "
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    public function displayTourDayAccordion($user, $tourID) {
+        $html = "<div class='accordion px-1' id='accordionExample'>";
+        $show = "show";
+        $collapsed = "";
+        $ariaExpanded = "true";
+        $i = 1;
+        foreach ( $user->fetchAll(array("title", "description", "image_name", "accommodation", "room", "meal_plan", "travel_time"), array("tour_day_details"), array("tour_id"=>$tourID), "id") as $row ) {
+            $tourDayTitle = $row['title'];
+            $tourDayDescription = $row['description'];
+            $tourDayAccommodation = $row['accommodation'];
+            $tourDayRoom = $row['room'];
+            $tourDayMealPlan = $row['meal_plan'];
+            $tourDayTravelTime = $row['travel_time'];
+            $imageName = ($row['image_name']!="") ? $this->createCachelessImage("./img/tours/".$row['image_name']) : "";
+            $html .= "
+                <div class='accordion-item'>
+                    <h2 class='accordion-header' id='heading$i'>
+                        <button class='accordion-button $collapsed' type='button' data-bs-toggle='collapse' data-bs-target='#collapse$i' aria-expanded='$ariaExpanded' aria-controls='collapse$i'>
+                            <b>Day $i - $tourDayTitle</b>
+                        </button>
+                    </h2>
+                    <div id='collapse$i' class='accordion-collapse collapse $show' aria-labelledby='heading$i' data-bs-parent='#accordionExample'>
+                        <div class='accordion-body'>
+                            <p class='text-justify'>$tourDayDescription</p>
+                            <img src='$imageName' style='width: 100%;' alt='Tour Day $i Image'>
+                            <div class='row mt-2'>
+                                <div class='col-12 text-left py-1'>
+                                    <div class='border p-2'>
+                                        <span class='font-weight-bold text-primary'>Highlights</span><br>
+                                        <span><i class='fa fa-bed fa-sm text-warning px-2'></i>Accommodation - $tourDayAccommodation</span><br>
+                                        <span><i class='fa fa-bed fa-sm text-warning px-2'></i>Room - $tourDayRoom</span><br>
+                                        <span><i class='fa fa-bed fa-sm text-warning px-2'></i>Meal Plan - $tourDayMealPlan</span><br>
+                                        <span><i class='fa fa-bed fa-sm text-warning px-2'></i>Travel Time - $tourDayTravelTime</span><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ";
+            if ( $i == 1 ) {
+                $show = "";
+                $collapsed = "collapsed";
+                $ariaExpanded = "false";
+            }
+            $i++;
+        }
+        $html .= "</div>";
+        return $html;
+    }
+
+    public function testimonialData($testiArr, $admin=false) {
+        $adminImageDot = ($admin) ? "." : "";
+        $profilePic = $this->createCachelessImage("$adminImageDot./img/profile-pics/".$testiArr['profile_pic']);
+        $ratings = $testiArr['ratings'];
+        $name = $testiArr['name'];
+        $html = "
+            <img src='$adminImageDot./img/Web pic/4.png' width='35px' alt='Testimonial' style='padding-bottom:20px; margin-top: -25px;'>
+            <div class='text-center'>
+                <img src='$profilePic' class='rounded-circle' width='65px' height='65px' alt='Profile Picture'>
+            </div>
+            <h6 class='text-primary text-center text-uppercase font-weight-bold mt-2 mb-1' >".$testiArr['one_word']."</h6>
+            <p class='text-justify mb-0 mt-2'>".$testiArr['review']."</p> <div class='d-flex justify-content-left'>";
+            
+            for ( $i=1; $i<=5; $i++ ) {
+                $starColor = ($i<=$ratings) ? "text-warning1" : "";
+                $html .= "<span class='text-center fa fa-star $starColor'></span>";
+            }
+        $html .= "
+        </div>
+            <div class='testimonial-name-tag'>
+                <h6 class='text-center text-uppercase font-weight-bold mt-2 mb-1'>".$testiArr['name']."</h6>
+                <center style='margin-top:-10px;'><span class='text-primary' style='font-size: 12px;'>".$testiArr['country']."</span></center>
+            </div>"
+        ;
+            
+        return $html;
+    }
+
+    public function displayTestimonialBrief($testiArr) {
+        $html = "
+            <div class='col-md-4 mb-2 mb-md-0'>
+                <div class='card blog-item'>
+                    <div class='card-body p-3'>";
+        $html .= $this->testimonialData($testiArr);
+        $html .= "
+                    </div>
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    public function displayTestimonial($testiArr, $user, $admin=false) {
+        $adminImageDot = ($admin) ? "." : "";
+        $html = "
+
+        
+        <div class='d-flex'>
+            <div class='col-md-12 col-sm-12 justify-content-center'>
+                <div class='col-12 card blog-item'>
+                    <div class='card-body p-3'>
+                        <div class='row'>
+                            <div class='col-md-12'>".$this->testimonialData($testiArr, $admin)."</div>
+                        </div>
+                    </div>
+                </div>
+            </div>    
+        </div>
+        <br>
+        ";
+        return $html;
+    }
+
+  
+    public function displayBlogBrief($row, $col="col-md-6", $wordCount=10) {
+        $imageName = $this->createCachelessImage("./img/blogs/".$row['image']);
+        $blogDate = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
+        $blogDescription = $row['description'];
+        if ( strlen($blogDescription) > $wordCount ) {
+            $blogDescription = substr($blogDescription, 0, $wordCount);
+            if ( substr($blogDescription, -1) == " " ) {
+                $blogDescription = substr($blogDescription, 0, -1) . "...";
+            } else {
+                $blogDescription .= "...";
+            }
+        }
+        $html = "
+            <div class='$col mb-4 pb-2' style='min-height:200px;'>
+                <div class='blog-item1'>
+                    <div class='position-relative'>
+                        <img class='cursor-pointer img-fluid w-100' src='$imageName' alt='' onclick=location.href='./blog?id=".$row['id']."'>
+                    </div>
+                    <div class='bg-white p-2'>
+                        <div class='d-flex mb-2' style='font-size:12px;'>
+                            <i class='fa fa-tag fa-sm p-1' style='color: #FFB100;'></i>
+                            <span class='text-warning'>".$row['tag']."</span>
+                        </div>
+                        <h5 class='text-primary text-uppercase font-weight-bold mb-0'>".$row['title']."</h5>
+                        <hr class='border-warning1 mt-1 mb-3' style='margin-top:20px;'>
+                        <p class='m-0 text-justify text-decoration-none'>
+                  $blogDescription
+                     </p>
+                  <div class='bottom-dis'>
+                   <a href='./blog?id=".$row['id']."' class='read-more-link'>
+                  <b><u>Read More</u></b>
+                   </a>
+                   </div>
+                    </div>
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    
+public function displayad1Brief($row, $col="col-md-12", $wordCount=200) {
+    $imageName = $this->createCachelessImage("./img/ad1/".$row['image']);
+    $ad1Date = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
+    $ad1Description = $row['description'];
+    $ad1adlink = $row['adlink'];
+    if ( strlen($ad1Description) > $wordCount ) {
+        $ad1Description = substr($ad1Description, 0, $wordCount);
+        if ( substr($ad1Description, -1) == " " ) {
+            $ad1Description = substr($ad1Description, 0, -1) . "...";
+        } else {
+            $ad1Description .= "...";
+        }
+    }
+    $html = "
+        <div class='$col mb-0 pb-0'>
+            <div class='blog-item'>
+                <div class='position-relative'>
+                    <img class='cursor-pointer img-fluid w-100' src='$imageName' alt='' onclick=location.href='$ad1adlink'>
+
+                </div>
+<!------------
+                <div class='bg-white p-2'>
+                    <div class='d-flex mb-2' style='font-size:12px;'>
+                        <i class='fa fa-tag fa-sm text-warning p-1'></i>
+                        <span class='text-warning'>".$row['tag']."</span>
+                    </div>
+                    <h5 class='text-primary text-uppercase font-weight-bold mb-0'>".$row['title']."</h5>
+                    <hr class='border-warning mt-1 mb-3'>
+                    <p class='m-0 text-justify text-decoration-none'>$ad1Description <a href='./ad1?id=".$row['id']."'><br>Read More</a></p>
+                </div>
+                ------->
+            </div>
+        </div>
+    ";
+    return $html;
+}
+
+public function displayad2Brief($row, $col="col-md-12", $wordCount=200) {
+    $imageName = $this->createCachelessImage("./img/ad2/".$row['image']);
+    $ad2Date = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
+    $ad2Description = $row['description'];
+    $ad2adlink = $row['adlink'];
+    if ( strlen($ad2Description) > $wordCount ) {
+        $ad2Description = substr($ad2Description, 0, $wordCount);
+        if ( substr($ad2Description, -1) == " " ) {
+            $ad2Description = substr($ad2Description, 0, -1) . "...";
+        } else {
+            $ad2Description .= "...";
+        }
+    }
+    $html = "
+        <div class='$col mb-0 pb-0'>
+            <div class='blog-item'>
+                <div class='position-relative'>
+                    <img class='cursor-pointer img-fluid w-100' src='$imageName' alt='' onclick=location.href='$ad2adlink'>
+                </div>
+<!------------
+                <div class='bg-white p-2'>
+                    <div class='d-flex mb-2' style='font-size:12px;'>
+                        <i class='fa fa-calendar-alt fa-sm text-warning p-1'></i>
+                        <span class='text-warning pr-4'>$ad2Date</span>
+                        <i class='fa fa-tag fa-sm text-warning p-1'></i>
+                        <span class='text-warning'>".$row['tag']."</span>
+                    </div>
+                    <h5 class='text-primary text-uppercase font-weight-bold mb-0'>".$row['title']."</h5>
+                    <hr class='border-warning mt-1 mb-3'>
+                    <p class='m-0 text-justify text-decoration-none'>$ad2Description <a href='./ad2?id=".$row['id']."'><br>Read More</a></p>
+                </div>
+                ------->
+            </div>
+        </div>
+    ";
+    return $html;
+}
+
+
+    
+    
+public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200) {
+
+    $imageName = $this->createCachelessImage("./img/pdf/".$row['image']);
+    $pdfDate = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
+    $pdfDescription = $row['description'];
+    $uploadpdf = $row['pdfupload'];
+    $pdfId = $row['id'];
+    $buttonId = 'downloadButton_' . $pdfId;
+    $countId = 'downloadCount_' . $pdfId;
+    $downloadcount = $row['download_count'];
+    if ( strlen($pdfDescription) > $wordCount ) {
+        $pdfDescription = substr($pdfDescription, 0, $wordCount);
+        if ( substr($pdfDescription, -1) == " " ) {
+            $pdfDescription = substr($pdfDescription, 0, -1) . "...";
+        } else {
+            $pdfDescription .= "...";
+        }
+    }
+    if ($isHome){
+        $html = "
+        <div class='$col mb-4 pb-2'>
+            <div class='blog-item'>
+                <div class='position-relative'>
+                    <img class='cursor-pointer img-fluid w-100' src='$imageName' alt='' onclick=location.href='./pdf?id=".$row['id']."'>
+                </div>
+                <div class='bg-white p-2'>
+                    <div class='d-flex mb-2' style='font-size:12px;'>
+    <i class='fa fa-tag fa-sm p-1' style='color:#FFC107;'></i>
+    <span style='color:#FFC107; font-weight:500;'>". $this->getTitleTag($row['title']) ."</span>
+</div>
+                    <h5 class='text-primary text-uppercase font-weight-bold mb-0' >".$row['title']."</h5>
+                    <hr class='border-warning mt-1 mb-3'>
+
+                
+                    <p class='m-0 text-justify text-decoration-none'>$pdfDescription <a href='./pdf?id=".$row['id']."'><br>Read More</a></p>
+                    
+                    </div>
+            </div>
+        </div>
+    ";
+    }
+    else{
+        
+        $html = "
+        <div class='$col mb-4 pb-2'>
+            <div class='blog-item'>
+                <div class='imageframe position-relative'>
+                    <img class='img-fluid w-100' src='$imageName' alt=''>
+                </div>
+                <div class='bg-white p-2'>
+                    <div class='d-flex mb-2' style='font-size:12px;'>
+    <i class='fa fa-tag fa-sm p-1' style='color:#FFC107;'></i>
+    <span style='color:#FFC107; font-weight:500;'>". $this->getTitleTag($row['title']) ."</span>
+</div>
+                    <h5 class='text-primary text-uppercase font-weight-bold mb-0' style='font-size: 18px;'>".$row['title']."</h5>
+                    <p class='mb-2' style='font-size: 12px;'>$pdfDescription</p>
+                    <hr class='border-warning mt-1 mb-3'>
+                    <div class='d-flex align-items-center'>
+                    <button id='$buttonId' type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal_".$pdfId."'>
+                        Download
+                    </button>
+                        <div id='$countId' class='pl-2 mb-0'>($downloadcount)</div>
+                    </div>
+
+                        <!-- Modal -->
+                            <div class='modal fade' id='exampleModal_".$pdfId."' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                <div class='modal-dialog' role='document'>
+                                <div class='modal-content'>
+                                    <div class='modal-header'>
+                                    <h5 class='modal-title' id='exampleModalLabel'>Thank you for choosing us.</h5>
+                                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                                        <span aria-hidden='true'>&times;</span>
+                                    </button>
+                                    </div>
+
+
+                                    <div class='modal-body d-flex flex-column align-items-center'>
+                                        Please wait... Download in progress....
+
+                                        <!-- partial:index.partial.html -->
+                                        <div class='downloadcontainer'>
+                                            <a class='btn btn-primary' href='#succes_<?php echo $pdfId; ?>'>
+                                                <span>
+                                                    <i class='fa fa-arrow-down pl-2' aria-hidden='true'></i>Download</span>
+                                            </a>
+                                            <a id='succes_<?php echo $pdfId; ?>' target='_blank' href='./img/pdf/$uploadpdf' download>  
+                                            
+                                                    <div>
+                                                        <div class='donestatus'>
+                                                        <i class='fa fa-check' aria-hidden='true'></i>
+                                                        <button id='Button_".$pdfId."' type='button' class='btn btn-primary'>Download</button>
+                                                        </div>
+                                                        <div class='downloader'></div>
+                                                    </div>
+
+
+                                            </a>
+
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class='modal-footer'>
+                                                                                
+                                        <div style='display:flex; justify-content:space-around; width: 100%' class='mt-5 mb-5'>
+                                        <div style='background-color: #fff; height: 180px; width: 100%; display:flex; align-items:center; justify-content:space-around; border:1px solid #000;'>
+                                            <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
+                                        </div>
+
+                                        </div>
+
+                                        
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                    <script>
+                        document.getElementById('Button_".$pdfId."').addEventListener('click', function () {
+                            const pdfId = ".$pdfId.";
+                            console.log(pdfId)
+                            fetch('./update_download_count.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                },
+                                body: 'downloadButton=1&pdfId=' + pdfId + '&type=pdf',
+                            })
+                            .then(response => response.text())
+                            .then(count => {
+                                document.getElementById('$countId').innerText = '(' + count + ')';
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                            });
+                        });
+                    </script>
+                </div>
+            </div>
+        </div>
+
+                        
+    ";
+
+    
+        
+    }
+    
+
+    return $html;
+}
+
+private function getTitleTag($title) {
+    $words = preg_split('/[\s,]+/', $title);
+
+    foreach ($words as $word) {
+        $clean = ucfirst(strtolower(trim($word)));
+
+        if(strlen($clean) > 2){
+            return $clean; // return first meaningful word
+        }
+    }
+
+    return '';
+}
+
+public function displayhomeworkBrief($row, $isHome, $col="col-md-6", $wordCount=200) {
+    $imageName = $this->createCachelessImage("./img/homework/".$row['image']);
+    // $pdfupload = $this->createCachelessImage("./img/pdf/".$row['pdfupload']);
+    $homeworkDate = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
+    $homeworkDescription = $row['description'];
+    $uploadpdf = $row['pdfupload'];
+    $downloadcount = $row['download_count'];
+    $pdfId = $row['id'];
+    $buttonId = 'downloadButton_' . $pdfId;
+    $countId = 'downloadCount_' . $pdfId;
+    if ( strlen($homeworkDescription) > $wordCount ) {
+        $homeworkDescription = substr($homeworkDescription, 0, $wordCount);
+        if ( substr($homeworkDescription, -1) == " " ) {
+            $homeworkDescription = substr($homeworkDescription, 0, -1) . "...";
+        } else {
+            $homeworkDescription .= "...";
+        }
+    }
+    if ($isHome){
+
+        $html = "
+        <div class='$col mb-4 pb-2'>
+            <div class='blog-item'>
+                <div class='imageframe position-relative'>
+                    <img class='cursor-pointer img-fluid w-100' src='$imageName' alt='' onclick=location.href='./homework?id=".$row['id']."'>
+                </div>
+                <div class='bg-white p-2'>
+                    <div class='d-flex mb-2' style='font-size:12px;'>
+                        <i class='fa fa-calendar-alt fa-sm text-warning p-1'></i>
+                        <span class='text-warning pr-4'>$homeworkDate</span>
+                        <i class='fa fa-tag fa-sm text-warning p-1'></i>
+                        <span class='text-warning'>".$row['tag']."</span>
+                    </div>
+                    <h5 class='text-primary text-uppercase font-weight-bold mb-0'>".$row['title']."</h5>
+                    <hr class='border-warning mt-1 mb-3'>
+
+                
+                    <p class='m-0 text-justify text-decoration-none'>$homeworkDescription <a href='./homework?id=".$row['id']."'><br>Read More</a></p>
+                    
+                    </div>
+            </div>
+        </div>
+    ";
+    }
+    else{
+
+        $html = "
+        <div class='$col mb-4 pb-2'>
+            <div class='blog-item'>
+                <div class='imageframe position-relative'>
+                    <img class='img-fluid w-100' src='$imageName' alt=''>
+                </div>
+                <div class='bg-white p-2'>
+                    <div class='d-flex mb-2' style='font-size:12px;'>
+                        <i class='fa fa-calendar-alt fa-sm text-warning p-1'></i>
+                        <span class='text-warning pr-4'>$homeworkDate</span>
+                        <i class='fa fa-tag fa-sm text-warning p-1'></i>
+                        <span class='text-warning'>".$row['tag']."</span>
+                    </div>
+                    <h5 class='text-primary text-uppercase font-weight-bold mb-0' style='font-size: 18px;'>".$row['title']."</h5>
+                    <p class='mb-2' style='font-size: 12px;'>$homeworkDescription</p>
+                    <hr class='border-warning mt-1 mb-3'>
+                        <div class='d-flex align-items-center'>
+
+                        <button id='$buttonId' type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal_".$pdfId."'>
+                            Download
+                        </button>
+                        <div id='$countId' class='pl-2 mb-0'>($downloadcount)</div>
+                       
+                        </div>
+
+                        <!-- Modal -->
+                            <div class='modal fade' id='exampleModal_".$pdfId."' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                <div class='modal-dialog' role='document'>
+                                <div class='modal-content'>
+                                    <div class='modal-header'>
+                                    <h5 class='modal-title' id='exampleModalLabel'>Thank you for choosing us.</h5>
+                                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                                        <span aria-hidden='true'>&times;</span>
+                                    </button>
+                                    </div>
+
+                                    <div class='modal-body d-flex flex-column align-items-center'>
+                                        Please wait... Download in progress....
+                                        
+                                        <!-- partial:index.partial.html -->
+                                        <div class='downloadcontainer'>
+                                        
+                                            <a class='btn btn-primary' href='#succes_<?php echo $pdfId; ?>'>
+                                            <span >
+                                            <i class='fa fa-arrow-down pl-2' aria-hidden='true'></i>Download</span>
+                                            </a>
+
+                                            <a id='succes_<?php echo $pdfId; ?>' target='_blank' href='./img/homework/$uploadpdf' download>  
+                                            
+                                                <div>
+                                                    <div class='donestatus'>
+                                                    <i class='fa fa-check' aria-hidden='true'></i>
+                                                    <button id='Button_".$pdfId."' type='button' class='btn btn-primary'>Download</button>
+                                                    </div>
+                                                    <div class='downloader'></div>
+                                                </div>
+
+                                            </a>
+
+                                        </div>
+                                    </div>
+
+                                    <div class='modal-footer'>
+                                                                                
+                                        <div style='display:flex; justify-content:space-around; width: 100%' class='mt-5 mb-5'>
+                                        <div style='background-color: #fff; height: 180px; width: 100%; display:flex; align-items:center; justify-content:space-around; border:1px solid #000;'>
+                                            <h4 class='text-center' style='font-size:15px; font-weight:400 !important;'> Advertiesment </h4>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                document.getElementById('Button_".$pdfId."').addEventListener('click', function () {
+                                    const pdfId = ".$pdfId.";
+                                    console.log(pdfId)
+                                    fetch('./update_download_count.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/x-www-form-urlencoded',
+                                        },
+                                        body: 'downloadButton=1&pdfId=' + pdfId + '&type=homework',
+                                    })
+                                    .then(response => response.text())
+                                    .then(count => {
+                                        document.getElementById('$countId').innerText = '(' + count + ')';
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                                });
+                            </script>
+                    </div>
+            </div>
+        </div>
+    ";
+
+        
+    }
+
+    return $html;
+}
+
+
+public function displaybooksBrief($isHome, $row, $col="col-md-6", $wordCount=200) {
+    $imageName = $this->createCachelessImage("./img/books/".$row['image']);
+    // $pdfupload = $this->createCachelessImage("./img/pdf/".$row['pdfupload']);
+    $booksDate = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
+    $booksDescription = $row['description'];
+    $uploadpdf = $row['pdfupload'];
+    $pdfId = $row['id'];
+    $buttonId = 'downloadButton_' . $pdfId;
+    $countId = 'downloadCount_' . $pdfId;
+    $downloadcount = $row['download_count'];
+    if ( strlen($booksDescription) > $wordCount ) {
+        $booksDescription = substr($booksDescription, 0, $wordCount);
+        if ( substr($booksDescription, -1) == " " ) {
+            $booksDescription = substr($booksDescription, 0, -1) . "...";
+        } else {
+            $booksDescription .= "...";
+        }
+    }
+    if ($isHome){
+
+        $html = "
+        <div class='$col mb-4 pb-2'>
+            <div class='blog-item'>
+                <div class=' position-relative'>
+                    <img class='cursor-pointer img-fluid w-100' src='$imageName' alt='' onclick=location.href='./books?id=".$row['id']."'>
+                </div>
+                <div class='bg-white p-2'>
+                    <div class='d-flex mb-2' style='font-size:12px;'>
+                        <i class='fa fa-calendar-alt fa-sm text-warning p-1'></i>
+                        <span class='text-warning pr-4'>$booksDate</span>
+                        <i class='fa fa-tag fa-sm text-warning p-1'></i>
+                        <span class='text-warning'>".$row['tag']."</span>
+                    </div>
+                    <h5 class='text-primary text-uppercase font-weight-bold mb-0'>".$row['title']."</h5>
+                    <hr class='border-warning mt-1 mb-3'>
+
+                
+                    <p class='m-0 text-justify text-decoration-none'>$booksDescription <a href='./books?id=".$row['id']."'><br>Read More</a></p>
+                    
+                    </div>
+            </div>
+        </div>
+    ";
+    }
+    else{
+
+        $html = "
+        <div class='$col mb-4 pb-2'>
+            <div class='blog-item'>
+                <div class='imageframe position-relative'>
+                    <img class='img-fluid w-100' src='$imageName' alt=''>
+                </div>
+                <div class='bg-white p-2'>
+                    <div class='d-flex mb-2' style='font-size:12px;'>
+                        <i class='fa fa-calendar-alt fa-sm text-warning p-1'></i>
+                        <span class='text-warning pr-4'>$booksDate</span>
+                        <i class='fa fa-tag fa-sm text-warning p-1'></i>
+                        <span class='text-warning'>".$row['tag']."</span>
+                    </div>
+                    <h5 class='text-primary text-uppercase font-weight-bold mb-0' style='font-size: 18px;'>".$row['title']."</h5>
+                    <p class='mb-2' style='font-size: 12px;'>$booksDescription</p>
+                    <hr class='border-warning mt-1 mb-3'>
+                        
+                    <div class='d-flex align-items-center'>
+
+                    <button id='$buttonId' type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal_".$pdfId."'>
+                        Download
+                    </button>
+                    <div id='$countId' class='pl-2 mb-0'>($downloadcount)</div>
+                       
+                    </div>
+
+                        <!-- Modal -->
+                            <div class='modal fade' id='exampleModal_".$pdfId."' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+                                <div class='modal-dialog' role='document'>
+                                <div class='modal-content'>
+                                    <div class='modal-header'>
+                                    <h5 class='modal-title' id='exampleModalLabel'>Thank you for choosing us.</h5>
+                                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                                        <span aria-hidden='true'>&times;</span>
+                                    </button>
+                                    </div>
+                                    
+                                    <div class='modal-body d-flex flex-column align-items-center'>
+                                        Please wait... Download in progress....
+                                        
+                                        <!-- partial:index.partial.html -->
+                                        <div class='downloadcontainer'>
+                                        
+                                            <a class='btn btn-primary' href='#succes_<?php echo $pdfId; ?>'>
+                                            <span >
+                                            <i class='fa fa-arrow-down pl-2' aria-hidden='true'></i>Download</span>
+                                            </a>
+
+                                            <a id='succes_<?php echo $pdfId; ?>' target='_blank' href='./img/books/$uploadpdf' download>  
+                                            
+                                                <div>
+                                                    <div class='donestatus'>
+                                                    <i class='fa fa-check' aria-hidden='true'></i>
+                                                    <button id='Button_".$pdfId."' type='button' class='btn btn-primary'>Download</button>
+                                                    </div>
+                                                    <div class='downloader'></div>
+                                                </div>
+
+                                            </a>
+
+                                        </div>
+                                    </div>
+
+                                    <div class='modal-footer'>
+                                                                                
+                                        <div style='display:flex; justify-content:space-around; width: 100%' class='mt-5 mb-5'>
+                                         <div style='background-color: #fff; height: 180px; width: 100%; display:flex; align-items:center; justify-content:space-around; border:1px solid #000;'>
+                                            <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            <script>
+                                document.getElementById('Button_".$pdfId."').addEventListener('click', function () {
+                                    const pdfId = ".$pdfId.";
+                                    console.log(pdfId)
+                                    fetch('./update_download_count.php', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/x-www-form-urlencoded',
+                                        },
+                                        body: 'downloadButton=1&pdfId=' + pdfId + '&type=book',
+                                    })
+                                    .then(response => response.text())
+                                    .then(count => {
+                                        document.getElementById('$countId').innerText = '(' + count + ')';
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                    });
+                                });
+                            </script>
+                    </div>
+            </div>
+        </div>
+    ";
+
+        
+    }
+
+    return $html;
+}
+
+
+
+
+    public function displayGetQuoate($user) {
+        $html = "
+        <!------
+            <div class='col-12 border py-5'>
+            
+                <h4 class='text-warning text-center mb-3'>GET A QUOATE</h4>
+                <form action='' method='POST'>
+                    <select name='quoteTourTitle' class='form-control mb-1'>
+                        <option value=''>Select Tour</option>";
+                            foreach ( $user->fetchAll(array("title"), array("tour_details"), array("status"=>"1"), "id") as $row ) {
+                                $html .= "<option value='".$row['title']."'>".$row['title']."</option>";
+                            }
+        $html .= "
+                    </select>
+                    <input type='text' class='form-control mb-1' name='quoteName' placeholder='Name' required>
+                    <input type='email' class='form-control mb-1' name='quoteEmail' placeholder='Email' required>
+                    <input type='tel' class='form-control mb-1' name='quoteMobile' placeholder='Mobile' required>
+                    <input type='text' class='form-control mb-1' name='quoteCountry' placeholder='Living Country' required>
+                    <input type='text' class='form-control mb-1' name='quoteArrivalDate' placeholder='Arrival Date' onfocus=(this.type='date')>
+                    <input type='text' class='form-control mb-1' name='quoteDepartureDate' placeholder='Departure Date' onfocus=(this.type='date')>
+                    <input type='text' class='form-control mb-1' name='quoteAdultsChildren' placeholder='Adults/Children'>
+                    <textarea name='quoteDescription' rows='5' class='form-control mb-3' placeholder='Message'></textarea>
+                    <center>
+                        <span>This data will only be used by our team to contact you</span>
+                        <div class='my-3'>
+                           
+                            <div class='h-captcha' data-sitekey='cfe150fa-234b-4633-9582-b974082cbc2f' data-callback='correctCaptcha' data-size='compact'></div>
+                        </div>
+                        <input type='submit' class='btn btn-primary text-center' name='quoteSubmit' value='Submit'>
+                    </center>
+                </form>
+                
+            </div>
+            ------>
+            
+
+            <br>
+            <div class='col-12 bg-boxgray text-center py-5'>
+                <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
+            </div>
+
+            <br>
+            <div class='col-12 bg-boxgray text-center py-5'>
+                <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
+            </div>
+
+            <br>
+           <div class='col-12 bg-boxgray text-center py-5'>
+                <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
+            </div>
+
+            <br>
+            <div class='col-12 bg-boxgray text-center py-5'>
+                <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
+            </div>
+            <br>
+            <div class='col-12 bg-boxgray text-center py-5'>
+                <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
+            </div>
+            <br>
+            <div class='col-12 bg-boxgray text-center py-5'>
+                <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
+            </div>
+        ";
+        return $html;
+    }
+
+    public function inputGroup($lable, $name, $class="", $value="", $type="text", $required="required") {
+        if ( $class!="" ) $this->bootstrapColWidth = $class;
+        $html = "
+            <div class='$this->bootstrapColWidth'>
+                <div class='form-group'>
+                    <label for='example-text-input' class='form-control-label'>$lable</label>
+                    <input class='form-control' type='$type' name='$name' value='$value' $required>
+                </div>
+            </div>
+        ";
+        return $html;
+    }
+
+    public function checkboxSwitch($lable, $nameID, $checked="", $align="justify-content-center") {
+        return "
+            <div class='form-check form-switch $align'>
+                <input class='form-check-input text-danger' type='checkbox' name='$nameID' id='$nameID' value='1' $checked>
+                <label class='form-check-label font-weight-bold' for='$nameID'>$lable</label>
+            </div>
+        ";
+    }
+
+    function addTourMainDetailsDiv($day, $valuesArr=array()) {
+        $imageName = (!empty($valuesArr['image_name'])) ? "../img/tours/".$valuesArr['image_name'] : "";
+        $html = "
+            <div class='row border mx-3 mb-3'>
+                <center>";
+            $html .= $this->inputGroup('Day Title ('.$day.')', 'inputTourDayTitle'.$day, 'col-md-6', $valuesArr['title'], "text", "");
+        $html .= "
+                </center>
+                <div class='row'>
+                    <div class='col-md-6'>
+                        <div class='form-group'>
+                            <label for='example-text-input' class='form-control-label'>Description</label>
+                            <textarea class='form-control' name='inputTourDayDescription$day' rows='5'>".$valuesArr['description']."</textarea>
+                        </div>
+                    </div>
+                    <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                        <div class='form-group'>
+                            <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 2)' name='inputTourMainDetailsDayImage$day'>
+                            <span onclick='removeTourDayImage($day)' class='text-danger cursor-pointer'>remove</span>
+                            <p class='text-center my-1'><img id='outputTourMainDetailsDayImage$day' src='$imageName' style='max-height: 115px; max-width:100%' /></p>
+                        </div>
+                    </div>
+                </div>
+                <div class='row'>";
+                    $html .= $this->inputGroup('Accommodation', 'inputTourDayAccommodation'.$day, "", $valuesArr['accommodation'], "text", "");
+                    $html .= $this->inputGroup('Room', 'inputTourDayRoom'.$day, "", $valuesArr['room'], "text", "");
+                    $html .= $this->inputGroup('Meal Plan', 'inputTourDayMealPlan'.$day, "", $valuesArr['meal_plan'], "text", "");
+                    $html .= $this->inputGroup('Travel Time', 'inputTourDayTravelTime'.$day, "", $valuesArr['travel_time'], "text", "");
+        $html .= "
+                </div>
+                <div class='row text-center' id='addMoreTourDetails$day'>
+                    <i class='fa fa-plus-circle fa-lg cursor-pointer' onclick='addMoreTourDayDetails($day)' aria-hidden='true'></i><br>
+                    <small style='font-size: 10px;'>Add More</small>
+                </div>
+            </div>
+            <div id='addMoreTourDayDetails$day'></div>
+        ";
+        return $html;
+    }
+
+    public function addBlogDesctiptionDiv($index, $valuesArr=array()) {
+        $image01 = (!empty($valuesArr['image_01'])) ? "../img/blogs/".$valuesArr['image_01'] : "";
+        $image02 = (!empty($valuesArr['image_02'])) ? "../img/blogs/".$valuesArr['image_02'] : "";
+        $html = "
+            <div class='row border mx-3 mb-3'>
+                <b>0$index</b>
+                <div class='col-12'>
+                    <div class='form-group mt-2'>
+                        <textarea class='form-control' name='inputBlogDescription$index' rows='5'>".$valuesArr['description']."</textarea>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                        <div class='form-group'>
+                            <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputBlogImageOne$index'>
+                            <span onclick='removeBlogDescImage($index,1)' class='text-danger cursor-pointer'>remove</span>
+                            <p class='text-center my-1'><img id='outputBlogImageOne$index' src='$image01' style='max-height: 115px; max-width:100%' /></p>
+                        </div>
+                    </div>
+                    <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                        <div class='form-group'>
+                            <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputBlogImageTwo$index'>
+                            <span onclick='removeBlogDescImage($index,2)' class='text-danger cursor-pointer'>remove</span>
+                            <p class='text-center my-1'><img id='outputBlogImageTwo$index' src='$image02' style='max-height: 115px; max-width:100%' /></p>
+                        </div>
+                    </div>
+                </div>
+                <div class='row text-center' id='addMoreBlogDescription$index'>
+                    <i class='fa fa-plus-circle fa-lg cursor-pointer' onclick='addMoreBlogDescriptions($index)' aria-hidden='true'></i><br>
+                    <small style='font-size: 10px;'>Add More</small>
+                </div>
+            </div>
+            <div id='addMoreBlogDescriptions$index'></div>
+        ";
+        return $html;
+    }
+
+    
+public function addad1DesctiptionDiv($index, $valuesArr=array()) {
+    $image01 = (!empty($valuesArr['image_01'])) ? "../img/ad1/".$valuesArr['image_01'] : "";
+    $image02 = (!empty($valuesArr['image_02'])) ? "../img/ad1/".$valuesArr['image_02'] : "";
+    $html = "
+        <div class='row border mx-3 mb-3'>
+            <b>0$index</b>
+            <div class='col-12'>
+                <div class='form-group mt-2'>
+                    <textarea class='form-control' name='inputad1Description$index' rows='5'>".$valuesArr['description']."</textarea>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                    <div class='form-group'>
+                        <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputad1ImageOne$index'>
+                        <span onclick='removead1DescImage($index,1)' class='text-danger cursor-pointer'>remove</span>
+                        <p class='text-center my-1'><img id='outputad1ImageOne$index' src='$image01' style='max-height: 115px; max-width:100%' /></p>
+                    </div>
+                </div>
+                <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                    <div class='form-group'>
+                        <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputad1ImageTwo$index'>
+                        <span onclick='removead1DescImage($index,2)' class='text-danger cursor-pointer'>remove</span>
+                        <p class='text-center my-1'><img id='outputad1ImageTwo$index' src='$image02' style='max-height: 115px; max-width:100%' /></p>
+                    </div>
+                </div>
+            </div>
+            <div class='row text-center' id='addMoread1Description$index'>
+                <i class='fa fa-plus-circle fa-lg cursor-pointer' onclick='addMoread1Descriptions($index)' aria-hidden='true'></i><br>
+                <small style='font-size: 10px;'>Add More</small>
+            </div>
+        </div>
+        <div id='addMoread1Descriptions$index'></div>
+    ";
+    return $html;
+}
+
+public function addad2DesctiptionDiv($index, $valuesArr=array()) {
+    $image01 = (!empty($valuesArr['image_01'])) ? "../img/ad2/".$valuesArr['image_01'] : "";
+    $image02 = (!empty($valuesArr['image_02'])) ? "../img/ad2/".$valuesArr['image_02'] : "";
+    $html = "
+        <div class='row border mx-3 mb-3'>
+            <b>0$index</b>
+            <div class='col-12'>
+                <div class='form-group mt-2'>
+                    <textarea class='form-control' name='inputad2Description$index' rows='5'>".$valuesArr['description']."</textarea>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                    <div class='form-group'>
+                        <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputad2ImageOne$index'>
+                        <span onclick='removead2DescImage($index,1)' class='text-danger cursor-pointer'>remove</span>
+                        <p class='text-center my-1'><img id='outputad2ImageOne$index' src='$image01' style='max-height: 115px; max-width:100%' /></p>
+                    </div>
+                </div>
+                <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                    <div class='form-group'>
+                        <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputad2ImageTwo$index'>
+                        <span onclick='removead2DescImage($index,2)' class='text-danger cursor-pointer'>remove</span>
+                        <p class='text-center my-1'><img id='outputad2ImageTwo$index' src='$image02' style='max-height: 115px; max-width:100%' /></p>
+                    </div>
+                </div>
+            </div>
+            <div class='row text-center' id='addMoread2Description$index'>
+                <i class='fa fa-plus-circle fa-lg cursor-pointer' onclick='addMoread2Descriptions($index)' aria-hidden='true'></i><br>
+                <small style='font-size: 10px;'>Add More</small>
+            </div>
+        </div>
+        <div id='addMoread2Descriptions$index'></div>
+    ";
+    return $html;
+}
+
+    
+    public function addpdfDesctiptionDiv($index, $valuesArr=array()) {
+        $image01 = (!empty($valuesArr['image_01'])) ? "../img/pdf/".$valuesArr['image_01'] : "";
+        $image02 = (!empty($valuesArr['image_02'])) ? "../img/pdf/".$valuesArr['image_02'] : "";
+        $html = "
+            <div class='row border mx-3 mb-3'>
+                <b>0$index</b>
+                <div class='col-12'>
+                    <div class='form-group mt-2'>
+                        <textarea class='form-control' name='inputpdfDescription$index' rows='5'>".$valuesArr['description']."</textarea>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                        <div class='form-group'>
+                            <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputpdfImageOne$index'>
+                            <span onclick='removepdfDescImage($index,1)' class='text-danger cursor-pointer'>remove</span>
+                            <p class='text-center my-1'><img id='outputpdfImageOne$index' src='$image01' style='max-height: 115px; max-width:100%' /></p>
+                        </div>
+                    </div>
+                    <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                        <div class='form-group'>
+                            <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputpdfImageTwo$index'>
+                            <span onclick='removepdfDescImage($index,2)' class='text-danger cursor-pointer'>remove</span>
+                            <p class='text-center my-1'><img id='outputpdfImageTwo$index' src='$image02' style='max-height: 115px; max-width:100%' /></p>
+                        </div>
+                    </div>
+                </div>
+                <div class='row text-center' id='addMorepdfDescription$index'>
+                    <i class='fa fa-plus-circle fa-lg cursor-pointer' onclick='addMorepdfDescriptions($index)' aria-hidden='true'></i><br>
+                    <small style='font-size: 10px;'>Add More</small>
+                </div>
+            </div>
+            <div id='addMorepdfDescriptions$index'></div>
+        ";
+        return $html;
+    }
+
+    
+public function addhomeworkDesctiptionDiv($index, $valuesArr=array()) {
+    $image01 = (!empty($valuesArr['image_01'])) ? "../img/homework/".$valuesArr['image_01'] : "";
+    $image02 = (!empty($valuesArr['image_02'])) ? "../img/homework/".$valuesArr['image_02'] : "";
+    $html = "
+        <div class='row border mx-3 mb-3'>
+            <b>0$index</b>
+            <div class='col-12'>
+                <div class='form-group mt-2'>
+                    <textarea class='form-control' name='inputhomeworkDescription$index' rows='5'>".$valuesArr['description']."</textarea>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                    <div class='form-group'>
+                        <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputhomeworkImageOne$index'>
+                        <span onclick='removehomeworkDescImage($index,1)' class='text-danger cursor-pointer'>remove</span>
+                        <p class='text-center my-1'><img id='outputhomeworkImageOne$index' src='$image01' style='max-height: 115px; max-width:100%' /></p>
+                    </div>
+                </div>
+                <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                    <div class='form-group'>
+                        <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputhomeworkImageTwo$index'>
+                        <span onclick='removehomeworkDescImage($index,2)' class='text-danger cursor-pointer'>remove</span>
+                        <p class='text-center my-1'><img id='outputhomeworkImageTwo$index' src='$image02' style='max-height: 115px; max-width:100%' /></p>
+                    </div>
+                </div>
+            </div>
+            <div class='row text-center' id='addMorehomeworkDescription$index'>
+                <i class='fa fa-plus-circle fa-lg cursor-pointer' onclick='addMorehomeworkDescriptions($index)' aria-hidden='true'></i><br>
+                <small style='font-size: 10px;'>Add More</small>
+            </div>
+        </div>
+        <div id='addMorehomeworkDescriptions$index'></div>
+    ";
+    return $html;
+}
+
+    
+public function addbooksDesctiptionDiv($index, $valuesArr=array()) {
+    $image01 = (!empty($valuesArr['image_01'])) ? "../img/books/".$valuesArr['image_01'] : "";
+    $image02 = (!empty($valuesArr['image_02'])) ? "../img/books/".$valuesArr['image_02'] : "";
+    $html = "
+        <div class='row border mx-3 mb-3'>
+            <b>0$index</b>
+            <div class='col-12'>
+                <div class='form-group mt-2'>
+                    <textarea class='form-control' name='inputbooksDescription$index' rows='5'>".$valuesArr['description']."</textarea>
+                </div>
+            </div>
+            <div class='row'>
+                <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                    <div class='form-group'>
+                        <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputbooksImageOne$index'>
+                        <span onclick='removebooksDescImage($index,1)' class='text-danger cursor-pointer'>remove</span>
+                        <p class='text-center my-1'><img id='outputbooksImageOne$index' src='$image01' style='max-height: 115px; max-width:100%' /></p>
+                    </div>
+                </div>
+                <div class='col-md-6 d-flex align-items-center justify-content-center'>
+                    <div class='form-group'>
+                        <input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event, 1)' name='inputbooksImageTwo$index'>
+                        <span onclick='removebooksDescImage($index,2)' class='text-danger cursor-pointer'>remove</span>
+                        <p class='text-center my-1'><img id='outputbooksImageTwo$index' src='$image02' style='max-height: 115px; max-width:100%' /></p>
+                    </div>
+                </div>
+            </div>
+            <div class='row text-center' id='addMorebooksDescription$index'>
+                <i class='fa fa-plus-circle fa-lg cursor-pointer' onclick='addMorebooksDescriptions($index)' aria-hidden='true'></i><br>
+                <small style='font-size: 10px;'>Add More</small>
+            </div>
+        </div>
+        <div id='addMorebooksDescriptions$index'></div>
+    ";
+    return $html;
+}
+
+}

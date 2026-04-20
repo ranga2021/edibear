@@ -1,0 +1,37 @@
+Options -Indexes
+DirectoryIndex index.php index.html index.htm
+
+RewriteEngine On
+
+# Force HTTPS (works behind Dokploy/Traefik: trust X-Forwarded-Proto)
+RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Open file without .php if matching php file exists
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L]
+
+RewriteEngine On
+
+# Handle admin-area routes
+RewriteCond %{REQUEST_URI} ^/admin-area/([a-zA-Z0-9_-]+)$
+RewriteCond %{DOCUMENT_ROOT}/admin-area/%1.php -f
+RewriteRule ^admin-area/([a-zA-Z0-9_-]+)$ /admin-area/$1.php [L]
+
+# Existing rule
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([a-zA-Z0-9_-]+)$ $1.php [L]
+
+ErrorDocument 404 /404.php
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php82” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php82 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit

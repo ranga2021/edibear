@@ -1,0 +1,620 @@
+
+.green-input {
+  color: #646464;
+  background-color: #fff;
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 2px solid #0d5323;
+  width: 100%;
+}
+
+.search-btn {
+  padding-left: 40px !important;
+  padding-right: 40px !important;
+}
+
+
+
+
+/* VERY TOP GREEN STRIP */
+.edibear-topline{
+    width:100%;
+    height:10px;
+    background:#0c5b2d;
+}
+
+/* MAIN NAVBAR */
+.edibear-navbar{
+    padding: 35px 0px 15px 0px;
+    width:100%;
+    background:rgba(255,255,255,0.88);
+    backdrop-filter: blur(3px);
+    position:fixed;
+    top:0;
+    left:0;
+    z-index:999;
+}
+
+/* CONTAINER */
+.edibear-nav-container{
+    max-width:1200px;
+    margin:auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:12px 20px;
+}
+
+/* LOGO */
+.edibear-logo img{
+    height:48px;
+}
+
+/* MENU AREA */
+.edibear-menu{
+    display:flex;
+    align-items:center;
+    gap:28px;
+}
+
+/* LINKS */
+.edibear-link{
+    font-family:'Poppins',sans-serif;
+    font-weight:600;
+    color:#666;
+    text-decoration:none;
+    letter-spacing:1px;
+}
+
+.edibear-link:hover{
+    color:#0c5b2d;
+}
+
+/* TROPHY ICON */
+.edibear-challenge{
+    color:#f9a825;
+    font-size:18px;
+}
+
+/* SIGN IN */
+.edibear-signin{
+    font-weight:600;
+    color:#0c5b2d;
+    text-decoration:none;
+}
+
+.edibear-signin i{
+    margin-right:6px;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+
+    .edibear-menu{
+        gap:15px;
+        font-size:14px;
+    }
+
+    .edibear-logo img{
+        height:40px;
+    }
+
+}
+
+/* HERO BUTTON STYLE */
+.homeLetsGoBtn{
+    background:#ffffff !important;
+    color:#1b9b22 !important;
+    font-weight:600;
+    font-size:20px;
+    padding:10px 28px !important;
+    border-radius:8px;
+    border:none;
+    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+/* BUTTON HOVER */
+.homeLetsGoBtn:hover{
+    background:#0a2b0b !important;
+    color:#ffffff !important;
+    transition:0.3s;
+}
+
+/* POSITION LOWER IN HERO */
+.carousel-caption{
+    bottom:-35% !important;
+}
+
+/* INTRO SECTION */
+
+.edi-intro-section{
+    background:#ffffff;
+    padding:80px 0;
+}
+
+.edi-intro-text{
+    padding-right:0px;
+    margin-right:-100px !important;
+    margin-left:100px !important;
+}
+
+/* HELLO */
+
+.edi-hello{
+    font-weight:700;
+    color:#5a5a5a;
+}
+
+/* LITTLE BUDDY */
+
+.edi-little{
+    color:#ff4b3a;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+/* WELCOME TEXT */
+
+.edi-welcome{
+    font-weight:700;
+    color:#000000;
+    margin-bottom:20px;
+}
+
+/* PARAGRAPH */
+
+.edi-paragraph{
+    text-align: justify;
+    color:#666;
+    line-height:1.7;
+    margin-bottom:18px;
+    max-width:350px;
+}
+
+/* IMAGE */
+
+.edi-intro-image img{
+    max-height:520px;
+    max-width:450px;
+    padding-left:0px !important;
+    margin-left:-100px !important;
+}
+
+/* Explorer section */
+
+.explorer-section{
+    background:#f4f4f4;
+    padding:80px 0 0 0;
+}
+
+.explorer-title{
+    color:#e74c3c;
+    font-weight:800;
+    margin-bottom:15px;
+}
+
+.explorer-desc{
+    max-width:750px;
+    margin:auto;
+    color:#555;
+}
+
+/* cards */
+
+.explorer-cards{
+    margin-top:40px;
+}
+
+.explorer-card{
+    background:#fff;
+    padding:25px;
+    border:1px solid #ddd;
+}
+
+.explorer-img{
+    height:140px;
+    margin-bottom:15px;
+}
+
+/* search background */
+
+.explorer-search-area {
+    margin-top: -50px;
+    /* Reduce the top/bottom padding to shrink the overall height */
+    padding: 30px 0; 
+    /* Change 'cover' to '100% 100%' to squish the full image into the area */
+    background: url("../img/Web pic/Search image.webp") no-repeat;
+    background-position: center;
+    background-size: 100% 100%; 
+    
+    /* Optional: Set a specific max-height if you want it even tighter */
+    min-height: 150px; 
+}
+
+/* selects */
+
+.explorer-select {
+    width: 100%;
+    padding: 12px;
+    padding-right: 40px; /* Extra space for the larger arrow */
+    border-radius: 6px;
+    border: none;
+    color: #9c9a9a;
+    font-size: 1rem;
+    
+    /* Hide the default browser arrow */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    /* Add custom green arrow as a background image */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2328a745'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 30px; /* Increase this number to make the arrow bigger */
+    background-color: #ffffff; /* Ensure background stays white */
+    cursor: pointer;
+}
+
+/* Optional: Support for IE11 to hide the arrow */
+.explorer-select::-ms-expand {
+    display: none;
+}
+
+/* explore button */
+
+.explore-btn{
+    background:#33a675;
+    color:white;
+    padding:12px 35px;
+    border:none;
+    border-radius:6px;
+    font-weight:600;
+}
+.newgreen1-btn {
+  color: #fff;
+  background-color: #33a675;
+  border-color: #28a745;
+  border-radius:4px;
+}
+
+.newgreen1-btn:hover {
+  color: #fff;
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+.product-card{
+background:white;
+padding:1px;
+
+}
+
+.product-img{
+    width:240px;
+    aspect-ratio: 1 / 1.414; /* A4 ratio */
+    object-fit: cover;
+    margin:2px;
+}
+
+.old-price{
+color:red;
+text-decoration:line-through;
+margin-right:8px;
+}
+
+.new-price{
+color:#28a745;
+font-weight:bold;
+}
+
+.blog-item1{
+        min-height: 520px !important;
+        max-height: 520px !important;
+}
+.blog-item1 h5 {
+    height: 60px;       /* FIXED height */
+    overflow: hidden;
+}
+
+.blog-item1 hr {
+    margin-top: 0px;
+}
+.blog-item1 p {
+    flex-grow: 1;
+}
+
+.read-more-link {
+    margin-top: auto;
+    display: inline-block;
+}
+
+.collect-btn {
+    margin-top: 10px;
+    padding-left:5px !important;
+    width: 120px;
+    display: block;      /* Ensures the button behaves like a block for margins */
+    margin-left: 0;      /* Forces it to the left */
+    margin-right: auto;  /* Pushes all extra space to the right */
+    text-align: center;  /* Keeps the text 'Collect' centered inside the button */
+}
+
+#cart-icon.bounce{
+animation: cartBounce .4s;
+}
+
+@keyframes cartBounce{
+0%{transform:scale(1);}
+50%{transform:scale(1.25);}
+100%{transform:scale(1);}
+}
+
+/* HONEY CART PAGE */
+.honey-cart-container{
+    padding-bottom:60px;
+}
+
+.honey-cart-title{
+    font-weight:700;
+    color:#e57200;
+}
+
+.honey-cart-steps .step{
+    font-weight:600;
+    color:#777;
+    padding:4px 10px;
+}
+
+.honey-cart-steps .step.active{
+    color:#fff;
+    background:#0c5b2d;
+    border-radius:20px;
+}
+
+.honey-cart-steps .step-separator{
+    margin:0 8px;
+    color:#999;
+}
+
+.honey-cart-item{
+    background:#fff;
+    border:1px solid #e0e0e0;
+    border-radius:6px;
+    padding:12px 16px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.03);
+}
+
+.honey-cart-item + .honey-cart-item{
+    margin-top:12px;
+}
+
+.honey-cart-item-image img{
+    width:80px;
+    height:auto;
+    border-radius:4px;
+}
+
+.honey-cart-item-info{
+    padding:0 16px;
+}
+
+.honey-cart-item-info .item-title{
+    font-size:16px;
+    font-weight:600;
+}
+
+.honey-cart-item-info .item-meta{
+    font-size:13px;
+    color:#777;
+}
+
+.honey-cart-item-qty .qty-display{
+    border:1px solid #ddd;
+    border-radius:20px;
+    padding:4px 10px;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-size:14px;
+}
+
+.honey-cart-item-qty .minus,
+.honey-cart-item-qty .plus{
+    color:#bbb;
+    pointer-events:none; /* quantity cannot be changed */
+}
+
+.honey-cart-item-qty .qty-number{
+    font-weight:600;
+}
+
+.honey-cart-item-price .price-per-unit{
+    font-size:13px;
+    color:#777;
+}
+
+.honey-cart-item-price .price-subtotal{
+    font-size:15px;
+    font-weight:700;
+    color:#333;
+}
+
+.honey-cart-item-price .delete-link{
+    background:none;
+    border:none;
+    padding:0;
+    margin-top:4px;
+    font-size:12px;
+    color:#d9534f;
+    text-decoration:underline;
+    cursor:pointer;
+}
+
+.honey-cart-summary{
+    background:#fff;
+    border:1px solid #e0e0e0;
+    border-radius:6px;
+    padding:18px 20px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.03);
+}
+
+.honey-cart-summary .summary-title{
+    font-weight:700;
+    margin-bottom:12px;
+}
+
+.honey-cart-summary .summary-row,
+.honey-cart-summary .summary-total-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    margin-bottom:6px;
+}
+
+.honey-cart-summary .summary-total-row{
+    font-weight:700;
+    font-size:16px;
+    margin-top:10px;
+}
+
+.honey-cart-summary .summary-note{
+    font-size:12px;
+    color:#888;
+    margin:8px 0 4px;
+}
+
+.honey-cart-summary .continue-shopping-link{
+    font-size:14px;
+}
+
+@media (max-width:768px){
+    .honey-cart-item{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .honey-cart-item-price{
+        margin-top:8px;
+    }
+}
+
+/* CHECKOUT PAGE */
+.checkout-row{
+    margin-top:10px;
+}
+
+.checkout-section-title{
+    font-weight:700;
+    margin-bottom:15px;
+}
+
+.checkout-label{
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    color:#666;
+}
+
+.checkout-input{
+    border-radius:4px;
+    border:1px solid #ddd;
+    font-size:14px;
+}
+
+.checkout-summary .voucher-block .input-group .checkout-input{
+    border-right:none;
+}
+
+.checkout-summary .voucher-block .input-group .btn{
+    border-radius:0 4px 4px 0;
+}
+
+.payment-options .form-check-label{
+    font-size:14px;
+}
+
+/* ORDER COMPLETE PAGE */
+.order-complete-container{
+    padding-bottom:60px;
+}
+
+.order-complete-row{
+    margin-top:10px;
+}
+
+.order-summary-title{
+    font-weight:700;
+    margin-bottom:10px;
+}
+
+.order-summary-box{
+    background:#fff;
+    border:1px solid #e0e0e0;
+    border-radius:6px;
+    padding:18px 20px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.03);
+}
+
+.order-payment-heading h5{
+    font-weight:700;
+    margin-bottom:5px;
+}
+
+.order-special-note{
+    background:#fff;
+    border:1px solid #e0e0e0;
+    border-radius:6px;
+    padding:18px 20px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.03);
+}
+
+.order-special-note h5{
+    font-weight:700;
+    margin-bottom:8px;
+}
+
+.order-special-note ul{
+    padding-left:18px;
+}
+
+.order-complete-summary{
+    background:#fff;
+    border:1px solid #e0e0e0;
+    border-radius:6px;
+    padding:18px 20px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.03);
+}
+
+.order-thankyou-box{
+    border:1px dashed #4caf50;
+    border-radius:6px;
+    padding:14px 10px;
+}
+
+.order-thankyou-icon{
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    border:2px solid #4caf50;
+    color:#4caf50;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:6px;
+}
+
+.page-header-bg {
+    width: 100%;
+    height: 200px;
+    background: url('../img/headerIMG.jpeg') no-repeat center top;
+    background-size: cover;
+    position: relative;
+    margin-top: 0px; /* below navbar */
+}
+
+/* Optional: content overlap effect */
+.page-header-content {
+    position: relative;
+    z-index: 2;
+    margin-top: -100px; /* pull content up */
+}

@@ -1,0 +1,273 @@
+/* Quantity Selector Styling */
+.quantity-selector-container {
+    display: flex;
+    align-items: center;
+    border: 2px solid #28a745; /* Green border */
+    border-radius: 8px;
+    overflow: hidden;
+    height: 45px;
+}
+
+.qty-btn {
+    background: transparent;
+    border: none;
+    color: #333;
+    font-size: 20px;
+    padding: 0 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.qty-btn:hover {
+    background-color: #f8f9fa;
+}
+
+.qty-input {
+    width: 40px;
+    border: none;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    background: transparent;
+    outline: none;
+    /* Remove arrows from number input */
+    -moz-appearance: textfield;
+}
+
+.qty-input::-webkit-outer-spin-button,
+.qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Collect Button Styling */
+.collect-btn {
+    background-color: #1ba360; /* The specific green from image */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0 35px;
+    height: 45px;
+    font-weight: 600;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.collect-btn:hover {
+    background-color: #15854d;
+}
+
+/* Stock Status Text */
+.stock-status-text {
+    color: #ff6b6b; /* Reddish color from image */
+    font-weight: 500;
+    font-size: 18px;
+}
+
+/* Tags Styling */
+.product-tags {
+    color: #6c757d;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Container and General Spacing */
+.write-review-container {
+    max-width: 800px; /* Aligns with form width in image */
+    margin-left: 0;   /* Left aligns the form */
+    margin-top: 50px;
+    font-family: 'Poppins', sans-serif; /* Assumed font from previous context */
+}
+
+.section-divider {
+    border-top: 2px solid #ffb74d; /* Yellow/Orange line at top */
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.review-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 25px;
+}
+
+/* Form Labels */
+.form-label {
+    font-size: 15px;
+    font-weight: 400;
+    color: #444;
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Input Styling (Thin Gray Borders) */
+.form-input,
+.form-input-textarea {
+    width: 100%;
+    border: 1px solid #ccc; /* Light gray border */
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 15px;
+    color: #333;
+    background-color: #fff;
+    transition: border-color 0.2s;
+}
+
+.form-input:focus,
+.form-input-textarea:focus {
+    outline: none;
+    border-color: #28a745; /* Green focus border */
+}
+
+.form-input-textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Layout for Name/Email Row */
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-row .col-md-4 {
+    flex: 0 0 33.3333%;
+    max-width: 33.3333%;
+}
+
+.form-row .col-md-8 {
+    flex: 0 0 calc(66.6666% - 20px);
+    max-width: calc(66.6666% - 20px);
+}
+
+/* Star Rating System (Pure CSS) */
+.star-rating {
+    display: inline-flex;
+    flex-direction: row-reverse; /* Required for sibling selectors */
+    justify-content: flex-end;
+}
+
+.star-rating input {
+    display: none; /* Hide standard radio buttons */
+}
+
+.star-rating label {
+    font-size: 30px; /* Star size */
+    color: #ddd; /* Empty star color */
+    cursor: pointer;
+    margin: 0 2px;
+    transition: color 0.2s;
+}
+
+/* Define the star icon (using Unicode or FontAwesome) */
+.star-rating label:before {
+    content: "\2606"; /* Unicode empty star ☆ */
+}
+
+/* Turn stars yellow when checked, hovered, or siblings are hovered */
+.star-rating input:checked ~ label:before,
+.star-rating label:hover ~ input + label:before,
+.star-rating label:hover:before {
+    content: "\2605"; /* Unicode filled star ★ */
+    color: #ffb74d; /* Star yellow color */
+}
+
+/* SUBMIT Button styling */
+.submit-review-btn {
+    background-color: #1ba360; /* Specific Green from image */
+    color: white;
+    border: none;
+    border-radius: 8px; /* Matching your previous buttons */
+    padding: 12px 30px;
+    font-weight: 600;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.submit-review-btn:hover {
+    background-color: #15854d;
+}
+
+/* Bootstrap margin utilities (if not already included) */
+.mb-4 { margin-bottom: 1.5rem !important; }
+.mb-1 { margin-bottom: 0.25rem !important; }
+.d-block { display: block !important; }
+
+/* Animation styles for the flying product image */
+.main-product-image {
+    transition: transform 0.3s ease;
+}
+
+/* Ensure the clone isn't affected by container overflows */
+img[style*="position: fixed"] {
+    pointer-events: none; /* User can't click the flying image */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+
+/* TAB BUTTONS */
+.tab-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 5px;
+}
+
+.tab-btn {
+    background: #f5f5f5;
+    border: none;
+    padding: 8px 15px;
+    font-weight: 600;
+    color: #555;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.tab-btn.active {
+    border: 2px solid #198754;
+    color: #198754;
+    background: #f8fff9;
+}
+
+/* TAB CONTENT */
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ORANGE LINE */
+.custom-hr {
+    border: none;
+    height: 2px;
+    background-color: #f39c12; /* orange */
+    margin: 10px 0 20px;
+}
+
+/* GREEN FRAME TITLE */
+.section-title {
+    display: inline-block;
+    border: 2px solid #198754; /* green */
+    padding: 5px 12px;
+    border-radius: 5px;
+    color: #198754;
+    font-weight: 600;
+    background: #f8fff9;
+}
+
+/* OPTIONAL - MATCH IMAGE STYLE */
+.section-title::after {
+    content: "";
+    display: block;
+    height: 2px;
+    background: #f39c12;
+    margin-top: 8px;
+}
