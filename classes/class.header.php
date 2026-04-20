@@ -126,27 +126,28 @@ class HEADER {
         )
     );
     private $userNavTabArr = array(
-        "home" => array(
-            "name" => "HOME",
-            "redirect" => "./"
-        ),
-        "about" => array(
-            "name" => "ABOUT US",
-            "redirect" => "./about"
-        ),
-        "product" => array(
-            "name" => "PRODUCT",
-            "redirect" => "./product_page"
-        ),
-        "blog" => array(
-            "name" => "BLOG",
-            "redirect" => "./blogs"
-        ),
-        "contact" => array(
-            "name" => "CONTACT",
-            "redirect" => "mailto:info.edibear@gmail.com"
-        ),
-    );
+
+    "learn" => array(
+        "name"=>"LEARN",
+        "redirect"=>"./#learn-section"
+    ),
+
+    "shop" => array(
+        "name"=>"SHOP",
+        "redirect"=>"./#honey-market-section"
+    ),
+
+    "play" => array(
+        "name"=>"PLAY",
+        "redirect"=>"./#play-section"
+    ),
+
+    "challenge" => array(
+        "name"=>"CHALLENGE",
+        "redirect"=>"./#challenge-section"
+    ),
+
+);
 
     public function __construct($activePage='') {
         $this->activePage = $activePage;
@@ -325,9 +326,6 @@ class HEADER {
     }
 
     $html .= "
-               <a href='./#learn-section' class='edibear-link edibear-search-icon' title='Search' aria-label='Search'>
-                    <i class='fa fa-search'></i>
-               </a>
                <a href='#' onclick='checkCartAccess()' id='cart-icon' style='position:relative;' class='edibear-link'>
                     <img src='./img/honey_cart_icon.png' style='width:32px; height:36px; vertical-align: middle;'>
                     <span id='cart-dot' style='position:absolute; top:-5px; right:-5px; width:10px; height:10px; background:#28a745; border-radius:50%; display:none;'></span>
@@ -491,7 +489,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class='p-3 d-flex align-items-center  flex-column align-items-center' style='max-width: 900px; margin: 0 auto;'>
                                     <span class='text-white mt-md-5 mb-md-3 carouselText1'>$carouselText1</span>
                                     <h1 class='display-3 text-white mb-md-4 carouselText2'>$carouselText2</h1>
-                                    <a onclick='goToAyubowan()' class='btn btn-primary rounded homeLetsGoBtn btn-home-hero-explore my-lg-5 py-md-3 px-md-5 mt-2'>EXPLORE</a>
+                                    <a onclick='goToAyubowan()' class='btn btn-primary rounded homeLetsGoBtn my-lg-5 py-md-3 px-md-5 mt-2'>FIND Edi</a>
                                 </div>
                             </div>
                         </div>
@@ -525,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class='container-fluid footer pl-3 pr-3 d-flex flex-column align-items-center'>
                 <div class='row mb-4 justify-content-center'>
                     <div class='text-center footerEmailCustom pl-2 pr-2 pl-md-2 pr-md-2 pl-sm-3 pr-sm-3'>
-                        <h1 class='text-primary home-footer-heading'>JOIN MY FAMILY</h1>
+                        <h1 class='text-primary'>JOIN MY FAMILY </h1>
                         <p style='
     text-align:left;
     color:#666;
@@ -538,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class='input-group mt-4 px-2 px-sm-5'>
                             <input type='email' class='form-control newsl-border' id='newsletterEmail' style='padding: 25px;' placeholder='Your Email Here'>
                             <div class='input-group-append'>
-                                <button class='btn newsl-subscribe-btn px-4' onclick='subscribeNewsletter()' style='background-color:#33a675;'>SUBSCRIBE</button>
+                                <button class='btn newsl-subscribe-btn px-4' onclick='subscribeNewsletter()' style='background-color:#33a675;'>JOIN NOW</button>
                             </div>
                         </div>
                     </div>
