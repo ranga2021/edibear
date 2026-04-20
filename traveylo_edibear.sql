@@ -1012,7 +1012,8 @@ CREATE TABLE `user_table` (
 INSERT INTO `user_table` (`id`, `first_name`, `last_name`, `login_email`, `password`, `mobile_number`, `register_timestamp`, `delete_status`) VALUES
 (1, 'KC', 'Ranasinghe', 'udyanaasith@gmail.com', 'pass$2y$10$41BDw/jGUHW1OOnOulhWtuMN2lzQ.1i.UmVzMMN21NLxKBTmEA5ia', '+94703619957', '2022-08-05 03:26:26', 0),
 (4, 'Asith', 'Udyana', 'testadmin@gmail.com', 'pass$2y$10$iA3mnPtEMDx2WtJDwPdDoOcBTuEA9.b53OifPBo4DsBQvIe92JU2i', '+94703619957', '2022-10-21 04:11:02', 1),
-(5, 'Thilina ', 'Sampath ', 'tsranasingha@gmail.com', 'pass$2y$10$8D9VHZ96f9WmQuI712pAQ.xQygd0RKZIXfeT8WM49MfNXzmzMQvDq', '0724761762', '2023-09-19 02:08:52', 0);
+(5, 'Thilina ', 'Sampath ', 'tsranasingha@gmail.com', 'pass$2y$10$8D9VHZ96f9WmQuI712pAQ.xQygd0RKZIXfeT8WM49MfNXzmzMQvDq', '0724761762', '2023-09-19 02:08:52', 0),
+(6, 'Test', 'Admin', 'test@gmail.com', 'pass$2y$10$L8zmqpx/1aqB0u1e.fwD2e7Ivv9NKeOHPsyjYw261iWmqCZZdHGhq', '', CURRENT_TIMESTAMP, 0);
 
 --
 -- Indexes for dumped tables
@@ -1338,7 +1339,7 @@ ALTER TABLE `tour_details`
 -- AUTO_INCREMENT for table `user_table`
 --
 ALTER TABLE `user_table`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Indexes for table `braveheart_categories`
