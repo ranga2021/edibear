@@ -560,24 +560,6 @@
 
 
 
-<div style="display:flex; justify-content:space-around; overflow:hidden;" class="mt-5 mb-5">
-    <div style="background-color: #fff; height: auto; width: 80%; display:flex; align-items:center; justify-content:space-around;">
-        <h1 class="text-center d-none"> ADD SPACE </h1>
-        <div class="row">
-                <?php
-                    $row = null;
-                    $lastad2ID = "";
-                    foreach ( $user->fetchAll(array("id","tag","title","image", "description","timestamp", "adlink"), array("ad2_details"), array("status"=>"1"), "id DESC LIMIT 1") as $row ) {
-                        echo $widgets->displayad2Brief($row, 600, true);
-                    }
-                    if ( isset($row['id']) && $row['id'] ) {
-                        $lastad2ID = "id<".$row['id'];
-                    }
-                ?>
-        </div>    
-    </div>
-</div>
-
     <!-- Footer Start -->
     <?php echo $userHeader->printUserFooter(); ?>
     <!-- Footer End -->
