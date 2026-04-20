@@ -115,9 +115,14 @@ class HEADER {
             "icon"=>"fas fa-user text-dark"
         ),
         "manage-admins"=>array(
-            "name"=>"Manage Admins",
+            "name"=>"Admins (add / edit)",
             "redirect"=>"./manage-admins",
             "icon"=>"fas fa-user text-secondary"
+        ),
+        "signup-admin"=>array(
+            "name"=>"Sign up admin",
+            "redirect"=>"./signup-admin",
+            "icon"=>"fas fa-user-plus text-success"
         ),
         "log-out"=>array(
             "name"=>"Log Out",

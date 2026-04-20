@@ -11,6 +11,16 @@ if(isset($_SESSION['session_tourism'])){
 }
 $incorrectUsernamePassword = false;
 
+$showAdminSignupLink = false;
+try {
+    $stmt = $login->runQuery('SELECT COUNT(*) AS c FROM user_table WHERE delete_status = 0');
+    $stmt->execute();
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    $showAdminSignupLink = ((int) ($row['c'] ?? 0)) === 0;
+} catch (Throwable $e) {
+    $showAdminSignupLink = false;
+}
+
 // Helper to resolve friendly page ids (e.g. "dashboard" or "ad1") to actual files when mod_rewrite is not available.
 function resolveAdminPageRedirect(string $page): string {
     $page = trim($page);
@@ -386,6 +396,12 @@ our beautiful country. So reserve your tour with us.'>
             Login
           </button>
         </form>
+        <?php if (!empty($showAdminSignupLink)): ?>
+        <p class="mt-3 mb-0 text-center" style="font-size:14px;color:#606062;">
+          No administrator account yet?
+          <a href="signup-admin.php" style="color:#33a675;font-weight:600;">Create the first admin</a>
+        </p>
+        <?php endif; ?>
       </div>
     </div>
   </main>

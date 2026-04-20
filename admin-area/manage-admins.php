@@ -125,7 +125,8 @@ if (isset($_POST['confirmDeleteSubmit'])) {
 <!-- ================= TABLE ================= -->
 <div class="card mb-4">
 <div class="card-header pb-0">
-<h4>Admins</h4>
+<h4>Administrators</h4>
+<p class="text-sm text-muted mb-0">Add a new admin with the form below, or edit an existing account from the table.</p>
 </div>
 
 <div class="card-body p-3">
@@ -175,7 +176,7 @@ foreach ($user->fetchAll("",["user_table"],["delete_status"=>"0"]) as $row) {
 <!-- ================= FORM ================= -->
 <div class="card p-3">
 
-<h5><?php echo $editMode ? "Edit Admin" : "Add Admin"; ?></h5>
+<h5><?php echo $editMode ? "Edit administrator" : "Sign up a new administrator"; ?></h5>
 
 <form method="post">
 
