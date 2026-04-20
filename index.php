@@ -85,6 +85,7 @@
     
 
     <?php echo $userHeader->printUserHeader() ?>
+    <link href="css/home-ui.css?<?php echo filemtime('css/home-ui.css'); ?>" rel="stylesheet">
     <style>
         .testimonial-bg {
         /* Using the path you provided */
@@ -122,16 +123,14 @@
 
 <?php //include 'eeeee.php';?>
     <?php 
-        // echo $userHeader->printUserTopBar();        //Topbar
-        echo $userHeader->printUserNav();       //Navbar
-        //Carousel
-        
+        echo $userHeader->printUserNav();
         if ( !$user->CountRows("carousel", array("type"=>"video", "status"=>1)) ) {
             $carouselData = $user->fetchAll(array("text1", "text2", "src"), array("carousel"), array("type"=>"img", "status"=>1), "display_order");
+            echo "<div class='home-hero-wrap'>";
             echo $userHeader->printHomeCarousel($carouselData);
-        } 
+            echo "<div class='home-hero-wave' aria-hidden='true'><svg class='home-hero-wave-svg' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 48' preserveAspectRatio='none'><path fill='#ffffff' d='M0,18 C180,52 360,4 540,22 C720,40 900,6 1080,24 C1260,42 1380,14 1440,26 L1440,48 L0,48 Z'/></svg></div></div>";
+        }
     ?>
-    <!-- Carousel End -->
 
     <div class="container-fluid edi-intro-section" id="ayubowan">
     <div class="container">
@@ -139,28 +138,22 @@
 
             <div class="col-lg-5 col-md-6 edi-intro-text">
 
-                <h4 class="edi-hello">Hello,</h4>
+                <p class="edi-hello mb-0">Hi! I am</p>
 
                 <h1 class="edi-little">LITTLE BUDDY!</h1>
 
-                <h3 class="edi-welcome">Welcome to <br> my awesome world!</h3>
+                <h2 class="edi-welcome">Welcome to my Awesome world</h2>
 
                 <p class="edi-paragraph">
-                I’m Edi, your little bear friend. I’m so happy to see you here. 
-                <b>It is time to begin your adventure and find new treasures.</b> 
-                Now we are going to have so much fun together! Are you ready?
+                I’m Edi, your little bear friend. I’m so happy you’re here — it’s time to begin your adventure and find new treasures. We’re going to have so much fun together!
                 </p>
 
                 <p class="edi-paragraph">
-                I know you love to play, and guess what? Learning is just as exciting! 
-                It helps you grow strong and wise so you can tackle any challenge 
-                that comes your way.
+                I know you love to play, and learning can feel just as exciting. It helps you grow strong and clever so you can take on any challenge that comes your way.
                 </p>
 
                 <p class="edi-paragraph">
-                On this journey, you can explore magical resources, discover exciting activities 
-                in the den, and finally face the “Brave Heart” challenge. 
-                Let’s go explore together!
+                Explore magical resources in the Explorer Training Camp, discover stories in the Hidden Den, pick treasures from the Honey Market, and take on the Brave Heart challenge when you’re ready. Let’s go!
                 </p>
 
             </div>
@@ -181,29 +174,26 @@
     ?>
 
     <!--How it works-->
-    <div class="container-fluid py-4" style='margin-top:-100px;' id="learn-section">
+    <div class="container-fluid py-4" id="learn-section">
         <div class="container py-5">
-            <div class="text-center">
-                <h1 class="text-primary">EXPLORER TRAINING CAMP</h1>
+            <div class="text-center px-2">
+                <h1 class="home-heading">EXPLORER TRAINING CAMP</h1>
             </div>
 
-            <div class='row mt-3 justify-content-center' style='margin-bottom:-50px; margin-top:-50px;'>
-                <div class="col-lg-10 col-md-12 row">
-                <p class="text-justify">
-                Congratulations, Explorer! You’ve reached your first destination. 
-        Search every corner to find new resources to polish your skills and boost your brainpower.
-        Simply <b>select your Language, Grade, and Category</b> to find exactly what you need. 
-        Let’s get started!</p>
+            <div class="row mt-3 justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                <p class="text-center home-lead home-lead--narrow mb-4">
+                Welcome, Explorer! Pick your <strong>language</strong>, <strong>grade</strong>, and <strong>category</strong> below to find coloring pages, books, worksheets, and more — everything you need for your next adventure.
+                </p>
                 </div>
             </div>
 
-            <div class='row mt-5 justify-content-center' style='margin-top:-200px'>
-                <div class="col-lg-10 col-md-12 row">
+            <div class="row mt-2 justify-content-center">
+                <div class="col-lg-10 col-md-12 row justify-content-center">
                     <?php
-                    echo $widgets->displayHowItWorksBlock3("WORKSHEETS", "Find kids' school<br>homework-related items", "3.png");
-                        echo $widgets->displayHowItWorksBlock("FUN ACTIVITIES", "Find a variety of beautiful<br>coloring pages", "1.png");
-                        echo $widgets->displayHowItWorksBlock2("BRAIN BOOSTERS", "Find kids' workbooks &<br>relevant model papers", "2.png");
-                        
+                    echo $widgets->displayHowItWorksBlock("WORKSHOPS", "Creative sessions and playful art<br>activities for little explorers.", "1.png");
+                    echo $widgets->displayHowItWorksBlock2("FUN ACTIVITIES", "Games, stories, and adventures<br>to keep little buddies smiling.", "2.png");
+                    echo $widgets->displayHowItWorksBlock3("LIBRARY / STUDY", "Books, worksheets, and study tools<br>to grow skills and confidence.", "3.png");
                     ?>
                 </div>
             </div>
@@ -213,9 +203,9 @@
 
     <div class="explorer-search-area">
     <div class="container">
-        <div class="row justify-content-center">
+        <form method="GET" action="" id="searchForm">
+        <div class="row justify-content-center align-items-end">
             <div class="col-md-3 mb-2">
-                <form method="GET" action="" id="searchForm">
                     <select class="explorer-select" name="language">
                         <option>Language (Required)</option>
                         <option value="English" <?php echo ($languageFilter == 'English' ? 'selected' : ''); ?>>English</option>
@@ -271,21 +261,19 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="explore-btn">EXPLORE</button>
+            <button type="submit" class="explore-btn btn-home-look">LOOK</button>
         </div>
+        </form>
     </div>
-</div>
-
 </div>
 
     <div class="container-fluid py-5" id="honey-market-section">
       <div class="container">
 
-       <div class="text-center">
-        <h1 class="text-danger">THE HONEY MARKET</h1>
-      <p style="max-width:890px; margin:0 auto; line-height:1.6; text-align: justify;">
-        This is your second destination! Explore every trail and collect new treasures
-        to sharpen your knowledge and brighten your brave hearts!Discover your favourite things to make this journey truly memorable. It's time to bring the fun home for your next big adventure!
+       <div class="text-center px-2">
+        <h1 class="home-heading">THE HONEY MARKET</h1>
+      <p class="home-lead">
+        Your next stop for books and goodies! Browse the shelves, pick your favourites, and take a little piece of the adventure home with you.
     </p>
        </div>
 
@@ -324,9 +312,9 @@
                             ?>
                         </div>
                         <div style='padding-left:5px !important;'>
-                        <form method="POST" action="add_to_cart.php" style='padding-right: 60px padding-left:10px;';>
+                        <form method="POST" action="add_to_cart.php" style="padding-right: 60px; padding-left: 10px;">
                             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                            <button type="submit" class="btn newgreen1-btn collect-btn add-to-cart-btn"><b>Collect</b></button>
+                            <button type="submit" class="btn newgreen1-btn collect-btn add-to-cart-btn btn-home-product-explore"><b>EXPLORE</b></button>
                         </form>
                         </div>
 
@@ -339,7 +327,7 @@
 </div>
 
 <div class="text-center mt-4">
-<a href="./product_page.php" class="btn newgreen1-btn px-5"><b>MORE</b></a>
+<a href="./product_page.php" class="btn newgreen1-btn px-5 btn-home-view-all"><b>VIEW</b></a>
 </div>
 
 </div>
@@ -410,14 +398,14 @@
 
     ---->
 
-    <div class="container-fluid pt-4 px-0"> <div class="container pt-5 pb-4" style='margin-top:-50px'>
-        <div class="text-center">
-            <h1 class="text-primary">TRAIL OF TALES</h1>
+    <div class="container-fluid pt-4 px-0"> <div class="container pt-5 pb-4">
+        <div class="text-center px-2">
+            <h1 class="home-heading">TRAIL OF TALES</h1>
         </div>
         <div class='row mt-3 justify-content-center'>
             <div class="col-lg-10 col-md-12">
-                <p class="text-justify" style='max-width:870px;'>
-                    It's time to see what our early buddies and parents think about Edi's adventure! In a busy life, it can be hard to meet all your child's learning and entertainment needs, but I am here to help you every step of the way. Nothing makes me happier than seeing my Little Buddies succeed!
+                <p class="text-center home-lead home-lead--narrow">
+                    Hear from parents and little buddies who’ve wandered the trails with Edi — real stories from families making learning feel like play.
                 </p>
             </div>
         </div>
@@ -435,7 +423,7 @@
     </div>
 
     <div class="text-center pt-4 pb-5">
-        <button class="btn newgreen1-btn px-4 rounded" onclick="location.href='./testimonials'"><b>READ MORE</b></button>
+        <button class="btn newgreen1-btn px-4 rounded btn-home-view-all" type="button" onclick="location.href='./testimonials'"><b>READ MORE</b></button>
     </div>
 </div>
 
@@ -454,16 +442,16 @@
     <div class="pb-4"></div> -->
 
     <!-- Blog Start -->
-    <div class="container-fluid py-4" style='margin-top:-50px' id="play-section">
+    <div class="container-fluid py-4" id="play-section">
         <div class="container py-5">
-            <div class="text-center">
-                <h1 class="text-primary">THE HIDDEN DEN</h1>
+            <div class="text-center px-2">
+                <h1 class="home-heading">THE HIDDEN DEN</h1>
             </div>
 
             <div class='row mt-3 justify-content-center'>
-                <div class="col-lg-10 col-md-12 row">
-                <p class="text-justify">
-                Hurrah! You've reached the third destination. This is very special. Inside the Hidden Den, you can discover exciting things that make learning feel just like play! Step inside and explore what you want to learn while Edi guides you step-by-step. Now, you're ready to face any challenge with total confidence!</p>
+                <div class="col-lg-10 col-md-12">
+                <p class="text-center home-lead home-lead--narrow">
+                Step into the den for stories, tips, and ideas — cosy reads that make learning feel like part of the adventure.</p>
                 </div>
             </div>
 
@@ -500,21 +488,21 @@
                 </div>
             </div>
             <div class="row justify-content-center">
-                <button class="btn newgreen1-btn px-4 rounded" onclick="location.href='./blogs'"><b>COME IN</b></button>
+                <button class="btn newgreen1-btn px-4 rounded btn-home-view-all" onclick="location.href='./blogs'"><b>GO TO DEN</b></button>
             </div>
         </div>
     </div>
     <!-- Blog End -->
 
-    <div class="container-fluid py-5" id="challenge-section" style="background-color: #FFFFFF ; margin-top:-50px; max-width:1200px;'>
+    <div class="container-fluid py-5" id="challenge-section" style="background-color: #FFFFFF; max-width:1200px;">
     <div class="container">
-        <div class="text-center mb-4">
-            <h1 class="text-primary" style="font-weight: bold;">BRAVE HEART CHALLENGE</h1>
+        <div class="text-center mb-4 px-2">
+            <h1 class="home-heading">BRAVE HEART CHALLENGE</h1>
             
             <div class='row mt-3 justify-content-center'>
-                <div class="col-lg-10 col-md-12 row">
-                <p class="text-justify" style='max-width:1000px;'>
-                Explorer! We’ve reached the end of the adventure. It’s time to show off your amazing talents and celebrate everything you’ve learned along the way. I’ve set new missions with exciting challenges to test your skills! Grab your tools, join the fun, and you could even win a special prize. Let’s see what you can do!</p>
+                <div class="col-lg-10 col-md-12">
+                <p class="text-center home-lead">
+                Ready to shine? Join creative challenges, show your skills, and celebrate how brave you’ve grown — prizes and new missions await!</p>
                 </div>
             </div>
         </div>
@@ -534,8 +522,8 @@
                 </div>
 
                 <div class="mt-3 text-center">
-                    <a href="./challenges.php" class="btn newgreen1-btn btn-lg px-5 py-2" style="border-radius: 8px; font-weight: bold; ">
-                        ACCEPT
+                    <a href="./challenges.php" class="btn newgreen1-btn btn-lg px-5 py-2 btn-home-join">
+                        JOIN NOW
                     </a>
                 </div>
             </div>
