@@ -89,6 +89,21 @@ a:hover .text-primary {
   color: #fff !important;
 }
 
+/* Softer button / pill labels site-wide (avoid heavy <b> inside buttons) */
+.btn,
+a.btn,
+button.btn,
+input[type="submit"].btn,
+.newgreen1-btn,
+.explore-btn,
+.newsl-subscribe-btn,
+.collect-btn,
+.submit-review-btn,
+.tab-btn,
+.honey-cart-summary .btn-success {
+  font-weight: 500 !important;
+}
+
 .btn-primary:hover,
 .btn-primary:focus,
 .btn-success:hover,
@@ -402,6 +417,31 @@ h6.text-primary:not(.text-white),
 /* ----- Home: The Hidden Den (featured + 2×2 grid) ----- */
 .edi-hidden-den-section {
   margin-top: 0;
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  background-color: #fff;
+  clear: both;
+  overflow: auto;
+  padding-bottom: 0.5rem;
+}
+
+/* Keep Trail + testimonials block from collapsing into following sections */
+.edi-trail-tales-wrap {
+  position: relative;
+  z-index: 1;
+  clear: both;
+  background-color: #fff;
+}
+
+#challenge-section {
+  position: relative;
+  z-index: 1;
+  clear: both;
+  margin-top: 0;
+  padding-top: 2.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  background-color: #fff;
 }
 
 .edi-hidden-den-intro {
@@ -513,7 +553,7 @@ h6.text-primary:not(.text-white),
 }
 
 .edi-blog-card--featured .edi-blog-excerpt {
-  -webkit-line-clamp: 9;
+  -webkit-line-clamp: 6;
 }
 
 .edi-blog-card--list .edi-blog-excerpt {

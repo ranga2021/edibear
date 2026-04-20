@@ -52,7 +52,7 @@ if ($totalReviews > 0) {
     <?php echo $userHeader->printUserHeader() ?>
     <link rel="stylesheet" href="css/product_details.css">
 </head>
-<body>
+<body class="product-details-page">
     <?php echo $userHeader->printUserNav(); ?>
 
     <div class="page-header-bg"></div>
@@ -72,11 +72,11 @@ if ($totalReviews > 0) {
 
         <!-- Product Details Section -->
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 text-left">
                 <img src="./img/products/<?= $product['image'] ?>" class="img-fluid main-product-image">
             </div>
-            <div class="col-md-6">
-                <p><strong>Description: </strong><?= $product['description'] ?></p>
+            <div class="col-md-6 text-left product-details-info">
+                <p class="product-details-lead"><strong>Description: </strong><?= $product['description'] ?></p>
                 <div class="price-box">
                     <?php if ((float) $product['discounted_price'] > 0): ?>
                         <span class="old-price">LKR <?= number_format((float) $product['price'], 2, '.', '') ?></span>

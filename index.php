@@ -322,7 +322,7 @@
                         <div style='padding-left:5px !important;'>
                         <form method="POST" action="add_to_cart.php" style="padding-right: 60px; padding-left: 10px;">
                             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                            <button type="submit" class="btn newgreen1-btn collect-btn add-to-cart-btn"><b>Collect</b></button>
+                            <button type="submit" class="btn newgreen1-btn collect-btn add-to-cart-btn">Collect</button>
                         </form>
                         </div>
 
@@ -335,7 +335,7 @@
 </div>
 
 <div class="text-center mt-4">
-<a href="./product_page.php" class="btn newgreen1-btn px-5"><b>MORE</b></a>
+<a href="./product_page.php" class="btn newgreen1-btn px-5">MORE</a>
 </div>
 
 </div>
@@ -377,36 +377,10 @@
     <!--</div>-->
     <!---- ad space End------->
 
-    <!-- Tour Packages -->
-    <!--------
-    <div class="container-fluid py-4">
-        <div class="container py-5">
-            <div class="text-center">
-                <h1 class="text-primary">PERFECT TOUR PACKAGES</h1>
-            </div>
-            <div class="row justify-content-center">
-                <p class="text-justify mt-3 col-lg-10">
-                    We offer you the best tour packages covering magical and mystical places in Sri Lanka. 
-                    We guarantee you will experience one of the most passionate and relaxing vacations with the best tours around the island along with our previous experiences. 
-                    You are totally free to choose any of our standard packages or to customize your tour with our guidelines.
-                </p>
-            </div>
-            <div class="row mt-4">
-                <?php
-                //if ( $user->CountRows("tour_details", array("status"=>"1")) > 0 ) {
-                    //foreach( $user->fetchAll(array("id", "no", "title", "type", "image_name", "description", "duration"), array("tour_details"), array("status"=>"1"), "no") as $value ) {
-                        echo $widgets->displayToursBriefInHome($value);
-                    //}
-                //}
-                ?>
-            </div>
-            
-        </div>
-    </div>
+    <!-- Tour Packages (section removed; keep PHP from running broken tour block) -->
 
-    ---->
-
-    <div class="container-fluid pt-4 px-0"> <div class="container pt-5 pb-4" style='margin-top:-50px'>
+    <div class="container-fluid pt-4 px-0 edi-trail-tales-wrap">
+        <div class="container pt-5 pb-4">
         <div class="text-center">
             <h1 class="text-danger">TRAIL OF TALES</h1>
         </div>
@@ -431,7 +405,7 @@
     </div>
 
     <div class="text-center pt-4 pb-5">
-        <button class="btn newgreen1-btn px-4 rounded" onclick="location.href='./testimonials'"><b>READ MORE</b></button>
+        <button class="btn newgreen1-btn px-4 rounded" type="button" onclick="location.href='./testimonials'">READ MORE</button>
     </div>
 </div>
 
@@ -471,7 +445,7 @@
                             $row = null;
                             $lastBlogID = "";
                             foreach ( $user->fetchAll(array("id","tag","title","image", "description","timestamp"), array("blog_details"), array("status"=>"1"), "id DESC LIMIT 1") as $row ) {
-                                echo $widgets->displayBlogBrief($row, "col-12 px-0", 320, "featured");
+                                echo $widgets->displayBlogBrief($row, "col-12 px-0", 220, "featured");
                             }
                             if ( isset($row['id']) && $row['id'] ) {
                                 $lastBlogID = "id<".$row['id'];
@@ -492,7 +466,7 @@
             </div>
             <div class="row justify-content-center mt-5">
                 <div class="col-12 text-center">
-                    <button type="button" class="btn newgreen1-btn px-5 py-2 rounded-pill" onclick="location.href='./blogs'"><b>COME IN</b></button>
+                    <button type="button" class="btn newgreen1-btn px-5 py-2 rounded-pill" onclick="location.href='./blogs'">COME IN</button>
                 </div>
             </div>
         </div>
@@ -527,7 +501,7 @@
                 </div>
 
                 <div class="mt-3 text-center">
-                    <a href="./challenges.php" class="btn newgreen1-btn btn-lg px-5 py-2" style="border-radius: 8px; font-weight: bold; ">
+                    <a href="./challenges.php" class="btn newgreen1-btn btn-lg px-5 py-2" style="border-radius: 8px;">
                         ACCEPT
                     </a>
                 </div>
