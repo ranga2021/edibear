@@ -111,7 +111,12 @@ our beautiful country. So reserve your tour with us.' />
 
     <div class="container-fluid py-3 p" style="margin-top: 70px !important;">
         <div class="container py-3">
-            <i class="fa fa-home pt-1 pr-2 text-primary"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2 text-primary"></i><?php echo $tourNo; ?>
+            <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                    <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($tourNo, ENT_QUOTES, 'UTF-8'); ?></li>
+                </ol>
+            </nav>
             <h4 class="text-warning mt-2 mb-5"><?php echo $tourTitle; ?></h4>
             <div class="row">
                 <div class="col-lg-9 text-center">

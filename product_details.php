@@ -78,11 +78,11 @@ if ($totalReviews > 0) {
             <div class="col-md-6">
                 <p><strong>Description: </strong><?= $product['description'] ?></p>
                 <div class="price-box">
-                    <?php if ($product['discounted_price'] > 0): ?>
-                        <span class="old-price">LKR <?= $product['price'] ?>.00</span>
-                        <span class="new-price text-success">LKR <?= $product['discounted_price'] ?>.00</span>
+                    <?php if ((float) $product['discounted_price'] > 0): ?>
+                        <span class="old-price">LKR <?= number_format((float) $product['price'], 2, '.', '') ?></span>
+                        <span class="new-price text-success">LKR <?= number_format((float) $product['discounted_price'], 2, '.', '') ?></span>
                     <?php else: ?>
-                        <span class="new-price">LKR <?= $product['price'] ?>.00</span>
+                        <span class="new-price">LKR <?= number_format((float) $product['price'], 2, '.', '') ?></span>
                     <?php endif; ?>
                 </div>
                 

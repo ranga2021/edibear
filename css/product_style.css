@@ -6,20 +6,6 @@
     margin-bottom: 20px;
 }
 
-/* Filter Styling */
-.filter-wrapper select {
-    width: 100%;
-    border: none;
-    border-bottom: 2px solid #eee;
-    padding: 5px;
-    font-size: 14px;
-    color: #33a675;
-    background: transparent;
-    cursor: pointer;
-    outline: none;
-    margin-bottom: 15px;
-}
-
 /* Card Styling */
 .treasure-card {
     background: #fff;
@@ -102,36 +88,63 @@
     color: white;
     border-color: #ff5e5e;
 }
-.filter-wrapper {
-    display: flex;
-    gap: 35px;
-    align-items: center;
-    padding: 0px 0;
-    flex-wrap: wrap;
+/* Treasures (shop) filter row — same style for Category + other filters */
+.treasures-filters-form {
+    margin-bottom: 0;
 }
 
-/* REMOVE all previous styles */
-.filter-wrapper select {
-    border: none;
-    background: transparent;
-    font-size: 16px;
-    color: #555;
+.treasures-filters-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 10px 12px;
+}
+
+.treasures-filter-cell {
+    flex: 1 1 140px;
+    min-width: 0;
+}
+
+.treasures-filter-select {
+    width: 100%;
+    height: 100%;
+    min-height: 42px;
+    padding: 0.45rem 2.25rem 0.45rem 0.75rem;
+    font-size: 0.9375rem;
     font-weight: 500;
+    color: #212121;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.35rem;
     cursor: pointer;
     appearance: none;
-    padding-right: 6px;
-    background-image: url("data:image/svg+xml;utf8,<svg fill='%2328a745' height='34' viewBox='0 0 24 24' width='34' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%2333a675'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
-    background-position: right center;
+    background-position: right 0.65rem center;
+    background-size: 22px 22px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-/* REMOVE focus effects */
-.filter-wrapper select:focus {
-    outline: none;
-    box-shadow: none;
+.treasures-filter-select:focus {
+    border-color: #33a675;
+    outline: 0;
+    box-shadow: 0 0 0 0.15rem rgba(51, 166, 117, 0.2);
 }
 
-/* REMOVE labels if any */
-.filter-wrapper label {
-    display: none;
+/* Space between filter strip and product cards */
+.treasures-product-grid {
+    margin-top: 2.5rem;
+    padding-top: 0.25rem;
+}
+
+@media (min-width: 992px) {
+    .treasures-filters-row {
+        flex-wrap: nowrap;
+        gap: 14px;
+    }
+
+    .treasures-filter-cell {
+        flex: 1 1 0;
+    }
 }

@@ -94,7 +94,7 @@ $orderTotal = $total + $shipping;
 <div class="page-header-bg"></div>
 <div class="container honey-cart-container page-header-content">
     <nav class="edi-breadcrumb" aria-label="breadcrumb">
-        <ol class="breadcrumb bg-transparent p-0 mb-3">
+        <ol class="breadcrumb bg-transparent p-0 mb-0">
             <li class="breadcrumb-item"><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
             <li class="breadcrumb-item"><a href="product_page.php">The Honey Market</a></li>
             <li class="breadcrumb-item active">Treasures</li>

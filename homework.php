@@ -167,17 +167,14 @@ if($sub_cat_id != ""){
         <div class="d-flex pageheaderdiv">
             
             <div class="col-lg-8 ">
-               <i class="fa fa-home pt-1 pr-2 text-primary1"></i>
-<a href="./">Home</a>
-
-<i class="fa fa-angle-right pt-1 px-2 text-primary1"></i>
-<?php echo $languageTitle; ?>
-
-<i class="fa fa-angle-right pt-1 px-2 text-primary1"></i>
-<?php echo $gradeTitle; ?>
-
-<i class="fa fa-angle-right pt-1 px-2 text-primary1"></i>
-<?php echo $mainCatTitle; ?>
+               <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                    <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="breadcrumb-item"><?php echo htmlspecialchars($languageTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li class="breadcrumb-item"><?php echo htmlspecialchars($gradeTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                </ol>
+            </nav>
 
                 
                     <div class="row mt-3 mt-lg-0">

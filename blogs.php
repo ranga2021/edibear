@@ -85,7 +85,10 @@
     <div class="container-fluid py-3 page-header-content">
         <div class="container pt-3">
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-            <i class="fa fa-home pt-1 pr-2" aria-hidden="true"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2" aria-hidden="true"></i><span>The Hidden Den</span>
+                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                    <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">The Hidden Den</li>
+                </ol>
             </nav>
              <!-- Title + Line -->
         <div class="edi-page-title-row">

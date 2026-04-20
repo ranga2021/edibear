@@ -29,7 +29,12 @@
     <!-- About Start -->
     <div class="container-fluid py-5" style="margin-top: 70px !important;">
         <div class="container">
-            <i class="fa fa-home pt-1 pr-2 text-primary"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2 text-primary"></i>Privay Policy
+            <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                    <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Privacy Policy</li>
+                </ol>
+            </nav>
             <div class="row mt-3 mt-lg-0">
                         <h4 class="col-lg-6 col-md-12 text-warning mt-2">Privacy Policy</h4>                      
             </div>

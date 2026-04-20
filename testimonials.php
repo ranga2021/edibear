@@ -35,7 +35,10 @@
     <div class="container-fluid pt-4 pb-5 page-header-content">
         <div class="container pt-5 pb-5">
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-            <i class="fa fa-home pt-1 pr-2" aria-hidden="true"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2" aria-hidden="true"></i><span>Testimonials</span>
+                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                    <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Testimonials</li>
+                </ol>
             </nav>
             
              <!-- Title + Line -->

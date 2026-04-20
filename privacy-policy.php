@@ -26,10 +26,10 @@ $widgets = new WIDGETS();
 
         <!-- Breadcrumb -->
         <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-            <i class="fa fa-home" aria-hidden="true"></i>
-            <a href="./">Home</a>
-            <span class="edi-bc-sep"> » </span>
-            <span>Privacy Policy</span>
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Privacy Policy</li>
+            </ol>
         </nav>
 
         <!-- Title + Line -->

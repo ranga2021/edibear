@@ -85,7 +85,12 @@ our beautiful country. So reserve your tour with us.' />
     <!-- ad2 Start -->
     <div class="container-fluid py-3" style="margin-top: 70px !important;">
         <div class="container pt-3">
-            <i class="fa fa-home pt-1 pr-2 text-primary"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2 text-primary"></i>ad2
+            <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                    <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">ad2</li>
+                </ol>
+            </nav>
             <h4 class="text-warning mt-2">Fun Activities</h4>
 
             <?php 

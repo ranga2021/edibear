@@ -102,9 +102,10 @@ if (isset($_POST['signupSubmit'])) {
 <div class="container-fluid py-5 page-header-content">
     <div class="container">
         <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-        <i class="fa fa-home pt-1 pr-2" aria-hidden="true"></i>
-        <a href="./">Home</a>
-        <i class="fa fa-angle-right pt-1 px-2" aria-hidden="true"></i><span>Sign Up</span>
+            <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Sign Up</li>
+            </ol>
         </nav>
         <div class="edi-page-title-row">
             <h1>Create Account</h1>

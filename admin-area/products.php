@@ -159,7 +159,7 @@ $stock_filter = isset($_GET['stock']) ? $_GET['stock'] : '';
                     <tr>
                       <td>
                         <div class="d-flex px-2 py-1">
-                          <div><img src="../img/products/<?php echo $row['image']; ?>" class="avatar avatar-sm me-3"></div>
+                          <div><img src="/img/products/<?php echo rawurlencode($row['image']); ?>" class="avatar avatar-sm me-3" alt=""></div>
                           <div class="d-flex flex-column justify-content-center">
                             <h6 class="mb-0 text-sm"><?php echo htmlspecialchars($row['product_name']); ?></h6>
                           </div>

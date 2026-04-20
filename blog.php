@@ -47,7 +47,14 @@
 
     <div class="container-fluid py-3 p page-header-content" style="margin-top: 0px !important;">
         <div class="container pt-3">
-            <i class="fa fa-home pt-1 pr-2 text-primary1"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2 text-primary1"></i><a href="./blogs">Blog</a><i class="fa fa-angle-right pt-1 px-2 text-primary"></i><?php echo $blogTag; ?><i class="fa fa-angle-right pt-1 px-2 text-primary"></i><?php echo $blogTitle; ?>
+            <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                    <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="breadcrumb-item"><a href="./blogs">Blog</a></li>
+                    <li class="breadcrumb-item"><?php echo htmlspecialchars($blogTag, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($blogTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                </ol>
+            </nav>
             <h4 class="text-warning mt-2"><?php echo $blogTitle; ?></h4>
             <div class="row mt-4">
                 <div class="col-12 text-center">

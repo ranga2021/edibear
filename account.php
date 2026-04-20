@@ -163,7 +163,10 @@ our beautiful country. So reserve your tour with us.' />
     <div class="container-fluid py-4 page-header-content">
         <div class="container">
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-            <i class="fa fa-home pt-1 pr-2" aria-hidden="true"></i><a href="./">Home</a><i class="fa fa-angle-right pt-1 px-2" aria-hidden="true"></i><span>Account</span>
+                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                    <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Account</li>
+                </ol>
             </nav>
             
              <!-- Title + Line -->
