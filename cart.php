@@ -31,6 +31,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_product_id']))
     exit;
 }
 
+// Handle quantity +/- (same row as delete: hidden_uid + product id)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qty_delta'], $_POST['qty_product_id'], $_POST['hidden_uid'])) {
+    $currentUid = (int) $_POST['hidden_uid'];
+    $productId = (int) $_POST['qty_product_id'];
+    $delta = (int) $_POST['qty_delta'];
+    if ($delta !== 1 && $delta !== -1) {
+        $delta = 0;
+    }
+    if ($currentUid > 0 && $productId > 0 && $delta !== 0) {
+        $rows = $user->fetchAll(
+            array("id", "quantity"),
+            array("cart"),
+            array("user_id" => $currentUid, "product_id" => $productId)
+        );
+        if (!empty($rows)) {
+            $cartRowId = (int) $rows[0]["id"];
+            $qty = (int) $rows[0]["quantity"];
+            $newQty = $qty + $delta;
+            if ($newQty < 1) {
+                $newQty = 1;
+            }
+            $user->updateTable(
+                "cart",
+                array("quantity" => $newQty),
+                array("id" => $cartRowId)
+            );
+        }
+    }
+    header("Location: cart.php?uid=" . $currentUid);
+    exit;
+}
+
 // Only fetch items if we have a valid ID
 $cartItems = [];
 if ($user_id > 0) {
@@ -145,11 +177,11 @@ $orderTotal = $total + $shipping;
                     $price = $product['discounted_price'] > 0 ? $product['discounted_price'] : $product['price'];
                     $subtotal = $price * $item['quantity'];
                     ?>
-                    <div class="honey-cart-item d-flex align-items-center mb-3">
+                    <div class="honey-cart-item mb-3">
                         <div class="honey-cart-item-image">
-                            <img src="./img/products/<?php echo $product['image']; ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>">
+                            <img src="./img/products/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['product_name']); ?>">
                         </div>
-                        <div class="honey-cart-item-info flex-grow-1">
+                        <div class="honey-cart-item-info">
                             <h5 class="item-title mb-1"><?php echo htmlspecialchars($product['product_name']); ?></h5>
                             <div class="item-meta">
                                 <?php echo htmlspecialchars($product['language'] ?? ''); ?>
@@ -158,20 +190,22 @@ $orderTotal = $total + $shipping;
                                 <?php endif; ?>
                             </div>
                         </div>
-                        <div class="honey-cart-item-qty text-center">
-                            <div class="qty-display">
-                                <span class="minus disabled">−</span>
-                                <span class="qty-number"><?php echo (int) $item['quantity']; ?></span>
-                                <span class="plus disabled">+</span>
-                            </div>
+                        <div class="honey-cart-item-qty">
+                            <form method="post" action="cart.php?uid=<?php echo (int) $user_id; ?>" class="qty-display honey-cart-qty-form">
+                                <input type="hidden" name="hidden_uid" value="<?php echo (int) $user_id; ?>">
+                                <input type="hidden" name="qty_product_id" value="<?php echo (int) $item['product_id']; ?>">
+                                <button type="submit" name="qty_delta" value="-1" class="qty-btn minus" aria-label="Decrease quantity"<?php echo ((int) $item['quantity']) <= 1 ? ' disabled' : ''; ?>>−</button>
+                                <span class="qty-number" aria-live="polite"><?php echo (int) $item['quantity']; ?></span>
+                                <button type="submit" name="qty_delta" value="1" class="qty-btn plus" aria-label="Increase quantity">+</button>
+                            </form>
                         </div>
-                        <div class="honey-cart-item-price text-right">
+                        <div class="honey-cart-item-price">
                             <div class="price-per-unit">Rs. <?php echo number_format($price, 2); ?></div>
                             <div class="price-subtotal">Rs. <?php echo number_format($subtotal, 2); ?></div>
                             
-                            <form method="POST" action="cart.php?uid=<?php echo $user_id; ?>" class="d-inline">
+                            <form method="POST" action="cart.php?uid=<?php echo (int) $user_id; ?>" class="d-inline">
                                 <input type="hidden" name="delete_product_id" value="<?php echo (int) $item['product_id']; ?>">
-                                <input type="hidden" name="hidden_uid" value="<?php echo $user_id; ?>">
+                                <input type="hidden" name="hidden_uid" value="<?php echo (int) $user_id; ?>">
                                 <button type="submit" class="delete-link" style="background:none; border:none; color:red; cursor:pointer;">Delete</button>
                             </form>
                         </div>
@@ -195,7 +229,7 @@ $orderTotal = $total + $shipping;
                         <span>Order Total</span>
                         <span>Rs. <?php echo number_format($orderTotal, 2); ?></span>
                     </div>
-                    <a href="checkout.php?uid=<?php echo $user_id; ?>" class="btn btn-success btn-block mt-3">PROCEED TO CHECKOUT</a>
+                    <a href="checkout.php?uid=<?php echo (int) $user_id; ?>" class="btn btn-success btn-block mt-3">PROCEED TO CHECKOUT</a>
                     <a href="product_page.php" class="btn btn-link btn-block continue-shopping-link">CONTINUE SHOPPING</a>
                 </div>
             </div>
@@ -204,6 +238,11 @@ $orderTotal = $total + $shipping;
 </div>
 
 <?php echo $userHeader->printUserFooter(); ?>
+<?php if (!empty($cartItems)): ?>
+<script>
+    localStorage.setItem('cart_count', String(<?php echo (int) $totalItems; ?>));
+</script>
+<?php endif; ?>
 
 </body>
 </html>

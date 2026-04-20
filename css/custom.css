@@ -145,14 +145,6 @@
     color:#606062;
 }
 
-/* LITTLE BUDDY */
-
-.edi-little{
-    color:#f65247;
-    font-weight:800;
-    letter-spacing:1px;
-}
-
 /* WELCOME TEXT */
 
 .edi-welcome{
@@ -307,21 +299,7 @@ color:#33a675;
 font-weight:bold;
 }
 
-.blog-item1{
-        min-height: 520px !important;
-        max-height: 520px !important;
-}
-.blog-item1 h5 {
-    height: 60px;       /* FIXED height */
-    overflow: hidden;
-}
-
-.blog-item1 hr {
-    margin-top: 0px;
-}
-.blog-item1 p {
-    flex-grow: 1;
-}
+/* Blog cards: markup uses .edi-blog-card (see edibear-theme.css); legacy .blog-item1 removed */
 
 .read-more-link {
     margin-top: auto;
@@ -381,20 +359,33 @@ animation: cartBounce .4s;
     border-radius:6px;
     padding:12px 16px;
     box-shadow:0 2px 4px rgba(0,0,0,0.03);
+    display:grid;
+    grid-template-columns:80px minmax(0,1fr) auto minmax(120px,max-content);
+    align-items:center;
+    column-gap:16px;
 }
 
 .honey-cart-item + .honey-cart-item{
     margin-top:12px;
 }
 
+.honey-cart-item-image{
+    grid-column:1;
+    grid-row:1;
+}
+
 .honey-cart-item-image img{
     width:80px;
     height:auto;
+    display:block;
     border-radius:4px;
 }
 
 .honey-cart-item-info{
-    padding:0 16px;
+    grid-column:2;
+    grid-row:1;
+    padding:0;
+    min-width:0;
 }
 
 .honey-cart-item-info .item-title{
@@ -407,24 +398,59 @@ animation: cartBounce .4s;
     color:#777;
 }
 
-.honey-cart-item-qty .qty-display{
+.honey-cart-item-qty{
+    grid-column:3;
+    grid-row:1;
+    justify-self:center;
+}
+
+.honey-cart-item-qty .qty-display,
+.honey-cart-qty-form{
     border:1px solid #ddd;
     border-radius:20px;
     padding:4px 10px;
     display:inline-flex;
     align-items:center;
-    gap:8px;
+    justify-content:center;
+    gap:4px;
     font-size:14px;
+    margin:0;
 }
 
-.honey-cart-item-qty .minus,
-.honey-cart-item-qty .plus{
-    color:#bbb;
-    pointer-events:none; /* quantity cannot be changed */
+.honey-cart-item-qty .qty-btn{
+    background:none;
+    border:none;
+    color:#33a675;
+    font-size:18px;
+    font-weight:600;
+    line-height:1;
+    padding:2px 8px;
+    cursor:pointer;
+    border-radius:4px;
+}
+
+.honey-cart-item-qty .qty-btn:hover:not(:disabled){
+    background:rgba(51,166,117,0.1);
+    color:#2a8f61;
+}
+
+.honey-cart-item-qty .qty-btn:disabled{
+    color:#ccc;
+    cursor:not-allowed;
 }
 
 .honey-cart-item-qty .qty-number{
     font-weight:600;
+    min-width:1.25rem;
+    text-align:center;
+}
+
+.honey-cart-item-price{
+    grid-column:4;
+    grid-row:1;
+    text-align:right;
+    justify-self:end;
+    min-width:0;
 }
 
 .honey-cart-item-price .price-per-unit{
@@ -488,12 +514,33 @@ animation: cartBounce .4s;
 
 @media (max-width:768px){
     .honey-cart-item{
-        flex-direction:column;
-        align-items:flex-start;
+        grid-template-columns:72px 1fr;
+        grid-template-rows:auto auto auto;
+        align-items:start;
+        row-gap:10px;
+    }
+
+    .honey-cart-item-image{
+        grid-column:1;
+        grid-row:1;
+    }
+
+    .honey-cart-item-info{
+        grid-column:2;
+        grid-row:1;
+    }
+
+    .honey-cart-item-qty{
+        grid-column:1 / -1;
+        grid-row:2;
+        justify-self:start;
     }
 
     .honey-cart-item-price{
-        margin-top:8px;
+        grid-column:1 / -1;
+        grid-row:3;
+        justify-self:stretch;
+        text-align:left;
     }
 }
 

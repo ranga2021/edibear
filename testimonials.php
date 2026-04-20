@@ -42,9 +42,8 @@
             </nav>
             
              <!-- Title + Line -->
-        <div class="edi-page-title-row">
-            <h1>TRAIL OF TALES</h1>
-            <div class="edi-page-title-rule" role="presentation"></div>
+        <div class="text-center">
+            <h1 class="text-danger">TRAIL OF TALES</h1>
         </div>
 
             <div class="row mt-3 justify-content-center">

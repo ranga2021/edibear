@@ -540,7 +540,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class='container-fluid footer pl-3 pr-3 d-flex flex-column align-items-center'>
                 <div class='row mb-4 justify-content-center'>
                     <div class='text-center footerEmailCustom pl-2 pr-2 pl-md-2 pr-md-2 pl-sm-3 pr-sm-3'>
-                        <h1 class='text-primary'>JOIN MY FAMILY </h1>
+                        <h1 class='text-danger'>JOIN MY FAMILY</h1>
                         <p style='
     text-align:left;
     color:#666;

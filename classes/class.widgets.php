@@ -323,41 +323,52 @@ class WIDGETS{
     }
 
   
-    public function displayBlogBrief($row, $col="col-md-6", $wordCount=10) {
-        $imageName = $this->createCachelessImage("./img/blogs/".$row['image']);
-        $blogDate = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
-        $blogDescription = $row['description'];
-        if ( strlen($blogDescription) > $wordCount ) {
-            $blogDescription = substr($blogDescription, 0, $wordCount);
-            if ( substr($blogDescription, -1) == " " ) {
-                $blogDescription = substr($blogDescription, 0, -1) . "...";
-            } else {
-                $blogDescription .= "...";
-            }
+    public function displayBlogBrief($row, $col = "col-md-6", $charLimit = 160, $layout = "list") {
+        if ($layout === true || $layout === false || $layout === null) {
+            $layout = "list";
         }
+        if (!in_array($layout, array("list", "featured", "grid"), true)) {
+            $layout = "list";
+        }
+
+        $blogId = (int) $row["id"];
+        $imageName = $this->createCachelessImage("./img/blogs/" . $row["image"]);
+        $tag = htmlspecialchars((string) $row["tag"], ENT_QUOTES, "UTF-8");
+        $title = htmlspecialchars((string) $row["title"], ENT_QUOTES, "UTF-8");
+
+        $plain = strip_tags((string) $row["description"]);
+        $plain = preg_replace("/\s+/u", " ", $plain);
+        $plain = trim($plain);
+        $charLimit = (int) $charLimit;
+        if ($charLimit < 40) {
+            $charLimit = 40;
+        }
+        if (strlen($plain) > $charLimit) {
+            $plain = rtrim(substr($plain, 0, $charLimit));
+            if ($plain !== "" && !preg_match("/\s$/u", $plain)) {
+                $plain = preg_replace("/\s+\S*$/u", "", $plain);
+            }
+            $plain .= "…";
+        }
+
+        $blogUrl = "./blog?id=" . $blogId;
+        $mbClass = ($layout === "grid" || $layout === "featured") ? "mb-0" : "mb-3";
+
         $html = "
-            <div class='$col mb-4 pb-2' style='min-height:200px;'>
-                <div class='blog-item1'>
-                    <div class='position-relative'>
-                        <img class='cursor-pointer img-fluid w-100' src='$imageName' alt='' onclick=location.href='./blog?id=".$row['id']."'>
-                    </div>
-                    <div class='bg-white p-2'>
-                        <div class='d-flex mb-2' style='font-size:12px;'>
-                            <i class='fa fa-tag fa-sm p-1' style='color: #FFB100;'></i>
-                            <span class='text-warning'>".$row['tag']."</span>
+            <div class='" . $col . " edi-blog-col " . $mbClass . "'>
+                <article class='edi-blog-card edi-blog-card--" . $layout . "'>
+                    <a class='edi-blog-thumb-link' href='" . $blogUrl . "' aria-label='" . $title . "'>
+                        <div class='edi-blog-thumb'>
+                            <img src='" . $imageName . "' alt='' width='640' height='360' loading='lazy'>
                         </div>
-                        <h5 class='text-primary text-uppercase font-weight-bold mb-0'>".$row['title']."</h5>
-                        <hr class='border-warning1 mt-1 mb-3' style='margin-top:20px;'>
-                        <p class='m-0 text-justify text-decoration-none'>
-                  $blogDescription
-                     </p>
-                  <div class='bottom-dis'>
-                   <a href='./blog?id=".$row['id']."' class='read-more-link'>
-                  <b><u>Read More</u></b>
-                   </a>
-                   </div>
+                    </a>
+                    <div class='edi-blog-body'>
+                        <div class='edi-blog-tag'><i class='fa fa-tag' aria-hidden='true'></i><span>" . $tag . "</span></div>
+                        <h3 class='edi-blog-title'><a href='" . $blogUrl . "'>" . $title . "</a></h3>
+                        <p class='edi-blog-excerpt'>" . htmlspecialchars($plain, ENT_QUOTES, "UTF-8") . "</p>
+                        <a href='" . $blogUrl . "' class='edi-blog-readmore'>Read More</a>
                     </div>
-                </div>
+                </article>
             </div>
         ";
         return $html;

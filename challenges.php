@@ -146,7 +146,7 @@
 
     <div class="container-fluid py-5 mt-5" style="background-color: #fdfdfd; border-top: 1px solid #eee;">
         <div class="container text-center">
-            <h2 style="color: #d35400; font-weight: 800;">JOIN MY FAMILY</h2>
+            <h1 class="text-danger">JOIN MY FAMILY</h1>
             <p class="text-muted mx-auto" style="max-width: 700px;">Sign up for Edi's newsletter to get new worksheets and 'Brave Heart' challenge alerts!</p>
             <form class="row justify-content-center mt-4">
                 <div class="col-md-5">

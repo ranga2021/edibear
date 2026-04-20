@@ -133,7 +133,7 @@
                                 $other = "$searchTagLike";
                             }
                             foreach ( $user->fetchAll(array("id","tag","title","image", "description","timestamp"), array("blog_details"), array("status"=>"1"), "id DESC LIMIT 6", $other) as $row ) {
-                                echo $widgets->displayBlogBrief($row, "col-md-6", 200, false);
+                                echo $widgets->displayBlogBrief($row, "col-md-6 col-lg-4", 150, "list");
                             }
                         ?>
                         <div class="col-12">

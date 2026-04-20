@@ -138,7 +138,7 @@
 
                 <h4 class="edi-hello">Hello,</h4>
 
-                <h1 class="edi-little">LITTLE BUDDY!</h1>
+                <h1 class="text-danger">LITTLE BUDDY!</h1>
 
                 <h3 class="edi-welcome">Welcome to <br> my awesome world!</h3>
 
@@ -181,7 +181,7 @@
     <div class="container-fluid py-4" style='margin-top:-100px;' id="learn-section">
         <div class="container py-5">
             <div class="text-center">
-                <h1 class="text-primary">EXPLORER TRAINING CAMP</h1>
+                <h1 class="text-danger">EXPLORER TRAINING CAMP</h1>
             </div>
 
             <div class='row mt-3 justify-content-center' style='margin-bottom:-50px; margin-top:-50px;'>
@@ -408,7 +408,7 @@
 
     <div class="container-fluid pt-4 px-0"> <div class="container pt-5 pb-4" style='margin-top:-50px'>
         <div class="text-center">
-            <h1 class="text-primary">TRAIL OF TALES</h1>
+            <h1 class="text-danger">TRAIL OF TALES</h1>
         </div>
         <div class='row mt-3 justify-content-center'>
             <div class="col-lg-10 col-md-12">
@@ -450,54 +450,49 @@
     <div class="pb-4"></div> -->
 
     <!-- Blog Start -->
-    <div class="container-fluid py-4" style='margin-top:-50px' id="play-section">
+    <div class="container-fluid py-4 edi-hidden-den-section" id="play-section">
         <div class="container py-5">
             <div class="text-center">
-                <h1 class="text-primary">THE HIDDEN DEN</h1>
+                <h1 class="text-danger">THE HIDDEN DEN</h1>
             </div>
 
             <div class="row mt-3 justify-content-center">
                 <div class="col-lg-10 col-md-12">
-                    <p class="text-justify mb-0">
+                    <p class="text-center mb-0 edi-hidden-den-intro">
                 Hurrah! You've reached the third destination. This is very special. Inside the Hidden Den, you can discover exciting things that make learning feel just like play! Step inside and explore what you want to learn while Edi guides you step-by-step. Now, you're ready to face any challenge with total confidence!</p>
                 </div>
             </div>
 
-
-
-            <!-- <div class="row justify-content-center">
-                <p class="text-center col-lg-10 mt-3 px-lg-5">
-                
-                </p>
-            </div> -->
-            <div class="row mt-3 justify-content-center">
-                <div class="col-md-6">
-                    <div class="row justify-content-center">
+            <div class="row edi-hidden-den-grid mt-4 justify-content-center align-items-stretch">
+                <div class="col-lg-6 col-md-12 mb-4 mb-lg-0">
+                    <div class="edi-hidden-den-featured h-100">
+                        <div class="row mx-0">
                         <?php
                             $row = null;
                             $lastBlogID = "";
                             foreach ( $user->fetchAll(array("id","tag","title","image", "description","timestamp"), array("blog_details"), array("status"=>"1"), "id DESC LIMIT 1") as $row ) {
-                                echo $widgets->displayBlogBrief($row, "col-12", 600, true);
+                                echo $widgets->displayBlogBrief($row, "col-12 px-0", 320, "featured");
                             }
                             if ( isset($row['id']) && $row['id'] ) {
                                 $lastBlogID = "id<".$row['id'];
                             }
                         ?>
+                        </div>
                     </div>
                 </div>
-                <div class="col-md-6 d-flex align-items-stretch">
-                    <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-12">
+                    <div class="row edi-blog-subgrid no-gutters mx-0">
                     <?php
                         foreach ( $user->fetchAll(array("id","tag","title","image", "description","timestamp"), array("blog_details"), array("status"=>"1"), "id DESC LIMIT 4", "$lastBlogID") as $row ) {
-                            echo $widgets->displayBlogBrief($row, "col-md-6", 160, true);
+                            echo $widgets->displayBlogBrief($row, "col-6", 118, "grid");
                         }
                     ?>
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-center mt-4">
+            <div class="row justify-content-center mt-5">
                 <div class="col-12 text-center">
-                    <button type="button" class="btn newgreen1-btn px-4 rounded" onclick="location.href='./blogs'"><b>COME IN</b></button>
+                    <button type="button" class="btn newgreen1-btn px-5 py-2 rounded-pill" onclick="location.href='./blogs'"><b>COME IN</b></button>
                 </div>
             </div>
         </div>
@@ -507,7 +502,7 @@
     <section id="challenge-section" class="py-5 bg-white w-100 clearfix" style="margin-top:0;">
     <div class="container">
         <div class="text-center mb-4">
-            <h1 class="text-primary" style="font-weight: bold;">BRAVE HEART CHALLENGE</h1>
+            <h1 class="text-danger">BRAVE HEART CHALLENGE</h1>
         </div>
 
             <div class="row mt-3 justify-content-center">
