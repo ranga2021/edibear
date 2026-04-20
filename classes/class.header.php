@@ -6,103 +6,103 @@ class HEADER {
         "dashboard"=>array(
             "name"=>"Dashboard",
             "redirect"=>"./dashboard",
-            "icon"=>"ni ni-tv-2 text-primary"
+            "icon"=>"fas fa-chart-line text-primary"
         ),
         "home-page"=>array(
             "name"=>"Home Page",
             "redirect"=>"./home-page",
-            "icon"=>"fa fa-home text-secondary"
+            "icon"=>"fas fa-home text-secondary"
         ),
         
         
         "add-pdf"=>array(
             "name"=>"Add Coloring Pages",
             "redirect"=>"./add-pdf",
-            "icon"=>"fa fa-pencil-square-o text-warning"
+            "icon"=>"fas fa-palette text-warning"
         ),
         "pdf"=>array(
             "name"=>"Coloring Pages",
             "redirect"=>"./pdf",
-            "icon"=>"fa fa-file-text-o text-danger"
+            "icon"=>"fas fa-images text-danger"
         ),
         
         "add-books"=>array(
             "name"=>"Add Books & Papers",
             "redirect"=>"./add-books",
-            "icon"=>"fa fa-pencil-square-o text-warning"
+            "icon"=>"fas fa-book-open text-warning"
         ),
         "books"=>array(
             "name"=>"Books & Papers",
             "redirect"=>"./books",
-            "icon"=>"fa fa-file-text-o text-danger"
+            "icon"=>"fas fa-book text-danger"
         ),
 
         "add-homework"=>array(
             "name"=>"Add Homeworks",
             "redirect"=>"./add-homework",
-            "icon"=>"fa fa-pencil-square-o text-warning"
+            "icon"=>"fas fa-edit text-warning"
         ),
         "homework"=>array(
             "name"=>"Homeworks",
             "redirect"=>"./homework",
-            "icon"=>"fa fa-file-text-o text-danger"
+            "icon"=>"fas fa-tasks text-danger"
         ),
         "add-product"=>array(
             "name"=>"Add Product",
             "redirect"=>"./add-products",
-            "icon"=>"fa fa-pencil-square-o text-warning"
+            "icon"=>"fas fa-cart-plus text-warning"
         ),
         "products"=>array(
             "name"=>"Products",
             "redirect"=>"./products",
-            "icon"=>"fa fa-file-text-o text-danger"
+            "icon"=>"fas fa-box-open text-danger"
         ),
 
         "add-blog"=>array(
             "name"=>"Add Blog",
             "redirect"=>"./add-blog",
-            "icon"=>"fa fa-pencil-square-o text-warning"
+            "icon"=>"fas fa-pen text-warning"
         ),
         "blogs"=>array(
             "name"=>"Blogs",
             "redirect"=>"./blogs",
-            "icon"=>"fa fa-file-text-o text-danger"
+            "icon"=>"fas fa-newspaper text-danger"
         ),
         "add-event"=>array(
             "name"=>"Add Brave Heart Event",
             "redirect"=>"./add-event",
-            "icon"=>"fa fa-flag text-warning"
+            "icon"=>"fas fa-flag text-warning"
         ),
         "event"=>array(
             "name"=>"Brave Heart Events",
             "redirect"=>"./event",
-            "icon"=>"fa fa-flag text-warning"
+            "icon"=>"fas fa-calendar-alt text-warning"
         ),
         "add-ad1"=>array(
             "name"=>"Add Home Ad 1",
             "redirect"=>"./add-ad1",
-            "icon"=>"fa fa-pencil-square-o text-warning"
+            "icon"=>"fas fa-ad text-warning"
         ),
         "ad1"=>array(
             "name"=>"Home Ad 1",
             "redirect"=>"./ad1",
-            "icon"=>"fa fa-file-text-o text-danger"
+            "icon"=>"fas fa-image text-danger"
         ),
         "add-ad2"=>array(
             "name"=>"Add Home Ad 2",
             "redirect"=>"./add-ad2",
-            "icon"=>"fa fa-pencil-square-o text-warning"
+            "icon"=>"fas fa-ad text-warning"
         ),
         "ad2"=>array(
             "name"=>"Home Ad 2",
             "redirect"=>"./ad2",
-            "icon"=>"fa fa-file-text-o text-danger"
+            "icon"=>"fas fa-image text-danger"
         ),
         
         "testimonials"=>array(
             "name"=>"Testimonials",
             "redirect"=>"./testimonials",
-            "icon"=>"fa fa-comments-o text-primary"
+            "icon"=>"fas fa-comments text-primary"
         ),
         "orders"=>array(
             "name"=>"Orders",
@@ -714,7 +714,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <li class='nav-item'>
                                 <a class='nav-link $active' href='".$subArr['redirect']."'>
                                     <div class='icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center'>
-                                    <i class='".$subArr['icon']." text-sm opacity-10'></i>
+                                    <i class='".$subArr['icon']." text-sm'></i>
                                     </div>
                                     <span class='nav-link-text ms-1'>".$subArr['name']."</span>
                                 </a>
@@ -820,17 +820,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     public function printAdminFooter() {
+        $year = (int) date('Y');
         $html = "
-            <footer class='footer pt-3'>
+            <footer class='footer pt-3 edibear-admin-footer'>
                 <div class='container-fluid'>
                 <div class='row align-items-center justify-content-lg-between'>
                     <div class='col-lg-6 mb-lg-0 mb-4'>
-                    <div class='copyright text-center text-sm text-muted text-lg-start'>
-                        © <script>
-                        document.write(new Date().getFullYear())
-                        </script>,
-                        Designed & Developed by
-                        <a href='https://virtualpensar.com' class='font-weight-bold' target='_blank'>Groovymark Pvt Ltd</a>.
+                    <div class='copyright text-center text-sm text-lg-start edibear-admin-footer-copy'>
+                        © $year, Designed & Developed by
+                        <a href='https://virtualpensar.com' class='font-weight-bold edibear-admin-footer-link' target='_blank' rel='noopener noreferrer'>Groovymark Pvt Ltd</a>.
                     </div>
                     </div>
                     <div class='col-lg-6'>

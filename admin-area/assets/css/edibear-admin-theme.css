@@ -84,3 +84,35 @@ body.admin-login-body .login-forgot-link:hover {
   border-color: #33a675 !important;
   box-shadow: 0 0 0 0.2rem rgba(51, 166, 117, 0.2) !important;
 }
+
+/* Footer is a sibling of <main>, not inside it — Argon only offsets .main-content from the sidenav */
+@media (min-width: 1200px) {
+  body .sidenav.fixed-start ~ footer.footer.edibear-admin-footer {
+    margin-left: 17.125rem;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  body.g-sidenav-show .sidenav.fixed-start ~ footer.footer.edibear-admin-footer {
+    margin-left: 0 !important;
+  }
+}
+
+footer.footer.edibear-admin-footer {
+  position: relative;
+  z-index: 1;
+  padding-bottom: 1.5rem !important;
+  background-color: #f8f9fa;
+}
+
+.edibear-admin-footer-copy {
+  color: #606062 !important;
+}
+
+.edibear-admin-footer-link {
+  color: #33a675 !important;
+}
+
+.edibear-admin-footer-link:hover {
+  color: #ffcc29 !important;
+}
