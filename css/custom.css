@@ -4,7 +4,7 @@
   background-color: #fff;
   padding: 8px 16px;
   border-radius: 4px;
-  border: 2px solid #0d5323;
+    border: 2px solid #33a675;
   width: 100%;
 }
 
@@ -20,7 +20,7 @@
 .edibear-topline{
     width:100%;
     height:10px;
-    background:#0c5b2d;
+    background:#33a675;
 }
 
 /* MAIN NAVBAR */
@@ -67,19 +67,19 @@
 }
 
 .edibear-link:hover{
-    color:#0c5b2d;
+    color:#ffcc29;
 }
 
 /* TROPHY ICON */
 .edibear-challenge{
-    color:#f9a825;
+    color:#ffcc29;
     font-size:18px;
 }
 
 /* SIGN IN */
 .edibear-signin{
     font-weight:600;
-    color:#0c5b2d;
+    color:#33a675;
     text-decoration:none;
 }
 
@@ -104,7 +104,7 @@
 /* HERO BUTTON STYLE */
 .homeLetsGoBtn{
     background:#ffffff !important;
-    color:#1b9b22 !important;
+    color:#33a675 !important;
     font-weight:600;
     font-size:20px;
     padding:10px 28px !important;
@@ -115,8 +115,8 @@
 
 /* BUTTON HOVER */
 .homeLetsGoBtn:hover{
-    background:#0a2b0b !important;
-    color:#ffffff !important;
+    background:#ffcc29 !important;
+    color:#606062 !important;
     transition:0.3s;
 }
 
@@ -142,13 +142,13 @@
 
 .edi-hello{
     font-weight:700;
-    color:#5a5a5a;
+    color:#606062;
 }
 
 /* LITTLE BUDDY */
 
 .edi-little{
-    color:#ff4b3a;
+    color:#f65247;
     font-weight:800;
     letter-spacing:1px;
 }
@@ -157,7 +157,7 @@
 
 .edi-welcome{
     font-weight:700;
-    color:#000000;
+    color:#606062;
     margin-bottom:20px;
 }
 
@@ -165,7 +165,7 @@
 
 .edi-paragraph{
     text-align: justify;
-    color:#666;
+    color:#606062;
     line-height:1.7;
     margin-bottom:18px;
     max-width:350px;
@@ -188,7 +188,7 @@
 }
 
 .explorer-title{
-    color:#e74c3c;
+    color:#f65247;
     font-weight:800;
     margin-bottom:15px;
 }
@@ -196,7 +196,7 @@
 .explorer-desc{
     max-width:750px;
     margin:auto;
-    color:#555;
+    color:#606062;
 }
 
 /* cards */
@@ -248,7 +248,7 @@
     appearance: none;
 
     /* Add custom green arrow as a background image */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2328a745'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2333a675'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 30px; /* Increase this number to make the arrow bigger */
@@ -274,14 +274,14 @@
 .newgreen1-btn {
   color: #fff;
   background-color: #33a675;
-  border-color: #28a745;
+  border-color: #33a675;
   border-radius:4px;
 }
 
 .newgreen1-btn:hover {
   color: #fff;
-  background-color: #218838;
-  border-color: #1e7e34;
+  background-color: #2a8f61;
+  border-color: #2a8f61;
 }
 
 .product-card{
@@ -304,7 +304,7 @@ margin-right:8px;
 }
 
 .new-price{
-color:#28a745;
+color:#33a675;
 font-weight:bold;
 }
 
@@ -367,7 +367,7 @@ animation: cartBounce .4s;
 
 .honey-cart-steps .step.active{
     color:#fff;
-    background:#0c5b2d;
+    background:#33a675;
     border-radius:20px;
 }
 

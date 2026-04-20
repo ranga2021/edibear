@@ -1,0 +1,86 @@
+/**
+ * Edibear palette for admin (Argon / Bootstrap 5)
+ * Same codes as public: #33a675 #FFCC29 #F65247 #606062
+ */
+
+:root {
+  --bs-primary: #33a675;
+  --bs-primary-rgb: 51, 166, 117;
+  --bs-success: #33a675;
+  --bs-success-rgb: 51, 166, 117;
+  --bs-link-color: #33a675;
+  --bs-link-hover-color: #ffcc29;
+  --bs-body-color: #606062;
+}
+
+body {
+  color: #606062 !important;
+}
+
+/* Nav icons use green; coral reserved for main titles in content */
+.sidenav .text-primary,
+.navbar .text-primary {
+  color: #33a675 !important;
+}
+
+.sidenav .nav-link:hover .text-primary {
+  color: #ffcc29 !important;
+}
+
+main .card-header h5,
+main .card .card-title,
+main h1:not(.text-white),
+main h2:not(.text-white) {
+  color: #f65247 !important;
+}
+
+.btn-primary,
+.btn.bg-gradient-primary {
+  background-image: linear-gradient(310deg, #33a675 0%, #2a8f61 100%) !important;
+  border-color: #33a675 !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn.bg-gradient-primary:hover {
+  background-image: linear-gradient(310deg, #2a8f61 0%, #237a52 100%) !important;
+  color: #fff !important;
+}
+
+.bg-gradient-primary {
+  background-image: linear-gradient(310deg, #33a675 0%, #2a8f61 100%) !important;
+}
+
+.sidenav .navbar-nav .nav-link.active {
+  background-image: linear-gradient(310deg, #33a675 0%, #2a8f61 100%) !important;
+  color: #fff !important;
+}
+
+.sidenav .navbar-nav .nav-link.active .icon i,
+.sidenav .navbar-nav .nav-link.active .nav-link-text {
+  color: #fff !important;
+}
+
+.sidenav .nav-link:hover {
+  color: #ffcc29 !important;
+}
+
+/* Admin login */
+body.admin-login-body .login-submit-btn {
+  background-color: #33a675 !important;
+  border-color: #33a675 !important;
+}
+
+body.admin-login-body .login-submit-btn:hover {
+  background-color: #2a8f61 !important;
+  border-color: #2a8f61 !important;
+}
+
+body.admin-login-body .login-forgot-link:hover {
+  color: #ffcc29 !important;
+}
+
+.form-control:focus {
+  border-color: #33a675 !important;
+  box-shadow: 0 0 0 0.2rem rgba(51, 166, 117, 0.2) !important;
+}

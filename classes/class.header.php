@@ -170,6 +170,7 @@ class HEADER {
     }
         $mainCSS = "css/style.css";
         $mainCSS = $mainCSS . "?" . filemtime("$mainCSS");
+        $ediThemeCss = "css/edibear-theme.css?" . @filemtime(__DIR__ . "/../css/edibear-theme.css");
         $html = "
             <meta charset='utf-8'>
             <title>Kids’ Coloring Pages, Activity Books & Study Packs</title>
@@ -190,6 +191,7 @@ class HEADER {
             <link href='lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css' rel='stylesheet' />
             <link href='$mainCSS' rel='stylesheet'>
             <link rel='stylesheet' href='css/custom.css'>
+            <link rel='stylesheet' href='$ediThemeCss'>
         ";
         return $html;
     }
@@ -253,7 +255,7 @@ class HEADER {
 /* Ensure the green line is visible and not collapsed */
 .edibear-topline {
     height: 12px !important;
-    background-color: #004d26 !important;
+    background-color: #33a675 !important;
     display: block !important;
     width: 100%;
     position: relative;
@@ -298,7 +300,7 @@ class HEADER {
 
         .edibear-signin {
             text-decoration: none !important;
-            color: #004d26 !important;
+            color: #33a675 !important;
             font-weight: 700;
             font-size: 15px;
             display: flex;
@@ -594,7 +596,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-            <div class='container-fluid pl-0 pr-0' style='background-color:#004925;'>
+            <div class='container-fluid pl-0 pr-0' style='background-color:#237a52;'>
                 
                     <div class='col-lg-12 text-center '>
                         <p class='copyrighttext text-white mb-0'>Copyright &copy; <a href='./' class='text-white'>edibear</a>. All Rights Reserved.</a>
@@ -675,6 +677,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <script src='https://kit.fontawesome.com/42d5adcbca.js' crossorigin='anonymous'></script>
             <link href='./assets/css/nucleo-svg.css' rel='stylesheet' />
             <link id='pagestyle' href='./assets/css/argon-dashboard.css?v=2.0.4' rel='stylesheet' />
+            <link href='./assets/css/edibear-admin-theme.css?" . @filemtime(__DIR__ . "/../admin-area/assets/css/edibear-admin-theme.css") . "' rel='stylesheet' />
             <style>
                 /* Remove default green header strip on admin pages */
                 .min-height-300.bg-primary.position-absolute.w-100 {

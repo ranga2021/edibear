@@ -1,0 +1,202 @@
+/**
+ * Edibear brand palette (site-wide, public pages)
+ * Green #33a675 — buttons, outlines, icons
+ * Gold #FFCC29 — stars, review accents, hovers
+ * Coral #F65247 — main headings
+ * Charcoal #606062 — body text
+ */
+
+:root {
+  --edi-green: #33a675;
+  --edi-green-dark: #2a8f61;
+  --edi-green-darker: #237a52;
+  --edi-gold: #ffcc29;
+  --edi-gold-dark: #e6b820;
+  --edi-heading: #f65247;
+  --edi-body: #606062;
+}
+
+/* ----- Base text ----- */
+body {
+  color: var(--edi-body) !important;
+}
+
+/* ----- Main headings ----- */
+.text-primary,
+h1.text-primary,
+h2.text-primary,
+h3.text-primary,
+h4.text-primary,
+h5.text-primary:not(.text-white),
+h6.text-primary:not(.text-white) {
+  color: var(--edi-heading) !important;
+}
+
+h1.text-danger,
+h2.text-danger,
+h3.text-danger,
+h4.text-danger {
+  color: var(--edi-heading) !important;
+}
+
+/* Keep real alerts readable */
+.alert-danger,
+.alert-danger .text-dark,
+.invalid-feedback {
+  color: inherit !important;
+}
+
+.edi-little,
+.explorer-title {
+  color: var(--edi-heading) !important;
+}
+
+.edi-hello,
+.edi-welcome,
+.edi-paragraph,
+.explorer-desc {
+  color: var(--edi-body) !important;
+}
+
+/* ----- Links: hover gold ----- */
+a.text-primary:hover,
+a.text-primary:focus,
+.edibear-link:hover,
+.footer a:hover,
+.read-more-link:hover,
+a:hover .text-primary {
+  color: var(--edi-gold) !important;
+}
+
+.read-more-link {
+  color: var(--edi-green) !important;
+}
+
+/* ----- Buttons (green) ----- */
+.btn-primary,
+.btn-success,
+.newgreen1-btn,
+.explore-btn,
+.newsl-subscribe-btn,
+.back-to-top,
+.honey-cart-steps .step.active {
+  background-color: var(--edi-green) !important;
+  border-color: var(--edi-green) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-success:hover,
+.newgreen1-btn:hover,
+.explore-btn:hover,
+.newsl-subscribe-btn:hover {
+  background-color: var(--edi-green-dark) !important;
+  border-color: var(--edi-green-dark) !important;
+  color: #fff !important;
+}
+
+.btn-outline-primary {
+  color: var(--edi-green) !important;
+  border-color: var(--edi-green) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--edi-green) !important;
+  border-color: var(--edi-green) !important;
+  color: #fff !important;
+}
+
+/* Hero “FIND Edi” — outline + gold hover per palette */
+.homeLetsGoBtn {
+  background: #fff !important;
+  color: var(--edi-green) !important;
+  border: 2px solid var(--edi-green) !important;
+}
+
+.homeLetsGoBtn:hover {
+  background: var(--edi-gold) !important;
+  color: var(--edi-body) !important;
+  border-color: var(--edi-gold) !important;
+}
+
+/* ----- Nav / chrome ----- */
+.edibear-topline {
+  background: var(--edi-green) !important;
+}
+
+.edibear-link {
+  color: var(--edi-body) !important;
+}
+
+.edibear-signin {
+  color: var(--edi-green) !important;
+}
+
+.edibear-challenge {
+  color: var(--edi-gold) !important;
+}
+
+/* ----- Icons & outlines ----- */
+.border-primary,
+.newsl-border {
+  border-color: var(--edi-green) !important;
+}
+
+.form-control:focus {
+  border-color: var(--edi-green) !important;
+  box-shadow: 0 0 0 0.2rem rgba(51, 166, 117, 0.25) !important;
+}
+
+/* ----- Stars / reviews (gold) ----- */
+.text-warning1,
+.text-warning,
+.fa-star.text-warning,
+.fa-star.text-warning1,
+.testimonial-sec .fa-star,
+.package-item .text-warning {
+  color: var(--edi-gold) !important;
+}
+
+/* ----- Prices / success accents ----- */
+.new-price,
+.text-success {
+  color: var(--edi-green) !important;
+}
+
+.signInText {
+  color: var(--edi-green) !important;
+}
+
+.signInText:hover {
+  color: var(--edi-gold) !important;
+}
+
+/* ----- Footer heading ----- */
+.footerEmailCustom h1.text-primary,
+.footer h1.text-primary {
+  color: var(--edi-heading) !important;
+}
+
+/* ----- Cards / borders ----- */
+.blog-item,
+.explorer-card,
+.border-warning1 {
+  border-color: rgba(51, 166, 117, 0.35) !important;
+}
+
+/* ----- Bootstrap utility overrides ----- */
+.bg-primary {
+  background-color: var(--edi-green) !important;
+}
+
+.badge-primary {
+  background-color: var(--edi-green) !important;
+}
+
+a.bg-primary:hover,
+a.bg-primary:focus,
+button.bg-primary:hover,
+button.bg-primary:focus {
+  background-color: var(--edi-green-dark) !important;
+}

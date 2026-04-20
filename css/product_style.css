@@ -13,7 +13,7 @@
     border-bottom: 2px solid #eee;
     padding: 5px;
     font-size: 14px;
-    color: #28a745;
+    color: #33a675;
     background: transparent;
     cursor: pointer;
     outline: none;
@@ -72,7 +72,7 @@
 }
 
 .collect-btn {
-    background-color: #28a745;
+    background-color: #33a675;
     color: white;
     border: none;
     padding: 5px 25px;

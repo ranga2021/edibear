@@ -235,7 +235,7 @@ our beautiful country. So reserve your tour with us.'>
     }
 
     .login-input-group .form-control:focus {
-      border-color: #16a34a;
+      border-color: #33a675;
       box-shadow: 0 0 0 1px #bbf7d0;
     }
 
@@ -275,13 +275,13 @@ our beautiful country. So reserve your tour with us.'>
     }
 
     .login-forgot-link:hover {
-      color: #16a34a;
+      color: #33a675;
       text-decoration: underline;
     }
 
     .login-submit-btn {
-      background-color: #16a34a;
-      border-color: #16a34a;
+      background-color: #33a675;
+      border-color: #33a675;
       border-radius: 999px;
       font-weight: 600;
       font-size: 14px;
@@ -290,8 +290,8 @@ our beautiful country. So reserve your tour with us.'>
     }
 
     .login-submit-btn:hover {
-      background-color: #15803d;
-      border-color: #15803d;
+      background-color: #2a8f61;
+      border-color: #2a8f61;
     }
 
     .login-logo {
