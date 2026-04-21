@@ -53,6 +53,7 @@ if (!empty($existingCart)) {
 header('Content-Type: application/json');
 echo json_encode([
     'success' => true,
+    'status' => 'success',
     'user_id' => $user_id,
     'product_id' => $product_id
 ]);

@@ -97,14 +97,19 @@
 
 .treasures-filters-row {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: stretch;
-    gap: 10px 12px;
+    gap: 8px 10px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+    scrollbar-width: thin;
 }
 
 .treasures-filter-cell {
-    flex: 1 1 140px;
-    min-width: 0;
+    flex: 1 1 0;
+    min-width: 104px;
+    max-width: 100%;
 }
 
 .treasures-filter-select {
@@ -112,7 +117,7 @@
     height: 100%;
     min-height: 42px;
     padding: 0.45rem 2.25rem 0.45rem 0.75rem;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 500;
     color: #212121;
     background-color: #fff;
@@ -142,11 +147,14 @@
 
 @media (min-width: 992px) {
     .treasures-filters-row {
-        flex-wrap: wrap;
-        gap: 14px;
+        gap: 12px 14px;
     }
 
     .treasures-filter-cell {
-        flex: 1 1 160px;
+        min-width: 118px;
+    }
+
+    .treasures-filter-select {
+        font-size: 0.9375rem;
     }
 }

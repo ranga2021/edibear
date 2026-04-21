@@ -4,24 +4,44 @@ require_once("./classes/class.user.php");
 require_once("./classes/class.header.php");
 require_once("./classes/class.widgets.php");
 
-$userHeader = new HEADER("products");
+$userHeader = new HEADER("shop");
 $user = new USER();
 $widgets = new WIDGETS();
 
-// Get the product ID from the URL
-$product_id = isset($_GET['product_id']) ? (int) $_GET['product_id'] : 0;
+// Product id: support product_id= and id= (older links)
+$product_id = 0;
+if (isset($_GET['product_id'])) {
+    $product_id = (int) $_GET['product_id'];
+} elseif (isset($_GET['id'])) {
+    $product_id = (int) $_GET['id'];
+}
 
-// Fetch the product details from the database
 $conn = $user->getConnection();
-$query = "SELECT p.*, c.name AS category_name 
-          FROM products p 
-          LEFT JOIN product_categories c ON c.id = p.category_id 
-          WHERE p.id = :product_id AND p.status = 1";
-$stmt = $conn->prepare($query);
-$stmt->execute([':product_id' => $product_id]);
-$product = $stmt->fetch(PDO::FETCH_ASSOC);
+$product = null;
+try {
+    $query = "SELECT p.*, c.name AS category_name 
+              FROM products p 
+              LEFT JOIN product_categories c ON c.id = p.category_id 
+              WHERE p.id = :product_id AND p.status = 1";
+    $stmt = $conn->prepare($query);
+    $stmt->execute([':product_id' => $product_id]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (Throwable $e) {
+    $product = null;
+    try {
+        $stmt2 = $conn->prepare("SELECT * FROM products WHERE id = :product_id AND status = 1");
+        $stmt2->execute([':product_id' => $product_id]);
+        $product = $stmt2->fetch(PDO::FETCH_ASSOC);
+        if (is_array($product) && !array_key_exists('category_name', $product)) {
+            $product['category_name'] = '';
+        }
+    } catch (Throwable $e2) {
+        $product = null;
+    }
+}
 
-if (!$product) {
+if (!$product || !is_array($product)) {
+    header('HTTP/1.0 404 Not Found');
     echo "<h2>Product not found!</h2>";
     exit;
 }
@@ -29,13 +49,23 @@ if (!$product) {
 // Stock quantity
 $stock = (int) $product['stock'];
 
-// Fetch reviews for this product
-$reviews = $user->fetchAll(
-    array("id", "product_id", "name", "email", "rating", "review", "created_at"),
-    array("product_review"),
-    array("product_id" => $product['id']),
-    "created_at DESC"
-);
+// Reviews (table may be missing on older installs — do not break the whole page)
+$reviews = array();
+try {
+    $revStmt = $conn->prepare(
+        "SELECT id, product_id, name, email, rating, review, created_at 
+         FROM product_review 
+         WHERE product_id = :pid 
+         ORDER BY created_at DESC"
+    );
+    $revStmt->execute([':pid' => (int) $product['id']]);
+    $fetched = $revStmt->fetchAll(PDO::FETCH_ASSOC);
+    if (is_array($fetched)) {
+        $reviews = $fetched;
+    }
+} catch (Throwable $e) {
+    $reviews = array();
+}
 
 $totalReviews = count($reviews);
 $averageRating = 0;
@@ -263,19 +293,27 @@ if ($totalReviews > 0) {
             }
         });
 
-        // Cart Animation and Add to Cart (same behavior as index.php / product_page.php)
+        // Cart: require login uid (add_to_cart.php), match JSON shape from add_to_cart.php
         document.querySelectorAll(".add-to-cart-btn").forEach(button => {
             button.addEventListener("click", function(e) {
                 e.preventDefault();
 
+                const userSession = localStorage.getItem("user_session");
+                if (!userSession) {
+                    if (typeof showLoginPopup === "function") {
+                        showLoginPopup();
+                    } else {
+                        window.location.href = "./login";
+                    }
+                    return;
+                }
 
                 const form = this.closest("form");
                 const productImage = document.querySelector(".main-product-image");
                 const cartIcon = document.querySelector("#cart-icon") || document.querySelector(".fa-shopping-cart");
 
-                // Basic stock validation
                 const qtyInput = document.getElementById("quantity");
-                const quantity = parseInt(qtyInput.value, 10);
+                const quantity = parseInt(qtyInput ? qtyInput.value : "1", 10) || 1;
                 if (quantity > <?= $stock ?>) {
                     alert("Not enough stock available.");
                     return;
@@ -307,58 +345,46 @@ if ($totalReviews > 0) {
                         imgClone.style.opacity = "0.3";
                     }
                 }, 10);
-                
-                const userSession = localStorage.getItem('user_session');
+
                 const formData = new FormData(form);
-                formData.append('uid', userSession);
+                formData.append("uid", userSession);
 
                 setTimeout(() => {
                     imgClone.remove();
 
-                    // SEND CART REQUEST WITHOUT PAGE RELOAD
                     if (form) {
-                       fetch("add_to_cart.php", {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-        'X-Requested-With': 'XMLHttpRequest'
-    },
-    body: new FormData(form)
-})
-.then(response => response.json())
-.then(data => {
-
-    // ✅ ONLY update UI after success
-    if (data.status === "success") {
-
-        // increase cart count
-        let count = localStorage.getItem('cart_count');
-        count = count ? parseInt(count) : 0;
-        localStorage.setItem('cart_count', count + 1);
-
-        // show dot
-        const dot = document.getElementById('cart-dot');
-        if (dot) dot.style.display = 'block';
-
-        // bounce effect
-        if (cartIcon) {
-            cartIcon.classList.add("bounce");
-            setTimeout(() => cartIcon.classList.remove("bounce"), 400);
-        }
-
-    } else {
-        alert("Failed to add to cart");
-    }
-})
-.catch(err => {
-    console.error(err);
-});
+                        fetch("add_to_cart.php", {
+                            method: "POST",
+                            credentials: "same-origin",
+                            headers: { "X-Requested-With": "XMLHttpRequest" },
+                            body: formData
+                        })
+                            .then(function (response) { return response.json(); })
+                            .then(function (data) {
+                                var ok = data && (data.status === "success" || data.success === true);
+                                if (!ok) {
+                                    alert("Failed to add to cart");
+                                    return;
+                                }
+                                var count = localStorage.getItem("cart_count");
+                                count = count ? parseInt(count, 10) : 0;
+                                localStorage.setItem("cart_count", String(count + 1));
+                                var dot = document.getElementById("cart-dot");
+                                if (dot) dot.style.display = "block";
+                                if (cartIcon) {
+                                    cartIcon.classList.add("bounce");
+                                    setTimeout(function () { cartIcon.classList.remove("bounce"); }, 400);
+                                }
+                            })
+                            .catch(function (err) {
+                                console.error(err);
+                                alert("Failed to add to cart");
+                            });
                     }
 
-                    // CART BOUNCE EFFECT
                     if (cartIcon) {
                         cartIcon.classList.add("bounce");
-                        setTimeout(() => cartIcon.classList.remove("bounce"), 400);
+                        setTimeout(function () { cartIcon.classList.remove("bounce"); }, 400);
                     }
                 }, 800);
             });
