@@ -172,32 +172,29 @@ button.edi-home-section-cta.explore-btn {
   border-color: var(--edi-gold) !important;
 }
 
-/* Homepage hero: cap image height + crop so “FIND Edi” fits above the fold */
-.HomeCarousel #header-carousel .carousel-inner {
-  max-height: clamp(220px, 44vh, 480px);
+/* Homepage hero: one full viewport tall (image fills screen; FIND Edi stays on the art) */
+.HomeCarousel #header-carousel,
+.HomeCarousel #header-carousel .carousel-inner,
+.HomeCarousel #header-carousel .carousel-item {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 .HomeCarousel #header-carousel .carousel-item > img.w-100 {
   width: 100%;
-  height: clamp(220px, 44vh, 480px);
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   object-fit: cover;
-  object-position: center 28%;
+  object-position: center center;
   display: block;
-}
-@media (min-width: 992px) {
-  .HomeCarousel #header-carousel .carousel-inner {
-    max-height: clamp(260px, 38vh, 440px);
-  }
-  .HomeCarousel #header-carousel .carousel-item > img.w-100 {
-    height: clamp(260px, 38vh, 440px);
-    object-position: center 25%;
-  }
 }
 #header-carousel .carousel-caption {
   bottom: 0 !important;
   top: 0;
   left: 0;
   right: 0;
-  padding-bottom: 0.75rem !important;
+  padding-bottom: 1.25rem !important;
   justify-content: flex-end !important;
 }
 
