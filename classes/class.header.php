@@ -507,7 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class='p-2 p-md-3 d-flex align-items-center flex-column align-items-center' style='max-width: 900px; margin: 0 auto;'>
                                     <span class='text-white mt-2 mt-md-3 mb-1 mb-md-2 carouselText1'>$carouselText1</span>
                                     <h1 class='display-3 text-white mb-2 mb-md-3 carouselText2'>$carouselText2</h1>
-                                    <a onclick='goToAyubowan()' class='btn btn-primary rounded homeLetsGoBtn py-md-2 px-md-5 mt-1 mb-1'>FIND Edi</a>
+                                    <a onclick='goToAyubowan()' class='btn btn-primary rounded homeLetsGoBtn py-md-2 px-md-5 mt-1 mb-1'><b>FIND Edi</b></a>
                                 </div>
                             </div>
                         </div>
