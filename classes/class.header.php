@@ -502,11 +502,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     $html .= "
                         <div class='carousel-item $active'>
                             <img class='w-100' src='$carouselSrc' alt='Image'>
-                            <div class='carousel-caption carouselboxeka d-flex flex-column justify-content-end pb-5' style='height: 100%;'>
-                                <div class='p-3 d-flex align-items-center  flex-column align-items-center' style='max-width: 900px; margin: 0 auto;'>
-                                    <span class='text-white mt-md-5 mb-md-3 carouselText1'>$carouselText1</span>
-                                    <h1 class='display-3 text-white mb-md-4 carouselText2'>$carouselText2</h1>
-                                    <a onclick='goToAyubowan()' class='btn btn-primary rounded homeLetsGoBtn my-lg-5 py-md-3 px-md-5 mt-2'>FIND Edi</a>
+                            <div class='carousel-caption carouselboxeka d-flex flex-column justify-content-end pb-3' style='height: 100%;'>
+                                <div class='p-2 p-md-3 d-flex align-items-center flex-column align-items-center' style='max-width: 900px; margin: 0 auto;'>
+                                    <span class='text-white mt-2 mt-md-3 mb-1 mb-md-2 carouselText1'>$carouselText1</span>
+                                    <h1 class='display-3 text-white mb-2 mb-md-3 carouselText2'>$carouselText2</h1>
+                                    <a onclick='goToAyubowan()' class='btn btn-primary rounded homeLetsGoBtn py-md-2 px-md-5 mt-1 mb-1'>FIND Edi</a>
                                 </div>
                             </div>
                         </div>

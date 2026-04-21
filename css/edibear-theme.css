@@ -172,6 +172,35 @@ button.edi-home-section-cta.explore-btn {
   border-color: var(--edi-gold) !important;
 }
 
+/* Homepage hero: cap image height + crop so “FIND Edi” fits above the fold */
+.HomeCarousel #header-carousel .carousel-inner {
+  max-height: clamp(220px, 44vh, 480px);
+}
+.HomeCarousel #header-carousel .carousel-item > img.w-100 {
+  width: 100%;
+  height: clamp(220px, 44vh, 480px);
+  object-fit: cover;
+  object-position: center 28%;
+  display: block;
+}
+@media (min-width: 992px) {
+  .HomeCarousel #header-carousel .carousel-inner {
+    max-height: clamp(260px, 38vh, 440px);
+  }
+  .HomeCarousel #header-carousel .carousel-item > img.w-100 {
+    height: clamp(260px, 38vh, 440px);
+    object-position: center 25%;
+  }
+}
+#header-carousel .carousel-caption {
+  bottom: 0 !important;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: 0.75rem !important;
+  justify-content: flex-end !important;
+}
+
 /* ----- Nav / chrome ----- */
 .edibear-topline {
   background: var(--edi-green) !important;

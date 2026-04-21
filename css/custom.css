@@ -120,10 +120,7 @@
     transition:0.3s;
 }
 
-/* POSITION LOWER IN HERO */
-.carousel-caption{
-    bottom:-35% !important;
-}
+/* Hero caption position is set in edibear-theme.css (#header-carousel only) */
 
 /* INTRO SECTION */
 
