@@ -551,8 +551,6 @@ h6.text-primary:not(.text-white),
 }
 
 .edi-blog-excerpt {
-  font-size: 0.8125rem;
-  font-family: inherit;
   font-weight: 400;
   line-height: 1.5;
   color: var(--edi-body);

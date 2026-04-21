@@ -466,7 +466,7 @@
             </div>
             <div class="row justify-content-center mt-5">
                 <div class="col-12 text-center">
-                    <button type="button" class="btn newgreen1-btn btn-lg px-5 py-2" style="border-radius: 8px;" onclick="location.href='./blogs'">COME IN</button>
+                    <button type="button" class="btn newgreen1-btn px-4 rounded " onclick="location.href='./blogs'">COME IN</button>
                 </div>
             </div>
         </div>
