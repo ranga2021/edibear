@@ -617,7 +617,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         </div>
                     </div>
                 </div>
-                <div class='row footercontentwidth justify-content-center pt-5' style='margin-bottom:-150px;'>
+                <div class='row footercontentwidth footer-overlap-row justify-content-center pt-5'>
                     <div class='col-lg-4 col-md-6 mb-5'>
                         <a href='./' class='navbar-brand'>
                             <img class='headerLogo cursor-pointer image-responsive pb-3' src='./img/Logo.png' alt='logo'>
@@ -645,9 +645,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span>Email: info.edibear@gmail.com</span>
                         </div>
                     </div>
-                    <div class='col-lg-4 col-sm-6 mb-5' style='margin-top:40px;'>
+                    <div class='col-lg-4 col-sm-6 mb-5 footer-follow-col'>
     <h6 class='text-uppercase mt-4 mb-3 text-center' style='letter-spacing: 2px; color: #333;'>FOLLOW ME</h6>
-    <div class='d-flex justify-content-center align-items-center'>
+    <div class='d-flex justify-content-center align-items-center footer-social-icons flex-wrap'>
         <a class='social-icon-box' target='_blank' href='https://www.facebook.com/edibearsworld'>
             <i class='fab fa-facebook-f'></i>
         </a>

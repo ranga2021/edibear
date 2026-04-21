@@ -122,17 +122,16 @@
 
 /* Hero caption position is set in edibear-theme.css (#header-carousel only) */
 
-/* INTRO SECTION */
+/* INTRO SECTION — pull/overlap only on lg+; full width on small screens */
 
 .edi-intro-section{
     background:#ffffff;
     padding:80px 0;
+    overflow-x:clip;
 }
 
 .edi-intro-text{
-    padding-right:0px;
-    margin-right:-100px !important;
-    margin-left:100px !important;
+    padding-right:0;
 }
 
 /* HELLO */
@@ -160,13 +159,53 @@
     max-width:350px;
 }
 
-/* IMAGE */
+/* IMAGE — default: responsive, no negative margins */
 
 .edi-intro-image img{
     max-height:520px;
-    max-width:450px;
-    padding-left:0px !important;
-    margin-left:-100px !important;
+    max-width:100%;
+    width:auto;
+    height:auto;
+    vertical-align:middle;
+}
+
+@media (max-width:991.98px){
+    .edi-intro-section{
+        padding:48px 0;
+    }
+    .edi-intro-text{
+        margin-left:0 !important;
+        margin-right:0 !important;
+        padding-left:0;
+        padding-right:0;
+    }
+    .edi-paragraph{
+        max-width:none;
+        text-align:left;
+    }
+    .edi-intro-image{
+        margin-top:1.25rem;
+    }
+    .edi-intro-image img{
+        display:block;
+        margin-left:auto !important;
+        margin-right:auto;
+        max-width:min(100%,440px);
+        max-height:none;
+        padding-left:0 !important;
+    }
+}
+
+@media (min-width:992px){
+    .edi-intro-text{
+        margin-right:-100px !important;
+        margin-left:100px !important;
+    }
+    .edi-intro-image img{
+        max-width:450px;
+        padding-left:0 !important;
+        margin-left:-100px !important;
+    }
 }
 
 /* Explorer section */
@@ -333,10 +372,24 @@ animation: cartBounce .4s;
     color:#e57200;
 }
 
+/* Checkout progress: flex so steps never break mid-label; mirrors edi-breadcrumb spacing on small screens */
+.honey-cart-steps{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    justify-content:center;
+    gap:6px 8px;
+    row-gap:8px;
+    font-size:0.875rem;
+    line-height:1.4;
+}
+
 .honey-cart-steps .step{
     font-weight:600;
     color:#777;
     padding:4px 10px;
+    white-space:nowrap;
+    flex:0 0 auto;
 }
 
 .honey-cart-steps .step.active{
@@ -346,8 +399,43 @@ animation: cartBounce .4s;
 }
 
 .honey-cart-steps .step-separator{
-    margin:0 8px;
+    margin:0;
     color:#999;
+    flex:0 0 auto;
+    font-size:0.75rem;
+    font-weight:500;
+    line-height:1;
+    opacity:0.9;
+}
+
+@media (max-width:767.98px){
+    .honey-cart-steps{
+        justify-content:flex-start;
+        font-size:0.8125rem;
+        gap:4px 6px;
+        row-gap:6px;
+        margin-left:0;
+        margin-right:0;
+    }
+    .honey-cart-steps .step{
+        padding:5px 9px;
+        letter-spacing:0.02em;
+    }
+    .honey-cart-steps .step.active{
+        border-radius:16px;
+    }
+    .honey-cart-steps .step-separator{
+        font-size:0.7rem;
+    }
+}
+
+@media (max-width:380px){
+    .honey-cart-steps{
+        font-size:0.75rem;
+    }
+    .honey-cart-steps .step{
+        padding:4px 7px;
+    }
 }
 
 .honey-cart-item{
@@ -662,6 +750,19 @@ animation: cartBounce .4s;
     font-size:0.95rem;
     line-height:1.45;
     color:#222;
+}
+
+.order-thankyou-box .order-note-bank--in-summary{
+    border-top:1px solid rgba(76,175,80,0.35);
+    margin-top:12px;
+    padding-top:14px;
+}
+
+.order-thankyou-box .order-note-bank--in-summary p{
+    font-size:0.875rem;
+    line-height:1.4;
+    color:#333;
+    word-break:break-word;
 }
 
 .order-complete-summary{

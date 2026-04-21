@@ -12301,17 +12301,16 @@ h6,
 }
 
 
-@media (max-width: 780px){
-
+@media (max-width: 991.98px) {
   .edi-intro-image img {
-      max-height: 520px;
-      max-width: -webkit-fill-available;
-      padding-left: 0px !important;
-      margin-left: auto;
+    max-width: 100%;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
   }
   .edi-intro-text {
-      padding-right: 20px;
-      margin-right: auto;
-      margin-left: auto;
+    margin-left: 0;
+    margin-right: 0;
   }
-  }
+}

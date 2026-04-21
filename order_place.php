@@ -131,7 +131,7 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
 
-    <div class="honey-cart-steps mb-4 text-center">
+    <div class="honey-cart-steps mb-4" aria-label="Checkout progress">
         <span class="step">HONEY CART</span>
         <span class="step-separator">&gt;</span>
         <span class="step">CHECKOUT</span>
@@ -201,12 +201,6 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
                             <p class="order-note-lang mb-0" lang="en">When making a bank transfer, please deposit the amount to the account mentioned below and send the relevant receipt via WhatsApp to 075 5002004. When making the payment, clearly mention the Order ID in the reference section, or send the receipt along with the Order ID to the above phone number. Goods will be dispatched by courier only after the payment has been credited to our account.</p>
                         </li>
                     </ul>
-                    <div class="order-note-bank mt-3 pt-3">
-                        <p class="mb-1"><span class="order-note-bank-label" lang="si">ගිණුම් අංකය</span> / <span lang="ta">கணக்கு எண்</span> / <span lang="en">Account Number</span>: <strong>1000400531</strong></p>
-                        <p class="mb-1"><span class="order-note-bank-label" lang="si">ගිණුම් හිමියාගේ නම</span> / <span lang="ta">கணக்கு பெயர்</span> / <span lang="en">Account Name</span>: <strong>EDIBEAR (PRIVATE) LIMITED</strong></p>
-                        <p class="mb-1"><span class="order-note-bank-label" lang="si">බැංකුව</span> / <span lang="ta">வங்கி</span> / <span lang="en">Bank</span>: <strong>COMMERCIAL BANK</strong></p>
-                        <p class="mb-0"><span class="order-note-bank-label" lang="si">ශාඛාව</span> / <span lang="ta">கிளை</span> / <span lang="en">Branch</span>: <strong>GAMPAHA BRANCH</strong></p>
-                    </div>
                 <?php else: ?>
                     <p class="mb-0">
                         Your order will be delivered to your address. Please make sure someone is available to receive the package and pay the amount in cash upon delivery.
@@ -228,6 +222,14 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
                     <div class="order-thankyou-icon">&#10003;</div>
                     <p class="mb-1"><strong>THANK YOU.</strong></p>
                     <p class="mb-0">YOUR ORDER HAS BEEN RECEIVED</p>
+                    <?php if ($paymentMethod === 'bank_transfer'): ?>
+                    <div class="order-note-bank order-note-bank--in-summary text-left mt-3 pt-3">
+                        <p class="mb-1"><span class="order-note-bank-label" lang="si">ගිණුම් අංකය</span> / <span lang="ta">கணக்கு எண்</span> / <span lang="en">Account Number</span>: <strong>1000400531</strong></p>
+                        <p class="mb-1"><span class="order-note-bank-label" lang="si">ගිණුම් හිමියාගේ නම</span> / <span lang="ta">கணக்கு பெயர்</span> / <span lang="en">Account Name</span>: <strong>EDIBEAR (PRIVATE) LIMITED</strong></p>
+                        <p class="mb-1"><span class="order-note-bank-label" lang="si">බැංකුව</span> / <span lang="ta">வங்கி</span> / <span lang="en">Bank</span>: <strong>COMMERCIAL BANK</strong></p>
+                        <p class="mb-0"><span class="order-note-bank-label" lang="si">ශාඛාව</span> / <span lang="ta">கிளை</span> / <span lang="en">Branch</span>: <strong>GAMPAHA BRANCH</strong></p>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

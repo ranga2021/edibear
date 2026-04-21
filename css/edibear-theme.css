@@ -620,6 +620,64 @@ h6.text-primary:not(.text-white),
   color: var(--edi-heading) !important;
 }
 
+/* Footer: overlap copyright with illustration on large screens only */
+.footer-overlap-row {
+  margin-bottom: -150px;
+}
+
+/* Social row: spacing (base) */
+.footer-social-icons {
+  gap: 10px;
+  row-gap: 12px;
+}
+
+.footer-social-icons .social-icon-box {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.footer-follow-col {
+  margin-top: 40px;
+}
+
+@media (max-width: 991.98px) {
+  /* Stop pulling the dark bar up over the artwork on phones/tablets */
+  .footer-overlap-row {
+    margin-bottom: 0;
+  }
+
+  /* Icons: readable strip above characters, wrap instead of one cramped row */
+  .footer-social-icons {
+    justify-content: center;
+    align-content: center;
+    max-width: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 0.25rem;
+    padding: 14px 16px 16px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 14px;
+    border: 1px solid rgba(51, 166, 117, 0.22);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+  }
+
+  .footer-social-icons .social-icon-box {
+    flex: 0 0 auto;
+  }
+
+  /* Extra space so icons sit above the illustrated “ground” in footer.jpg */
+  .footer {
+    padding-bottom: 200px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-social-icons {
+    max-width: 260px;
+    gap: 12px 14px;
+  }
+}
+
 /* Breadcrumbs: use <nav class="edi-breadcrumb"><ol class="breadcrumb …">…</ol></nav> everywhere */
 .edi-breadcrumb {
   font-size: 0.875rem;
@@ -706,20 +764,24 @@ h6.text-primary:not(.text-white),
   border-radius: 1px;
 }
 
-@media (max-width: 780px){
-
+@media (max-width: 991.98px) {
+  /* Homepage intro: keep in viewport (custom.css scopes desktop overlap to lg+) */
   .edi-intro-image img {
-      max-height: 520px;
-      max-width: -webkit-fill-available;
-      padding-left: 0px !important;
-      margin-left: auto;
+    max-height: none;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+    padding-left: 0 !important;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
   }
   .edi-intro-text {
-      padding-right: 20px;
-      margin-right: auto;
-      margin-left: auto;
+    padding-right: 0;
+    margin-right: 0;
+    margin-left: 0;
   }
-  }
+}
 
 /* ----- Blogs listing (The Hidden Den) — full-width 3 columns, header aligns with grid ----- */
 .edi-blogs-page-title-row .edi-blogs-main-title {
