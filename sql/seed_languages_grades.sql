@@ -15,13 +15,5 @@ INSERT INTO `grades` (`id`, `title`) VALUES
   (3, 'Grade 2'),
   (4, 'Grade 3'),
   (5, 'Grade 4'),
-  (6, 'Grade 5'),
-  (7, 'Grade 6'),
-  (8, 'Grade 7'),
-  (9, 'Grade 8'),
-  (10, 'Grade 9'),
-  (11, 'Grade 10'),
-  (12, 'Grade 11'),
-  (13, 'Grade 12'),
-  (14, 'Grade 13')
+  (6, 'Grade 5')
 ON DUPLICATE KEY UPDATE `title` = VALUES(`title`);

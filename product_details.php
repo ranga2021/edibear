@@ -13,10 +13,13 @@ $product_id = isset($_GET['product_id']) ? (int) $_GET['product_id'] : 0;
 
 // Fetch the product details from the database
 $conn = $user->getConnection();
-$query = "SELECT * FROM products WHERE id = :product_id AND status = 1";
+$query = "SELECT p.*, c.name AS category_name 
+          FROM products p 
+          LEFT JOIN product_categories c ON c.id = p.category_id 
+          WHERE p.id = :product_id AND p.status = 1";
 $stmt = $conn->prepare($query);
 $stmt->execute([':product_id' => $product_id]);
-$product = $stmt->fetch();
+$product = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$product) {
     echo "<h2>Product not found!</h2>";
@@ -56,28 +59,39 @@ if ($totalReviews > 0) {
     <?php echo $userHeader->printUserNav(); ?>
 
     <div class="page-header-bg"></div>
-    <div class="container mt-5 page-header-content">
+    <div class="container mt-5 page-header-content edi-treasure-detail">
         <nav class="edi-breadcrumb" aria-label="breadcrumb">
             <ol class="breadcrumb bg-transparent p-0 mb-0">
-                <li class="breadcrumb-item"><a href="index.php"><i class="fa fa-home"></i> Home</a></li>
-                <li class="breadcrumb-item"><a href="product_page.php">The Honey Market</a></li>
-                <li class="breadcrumb-item active"><?= strtoupper($product['product_name']) ?></li>
+                <li class="breadcrumb-item"><a href="./"><i class="fa fa-home"></i> Home</a></li>
+                <li class="breadcrumb-item"><a href="./product_page.php">The Honey Market</a></li>
+                <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($product['product_name'], ENT_QUOTES, 'UTF-8') ?></li>
             </ol>
         </nav>
 
-        <div class="edi-page-title-row">
-            <h1><?= strtoupper($product['product_name']) ?></h1>
+        <div class="edi-page-title-row edi-treasure-detail-heading">
+            <h1>TREASURE DETAILS</h1>
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
 
-        <!-- Product Details Section -->
-        <div class="row">
-            <div class="col-md-6 text-left">
-                <img src="./img/products/<?= $product['image'] ?>" class="img-fluid main-product-image">
+        <div class="row edi-treasure-detail-main">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <div class="edi-treasure-gallery">
+                    <div class="edi-treasure-gallery-main">
+                        <img src="./img/products/<?= htmlspecialchars((string) $product['image'], ENT_QUOTES, 'UTF-8') ?>" class="img-fluid main-product-image" alt="<?= htmlspecialchars((string) $product['product_name'], ENT_QUOTES, 'UTF-8') ?>">
+                    </div>
+                    <div class="edi-treasure-gallery-thumbs" aria-hidden="true">
+                        <?php
+                        $thumbSrc = "./img/products/" . htmlspecialchars((string) $product['image'], ENT_QUOTES, 'UTF-8');
+                        for ($ti = 0; $ti < 4; $ti++) {
+                            echo '<div class="edi-treasure-thumb"><img src="' . $thumbSrc . '" class="img-fluid" alt=""></div>';
+                        }
+                        ?>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-6 text-left product-details-info">
-                <p class="product-details-lead"><strong>Description: </strong><?= $product['description'] ?></p>
-                <div class="price-box">
+            <div class="col-lg-6 text-left product-details-info">
+                <h2 class="edi-treasure-product-title"><?= strtoupper(htmlspecialchars((string) $product['product_name'], ENT_QUOTES, 'UTF-8')) ?></h2>
+                <div class="price-box edi-treasure-price-row mb-3">
                     <?php if ((float) $product['discounted_price'] > 0): ?>
                         <span class="old-price">LKR <?= number_format((float) $product['price'], 2, '.', '') ?></span>
                         <span class="new-price text-success">LKR <?= number_format((float) $product['discounted_price'], 2, '.', '') ?></span>
@@ -85,43 +99,60 @@ if ($totalReviews > 0) {
                         <span class="new-price">LKR <?= number_format((float) $product['price'], 2, '.', '') ?></span>
                     <?php endif; ?>
                 </div>
-                
-                <p><strong>Age Group:</strong> <?= $product['age_group'] ?> years</p>
-                <p><strong>Publisher:</strong> <?= $product['brand'] ?></p>
-                <p><strong></strong> <?= $product['author'] ?></p>
+                <p class="product-details-lead mb-4"><?= nl2br(htmlspecialchars((string) ($product['description'] ?? ''), ENT_QUOTES, 'UTF-8')) ?></p>
 
-                <!-- Quantity Input and Stock Availability -->
-                <form class="d-flex align-items-center mb-3" style="gap: 15px;" id="productDetailsCartForm" method="POST" action="add_to_cart.php">
-                    <input type="hidden" name="product_id" value="<?= $product['id'] ?>">
-                    <div class="quantity-selector-container">
+                <?php
+                $ageLabel = trim((string) ($product['age_group'] ?? ''));
+                $ageDisplay = $ageLabel;
+                if ($ageLabel !== '' && !preg_match('/\b(yrs?|years?)\b/i', $ageLabel)) {
+                    $ageDisplay = $ageLabel . ' yrs';
+                }
+                $catTag = trim((string) ($product['category_name'] ?? 'Books'));
+                ?>
+                <table class="table edi-treasure-meta-table">
+                    <tbody>
+                        <tr><th scope="row">Language</th><td><?= htmlspecialchars((string) ($product['language'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <tr><th scope="row">Author</th><td><?= htmlspecialchars((string) ($product['author'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <tr><th scope="row">ISBN</th><td><?= htmlspecialchars((string) ($product['isbn'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <tr><th scope="row">Grade</th><td><?= htmlspecialchars($ageLabel !== '' ? $ageLabel : '—', ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <tr><th scope="row">Publisher</th><td><?= htmlspecialchars((string) ($product['brand'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <tr><th scope="row">Weight</th><td><?= htmlspecialchars((string) ($product['weight'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                    </tbody>
+                </table>
+
+                <form class="edi-treasure-cart-row d-flex flex-wrap align-items-center mb-3" id="productDetailsCartForm" method="POST" action="add_to_cart.php">
+                    <input type="hidden" name="product_id" value="<?= (int) $product['id'] ?>">
+                    <div class="quantity-selector-container mr-2 mb-2">
                         <button type="button" class="qty-btn" id="decreaseBtn">−</button>
                         <input type="number" id="quantity" name="quantity" min="1" max="<?= $stock ?>" value="1" class="qty-input" readonly>
                         <button type="button" class="qty-btn" id="increaseBtn">+</button>
                     </div>
-
-                    <button type="submit" class="collect-btn add-to-cart-btn" id="addToCartBtn">Collect</button>
-
-                    <div class="stock-status-text">
-                        <?= $stock ?> In Stock
-                    </div>
+                    <button type="submit" class="collect-btn add-to-cart-btn mr-2 mb-2" id="addToCartBtn">Collect</button>
+                    <div class="stock-status-text mb-2"><?= (int) $stock ?> In Stock</div>
+                    <button type="button" class="btn btn-link text-danger edi-wishlist-btn mb-2 p-0 ml-lg-2" title="Wishlist" aria-label="Add to wishlist">♥</button>
                 </form>
 
-                <p class="product-tags">Tags : <?= $product['category_name'] ?? 'Books' ?>, <?= $product['age_group'] ?> Year, <?= $product['brand'] ?></p>
+                <p class="product-tags">Tags: <?= htmlspecialchars($catTag, ENT_QUOTES, 'UTF-8') ?><?= $ageLabel !== '' ? ', ' . htmlspecialchars($ageDisplay, ENT_QUOTES, 'UTF-8') : '' ?><?= !empty($product['brand']) ? ', ' . htmlspecialchars((string) $product['brand'], ENT_QUOTES, 'UTF-8') : '' ?></p>
             </div>
         </div>
         <div class="details-tabs mt-5">
 
     <!-- TAB BUTTONS -->
     <div class="tab-buttons">
-        <button class="tab-btn active" onclick="showTab('details')">More Details</button>
-        <button class="tab-btn" onclick="showTab('reviews')">Reviews</button>
+        <button type="button" class="tab-btn active" data-tab="details" onclick="showTab('details')">More Details</button>
+        <button type="button" class="tab-btn" data-tab="reviews" onclick="showTab('reviews')">Reviews</button>
     </div>
 
     <hr class="custom-hr">
 
     <!-- DETAILS TAB -->
     <div id="details" class="tab-content active">
-        <p><?= nl2br($product['more_details']) ?></p>
+        <div class="edi-more-details-body">
+            <?php
+            $md = (string) ($product['more_details'] ?? '');
+            echo $md !== '' ? $md : '<p class="text-muted">No extra details for this treasure yet.</p>';
+            ?>
+        </div>
     </div>
 
     <!-- REVIEWS TAB -->
@@ -335,18 +366,11 @@ if ($totalReviews > 0) {
     </script>
     <script>
 function showTab(tab) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-
-    document.getElementById(tab).classList.add('active');
-
-    // FIX: use event safely
-    const btns = document.querySelectorAll('.tab-btn');
-    btns.forEach(btn => {
-        if (btn.textContent.toLowerCase().includes(tab)) {
-            btn.classList.add('active');
-        }
-    });
+    document.querySelectorAll('.tab-content').forEach(function (el) { el.classList.remove('active'); });
+    document.querySelectorAll('.tab-btn').forEach(function (el) { el.classList.remove('active'); });
+    var panel = document.getElementById(tab);
+    if (panel) { panel.classList.add('active'); }
+    document.querySelectorAll('.tab-btn[data-tab="' + tab + '"]').forEach(function (el) { el.classList.add('active'); });
 }
 </script>
 </body>

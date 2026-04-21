@@ -142,11 +142,11 @@
 
 @media (min-width: 992px) {
     .treasures-filters-row {
-        flex-wrap: nowrap;
+        flex-wrap: wrap;
         gap: 14px;
     }
 
     .treasures-filter-cell {
-        flex: 1 1 0;
+        flex: 1 1 160px;
     }
 }

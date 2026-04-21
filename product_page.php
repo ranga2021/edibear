@@ -1,6 +1,7 @@
 <?php
 // session_start(); // Can be removed if not using PHP sessions elsewhere
 require_once("./classes/class.user.php");
+require_once("./classes/edi_taxonomy.php");
 require_once("./classes/class.header.php");
 require_once("./classes/class.widgets.php");
 
@@ -8,42 +9,102 @@ $userHeader = new HEADER("shop");
 $user = new USER();
 $widgets = new WIDGETS();
 
+$conn = $user->getConnection();
+
+$hasProductSubcategoryColumn = false;
+try {
+    $colStmt = $conn->query("SHOW COLUMNS FROM products LIKE 'product_subcategory_id'");
+    $hasProductSubcategoryColumn = $colStmt && $colStmt->rowCount() > 0;
+} catch (Throwable $e) {
+    $hasProductSubcategoryColumn = false;
+}
+
 // --- 1. Fetch Filter Options from DB ---
 $categories = $user->fetchAll(array("id", "name"), array("product_categories"), array());
 $ageGroups = $user->fetchAll(array("DISTINCT age_group"), array("products"), array("status" => 1));
 $brands = $user->fetchAll(array("DISTINCT brand"), array("products"), array("status" => 1));
+$shopLanguages = EdiTaxonomy::loadLanguages($conn);
+$shopGrades = EdiTaxonomy::loadGrades($conn);
 
-// Get unique values for dropdowns
-$conn = $user->getConnection();
-
-// --- 2. Handle Filtering Logic ---
-$catF = isset($_GET['category']) ? $_GET['category'] : '';
-$ageF = isset($_GET['age']) ? $_GET['age'] : '';
-$brandF = isset($_GET['brand']) ? $_GET['brand'] : '';
-$priceF = isset($_GET['price']) ? $_GET['price'] : '';
-$offerF = isset($_GET['offers']) ? $_GET['offers'] : '';
-
-$query = "SELECT * FROM products WHERE status = 1";
-$params = [];
-
-if(!empty($catF)) { $query .= " AND category_id = :cat"; $params[':cat'] = $catF; }
-if(!empty($ageF)) { $query .= " AND age_group = :age"; $params[':age'] = $ageF; }
-if(!empty($brandF)) { $query .= " AND brand = :brand"; $params[':brand'] = $brandF; }
-
-if($offerF == 'available') { 
-    $query .= " AND discount_percentage > 0"; 
+$productSubcategoriesAll = array();
+try {
+    $pscStmt = $conn->query("SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC");
+    if ($pscStmt) {
+        $productSubcategoriesAll = $pscStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch (Throwable $e) {
+    $productSubcategoriesAll = array();
 }
 
-if(!empty($priceF)) {
-    if($priceF == 'low') $query .= " ORDER BY discounted_price ASC";
-    elseif($priceF == 'high') $query .= " ORDER BY discounted_price DESC";
+$ageOptionTitles = array();
+foreach ($shopGrades as $gr) {
+    $t = trim((string) ($gr["title"] ?? ""));
+    if ($t !== "") {
+        $ageOptionTitles[$t] = true;
+    }
+}
+foreach ($ageGroups as $row) {
+    $t = trim((string) ($row["age_group"] ?? ""));
+    if ($t !== "") {
+        $ageOptionTitles[$t] = true;
+    }
+}
+$ageOptionList = array_keys($ageOptionTitles);
+$ageOptionList = array_values(array_filter($ageOptionList, function ($t) {
+    return !EdiTaxonomy::isNumericGradeAboveFive($t);
+}));
+usort($ageOptionList, function ($a, $b) {
+    return EdiTaxonomy::gradeSortKey($a) <=> EdiTaxonomy::gradeSortKey($b) ?: strcasecmp($a, $b);
+});
+
+// --- 2. Handle Filtering Logic ---
+$catF = isset($_GET["category"]) ? trim((string) $_GET["category"]) : "";
+$ageF = isset($_GET["age"]) ? trim((string) $_GET["age"]) : "";
+$brandF = isset($_GET["brand"]) ? trim((string) $_GET["brand"]) : "";
+$priceF = isset($_GET["price"]) ? trim((string) $_GET["price"]) : "";
+$offerF = isset($_GET["offers"]) ? trim((string) $_GET["offers"]) : "";
+$langF = isset($_GET["lang"]) ? trim((string) $_GET["lang"]) : "";
+$subF = isset($_GET["sub"]) ? (int) $_GET["sub"] : 0;
+
+$query = "SELECT * FROM products WHERE status = 1";
+$params = array();
+
+if ($catF !== "") {
+    $query .= " AND category_id = :cat";
+    $params[":cat"] = $catF;
+}
+if ($ageF !== "") {
+    $query .= " AND TRIM(COALESCE(age_group, '')) = :age";
+    $params[":age"] = $ageF;
+}
+if ($brandF !== "") {
+    $query .= " AND brand = :brand";
+    $params[":brand"] = $brandF;
+}
+if ($langF !== "") {
+    $query .= " AND LOWER(TRIM(COALESCE(language, ''))) = LOWER(:lang)";
+    $params[":lang"] = $langF;
+}
+if ($subF > 0 && $hasProductSubcategoryColumn) {
+    $query .= " AND product_subcategory_id = :psub";
+    $params[":psub"] = $subF;
+}
+
+if ($offerF === "available") {
+    $query .= " AND discount_percentage > 0";
+}
+
+if ($priceF === "low") {
+    $query .= " ORDER BY discounted_price ASC";
+} elseif ($priceF === "high") {
+    $query .= " ORDER BY discounted_price DESC";
 } else {
     $query .= " ORDER BY id DESC";
 }
 
 $stmt = $conn->prepare($query);
 $stmt->execute($params);
-$products = $stmt->fetchAll();
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -90,16 +151,43 @@ $products = $stmt->fetchAll();
                     </select>
                 </div>
                 <div class="treasures-filter-cell">
-                    <label class="sr-only" for="filter-age">Age</label>
+                    <label class="sr-only" for="filter-age">Grade</label>
                     <select id="filter-age" name="age" class="form-control treasures-filter-select" onchange="this.form.submit()">
-                        <option value="">Age</option>
-                        <?php foreach ($ageGroups as $a): ?>
-                            <option value="<?= htmlspecialchars((string) $a['age_group'], ENT_QUOTES, 'UTF-8') ?>" <?= ($ageF === $a['age_group']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars((string) $a['age_group'], ENT_QUOTES, 'UTF-8') ?>
+                        <option value="">Grade</option>
+                        <?php foreach ($ageOptionList as $ageTitle): ?>
+                            <option value="<?= htmlspecialchars($ageTitle, ENT_QUOTES, 'UTF-8') ?>" <?= ($ageF === $ageTitle) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($ageTitle, ENT_QUOTES, 'UTF-8') ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <div class="treasures-filter-cell">
+                    <label class="sr-only" for="filter-lang">Language</label>
+                    <select id="filter-lang" name="lang" class="form-control treasures-filter-select" onchange="this.form.submit()">
+                        <option value="">Language</option>
+                        <?php foreach ($shopLanguages as $lng): ?>
+                            <?php $lt = trim((string) ($lng['title'] ?? '')); if ($lt === '') { continue; } ?>
+                            <option value="<?= htmlspecialchars($lt, ENT_QUOTES, 'UTF-8') ?>" <?= ($langF === $lt) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($lt, ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <?php if (count($productSubcategoriesAll) > 0): ?>
+                <div class="treasures-filter-cell">
+                    <label class="sr-only" for="filter-sub">Subcategory</label>
+                    <select id="filter-sub" name="sub" class="form-control treasures-filter-select" onchange="this.form.submit()">
+                        <option value="">Subcategory</option>
+                        <?php foreach ($productSubcategoriesAll as $sub): ?>
+                            <option value="<?= (int) $sub['id'] ?>"
+                                data-product-category-id="<?= (int) $sub['product_category_id'] ?>"
+                                <?= ($subF === (int) $sub['id']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars((string) $sub['title'], ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <?php endif; ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-brand">Brands</label>
                     <select id="filter-brand" name="brand" class="form-control treasures-filter-select" onchange="this.form.submit()">
@@ -128,6 +216,28 @@ $products = $stmt->fetchAll();
                 </div>
             </div>
         </form>
+
+        <script>
+        (function () {
+            var cat = document.getElementById("filter-category");
+            var sub = document.getElementById("filter-sub");
+            if (!cat || !sub) return;
+            function syncSubcategories() {
+                var cid = String(cat.value || "");
+                for (var i = 0; i < sub.options.length; i++) {
+                    var o = sub.options[i];
+                    if (o.value === "") { o.hidden = false; o.disabled = false; continue; }
+                    var pc = o.getAttribute("data-product-category-id");
+                    var show = !cid || !pc || String(pc) === String(cid);
+                    o.hidden = !show;
+                    o.disabled = !show;
+                    if (!show && o.selected) { sub.selectedIndex = 0; }
+                }
+            }
+            cat.addEventListener("change", syncSubcategories);
+            syncSubcategories();
+        })();
+        </script>
 
         <div class="row treasures-product-grid">
             <?php if(empty($products)): ?>

@@ -47,10 +47,22 @@ class EdiTaxonomy
         if (strcasecmp($t, "Pre School") === 0 || strcasecmp($t, "Pre-School") === 0 || strcasecmp($t, "Pre school") === 0) {
             return 0;
         }
-        if (preg_match('/^Grade\s*(\d+)$/i', $t, $m)) {
+        if (preg_match('/^Grade[\s-]*(\d+)$/i', $t, $m)) {
             return 100 + (int) $m[1];
         }
         return 500 + crc32($t);
+    }
+
+    /**
+     * True when title is a numeric "Grade N" / "Grade-N" with N > 5 (shop explorer caps at Grade 5).
+     */
+    public static function isNumericGradeAboveFive($title)
+    {
+        $t = trim((string) $title);
+        if (preg_match('/^Grade[\s-]*(\d+)$/i', $t, $m)) {
+            return (int) $m[1] > 5;
+        }
+        return false;
     }
 
     public static function loadGrades(PDO $conn)
@@ -66,7 +78,7 @@ class EdiTaxonomy
         }
         if (count($rows) === 0) {
             $rows = array(array("id" => 1, "title" => "Pre School"));
-            for ($g = 1; $g <= 14; $g++) {
+            for ($g = 1; $g <= 5; $g++) {
                 $rows[] = array("id" => $g + 1, "title" => "Grade " . $g);
             }
             return $rows;
@@ -79,6 +91,9 @@ class EdiTaxonomy
             }
             return $ka <=> $kb;
         });
+        $rows = array_values(array_filter($rows, function ($r) {
+            return !self::isNumericGradeAboveFive($r["title"] ?? "");
+        }));
         return $rows;
     }
 

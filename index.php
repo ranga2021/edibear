@@ -45,78 +45,10 @@
         $productSubcategoriesAll = array();
     }
 
-    $hasProductSubcategoryColumn = false;
-    try {
-        $colStmt = $conn->query("SHOW COLUMNS FROM products LIKE 'product_subcategory_id'");
-        $hasProductSubcategoryColumn = $colStmt && $colStmt->rowCount() > 0;
-    } catch (Throwable $e) {
-        $hasProductSubcategoryColumn = false;
-    }
-
-    $explorerSearch = isset($_GET['explorer']) && (string) $_GET['explorer'] === '1';
-    $expLangId = (int) ($_GET['exp_lang'] ?? 0);
-    $expGradeId = (int) ($_GET['exp_grade'] ?? 0);
-    $expCatId = (int) ($_GET['exp_cat'] ?? 0);
-    $expSubId = (int) ($_GET['exp_sub'] ?? 0);
-
-    $explorerError = '';
-    if ($explorerSearch && ($expLangId <= 0 || $expGradeId <= 0 || $expCatId <= 0)) {
-        $explorerError = 'Please choose language, grade, and category before exploring.';
-        $explorerSearch = false;
-    }
-
-    $languageTitle = '';
-    if ($expLangId > 0) {
-        foreach ($explorerLanguages as $lr) {
-            if ((int) $lr['id'] === $expLangId) {
-                $languageTitle = trim((string) $lr['title']);
-                break;
-            }
-        }
-    }
-    $gradeTitle = '';
-    if ($expGradeId > 0) {
-        foreach ($explorerGrades as $gr) {
-            if ((int) $gr['id'] === $expGradeId) {
-                $gradeTitle = trim((string) $gr['title']);
-                break;
-            }
-        }
-    }
-
-    if ($explorerSearch && ($languageTitle === '' || $gradeTitle === '')) {
-        $explorerError = 'Invalid language or grade selection.';
-        $explorerSearch = false;
-    }
-
-    if ($explorerSearch) {
-        $productQuery = "SELECT * FROM products WHERE status = 1 AND category_id = :cid";
-        $params = array(':cid' => $expCatId);
-
-        if ($languageTitle !== '') {
-            $productQuery .= " AND LOWER(TRIM(COALESCE(language, ''))) = LOWER(:lang)";
-            $params[':lang'] = $languageTitle;
-        }
-        if ($gradeTitle !== '') {
-            $productQuery .= " AND TRIM(COALESCE(age_group, '')) = :grade";
-            $params[':grade'] = $gradeTitle;
-        }
-        if ($expSubId > 0 && $hasProductSubcategoryColumn) {
-            $productQuery .= " AND product_subcategory_id = :psub";
-            $params[':psub'] = $expSubId;
-        }
-
-        $productQuery .= " ORDER BY id DESC LIMIT 48";
-
-        $stmt = $conn->prepare($productQuery);
-        $stmt->execute($params);
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        $productQuery = "SELECT * FROM products WHERE status = 1 ORDER BY id DESC LIMIT 4";
-        $stmt = $conn->prepare($productQuery);
-        $stmt->execute();
-        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $productQuery = "SELECT * FROM products WHERE status = 1 ORDER BY id DESC LIMIT 4";
+    $stmt = $conn->prepare($productQuery);
+    $stmt->execute();
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $braveHeartQuery = "SELECT * FROM braveheart_events WHERE status = 1 ORDER BY id DESC LIMIT 1";
     $braveStmt = $user->getConnection()->prepare($braveHeartQuery);
@@ -255,40 +187,40 @@
 
     <div class="explorer-search-area">
     <div class="container">
-        <form method="GET" action="" id="searchForm">
+        <form method="GET" action="product_page.php" id="searchForm">
         <div class="row justify-content-center align-items-end">
             <div class="col-md-3 mb-2">
-                    <select class="explorer-select" name="exp_lang" id="explorer_exp_lang" required>
+                    <select class="explorer-select" name="lang" id="explorer_exp_lang" required>
                         <option value="">Language (Required)</option>
                         <?php foreach ($explorerLanguages as $lr): ?>
-                        <option value="<?php echo (int) $lr['id']; ?>" <?php echo ($expLangId === (int) $lr['id'] ? 'selected' : ''); ?>><?php echo htmlspecialchars((string) $lr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
+                        <option value="<?php echo htmlspecialchars((string) $lr['title'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) $lr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
                         <?php endforeach; ?>
                     </select>
             </div>
 
             <div class="col-md-3 mb-2">
-                <select class="explorer-select" name="exp_grade" id="explorer_exp_grade" required>
+                <select class="explorer-select" name="age" id="explorer_exp_grade" required>
                     <option value="">Grade (Required)</option>
                     <?php foreach ($explorerGrades as $gr): ?>
-                    <option value="<?php echo (int) $gr['id']; ?>" <?php echo ($expGradeId === (int) $gr['id'] ? 'selected' : ''); ?>><?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
+                    <option value="<?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="col-md-3 mb-2">
-                <select class="explorer-select" name="exp_cat" id="explorer_exp_cat" required>
+                <select class="explorer-select" name="category" id="explorer_exp_cat" required>
                     <option value="">Category (Required)</option>
                     <?php foreach ($productCategories as $pc): ?>
-                    <option value="<?php echo (int) $pc['id']; ?>" <?php echo ($expCatId === (int) $pc['id'] ? 'selected' : ''); ?>><?php echo htmlspecialchars((string) $pc['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+                    <option value="<?php echo (int) $pc['id']; ?>"><?php echo htmlspecialchars((string) $pc['name'], ENT_QUOTES, 'UTF-8'); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="col-md-3 mb-2">
-                    <select class="explorer-select" name="exp_sub" id="explorer_exp_sub">
+                    <select class="explorer-select" name="sub" id="explorer_exp_sub">
                      <option value="">Subcategory (Optional)</option>
                     <?php foreach ($productSubcategoriesAll as $sub): ?>
-                      <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>" <?php echo ($expSubId === (int) $sub['id'] ? 'selected' : ''); ?>>
+                      <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>">
                      <?php echo htmlspecialchars((string) $sub['title'], ENT_QUOTES, 'UTF-8'); ?>
                       </option>
                     <?php endforeach; ?>
@@ -298,7 +230,7 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" name="explorer" value="1" class="explore-btn edi-home-section-cta">EXPLORE</button>
+            <button type="submit" class="explore-btn edi-home-section-cta">EXPLORE</button>
         </div>
         </form>
     </div>
@@ -309,9 +241,6 @@
 
        <div class="text-center">
         <h1 class="text-danger">THE HONEY MARKET</h1>
-      <?php if ($explorerError !== ''): ?>
-        <p class="text-danger mb-2"><?php echo htmlspecialchars($explorerError, ENT_QUOTES, 'UTF-8'); ?></p>
-      <?php endif; ?>
       <p style="max-width:890px; margin:0 auto; line-height:1.6; text-align: justify;">
         This is your second destination! Explore every trail and collect new treasures
         to sharpen your knowledge and brighten your brave hearts!Discover your favourite things to make this journey truly memorable. It's time to bring the fun home for your next big adventure!
@@ -325,11 +254,7 @@
             // We now use the $products array we fetched at the top.
             
             if (empty($products)) {
-                if ($explorerSearch) {
-                    echo "<div class='col-12 text-center'><p>No treasures match these filters. Try different language, grade, or category, or browse the full <a href=\"./product_page.php\">Honey Market</a>.</p></div>";
-                } else {
-                    echo "<div class='col-12 text-center'><p>No treasures found in this trail. Try another search!</p></div>";
-                }
+                echo "<div class='col-12 text-center'><p>No treasures found in this trail. Try another search!</p></div>";
             } else {
                 foreach($products as $product) {
                     $price = $product['discounted_price'] > 0 ? $product['discounted_price'] : $product['price'];
@@ -795,15 +720,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
     catSel.addEventListener("change", filterSubcategories);
     filterSubcategories();
-
-    if (window.location.search.indexOf("explorer=1") !== -1) {
-        var honey = document.getElementById("honey-market-section");
-        if (honey) {
-            setTimeout(function () {
-                honey.scrollIntoView({ behavior: "smooth", block: "start" });
-            }, 200);
-        }
-    }
 })();
 </script>
 </body>

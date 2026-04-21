@@ -304,3 +304,80 @@ img[style*="position: fixed"] {
     background: #f39c12;
     margin-top: 8px;
 }
+
+/* —— Treasure detail (single product) layout —— */
+.edi-treasure-detail-heading h1 {
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+}
+
+.edi-treasure-product-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #222;
+  margin-bottom: 0.75rem;
+}
+
+.edi-treasure-gallery-main {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+  background: #fff;
+  text-align: center;
+}
+
+.edi-treasure-gallery-main .main-product-image {
+  max-height: 420px;
+  width: auto;
+  margin: 0 auto;
+}
+
+.edi-treasure-gallery-thumbs {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.edi-treasure-thumb {
+  flex: 1 1 22%;
+  min-width: 64px;
+  max-width: 120px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 6px;
+  background: #fafafa;
+  cursor: default;
+}
+
+.edi-treasure-thumb img {
+  max-height: 72px;
+  object-fit: contain;
+}
+
+.edi-treasure-meta-table {
+  font-size: 0.9375rem;
+  border-color: #e5e7eb;
+}
+
+.edi-treasure-meta-table th {
+  width: 38%;
+  font-weight: 600;
+  color: #444;
+  background: #f8fafc;
+}
+
+.edi-treasure-meta-table td {
+  color: #555;
+}
+
+.edi-wishlist-btn {
+  font-size: 1.35rem;
+  line-height: 1;
+  text-decoration: none !important;
+}
+
+.edi-treasure-price-row .new-price {
+  font-size: 1.25rem;
+}
