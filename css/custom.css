@@ -170,8 +170,25 @@
 }
 
 @media (max-width:991.98px){
+    /* Comfortable side gutters (section + flush inner container = one clear inset) */
     .edi-intro-section{
-        padding:32px 0;
+        padding-top:32px;
+        padding-bottom:32px;
+        padding-left:clamp(18px, 5vw, 28px);
+        padding-right:clamp(18px, 5vw, 28px);
+    }
+    .edi-intro-section > .container{
+        max-width:100%;
+        padding-left:0;
+        padding-right:0;
+    }
+    .edi-intro-section .row{
+        margin-left:0;
+        margin-right:0;
+    }
+    .edi-intro-section .row > [class*="col-"]{
+        padding-left:clamp(6px, 1.5vw, 12px);
+        padding-right:clamp(6px, 1.5vw, 12px);
     }
     .edi-intro-text{
         margin-left:0 !important;
@@ -185,12 +202,14 @@
     }
     .edi-intro-image{
         margin-top:0.75rem;
+        padding-left:clamp(4px, 1vw, 10px);
+        padding-right:clamp(4px, 1vw, 10px);
     }
     .edi-intro-image img{
         display:block;
         margin-left:auto !important;
         margin-right:auto;
-        max-width:min(100%,440px);
+        max-width:min(100%,400px);
         max-height:none;
         padding-left:0 !important;
     }

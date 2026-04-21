@@ -363,14 +363,14 @@ class HEADER {
                     <span class='edibear-nav-toggle-bar' aria-hidden='true'></span>
                 </button>
                 <div class='edibear-nav-tools'>
-               <a href='#' onclick='checkCartAccess()' id='cart-icon' style='position:relative;' class='edibear-link'>
-                    <img src='./img/honey_cart_icon.png' style='width:32px; height:36px; vertical-align: middle;' alt='Cart'>
+               <a href='#' onclick='checkCartAccess()' id='cart-icon' class='edibear-link edibear-nav-tool edibear-nav-cart' aria-label='Cart'>
+                    <img src='./img/honey_cart_icon.png' class='edibear-nav-cart-img' alt='Cart'>
                     <span id='cart-dot' style='position:absolute; top:-5px; right:-5px; width:10px; height:10px; background:#28a745; border-radius:50%; display:none;'></span>
                </a>
-               <a href='#' id='accountIcon' class='edibear-signin' style='display:none;'>
-                    <i class='fa fa-user'></i>
+               <a href='#' id='accountIcon' class='edibear-signin edibear-nav-tool edibear-nav-account' style='display:none;' aria-label='My account'>
+                    <i class='fa fa-user' aria-hidden='true'></i>
                </a>
-               <a href='./login' id='userAuthBtn' class='edibear-signin'>
+               <a href='./login' id='userAuthBtn' class='edibear-signin edibear-nav-tool edibear-nav-auth'>
                     <i class='fa fa-user' aria-hidden='true'></i><span class='edibear-nav-auth-label'> Sign In</span>
                </a>
                 </div>

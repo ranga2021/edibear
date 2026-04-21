@@ -297,6 +297,17 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   overflow-x: clip;
 }
 
+.edibear-nav-cart {
+  position: relative;
+}
+
+.edibear-nav-cart-img {
+  display: block;
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+}
+
 .edibear-nav-links {
   display: flex;
   align-items: center;
@@ -348,8 +359,8 @@ body.index .HomeCarousel #header-carousel .carousel-item {
 
 @media (max-width: 991.98px) {
   .edibear-nav-container {
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+    padding-left: 12px !important;
+    padding-right: 6px !important;
   }
 
   .edibear-logo img {
@@ -357,12 +368,65 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   }
 
   .edibear-nav-main {
-    gap: 8px !important;
+    gap: 2px !important;
     justify-content: flex-end !important;
+    flex: 1;
+    min-width: 0;
   }
 
+  /* Same tap target + aligned icon size (menu, cart, account) */
   .edibear-nav-toggle {
     display: inline-flex !important;
+    width: 40px !important;
+    height: 40px !important;
+    flex-shrink: 0;
+  }
+
+  .edibear-nav-tools {
+    gap: 2px !important;
+    margin-left: 0;
+    flex-shrink: 0;
+  }
+
+  .edibear-nav-tools .edibear-nav-tool {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box;
+  }
+
+  .edibear-nav-tools .edibear-nav-tool.edibear-link {
+    color: var(--edi-green) !important;
+  }
+
+  .edibear-nav-tools .edibear-nav-cart-img {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .edibear-nav-tools .edibear-nav-tool .fa-user,
+  .edibear-nav-tools .edibear-nav-tool .fa-sign-out {
+    font-size: 1.25rem !important;
+    line-height: 1;
+    margin-right: 0 !important;
+  }
+
+  .edibear-header-wrapper.edibear-nav-menu-open .edibear-nav-toggle-bar:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .edibear-header-wrapper.edibear-nav-menu-open .edibear-nav-toggle-bar:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  .edibear-nav-tools .edibear-signin {
+    margin-left: 0 !important;
   }
 
   .edibear-navbar {
@@ -411,22 +475,19 @@ body.index .HomeCarousel #header-carousel .carousel-item {
     white-space: nowrap;
   }
 
-  /* Auth: icon only (match cart / accent); label hidden on small screens */
+  /* Auth: icon only; label hidden on small screens */
   .edibear-nav-tools #userAuthBtn.edibear-signin {
     justify-content: center;
-    min-width: 44px;
-    min-height: 44px;
-    padding: 0 6px;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    width: 40px;
+    height: 40px;
+    padding: 0 !important;
     gap: 0;
   }
 
   .edibear-nav-tools #userAuthBtn .edibear-nav-auth-label {
     display: none !important;
-  }
-
-  .edibear-nav-tools #userAuthBtn i {
-    font-size: 1.25rem;
-    margin: 0;
   }
 }
 
@@ -646,7 +707,7 @@ h6.text-primary:not(.text-white),
     margin-bottom: 0;
   }
 
-  /* Icons: readable strip above characters, wrap instead of one cramped row */
+  /* Social icons: no card chrome on small screens */
   .footer-social-icons {
     justify-content: center;
     align-content: center;
@@ -654,11 +715,11 @@ h6.text-primary:not(.text-white),
     margin-left: auto;
     margin-right: auto;
     margin-top: 0.15rem;
-    padding: 10px 12px 12px;
-    background: rgba(255, 255, 255, 0.97);
-    border-radius: 12px;
-    border: 1px solid rgba(51, 166, 117, 0.22);
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+    padding: 0 8px;
+    background: transparent !important;
+    border-radius: 0;
+    border: none !important;
+    box-shadow: none !important;
   }
 
   .footer-social-icons .social-icon-box {
@@ -765,10 +826,10 @@ h6.text-primary:not(.text-white),
 }
 
 @media (max-width: 991.98px) {
-  /* Homepage intro: keep in viewport (custom.css scopes desktop overlap to lg+) */
+  /* Homepage intro: width/gutters set in custom.css (loads before this file) */
   .edi-intro-image img {
     max-height: none;
-    max-width: 100%;
+    max-width: min(100%, 400px);
     width: auto;
     height: auto;
     padding-left: 0 !important;
@@ -777,7 +838,6 @@ h6.text-primary:not(.text-white),
     display: block;
   }
   .edi-intro-text {
-    padding-right: 0;
     margin-right: 0;
     margin-left: 0;
   }
