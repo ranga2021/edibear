@@ -1,0 +1,96 @@
+<?php
+
+/**
+ * Shared languages + grades for homepage explorer and admin product forms.
+ * Uses PDO (not USER::fetchAll with empty WHERE).
+ */
+class EdiTaxonomy
+{
+    public static function loadLanguages(PDO $conn)
+    {
+        $rows = array();
+        try {
+            $st = $conn->query("SELECT id, title FROM languages ORDER BY id ASC");
+            if ($st) {
+                $rows = $st->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } catch (Throwable $e) {
+            $rows = array();
+        }
+        if (count($rows) === 0) {
+            return array(
+                array("id" => 1, "title" => "Sinhala"),
+                array("id" => 2, "title" => "English"),
+                array("id" => 3, "title" => "Tamil"),
+            );
+        }
+        $order = array("Sinhala" => 1, "English" => 2, "Tamil" => 3);
+        usort($rows, function ($a, $b) use ($order) {
+            $ta = trim((string) ($a["title"] ?? ""));
+            $tb = trim((string) ($b["title"] ?? ""));
+            $oa = $order[$ta] ?? 99;
+            $ob = $order[$tb] ?? 99;
+            if ($oa === $ob) {
+                return strcasecmp($ta, $tb);
+            }
+            return $oa <=> $ob;
+        });
+        return $rows;
+    }
+
+    public static function gradeSortKey($title)
+    {
+        $t = trim((string) $title);
+        if ($t === "") {
+            return 9999;
+        }
+        if (strcasecmp($t, "Pre School") === 0 || strcasecmp($t, "Pre-School") === 0 || strcasecmp($t, "Pre school") === 0) {
+            return 0;
+        }
+        if (preg_match('/^Grade\s*(\d+)$/i', $t, $m)) {
+            return 100 + (int) $m[1];
+        }
+        return 500 + crc32($t);
+    }
+
+    public static function loadGrades(PDO $conn)
+    {
+        $rows = array();
+        try {
+            $st = $conn->query("SELECT id, title FROM grades ORDER BY id ASC");
+            if ($st) {
+                $rows = $st->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } catch (Throwable $e) {
+            $rows = array();
+        }
+        if (count($rows) === 0) {
+            $rows = array(array("id" => 1, "title" => "Pre School"));
+            for ($g = 1; $g <= 14; $g++) {
+                $rows[] = array("id" => $g + 1, "title" => "Grade " . $g);
+            }
+            return $rows;
+        }
+        usort($rows, function ($a, $b) {
+            $ka = self::gradeSortKey($a["title"] ?? "");
+            $kb = self::gradeSortKey($b["title"] ?? "");
+            if ($ka === $kb) {
+                return strcasecmp((string) ($a["title"] ?? ""), (string) ($b["title"] ?? ""));
+            }
+            return $ka <=> $kb;
+        });
+        return $rows;
+    }
+
+    public static function allowedTitles($rows)
+    {
+        $out = array();
+        foreach ($rows as $r) {
+            $t = trim((string) ($r["title"] ?? ""));
+            if ($t !== "") {
+                $out[$t] = true;
+            }
+        }
+        return array_keys($out);
+    }
+}

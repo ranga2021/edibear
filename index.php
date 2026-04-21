@@ -7,6 +7,7 @@
 
     
     require_once("./classes/class.user.php");
+    require_once("./classes/edi_taxonomy.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
     $userHeader = new HEADER("home");
@@ -22,16 +23,10 @@
     $explorerGrades = array();
     $productCategories = array();
     $productSubcategoriesAll = array();
-    try {
-        $explorerLanguages = $user->fetchAll(array("id", "title"), array("languages"), array());
-    } catch (Throwable $e) {
-        $explorerLanguages = array();
-    }
-    try {
-        $explorerGrades = $user->fetchAll(array("id", "title"), array("grades"), array());
-    } catch (Throwable $e) {
-        $explorerGrades = array();
-    }
+
+    $explorerLanguages = EdiTaxonomy::loadLanguages($conn);
+    $explorerGrades = EdiTaxonomy::loadGrades($conn);
+
     try {
         $productCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array("status" => 1));
     } catch (Throwable $e) {

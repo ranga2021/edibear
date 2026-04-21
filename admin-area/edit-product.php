@@ -1,10 +1,13 @@
 <?php
 require_once("../classes/session_config.php");
 require_once("../classes/class.user.php");
+require_once("../classes/edi_taxonomy.php");
 require_once("../classes/class.header.php");
 
 $adminHeader = new HEADER("products");
 $user = new USER();
+$ediLanguages = EdiTaxonomy::loadLanguages($user->getConnection());
+$ediGrades = EdiTaxonomy::loadGrades($user->getConnection());
 
 $id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
 if ($id < 1) {
@@ -53,14 +56,24 @@ if (isset($_POST["btn-update-product"])) {
         }
     }
     $brand = $_POST["brand"] ?? "";
-    $age_group = $_POST["age_group"] ?? "";
+    $age_group = trim((string) ($_POST["age_group"] ?? ""));
+    $allowedGrades = EdiTaxonomy::allowedTitles($ediGrades);
+    $prevAge = trim((string) ($product["age_group"] ?? ""));
+    if ($age_group !== "" && !in_array($age_group, $allowedGrades, true) && $age_group !== $prevAge) {
+        $age_group = $prevAge;
+    }
     $price = $_POST["price"] ?? "";
     $discount = $_POST["discount"] ?? "";
     $disc_price = $_POST["discounted_price"] ?? "";
     $p_name = $_POST["product_name"] ?? "";
     $stock = $_POST["available"] ?? "";
     $description = $_POST["description"] ?? "";
-    $language = $_POST["language"] ?? "";
+    $language = trim((string) ($_POST["language"] ?? ""));
+    $allowedLangs = EdiTaxonomy::allowedTitles($ediLanguages);
+    $prevLang = trim((string) ($product["language"] ?? ""));
+    if ($language !== "" && !in_array($language, $allowedLangs, true) && $language !== $prevLang) {
+        $language = $prevLang;
+    }
     $author = $_POST["author"] ?? "";
 
     $main_image = $product["image"];
@@ -230,14 +243,22 @@ if (isset($_POST["btn-update-product"])) {
                     <input type="text" name="brand" class="form-control" value="<?php echo htmlspecialchars((string) ($product["brand"] ?? "")); ?>">
                   </div>
                   <div class="col-md-3">
-                    <label>Age group</label>
-                    <select name="age_group" class="form-control">
-                      <option value="">Select Age Group</option>
+                    <label>Grade</label>
+                    <select name="age_group" class="form-control" required>
+                      <option value="">Select grade</option>
                       <?php
-                      $ages = ["Pre school", "Grade 1", "Grade 2", "Grade 3", "Grade 4", "Grade 5"];
-                      foreach ($ages as $ag) {
-                          $sel = ((string) ($product["age_group"] ?? "") === $ag) ? " selected" : "";
-                          echo "<option value=\"" . htmlspecialchars($ag) . "\"$sel>" . htmlspecialchars($ag) . "</option>";
+                      $curAge = trim((string) ($product["age_group"] ?? ""));
+                      $ageMatched = false;
+                      foreach ($ediGrades as $gr) {
+                          $t = trim((string) ($gr["title"] ?? ""));
+                          $sel = ($curAge === $t) ? " selected" : "";
+                          if ($sel !== "") {
+                              $ageMatched = true;
+                          }
+                          echo "<option value=\"" . htmlspecialchars($t, ENT_QUOTES, "UTF-8") . "\"$sel>" . htmlspecialchars($t, ENT_QUOTES, "UTF-8") . "</option>";
+                      }
+                      if (!$ageMatched && $curAge !== "") {
+                          echo "<option value=\"" . htmlspecialchars($curAge, ENT_QUOTES, "UTF-8") . "\" selected>" . htmlspecialchars($curAge, ENT_QUOTES, "UTF-8") . " (current)</option>";
                       }
                       ?>
                     </select>
@@ -282,8 +303,27 @@ if (isset($_POST["btn-update-product"])) {
                   <div class="col-md-6">
                     <h6>Options</h6>
                     <div class="row mb-2">
-                      <div class="col-5"><input type="text" class="form-control" value="Language" readonly></div>
-                      <div class="col-7"><input type="text" name="language" class="form-control" value="<?php echo htmlspecialchars((string) ($product["language"] ?? "")); ?>"></div>
+                      <div class="col-5"><label class="form-label mb-0 d-block pt-2">Language</label></div>
+                      <div class="col-7">
+                        <select name="language" class="form-control" required>
+                          <option value="">Select language</option>
+                          <?php
+                          $curLang = trim((string) ($product["language"] ?? ""));
+                          $langMatched = false;
+                          foreach ($ediLanguages as $lng) {
+                              $t = trim((string) ($lng["title"] ?? ""));
+                              $sel = ($curLang === $t) ? " selected" : "";
+                              if ($sel !== "") {
+                                  $langMatched = true;
+                              }
+                              echo "<option value=\"" . htmlspecialchars($t, ENT_QUOTES, "UTF-8") . "\"$sel>" . htmlspecialchars($t, ENT_QUOTES, "UTF-8") . "</option>";
+                          }
+                          if (!$langMatched && $curLang !== "") {
+                              echo "<option value=\"" . htmlspecialchars($curLang, ENT_QUOTES, "UTF-8") . "\" selected>" . htmlspecialchars($curLang, ENT_QUOTES, "UTF-8") . " (current)</option>";
+                          }
+                          ?>
+                        </select>
+                      </div>
                     </div>
                     <div class="row mb-2">
                       <div class="col-5"><input type="text" class="form-control" value="Author" readonly></div>

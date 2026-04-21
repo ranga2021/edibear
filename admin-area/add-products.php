@@ -1,10 +1,13 @@
 <?php
   require_once("../classes/session_config.php");
   require_once("../classes/class.user.php");
+  require_once("../classes/edi_taxonomy.php");
   require_once("../classes/class.header.php");
   
   $adminHeader = new HEADER("add-product"); // Set active page for sidebar
   $user = new USER();
+  $ediLanguages = EdiTaxonomy::loadLanguages($user->getConnection());
+  $ediGrades = EdiTaxonomy::loadGrades($user->getConnection());
 
   $product_subcategories = [];
   try {
@@ -40,14 +43,22 @@
           }
       }
       $brand       = $_POST['brand'];
-      $age_group   = $_POST['age_group'];
+      $age_group   = trim((string) ($_POST['age_group'] ?? ""));
+      $allowedGrades = EdiTaxonomy::allowedTitles($ediGrades);
+      if (!in_array($age_group, $allowedGrades, true)) {
+          $age_group = "";
+      }
       $price       = $_POST['price'];
       $discount    = $_POST['discount'];
       $disc_price  = $_POST['discounted_price'];
       $p_name      = $_POST['product_name'];
       $stock       = $_POST['available'];
       $description = $_POST['description'];
-      $language    = $_POST['language'];
+      $language    = trim((string) ($_POST['language'] ?? ""));
+      $allowedLangs = EdiTaxonomy::allowedTitles($ediLanguages);
+      if (!in_array($language, $allowedLangs, true)) {
+          $language = "";
+      }
       $author      = $_POST['author'];
       
       // Image Handling (Simplified - ensure your upload directory exists)
@@ -135,15 +146,14 @@
                     <input type="text" name="brand" class="form-control" placeholder="Sarasavi">
                   </div>
                   <div class="col-md-3">
-        <label>Age group</label>
-        <select name="age_group" class="form-control">
-            <option value="">Select Age Group</option>
-            <option value="Pre school">Pre school</option>
-            <option value="Grade 1">Grade 1</option>
-            <option value="Grade 2">Grade 2</option>
-            <option value="Grade 3">Grade 3</option>
-            <option value="Grade 4">Grade 4</option>
-            <option value="Grade 5">Grade 5</option>
+        <label>Grade</label>
+        <select name="age_group" class="form-control" required>
+            <option value="">Select grade</option>
+            <?php foreach ($ediGrades as $gr): ?>
+            <option value="<?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?>">
+                <?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?>
+            </option>
+            <?php endforeach; ?>
         </select>
     </div>
                 </div>
@@ -186,8 +196,17 @@
                     <div class="col-md-6">
                         <h6>Options</h6>
                         <div class="row mb-2">
-                            <div class="col-5"><input type="text" class="form-control" value="Language" readonly></div>
-                            <div class="col-7"><input type="text" name="language" class="form-control" placeholder="English"></div>
+                            <div class="col-5"><label class="form-label mb-0 d-block pt-2">Language</label></div>
+                            <div class="col-7">
+                              <select name="language" class="form-control" required>
+                                <option value="">Select language</option>
+                                <?php foreach ($ediLanguages as $lng): ?>
+                                <option value="<?php echo htmlspecialchars((string) $lng['title'], ENT_QUOTES, 'UTF-8'); ?>">
+                                  <?php echo htmlspecialchars((string) $lng['title'], ENT_QUOTES, 'UTF-8'); ?>
+                                </option>
+                                <?php endforeach; ?>
+                              </select>
+                            </div>
                         </div>
                         <div class="row mb-2">
                             <div class="col-5"><input type="text" class="form-control" value="Author" readonly></div>
