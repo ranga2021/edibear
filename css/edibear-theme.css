@@ -135,6 +135,30 @@ input[type="submit"].btn,
   color: #fff !important;
 }
 
+/* Homepage (index): same width + height for main green section buttons */
+button.edi-home-section-cta.explore-btn,
+a.btn.edi-home-section-cta.newgreen1-btn,
+button.btn.edi-home-section-cta.newgreen1-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 280px;
+  max-width: calc(100vw - 2rem);
+  min-height: 48px;
+  padding: 0.65rem 1.25rem !important;
+  font-size: 0.95rem !important;
+  line-height: 1.2;
+  border-radius: 8px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-sizing: border-box;
+}
+
+/* Match Bootstrap .btn border box (custom.css sets explore-btn { border: none }) */
+button.edi-home-section-cta.explore-btn {
+  border: 1px solid var(--edi-green) !important;
+}
+
 /* Hero “FIND Edi” — outline + gold hover per palette */
 .homeLetsGoBtn {
   background: #fff !important;

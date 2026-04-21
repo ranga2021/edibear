@@ -268,7 +268,7 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="explore-btn">EXPLORE</button>
+            <button type="submit" class="explore-btn edi-home-section-cta">EXPLORE</button>
         </div>
         </form>
     </div>
@@ -335,7 +335,7 @@
 </div>
 
 <div class="text-center mt-4">
-<a href="./product_page.php" class="btn newgreen1-btn px-5">MORE</a>
+<a href="./product_page.php" class="btn newgreen1-btn edi-home-section-cta">MORE</a>
 </div>
 
 </div>
@@ -408,7 +408,7 @@
     </div>
 
     <div class="text-center pt-4 pb-5">
-        <button class="btn newgreen1-btn px-4 rounded" type="button" onclick="location.href='./testimonials'">READ MORE</button>
+        <button class="btn newgreen1-btn edi-home-section-cta" type="button" onclick="location.href='./testimonials'">READ MORE</button>
     </div>
 </div>
 
@@ -469,7 +469,7 @@
             </div>
             <div class="row justify-content-center mt-5">
                 <div class="col-12 text-center">
-                    <button type="button" class="btn newgreen1-btn px-4 rounded " onclick="location.href='./blogs'">COME IN</button>
+                    <button type="button" class="btn newgreen1-btn edi-home-section-cta" onclick="location.href='./blogs'">COME IN</button>
                 </div>
             </div>
         </div>
@@ -504,7 +504,7 @@
                 </div>
 
                 <div class="mt-3 text-center">
-                    <a href="./challenges.php" class="btn newgreen1-btn btn-lg px-5 py-2" style="border-radius: 8px;">
+                    <a href="./challenges.php" class="btn newgreen1-btn edi-home-section-cta">
                         ACCEPT
                     </a>
                 </div>
