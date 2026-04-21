@@ -628,6 +628,9 @@ if (dot) dot.style.display = 'block';
 </style>
 <script>
 (function(){
+  const MAX_ON_SCREEN = 4;
+  let activeCount = 0;
+
   var GIFS = [
     { src: '/img/creatures/bird.gif',              w: 110 },
     { src: '/img/creatures/butterfly-orange.gif',  w: 95  },
@@ -635,6 +638,8 @@ if (dot) dot.style.display = 'block';
   ];
 
   function spawn() {
+    if (activeCount >= MAX_ON_SCREEN) return;
+
     var g = GIFS[Math.floor(Math.random() * GIFS.length)];
     var fl = Math.random() < 0.5;
     var el = document.createElement('img');
@@ -645,6 +650,8 @@ if (dot) dot.style.display = 'block';
     el.style.left = fl ? '-140px' : (window.innerWidth + 20) + 'px';
     if (!fl) el.style.transform = 'scaleX(-1)';
     document.body.appendChild(el);
+    activeCount++;
+
     requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.style.opacity='1'; }); });
 
     var dur = 6000 + Math.random() * 5000;
@@ -659,16 +666,8 @@ if (dot) dot.style.display = 'block';
       el.style.left = (sx+(ex-sx)*e)+'px';
       el.style.top  = (sy+Math.sin(p*11+wo)*wa)+'px';
       if(p>.82) el.style.opacity = Math.max(0,1-(p-.82)/.18)+'';
-      if(p<1) requestAnimationFrame(step); else el.remove();
+      if(p<1) requestAnimationFrame(step); else { activeCount--; el.remove(); }
     })(0);
-    requestAnimationFrame(function step(ts){
-      if(!t0) t0=ts;
-      var p=Math.min((ts-t0)/dur,1),e=p<.5?2*p*p:-1+(4-2*p)*p;
-      el.style.left=(sx+(ex-sx)*e)+'px';
-      el.style.top=(sy+Math.sin(p*11+wo)*wa)+'px';
-      if(p>.82)el.style.opacity=Math.max(0,1-(p-.82)/.18)+'';
-      if(p<1)requestAnimationFrame(step);else el.remove();
-    });
   }
 
   function burst(){
@@ -676,9 +675,6 @@ if (dot) dot.style.display = 'block';
     for(var i=0;i<n;i++) setTimeout(spawn, i*(400+Math.random()*500));
     setTimeout(burst, 7000+Math.random()*10000);
   }
-    const MAX_ON_SCREEN = 4;
-    let activeCount = 0;
-    if (activeCount >= MAX_ON_SCREEN) return;
     setTimeout(burst, 2500);
 })();
 </script>

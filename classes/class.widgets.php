@@ -409,6 +409,7 @@ class WIDGETS{
                     <div class='edi-blog-body'>
                         <div class='edi-blog-tag'><i class='fa fa-tag' aria-hidden='true'></i><span>" . $tag . "</span></div>
                         <h3 class='edi-blog-title'><a href='" . $blogUrl . "'>" . $title . "</a></h3>
+                        <div class='edi-blog-title-rule' role='presentation'></div>
                         <p class='edi-blog-excerpt'>" . htmlspecialchars($plain, ENT_QUOTES, "UTF-8") . "</p>
                         <a href='" . $blogUrl . "' class='edi-blog-readmore'>Read More</a>
                     </div>

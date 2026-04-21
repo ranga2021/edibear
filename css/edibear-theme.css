@@ -172,28 +172,53 @@ button.edi-home-section-cta.explore-btn {
   border-color: var(--edi-gold) !important;
 }
 
-/* Homepage hero: one full viewport tall (image fills screen; FIND Edi stays on the art) */
-.HomeCarousel #header-carousel,
-.HomeCarousel #header-carousel .carousel-inner,
-.HomeCarousel #header-carousel .carousel-item {
+/*
+ * Homepage hero: true full-screen art to the bottom edge.
+ * - Use 100lvh (largest viewport height) so we don’t “undershoot” vs 100dvh (white strip on some browsers).
+ * - Pin the image absolute + object-fit: cover inside a fixed-height slide so the frame always fills the viewport.
+ */
+body.index .HomeCarousel,
+.HomeCarousel {
   min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 100lvh;
+  overflow: hidden;
 }
-.HomeCarousel #header-carousel .carousel-item > img.w-100 {
-  width: 100%;
+
+.HomeCarousel #header-carousel {
   min-height: 100vh;
-  min-height: 100dvh;
+  min-height: 100lvh;
+}
+
+.HomeCarousel #header-carousel .carousel-inner {
+  min-height: 100vh;
+  min-height: 100lvh;
+}
+
+.HomeCarousel #header-carousel .carousel-item {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100lvh;
   height: 100vh;
-  height: 100dvh;
+  height: 100lvh;
+}
+
+.HomeCarousel #header-carousel .carousel-item > img.w-100 {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center center;
   display: block;
 }
+
 #header-carousel .carousel-caption {
   bottom: 0 !important;
   top: 0;
   left: 0;
   right: 0;
+  z-index: 2;
   padding-bottom: 1.25rem !important;
   justify-content: flex-end !important;
 }
@@ -473,6 +498,61 @@ h6.text-primary:not(.text-white),
   border-radius: 1px;
 }
 
+/* ----- Blogs listing (The Hidden Den) — full-width 3 columns, header aligns with grid ----- */
+.edi-blogs-page-title-row .edi-blogs-main-title {
+  color: #212121 !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+}
+
+.edi-blogs-categories-lead {
+  color: #888;
+  font-size: 0.95rem;
+  margin-top: -0.25rem;
+}
+
+.edi-blogs-grid .edi-blog-col {
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 992px) {
+  .edi-blogs-grid .edi-blog-col {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.edi-blogs-page .edi-blog-card--list {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  height: 100%;
+}
+
+.edi-blog-title-rule {
+  height: 2px;
+  width: 100%;
+  background: #ffb74d;
+  border-radius: 1px;
+  margin: 0.2rem 0 0.65rem;
+  flex-shrink: 0;
+}
+
+.edi-blogs-page .edi-blog-readmore {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.edi-blogs-page .edi-blog-readmore:hover {
+  text-decoration: underline;
+}
+
 /* ----- Home: The Hidden Den (featured + 2×2 grid) ----- */
 .edi-hidden-den-section {
   margin-top: 0;
@@ -586,7 +666,7 @@ h6.text-primary:not(.text-white),
   font-family: inherit;
   line-height: 1.25;
   text-transform: uppercase;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.15rem;
   color: var(--edi-heading) !important;
 }
 

@@ -1,0 +1,213 @@
+/* Sign in / sign up / forgot password — Edibear marketing layout */
+
+.edi-auth-page {
+  font-family: "Poppins", sans-serif;
+  color: #606062;
+  background: #fff;
+}
+
+.edi-auth-hero-title {
+  color: #f65247;
+  font-weight: 800;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.edi-auth-hero-lead {
+  max-width: 640px;
+  margin: 0 auto 2rem;
+  text-align: center;
+  line-height: 1.65;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.edi-auth-card {
+  max-width: 420px;
+  margin: 0 auto 2.5rem;
+  padding: 2rem 1.75rem;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+}
+
+.edi-auth-card-title {
+  color: #f65247;
+  font-weight: 800;
+  font-size: 1.35rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.02em;
+}
+
+.edi-auth-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 0.35rem;
+}
+
+.edi-auth-input-wrap {
+  position: relative;
+  margin-bottom: 0.75rem;
+}
+
+.edi-auth-input {
+  width: 100%;
+  padding: 0.65rem 2.75rem 0.65rem 0.85rem;
+  border: 2px solid #33a675;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: box-shadow 0.2s;
+}
+
+.edi-auth-input:focus {
+  box-shadow: 0 0 0 3px rgba(51, 166, 117, 0.2);
+}
+
+.edi-auth-toggle-pw {
+  position: absolute;
+  right: 0.35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  color: #33a675;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.edi-auth-toggle-pw:focus {
+  outline: none;
+}
+
+.edi-auth-forgot {
+  text-align: center;
+  margin: 0.5rem 0 1rem;
+  font-size: 0.875rem;
+}
+
+.edi-auth-forgot a {
+  color: #555;
+  text-decoration: underline;
+}
+
+.edi-auth-forgot a:hover {
+  color: #33a675;
+}
+
+.edi-auth-btn-primary {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 8px;
+  background: #33a675;
+  color: #fff !important;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.edi-auth-btn-primary:hover {
+  background: #2a8f62;
+  color: #fff !important;
+}
+
+.edi-auth-switch {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+
+.edi-auth-switch a {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.edi-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.35rem 0;
+  color: #888;
+  font-size: 0.85rem;
+}
+
+.edi-auth-divider::before,
+.edi-auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #ddd;
+}
+
+.edi-auth-btn-social {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1rem;
+  margin-bottom: 0.65rem;
+  border: 2px solid #33a675;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.edi-auth-btn-social:hover {
+  background: #f4faf7;
+}
+
+.edi-auth-btn-social .edi-auth-social-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 14px;
+}
+
+.edi-auth-forgot-block h1 {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #212121;
+  margin-bottom: 0.75rem;
+}
+
+.edi-auth-forgot-block .edi-auth-lead {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 1.25rem;
+  line-height: 1.55;
+}
+
+.edi-auth-alert {
+  max-width: 420px;
+  margin: 0 auto 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.edi-auth-alert.ok {
+  background: #e8f5e9;
+  color: #1b5e20;
+  border: 1px solid #a5d6a7;
+}
+
+.edi-auth-alert.err {
+  background: #ffebee;
+  color: #b71c1c;
+  border: 1px solid #ef9a9a;
+}

@@ -81,22 +81,20 @@
     ?>
     <div class="page-header-bg"></div>
 
-    <!-- Blog Start -->
-    <div class="container-fluid py-3 page-header-content">
-        <div class="container pt-3">
+    <!-- Blog Start — full-width 3-column grid (no empty sidebar) -->
+    <div class="container-fluid py-3 page-header-content edi-blogs-page">
+        <div class="container pt-3 px-lg-4">
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
                 <ol class="breadcrumb bg-transparent p-0 mb-0">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">The Hidden Den</li>
                 </ol>
             </nav>
-             <!-- Title + Line -->
-        <div class="edi-page-title-row">
-            <h2>EXCITING THINGS</h2>
-            <div class="edi-page-title-rule" role="presentation"></div>
-        </div>
-            
-            <h6>Hand crafts, Letter practicing, Drawings</h6>
+            <div class="edi-page-title-row edi-blogs-page-title-row">
+                <h2 class="edi-blogs-main-title">EXCITING THINGS</h2>
+                <div class="edi-page-title-rule" role="presentation"></div>
+            </div>
+            <p class="edi-blogs-categories-lead mb-4">Hand craft, Letter practice, Drawings</p>
 
              <?php 
             //     //echo $widgets->displayGetQuoate($user);
@@ -117,9 +115,7 @@
 
 
 
-            <div class="row mt-4">
-                <div class="col-lg-9">
-                    <div class="row pb-3">
+            <div class="row edi-blogs-grid pb-3">
                         <?php
                             if ( $blogPageNo > 1 ) {
                                 $limit = ( $blogPageNo - 1 ) * 6;
@@ -133,10 +129,10 @@
                                 $other = "$searchTagLike";
                             }
                             foreach ( $user->fetchAll(array("id","tag","title","image", "description","timestamp"), array("blog_details"), array("status"=>"1"), "id DESC LIMIT 6", $other) as $row ) {
-                                echo $widgets->displayBlogBrief($row, "col-md-6 col-lg-4", 150, "list");
+                                echo $widgets->displayBlogBrief($row, "col-sm-6 col-lg-4", 220, "list");
                             }
                         ?>
-                        <div class="col-12">
+                        <div class="col-12 mt-2">
                             <?php
                                 $previousBtn = $nextBtn = "";
                                 if ( $blogPageNo == 1 ) {
@@ -146,7 +142,7 @@
                                     $nextBtn = "disabled";
                                 } 
                                 echo "
-                                    <nav aria-label='Page navigation example'>
+                                    <nav aria-label='Blog pagination'>
                                         <ul class='pagination justify-content-center'>
                                             <li class='page-item mx-1 $previousBtn' onclick='prevNextBtn(0, $blogPageNo, $totalBlogPages)'>
                                                 <a class='page-link' href='#0' aria-label='Previous'>
@@ -170,38 +166,7 @@
                                     </nav>
                                 ";
                             ?>
-                            
                         </div>
-                    </div>
-                </div>
-                <div class="col-lg-3 mt-5 mt-lg-0">
-                    
-                    <?php 
-                        // echo $widgets->displayGetQuoate($user);
-                        /*
-                        $tagsArr = array();
-                        foreach ( $user->fetchAll(array("tag"), array("blog_details"), array("status"=>1), "", "") as $row ) {
-                            foreach ( explode("/", $row["tag"]) as $value ) {
-                                if ( array_search($value, $tagsArr) === false ) array_push($tagsArr, $value);
-                            }
-                        }*/
-                    ?>
-                    <!-- Tag Cloud -->
-                    <!----
-                    <div class="my-5">
-                        <h5 class="text-warning mb-1">Tags</h5>
-                        <div class="d-flex flex-wrap m-n1">
-                            <?php
-                               /* foreach ( $tagsArr as $tag ) {
-                                    echo "<a href='./blogs?tag=$tag' class='btn btn-light m-1'>$tag</a>";
-                                }*/
-                            ?>
-                        </div>
-                    </div>
-                    ------->
-
-
-                </div>
             </div>
         </div>
     </div>
@@ -228,17 +193,18 @@
         }
 
         function prevNextBtn(btn, blogPage, totalPages) {
-            let searchTagParam = new URLSearchParams(window.location.search);
-            if ( searchTagParam.has('tag') && searchTagParam.get('tag') !="" ) {
-                searchTag = "&tag="+searchTagParam.get('tag');
+            var searchTag = "";
+            var searchTagParam = new URLSearchParams(window.location.search);
+            if (searchTagParam.has("tag") && searchTagParam.get("tag") !== "") {
+                searchTag = "&tag=" + encodeURIComponent(searchTagParam.get("tag"));
             }
-            if ( btn == 0 ) {
-                if ( blogPage > 1 ) {
-                    location.href = "./blogs?page=" + (blogPage-1) + searchTag;
+            if (btn === 0) {
+                if (blogPage > 1) {
+                    location.href = "./blogs?page=" + (blogPage - 1) + searchTag;
                 }
-            } else if ( btn == 1 ) {
-                if ( totalPages > blogPage ) {
-                    location.href = "./blogs?page=" + (blogPage+1) + searchTag;
+            } else if (btn === 1) {
+                if (totalPages > blogPage) {
+                    location.href = "./blogs?page=" + (blogPage + 1) + searchTag;
                 }
             }
         }
