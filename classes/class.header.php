@@ -279,7 +279,8 @@ class HEADER {
 
 /* Adjust the carousel if it overlaps too much */
 .HomeCarousel {
-    margin-top: -85px; /* Reduced this from -172px to prevent total overlap */
+    /* Keep absolute value in sync with body.index --edi-home-carousel-lift in css/edibear-theme.css */
+    margin-top: -85px;
     z-index: 1;
 }
 

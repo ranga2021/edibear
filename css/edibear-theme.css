@@ -174,18 +174,22 @@ button.edi-home-section-cta.explore-btn {
 
 /*
  * Homepage hero: fill the visible window to the bottom edge.
- * - style.css adds margin-top: -42px on #header-carousel (lg+); that stacks with .HomeCarousel pull-up
- *   and can leave a white band on the first screen — neutralize it on the home page only.
+ * - Header uses margin-top: -85px on .HomeCarousel (class.header.php). Keep it; add the same 85px
+ *   to hero min-height/height so the slide still reaches the viewport bottom.
+ * - --edi-home-carousel-lift must match the absolute value of that margin.
+ * - style.css adds margin-top: -42px on #header-carousel (lg+); neutralize on home only.
  * - flow-root on .carousel-inner keeps Bootstrap float slides contributing to height correctly.
- * - Viewport stack: vh fallback, then dvh (tracks browser chrome on many desktops), then lvh.
  */
+body.index {
+  --edi-home-carousel-lift: 85px;
+}
+
 @media (min-width: 992px) {
   body.index #header-carousel {
     margin-top: 0 !important;
   }
 }
 
-body.index .HomeCarousel,
 .HomeCarousel {
   min-height: 100vh;
   min-height: 100dvh;
@@ -193,12 +197,18 @@ body.index .HomeCarousel,
   overflow: hidden;
 }
 
+body.index .HomeCarousel {
+  min-height: calc(100vh + var(--edi-home-carousel-lift));
+  min-height: calc(100dvh + var(--edi-home-carousel-lift));
+  min-height: calc(100lvh + var(--edi-home-carousel-lift));
+}
+
 body.index .HomeCarousel #header-carousel,
 body.index .HomeCarousel #header-carousel .carousel-inner,
 body.index .HomeCarousel #header-carousel .carousel-item {
-  min-height: 100vh;
-  min-height: 100dvh;
-  min-height: 100lvh;
+  min-height: calc(100vh + var(--edi-home-carousel-lift));
+  min-height: calc(100dvh + var(--edi-home-carousel-lift));
+  min-height: calc(100lvh + var(--edi-home-carousel-lift));
 }
 
 .HomeCarousel #header-carousel {
@@ -215,6 +225,9 @@ body.index .HomeCarousel #header-carousel .carousel-item {
 
 body.index .HomeCarousel #header-carousel .carousel-inner {
   display: flow-root;
+  min-height: calc(100vh + var(--edi-home-carousel-lift));
+  min-height: calc(100dvh + var(--edi-home-carousel-lift));
+  min-height: calc(100lvh + var(--edi-home-carousel-lift));
 }
 
 .HomeCarousel #header-carousel .carousel-item {
@@ -225,6 +238,15 @@ body.index .HomeCarousel #header-carousel .carousel-inner {
   height: 100vh;
   height: 100dvh;
   height: 100lvh;
+}
+
+body.index .HomeCarousel #header-carousel .carousel-item {
+  min-height: calc(100vh + var(--edi-home-carousel-lift));
+  min-height: calc(100dvh + var(--edi-home-carousel-lift));
+  min-height: calc(100lvh + var(--edi-home-carousel-lift));
+  height: calc(100vh + var(--edi-home-carousel-lift));
+  height: calc(100dvh + var(--edi-home-carousel-lift));
+  height: calc(100lvh + var(--edi-home-carousel-lift));
 }
 
 .HomeCarousel #header-carousel .carousel-item > img.w-100 {
