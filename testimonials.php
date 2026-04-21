@@ -56,8 +56,11 @@
             <div class="row justify-content-center mt-4 testimonial-sec">
 
                 <?php
-                    foreach ( $user->fetchAll(array("user_id","ratings","one_word","review"), array("testimonials"), array("status"=>1), "id DESC LIMIT 16") as $testimonialArr ) {
-                        echo $widgets->displayTestimonialBrief(array_merge($testimonialArr, $user->fetchAll(array("name","profile_pic","country"), array("tourists"), array("id"=>$testimonialArr['user_id']))[0]));
+                    foreach ( $user->fetchAll(array("id","user_id","ratings","one_word","review"), array("testimonials"), array("status"=>1), "id DESC LIMIT 16") as $testimonialArr ) {
+                        $touristRow = $user->fetchAll(array("name","profile_pic","country"), array("tourists"), array("id"=>$testimonialArr['user_id']))[0];
+                        $imgRows = $user->fetchAll(array("image"), array("testimonials_images"), array("testimonial_id"=>$testimonialArr['id']));
+                        $testimonialPhoto = (!empty($imgRows[0]['image'])) ? $imgRows[0]['image'] : '';
+                        echo $widgets->displayTestimonialBrief(array_merge($testimonialArr, $touristRow, array("testimonial_photo"=>$testimonialPhoto)));
                     }
                 ?>
             </div>

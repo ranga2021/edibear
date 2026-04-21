@@ -231,6 +231,9 @@ if (isset($_POST['showTestimonial'])) {
         ["id"=>$testimonial['user_id']]
     )[0];
 
-    echo $widgets->displayTestimonial(array_merge($testimonial, $userData), $user, true);
+    $imgRows = $user->fetchAll(["image"], ["testimonials_images"], ["testimonial_id"=>$id]);
+    $testimonialPhoto = (!empty($imgRows[0]['image'])) ? $imgRows[0]['image'] : '';
+
+    echo $widgets->displayTestimonial(array_merge($testimonial, $userData, ["testimonial_photo"=>$testimonialPhoto]), $user, true);
 }
 ?>

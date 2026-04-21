@@ -8,7 +8,10 @@
     if ( isset($_POST['addMoreTestimonials']) ) {
         $lastTestimonialID = (int)$_POST['addMoreTestimonials'];
         foreach ( $user->fetchAll(array("id","user_id","ratings","one_word","review"), array("testimonials"), array("status"=>1), "id DESC LIMIT 3", "id<$lastTestimonialID") as $testimonialArr ) {
-            echo $widgets->displayTestimonial(array_merge($testimonialArr, $user->fetchAll(array("name","profile_pic","country"), array("tourists"), array("id"=>$testimonialArr['user_id']))[0]),$user);
+            $touristRow = $user->fetchAll(array("name","profile_pic","country"), array("tourists"), array("id"=>$testimonialArr['user_id']))[0];
+            $imgRows = $user->fetchAll(array("image"), array("testimonials_images"), array("testimonial_id"=>$testimonialArr['id']));
+            $testimonialPhoto = (!empty($imgRows[0]['image'])) ? $imgRows[0]['image'] : '';
+            echo $widgets->displayTestimonial(array_merge($testimonialArr, $touristRow, array("testimonial_photo"=>$testimonialPhoto)), $user);
         }
         $lastTestimonialID = $testimonialArr['id'];
         $firstAppovedTestimonialID = $user->MinValue("testimonials", "id", array("status"=>1));
@@ -116,7 +119,10 @@
                             </div>
                             <div class='modal-body'>";
                             foreach ( $user->fetchAll(array("id","user_id","ratings","one_word","review","status"), array("testimonials"), array("id"=>$testimonialID)) as $testimonialArr ) {
-                                echo $widgets->displayTestimonial(array_merge($testimonialArr, $user->fetchAll(array("name","profile_pic","country"), array("tourists"), array("id"=>$testimonialArr['user_id']))[0]),$user);
+                                $touristRow = $user->fetchAll(array("name","profile_pic","country"), array("tourists"), array("id"=>$testimonialArr['user_id']))[0];
+                                $imgRows = $user->fetchAll(array("image"), array("testimonials_images"), array("testimonial_id"=>$testimonialArr['id']));
+                                $testimonialPhoto = (!empty($imgRows[0]['image'])) ? $imgRows[0]['image'] : '';
+                                echo $widgets->displayTestimonial(array_merge($testimonialArr, $touristRow, array("testimonial_photo"=>$testimonialPhoto)), $user);
                             }
                 echo "
                                 Are you sure to delete this testimonial

@@ -68,6 +68,51 @@ class WIDGETS{
         return $imageURL;
     }
 
+    /**
+     * Safe filename for testimonial / profile image paths (basename only).
+     */
+    private function isSafeImageFilename($name) {
+        $name = (string) $name;
+        return $name !== '' && preg_match('/^[A-Za-z0-9._-]+$/', $name) === 1;
+    }
+
+    /**
+     * Public URL for testimonial avatar: uploaded testimonial image, then profile pic on disk,
+     * then an inline SVG placeholder (missing files / empty DB values).
+     */
+    private function resolveTestimonialAvatarSrc($testiArr, $admin = false) {
+        $rootFs = dirname(__DIR__);
+        $urlPrefix = $admin ? '../' : './';
+
+        $uploaded = isset($testiArr['testimonial_photo']) ? trim((string) $testiArr['testimonial_photo']) : '';
+        if ($this->isSafeImageFilename($uploaded)) {
+            $fs = $rootFs . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'testimonials' . DIRECTORY_SEPARATOR . $uploaded;
+            if (is_file($fs) && is_readable($fs)) {
+                $rel = $urlPrefix . 'img/testimonials/' . $uploaded;
+                return $rel . '?' . filemtime($fs);
+            }
+        }
+
+        $prof = isset($testiArr['profile_pic']) ? trim((string) $testiArr['profile_pic']) : '';
+        if ($this->isSafeImageFilename($prof)) {
+            $fs = $rootFs . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'profile-pics' . DIRECTORY_SEPARATOR . $prof;
+            if (is_file($fs) && is_readable($fs)) {
+                $rel = $urlPrefix . 'img/profile-pics/' . $prof;
+                return $rel . '?' . filemtime($fs);
+            }
+        }
+
+        return 'data:image/svg+xml,' . rawurlencode(
+            '<svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" viewBox="0 0 65 65">'
+            . '<defs><linearGradient id="ta" x1="0%" y1="0%" x2="100%" y2="100%">'
+            . '<stop offset="0%" style="stop-color:#cbd5e1"/><stop offset="100%" style="stop-color:#94a3b8"/></linearGradient></defs>'
+            . '<circle cx="32.5" cy="32.5" r="32" fill="url(#ta)"/>'
+            . '<circle cx="32.5" cy="24" r="11" fill="#f8fafc"/>'
+            . '<path d="M14 54c4-14 10-19 18.5-19s14.5 5 18.5 19" fill="#f8fafc"/>'
+            . '</svg>'
+        );
+    }
+
     public function displayHowItWorksBlock($topic, $txt, $img) {
         $img = $this->createCachelessImage("./img/Web pic/$img");
         $html = "
@@ -260,14 +305,14 @@ class WIDGETS{
     }
 
     public function testimonialData($testiArr, $admin=false) {
-        $adminImageDot = ($admin) ? "." : "";
-        $profilePic = $this->createCachelessImage("$adminImageDot./img/profile-pics/".$testiArr['profile_pic']);
+        $imgPrefix = $admin ? '../' : './';
+        $profilePic = $this->resolveTestimonialAvatarSrc($testiArr, $admin);
         $ratings = $testiArr['ratings'];
         $name = $testiArr['name'];
         $html = "
-            <img src='$adminImageDot./img/Web pic/4.png' width='35px' alt='Testimonial' style='padding-bottom:20px; margin-top: -25px;'>
+            <img src='{$imgPrefix}img/Web pic/4.png' width='35px' alt='Testimonial' style='padding-bottom:20px; margin-top: -25px;'>
             <div class='text-center'>
-                <img src='$profilePic' class='rounded-circle' width='65px' height='65px' alt='Profile Picture'>
+                <img src='$profilePic' class='rounded-circle' width='65px' height='65px' alt=''>
             </div>
             <h6 class='text-primary text-center text-uppercase font-weight-bold mt-2 mb-1' >".$testiArr['one_word']."</h6>
             <p class='text-justify mb-0 mt-2'>".$testiArr['review']."</p> <div class='d-flex justify-content-left'>";
@@ -302,7 +347,6 @@ class WIDGETS{
     }
 
     public function displayTestimonial($testiArr, $user, $admin=false) {
-        $adminImageDot = ($admin) ? "." : "";
         $html = "
 
         
