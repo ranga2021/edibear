@@ -173,32 +173,57 @@ button.edi-home-section-cta.explore-btn {
 }
 
 /*
- * Homepage hero: true full-screen art to the bottom edge.
- * - Use 100lvh (largest viewport height) so we don’t “undershoot” vs 100dvh (white strip on some browsers).
- * - Pin the image absolute + object-fit: cover inside a fixed-height slide so the frame always fills the viewport.
+ * Homepage hero: fill the visible window to the bottom edge.
+ * - style.css adds margin-top: -42px on #header-carousel (lg+); that stacks with .HomeCarousel pull-up
+ *   and can leave a white band on the first screen — neutralize it on the home page only.
+ * - flow-root on .carousel-inner keeps Bootstrap float slides contributing to height correctly.
+ * - Viewport stack: vh fallback, then dvh (tracks browser chrome on many desktops), then lvh.
  */
+@media (min-width: 992px) {
+  body.index #header-carousel {
+    margin-top: 0 !important;
+  }
+}
+
 body.index .HomeCarousel,
 .HomeCarousel {
   min-height: 100vh;
+  min-height: 100dvh;
   min-height: 100lvh;
   overflow: hidden;
 }
 
+body.index .HomeCarousel #header-carousel,
+body.index .HomeCarousel #header-carousel .carousel-inner,
+body.index .HomeCarousel #header-carousel .carousel-item {
+  min-height: 100vh;
+  min-height: 100dvh;
+  min-height: 100lvh;
+}
+
 .HomeCarousel #header-carousel {
   min-height: 100vh;
+  min-height: 100dvh;
   min-height: 100lvh;
 }
 
 .HomeCarousel #header-carousel .carousel-inner {
   min-height: 100vh;
+  min-height: 100dvh;
   min-height: 100lvh;
+}
+
+body.index .HomeCarousel #header-carousel .carousel-inner {
+  display: flow-root;
 }
 
 .HomeCarousel #header-carousel .carousel-item {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   min-height: 100lvh;
   height: 100vh;
+  height: 100dvh;
   height: 100lvh;
 }
 
@@ -208,6 +233,7 @@ body.index .HomeCarousel,
   top: 0;
   width: 100%;
   height: 100%;
+  min-height: 100%;
   object-fit: cover;
   object-position: center center;
   display: block;

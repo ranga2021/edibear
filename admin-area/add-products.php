@@ -48,9 +48,20 @@
       if (!in_array($age_group, $allowedGrades, true)) {
           $age_group = "";
       }
-      $price       = $_POST['price'];
-      $discount    = $_POST['discount'];
-      $disc_price  = $_POST['discounted_price'];
+      $price       = (float) ($_POST['price'] ?? 0);
+      $discountRaw = trim((string) ($_POST['discount'] ?? ''));
+      $discountPct = $discountRaw === '' ? 0.0 : (float) $discountRaw;
+      if ($discountPct < 0) {
+          $discountPct = 0.0;
+      }
+      if ($discountPct > 100) {
+          $discountPct = 100.0;
+      }
+      $disc_price = 0.0;
+      if ($discountPct > 0) {
+          $dpr = trim((string) ($_POST['discounted_price'] ?? ''));
+          $disc_price = ($dpr !== '' && is_numeric($dpr)) ? (float) $dpr : ($price - ($price * ($discountPct / 100)));
+      }
       $p_name      = $_POST['product_name'];
       $stock       = $_POST['available'];
       $description = $_POST['description'];
@@ -73,7 +84,7 @@
                                  VALUES (:cid, NULL, :pscid, :brand, :pname, :price, :disc, :dprice, :age, :desc, :lang, :auth, :isbn, :weight, :stock, :img, 1)");
           $stmt->execute(array(
               ":cid"=>$category_id, ":pscid"=>$product_subcategory_id, ":brand"=>$brand, ":pname"=>$p_name, ":price"=>$price, 
-              ":disc"=>$discount, ":dprice"=>$disc_price, ":age"=>$age_group, ":desc"=>$description, 
+              ":disc"=>$discountPct, ":dprice"=>$disc_price, ":age"=>$age_group, ":desc"=>$description, 
               ":lang"=>$language, ":auth"=>$author, ":isbn"=>$isbn, ":weight"=>$weight, ":stock"=>$stock, ":img"=>$main_image
           ));
           $msg = "<div class='alert alert-success'>Product added successfully!</div>";
@@ -166,11 +177,12 @@
                     <input type="number" step="0.01" name="price" id="price" class="form-control" placeholder="LKR 700.00">
                   </div>
                   <div class="col-md-4">
-                    <label>Discount Percentage (*)</label>
-                    <input type="number" name="discount" id="discount" class="form-control" placeholder="5%">
+                    <label>Discount percentage</label>
+                    <input type="number" name="discount" id="discount" class="form-control" placeholder="e.g. 10" min="0" max="100" step="0.01">
+                    <small class="text-muted">Optional; leave empty or 0 for no discount.</small>
                   </div>
                   <div class="col-md-4">
-                    <label>Discounted Price (Auto cal)</label>
+                    <label>Discounted price (auto)</label>
                     <input type="text" id="discounted_price_display" class="form-control" readonly>
                    <input type="hidden" name="discounted_price" id="discounted_price_value">
                  </div>
@@ -267,17 +279,22 @@
 
     function calculate() {
         const price = parseFloat(priceInput.value) || 0;
-        const disc = parseFloat(discInput.value) || 0;
+        const raw = String(discInput.value || "").trim();
+        const disc = raw === "" ? 0 : parseFloat(raw);
+        const hasDisc = !isNaN(disc) && disc > 0;
+        if (!hasDisc) {
+            displayInput.value = price > 0 ? "No discount (list price)" : "—";
+            valueInput.value = "0";
+            return;
+        }
         const discounted = price - (price * (disc / 100));
-        
-        // Update the display for the admin
         displayInput.value = "LKR " + discounted.toFixed(2);
-        // Set the clean numerical value for the PHP form submission
         valueInput.value = discounted.toFixed(2);
     }
 
     priceInput.addEventListener('input', calculate);
     discInput.addEventListener('input', calculate);
+    document.addEventListener('DOMContentLoaded', calculate);
 
     (function () {
         const cat = document.getElementById('product_category_select');
