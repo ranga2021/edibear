@@ -358,7 +358,15 @@ img[style*="position: fixed"] {
 
 .edi-treasure-meta-table {
   font-size: 0.9375rem;
-  border-color: #e5e7eb;
+  border: 0;
+}
+
+.edi-treasure-meta-table tbody tr > th,
+.edi-treasure-meta-table tbody tr > td {
+  border: 0 !important;
+  vertical-align: top;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
 }
 
 .edi-treasure-meta-table th {
@@ -370,6 +378,7 @@ img[style*="position: fixed"] {
 
 .edi-treasure-meta-table td {
   color: #555;
+  background: #fff;
 }
 
 .edi-wishlist-btn {

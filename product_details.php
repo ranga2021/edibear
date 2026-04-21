@@ -138,17 +138,51 @@ if ($totalReviews > 0) {
                     $ageDisplay = $ageLabel . ' yrs';
                 }
                 $catTag = trim((string) ($product['category_name'] ?? 'Books'));
+
+                $metaHas = static function ($v) {
+                    $s = trim((string) $v);
+                    if ($s === '') {
+                        return false;
+                    }
+                    $placeholders = array('—', '-', '–', '−', 'n/a', 'na', 'none', 'tbd');
+                    if (in_array($s, $placeholders, true) || in_array(strtolower($s), array('n/a', 'na', 'none', 'tbd'), true)) {
+                        return false;
+                    }
+                    return true;
+                };
+
+                $metaRows = array();
+                if ($metaHas($product['language'] ?? '')) {
+                    $metaRows[] = array('Language', trim((string) $product['language']));
+                }
+                if ($metaHas($product['author'] ?? '')) {
+                    $metaRows[] = array('Author', trim((string) $product['author']));
+                }
+                if ($metaHas($product['isbn'] ?? '')) {
+                    $metaRows[] = array('ISBN', trim((string) $product['isbn']));
+                }
+                if ($metaHas($ageLabel)) {
+                    $metaRows[] = array('Grade', $ageLabel);
+                }
+                if ($metaHas($product['brand'] ?? '')) {
+                    $metaRows[] = array('Publisher', trim((string) $product['brand']));
+                }
+                if ($metaHas($product['weight'] ?? '')) {
+                    $metaRows[] = array('Weight', trim((string) $product['weight']));
+                }
                 ?>
-                <table class="table edi-treasure-meta-table">
+                <?php if (count($metaRows) > 0): ?>
+                <table class="table table-borderless edi-treasure-meta-table mb-4">
                     <tbody>
-                        <tr><th scope="row">Language</th><td><?= htmlspecialchars((string) ($product['language'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
-                        <tr><th scope="row">Author</th><td><?= htmlspecialchars((string) ($product['author'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
-                        <tr><th scope="row">ISBN</th><td><?= htmlspecialchars((string) ($product['isbn'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
-                        <tr><th scope="row">Grade</th><td><?= htmlspecialchars($ageLabel !== '' ? $ageLabel : '—', ENT_QUOTES, 'UTF-8') ?></td></tr>
-                        <tr><th scope="row">Publisher</th><td><?= htmlspecialchars((string) ($product['brand'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
-                        <tr><th scope="row">Weight</th><td><?= htmlspecialchars((string) ($product['weight'] ?? '—'), ENT_QUOTES, 'UTF-8') ?></td></tr>
+                        <?php foreach ($metaRows as $mr): ?>
+                        <tr>
+                            <th scope="row"><?= htmlspecialchars($mr[0], ENT_QUOTES, 'UTF-8') ?></th>
+                            <td><?= htmlspecialchars($mr[1], ENT_QUOTES, 'UTF-8') ?></td>
+                        </tr>
+                        <?php endforeach; ?>
                     </tbody>
                 </table>
+                <?php endif; ?>
 
                 <form class="edi-treasure-cart-row d-flex flex-wrap align-items-center mb-3" id="productDetailsCartForm" method="POST" action="add_to_cart.php">
                     <input type="hidden" name="product_id" value="<?= (int) $product['id'] ?>">

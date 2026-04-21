@@ -75,6 +75,8 @@ if (isset($_POST["btn-update-product"])) {
         $language = $prevLang;
     }
     $author = $_POST["author"] ?? "";
+    $isbn = trim((string) ($_POST["isbn"] ?? ""));
+    $weight = trim((string) ($_POST["weight"] ?? ""));
 
     $main_image = $product["image"];
     if (!empty($_FILES["main_image"]["name"])) {
@@ -89,7 +91,7 @@ if (isset($_POST["btn-update-product"])) {
 
         if ($hasPsub && $hasMore) {
             $stmt = $user->runQuery(
-                "UPDATE products SET category_id=:cid, sub_category_id=NULL, product_subcategory_id=:pscid, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, stock=:stock, image=:img, more_details=:md WHERE id=:id"
+                "UPDATE products SET category_id=:cid, sub_category_id=NULL, product_subcategory_id=:pscid, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, isbn=:isbn, weight=:weight, stock=:stock, image=:img, more_details=:md WHERE id=:id"
             );
             $stmt->execute([
                 ":cid" => $category_id,
@@ -103,6 +105,8 @@ if (isset($_POST["btn-update-product"])) {
                 ":desc" => $description,
                 ":lang" => $language,
                 ":auth" => $author,
+                ":isbn" => $isbn,
+                ":weight" => $weight,
                 ":stock" => $stock,
                 ":img" => $main_image,
                 ":md" => $_POST["more_details"] ?? "",
@@ -110,7 +114,7 @@ if (isset($_POST["btn-update-product"])) {
             ]);
         } elseif ($hasPsub) {
             $stmt = $user->runQuery(
-                "UPDATE products SET category_id=:cid, sub_category_id=NULL, product_subcategory_id=:pscid, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, stock=:stock, image=:img WHERE id=:id"
+                "UPDATE products SET category_id=:cid, sub_category_id=NULL, product_subcategory_id=:pscid, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, isbn=:isbn, weight=:weight, stock=:stock, image=:img WHERE id=:id"
             );
             $stmt->execute([
                 ":cid" => $category_id,
@@ -124,13 +128,15 @@ if (isset($_POST["btn-update-product"])) {
                 ":desc" => $description,
                 ":lang" => $language,
                 ":auth" => $author,
+                ":isbn" => $isbn,
+                ":weight" => $weight,
                 ":stock" => $stock,
                 ":img" => $main_image,
                 ":id" => $id,
             ]);
         } elseif ($hasMore) {
             $stmt = $user->runQuery(
-                "UPDATE products SET category_id=:cid, sub_category_id=NULL, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, stock=:stock, image=:img, more_details=:md WHERE id=:id"
+                "UPDATE products SET category_id=:cid, sub_category_id=NULL, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, isbn=:isbn, weight=:weight, stock=:stock, image=:img, more_details=:md WHERE id=:id"
             );
             $stmt->execute([
                 ":cid" => $category_id,
@@ -143,6 +149,8 @@ if (isset($_POST["btn-update-product"])) {
                 ":desc" => $description,
                 ":lang" => $language,
                 ":auth" => $author,
+                ":isbn" => $isbn,
+                ":weight" => $weight,
                 ":stock" => $stock,
                 ":img" => $main_image,
                 ":md" => $_POST["more_details"] ?? "",
@@ -150,7 +158,7 @@ if (isset($_POST["btn-update-product"])) {
             ]);
         } else {
             $stmt = $user->runQuery(
-                "UPDATE products SET category_id=:cid, sub_category_id=NULL, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, stock=:stock, image=:img WHERE id=:id"
+                "UPDATE products SET category_id=:cid, sub_category_id=NULL, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, isbn=:isbn, weight=:weight, stock=:stock, image=:img WHERE id=:id"
             );
             $stmt->execute([
                 ":cid" => $category_id,
@@ -163,6 +171,8 @@ if (isset($_POST["btn-update-product"])) {
                 ":desc" => $description,
                 ":lang" => $language,
                 ":auth" => $author,
+                ":isbn" => $isbn,
+                ":weight" => $weight,
                 ":stock" => $stock,
                 ":img" => $main_image,
                 ":id" => $id,
@@ -328,6 +338,20 @@ if (isset($_POST["btn-update-product"])) {
                     <div class="row mb-2">
                       <div class="col-5"><input type="text" class="form-control" value="Author" readonly></div>
                       <div class="col-7"><input type="text" name="author" class="form-control" value="<?php echo htmlspecialchars((string) ($product["author"] ?? "")); ?>"></div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5"><label class="form-label mb-0 d-block pt-2">ISBN</label></div>
+                      <div class="col-7">
+                        <input type="text" name="isbn" class="form-control" value="<?php echo htmlspecialchars((string) ($product["isbn"] ?? "")); ?>" placeholder="978-3-16-148410-0">
+                        <small class="text-muted">Optional; shown on the product page when filled.</small>
+                      </div>
+                    </div>
+                    <div class="row mb-2">
+                      <div class="col-5"><label class="form-label mb-0 d-block pt-2">Weight</label></div>
+                      <div class="col-7">
+                        <input type="text" name="weight" class="form-control" value="<?php echo htmlspecialchars((string) ($product["weight"] ?? "")); ?>" placeholder="e.g. 0.20 kg">
+                        <small class="text-muted">Shown on the product page when filled.</small>
+                      </div>
                     </div>
                   </div>
                   <?php if (array_key_exists("more_details", $product)): ?>
