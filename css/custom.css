@@ -171,7 +171,7 @@
 
 @media (max-width:991.98px){
     .edi-intro-section{
-        padding:48px 0;
+        padding:32px 0;
     }
     .edi-intro-text{
         margin-left:0 !important;
@@ -184,7 +184,7 @@
         text-align:left;
     }
     .edi-intro-image{
-        margin-top:1.25rem;
+        margin-top:0.75rem;
     }
     .edi-intro-image img{
         display:block;
@@ -379,9 +379,9 @@ animation: cartBounce .4s;
     align-items:center;
     justify-content:center;
     gap:6px 8px;
-    row-gap:8px;
+    row-gap:6px;
     font-size:0.875rem;
-    line-height:1.4;
+    line-height:1.35;
 }
 
 .honey-cart-steps .step{
@@ -413,7 +413,7 @@ animation: cartBounce .4s;
         justify-content:flex-start;
         font-size:0.8125rem;
         gap:4px 6px;
-        row-gap:6px;
+        row-gap:4px;
         margin-left:0;
         margin-right:0;
     }
@@ -666,7 +666,7 @@ animation: cartBounce .4s;
 
 /* ORDER COMPLETE PAGE */
 .order-complete-container{
-    padding-bottom:60px;
+    padding-bottom:36px;
 }
 
 .order-complete-row{
@@ -695,7 +695,7 @@ animation: cartBounce .4s;
     background:#fff;
     border:1px solid #e0e0e0;
     border-radius:6px;
-    padding:18px 20px;
+    padding:14px 16px;
     box-shadow:0 2px 4px rgba(0,0,0,0.03);
 }
 
@@ -714,10 +714,10 @@ animation: cartBounce .4s;
 
 .order-special-note .order-note-item{
     position:relative;
-    padding-left:1.6rem;
-    margin-bottom:1.1rem;
+    padding-left:1.5rem;
+    margin-bottom:0.75rem;
     border-bottom:1px solid #eee;
-    padding-bottom:1.1rem;
+    padding-bottom:0.75rem;
 }
 
 .order-special-note .order-note-item:last-child{
@@ -737,8 +737,8 @@ animation: cartBounce .4s;
 }
 
 .order-special-note .order-note-lang{
-    font-size:0.95rem;
-    line-height:1.5;
+    font-size:0.9rem;
+    line-height:1.45;
     color:#333;
 }
 

@@ -140,7 +140,7 @@ $orderTotal = $total + $shipping;
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
 
-    <div class="honey-cart-steps mb-4" aria-label="Checkout progress">
+    <div class="honey-cart-steps mb-2" aria-label="Checkout progress">
         <span class="step active">HONEY CART</span>
         <span class="step-separator">&gt;</span>
         <span class="step">CHECKOUT</span>

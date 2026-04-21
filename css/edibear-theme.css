@@ -653,10 +653,10 @@ h6.text-primary:not(.text-white),
     max-width: 320px;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 0.25rem;
-    padding: 14px 16px 16px;
+    margin-top: 0.15rem;
+    padding: 10px 12px 12px;
     background: rgba(255, 255, 255, 0.97);
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid rgba(51, 166, 117, 0.22);
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
   }
@@ -665,9 +665,9 @@ h6.text-primary:not(.text-white),
     flex: 0 0 auto;
   }
 
-  /* Extra space so icons sit above the illustrated “ground” in footer.jpg */
+  /* Space for footer artwork; keep moderate on small screens */
   .footer {
-    padding-bottom: 200px !important;
+    padding-bottom: 150px !important;
   }
 }
 

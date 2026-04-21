@@ -10,23 +10,50 @@ $widgets = new WIDGETS();
 $touristID = isset($_GET['uid']) ? (int)$_GET['uid'] : 0;
 
 $touristArr = null;
+$touristName = '';
+$touristCountry = '';
+$touristProfilePic = '';
+$touristEmail = '';
+$touristUsername = '';
+$touristMemberSince = '';
+$userOrders = array();
 
 if ($touristID > 0 && $user->CountRows("tourists", array("id"=>$touristID)) == 1) {
     $touristArr = $user->fetchAll(
-        array("name", "profile_pic", "country"),
+        array("name", "profile_pic", "country", "email", "username", "timestamp"),
         array("tourists"),
         array("id"=>$touristID)
     )[0];
 
-    $touristName = ($touristArr["name"] == NULL) ? "" : $touristArr["name"];
-    $touristCountry = $touristArr["country"];
+    $touristName = ($touristArr["name"] == NULL || $touristArr["name"] === "\r\n") ? "" : trim($touristArr["name"]);
+    $touristCountry = $touristArr["country"] ?? '';
+    $touristEmail = trim($touristArr["email"] ?? '');
+    $touristUsername = trim($touristArr["username"] ?? '');
+    $touristMemberSince = !empty($touristArr["timestamp"]) ? date("F j, Y", strtotime($touristArr["timestamp"])) : "";
     $touristProfilePic = ($touristArr["profile_pic"] == NULL)
         ? ""
         : "src='".$widgets->createCachelessImage("./img/profile-pics/".$touristArr["profile_pic"])."'";
+
+    /* Orders store shopper id in orders.session_id (see order_place.php) */
+    $userOrders = $user->fetchAll(
+        array(
+            "order_number", "created_at", "total", "subtotal", "shipping",
+            "payment_method", "payment_status", "order_status",
+            "first_name", "last_name", "email", "mobile",
+            "address_line", "city", "district", "postal_code", "company_name"
+        ),
+        array("orders"),
+        array("session_id" => (string) $touristID),
+        "created_at DESC"
+    );
 }
 
 // 🔥 HANDLE DELETE TESTIMONIAL
 if (isset($_POST['deleteTestimonialConfirm'])) {
+    if ($touristID <= 0 || !$touristArr) {
+        header("Location: ./login.php");
+        exit;
+    }
     $tID = (int)$_POST['hiddenTestimonialID'];
     $conn = $user->getConnection();
     
@@ -57,7 +84,10 @@ if (isset($_POST['deleteTestimonialConfirm'])) {
 
 // 🔥 HANDLE FORM SUBMIT
 if (isset($_POST['addTestimonialSubmit'])) {
-    if ($touristID <= 0) { die("Invalid User ID"); }
+    if ($touristID <= 0 || !$touristArr) {
+        header("Location: ./login.php");
+        exit;
+    }
 
     $inputTouristName = trim($_POST['inputTouristName'] ?? "");
     $inputTouristCountry = trim($_POST['inputTouristCountry'] ?? "");
@@ -148,6 +178,8 @@ if (userSession && !uid) {
         .inputRatingStar, td{
             cursor: pointer;
         }
+        .edi-account-orders-table { font-size: 0.875rem; }
+        .edi-account-order-details summary { user-select: none; outline: none; }
     </style>
 </head>
 
@@ -158,7 +190,7 @@ if (userSession && !uid) {
     ?>
     <div class="page-header-bg"></div>
 
-    <div class="container-fluid py-4 page-header-content">
+    <div class="container-fluid py-3 page-header-content">
         <div class="container">
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
                 <ol class="breadcrumb bg-transparent p-0 mb-0">
@@ -179,10 +211,114 @@ if (userSession && !uid) {
             </div>
         </div>
     </div>
-    <div class="container-fluid pt-3 pb-5">
+    <div class="container-fluid pt-2 pb-4">
         <div class="container">
+            <?php if (!$touristArr): ?>
+            <div class="alert alert-warning border-0 shadow-sm" role="alert">
+                This account could not be loaded. Please <a href="login.php" class="alert-link">sign in</a> again, or return <a href="./" class="alert-link">home</a>.
+            </div>
+            <?php else: ?>
+
+            <div class="row mb-3">
+                <div class="col-lg-5 mb-3 mb-lg-0">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body py-3">
+                            <h5 class="font-weight-bold mb-2">Your profile</h5>
+                            <p class="mb-1"><strong>Email:</strong> <?php echo htmlspecialchars($touristEmail, ENT_QUOTES, 'UTF-8'); ?></p>
+                            <p class="mb-1"><strong>Username:</strong> <?php echo htmlspecialchars($touristUsername, ENT_QUOTES, 'UTF-8'); ?></p>
+                            <?php if ($touristName !== ''): ?>
+                            <p class="mb-1"><strong>Display name:</strong> <?php echo htmlspecialchars($touristName, ENT_QUOTES, 'UTF-8'); ?></p>
+                            <?php endif; ?>
+                            <p class="mb-1"><strong>Country:</strong> <?php echo htmlspecialchars($touristCountry, ENT_QUOTES, 'UTF-8'); ?></p>
+                            <?php if ($touristMemberSince !== ''): ?>
+                            <p class="mb-3"><strong>Member since:</strong> <?php echo htmlspecialchars($touristMemberSince, ENT_QUOTES, 'UTF-8'); ?></p>
+                            <?php endif; ?>
+                            <a class="btn btn-outline-success btn-sm mr-2 mb-2" href="product_page.php">Continue shopping</a>
+                            <a class="btn btn-success btn-sm mb-2" href="cart.php?uid=<?php echo (int) $touristID; ?>">Honey cart</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body py-3">
+                            <h5 class="font-weight-bold mb-2">Quick links</h5>
+                            <ul class="mb-0 pl-3">
+                                <li><a href="cart.php?uid=<?php echo (int) $touristID; ?>">View honey cart</a></li>
+                                <li><a href="checkout.php?uid=<?php echo (int) $touristID; ?>">Checkout</a> (when your cart has items)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm mb-3">
+                <div class="card-body py-3">
+                    <h5 class="font-weight-bold mb-2">Order history</h5>
+                    <?php if (empty($userOrders)): ?>
+                        <p class="text-muted mb-0">You have not placed any orders yet. When you complete checkout, your orders and their status will show here.</p>
+                    <?php else: ?>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-striped edi-account-orders-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Order</th>
+                                    <th scope="col">Placed</th>
+                                    <th scope="col" class="text-right">Total</th>
+                                    <th scope="col">Payment</th>
+                                    <th scope="col">Pay status</th>
+                                    <th scope="col">Order status</th>
+                                    <th scope="col">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($userOrders as $o):
+                                $payMethod = $o['payment_method'] ?? '';
+                                if ($payMethod === 'bank_transfer') {
+                                    $payLabel = 'Bank transfer';
+                                } elseif ($payMethod === 'cod') {
+                                    $payLabel = 'Cash on delivery';
+                                } else {
+                                    $payLabel = (string) $payMethod;
+                                }
+                                $ps = strtolower((string) ($o['payment_status'] ?? ''));
+                                $pillPay = $ps === 'paid' ? 'badge-success' : ($ps === 'failed' ? 'badge-danger' : 'badge-warning');
+                                $createdRaw = $o['created_at'] ?? '';
+                                $placedDisplay = $createdRaw !== '' ? date('M j, Y', strtotime($createdRaw)) : '—';
+                            ?>
+                                <tr>
+                                    <td><?php echo htmlspecialchars($o['order_number'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><?php echo htmlspecialchars($placedDisplay, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td class="text-right">Rs. <?php echo number_format((float) ($o['total'] ?? 0), 2); ?></td>
+                                    <td><?php echo htmlspecialchars($payLabel, ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td><span class="badge <?php echo $pillPay; ?>"><?php echo htmlspecialchars($o['payment_status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></span></td>
+                                    <td><?php echo htmlspecialchars($o['order_status'] ?? '', ENT_QUOTES, 'UTF-8'); ?></td>
+                                    <td>
+                                        <details class="edi-account-order-details">
+                                            <summary class="text-success font-weight-bold" style="cursor:pointer;">View</summary>
+                                            <div class="small text-muted border rounded p-2 mt-2 bg-light">
+                                                <p class="mb-1"><strong>Ship to:</strong> <?php echo htmlspecialchars(trim(($o['first_name'] ?? '') . ' ' . ($o['last_name'] ?? '')), ENT_QUOTES, 'UTF-8'); ?></p>
+                                                <?php if (!empty($o['company_name'])): ?>
+                                                <p class="mb-1"><?php echo htmlspecialchars($o['company_name'], ENT_QUOTES, 'UTF-8'); ?></p>
+                                                <?php endif; ?>
+                                                <p class="mb-1"><?php echo htmlspecialchars($o['address_line'] ?? '', ENT_QUOTES, 'UTF-8'); ?></p>
+                                                <p class="mb-1"><?php echo htmlspecialchars(trim(($o['city'] ?? '') . ', ' . ($o['district'] ?? '') . ' ' . ($o['postal_code'] ?? '')), ENT_QUOTES, 'UTF-8'); ?></p>
+                                                <p class="mb-1"><strong>Email:</strong> <?php echo htmlspecialchars($o['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?></p>
+                                                <p class="mb-1"><strong>Phone:</strong> <?php echo htmlspecialchars($o['mobile'] ?? '', ENT_QUOTES, 'UTF-8'); ?></p>
+                                                <p class="mb-0"><strong>Subtotal:</strong> Rs. <?php echo number_format((float) ($o['subtotal'] ?? 0), 2); ?> &nbsp; <strong>Shipping:</strong> Rs. <?php echo number_format((float) ($o['shipping'] ?? 0), 2); ?></p>
+                                            </div>
+                                        </details>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
+
             <?php if ( $user->CountRows("testimonials", array("user_id"=>$touristID)) > 0 ) { ?>
-            <div class="row mb-4">
+            <div class="row mb-3">
                 <div class="card col-12">
                     <div class="card-body">
                         <h5 class="font-weight-bold">Your Testimonials</h5>
@@ -285,19 +421,18 @@ if (userSession && !uid) {
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </div>
     <div id="editTestimonial"></div>
     <div id="deleteTestimonial"></div>
     <div id="removeTestimonialImage"></div>
-    <?php 
-        echo $userHeader->printUserFooter(); 
-        echo "
-        <script>
-            $( document ).ready(function() {
-                $('input[name=inputTouristCountry]').val('$touristCountry')
-            }); 
-        </script>";
+    <?php
+        echo $userHeader->printUserFooter();
+        if ($touristArr) {
+            $countryJs = json_encode($touristCountry, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
+            echo "<script>$(function(){ $('input[name=inputTouristCountry]').val(" . $countryJs . "); });</script>";
+        }
     ?>
     <script>
         mobiscroll.setOptions({
