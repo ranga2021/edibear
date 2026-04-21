@@ -12299,3 +12299,19 @@ h6,
 .social-icon-box:hover i {
     color: #ffffff;
 }
+
+
+@media (max-width: 780px){
+
+  .edi-intro-image img {
+      max-height: 520px;
+      max-width: -webkit-fill-available;
+      padding-left: 0px !important;
+      margin-left: auto;
+  }
+  .edi-intro-text {
+      padding-right: 20px;
+      margin-right: auto;
+      margin-left: auto;
+  }
+  }

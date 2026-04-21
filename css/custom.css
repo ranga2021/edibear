@@ -620,6 +620,50 @@ animation: cartBounce .4s;
     padding-left:18px;
 }
 
+.order-special-note .order-note-list{
+    counter-reset: order-note;
+}
+
+.order-special-note .order-note-item{
+    position:relative;
+    padding-left:1.6rem;
+    margin-bottom:1.1rem;
+    border-bottom:1px solid #eee;
+    padding-bottom:1.1rem;
+}
+
+.order-special-note .order-note-item:last-child{
+    border-bottom:none;
+    padding-bottom:0;
+    margin-bottom:0;
+}
+
+.order-special-note .order-note-item::before{
+    counter-increment: order-note;
+    content: counter(order-note) ".";
+    position:absolute;
+    left:0;
+    top:0;
+    font-weight:700;
+    color:#333;
+}
+
+.order-special-note .order-note-lang{
+    font-size:0.95rem;
+    line-height:1.5;
+    color:#333;
+}
+
+.order-note-bank{
+    border-top:1px solid #e8e8e8;
+}
+
+.order-note-bank p{
+    font-size:0.95rem;
+    line-height:1.45;
+    color:#222;
+}
+
 .order-complete-summary{
     background:#fff;
     border:1px solid #e0e0e0;

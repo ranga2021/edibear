@@ -329,7 +329,7 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   display: block;
   width: 22px;
   height: 2px;
-  background: #4a4a4a;
+  background: var(--edi-green);
   border-radius: 1px;
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
@@ -409,6 +409,24 @@ body.index .HomeCarousel #header-carousel .carousel-item {
     font-size: 14px !important;
     margin-left: 0 !important;
     white-space: nowrap;
+  }
+
+  /* Auth: icon only (match cart / accent); label hidden on small screens */
+  .edibear-nav-tools #userAuthBtn.edibear-signin {
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 6px;
+    gap: 0;
+  }
+
+  .edibear-nav-tools #userAuthBtn .edibear-nav-auth-label {
+    display: none !important;
+  }
+
+  .edibear-nav-tools #userAuthBtn i {
+    font-size: 1.25rem;
+    margin: 0;
   }
 }
 
@@ -701,7 +719,6 @@ h6.text-primary:not(.text-white),
       margin-right: auto;
       margin-left: auto;
   }
-  image.png
   }
 
 /* ----- Blogs listing (The Hidden Den) — full-width 3 columns, header aligns with grid ----- */

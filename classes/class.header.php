@@ -371,7 +371,7 @@ class HEADER {
                     <i class='fa fa-user'></i>
                </a>
                <a href='./login' id='userAuthBtn' class='edibear-signin'>
-                    <i class='fa fa-user'></i> Sign In
+                    <i class='fa fa-user' aria-hidden='true'></i><span class='edibear-nav-auth-label'> Sign In</span>
                </a>
                 </div>
                 </div>
@@ -523,7 +523,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
         // ✅ Logged in → Logout
-        authBtn.innerHTML = \"<i class='fa fa-sign-out'></i> Logout\";
+        authBtn.innerHTML = \"<i class='fa fa-sign-out' aria-hidden='true'></i><span class='edibear-nav-auth-label'> Logout</span>\";
         authBtn.href = '#';
 
         authBtn.onclick = function(e) {
@@ -536,7 +536,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       if (accountIcon) accountIcon.style.display = 'none';
         // ❌ Not logged in → Sign In
-        authBtn.innerHTML = \"<i class='fa fa-user'></i> Sign In\";
+        authBtn.innerHTML = \"<i class='fa fa-user' aria-hidden='true'></i><span class='edibear-nav-auth-label'> Sign In</span>\";
         authBtn.href = './login';
     }
 
