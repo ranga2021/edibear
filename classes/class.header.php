@@ -296,12 +296,23 @@ class HEADER {
             max-width: 1300px;
             margin: 0 auto;
             padding: 0 40px;
+            gap: 12px;
         }
 
-        .edibear-menu {
+        .edibear-nav-main {
             display: flex;
             align-items: center;
-            gap: 25px;
+            justify-content: flex-end;
+            flex: 1;
+            min-width: 0;
+            gap: 20px;
+        }
+
+        .edibear-nav-tools {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
         }
 
         .edibear-link {
@@ -335,7 +346,8 @@ class HEADER {
                         <img src='$logo' alt='Edibear' style='height: 55px;'>
                     </a>
                 </div>
-                <div class='edibear-menu'>";
+                <div class='edibear-nav-main'>
+                <nav class='edibear-nav-links' id='edibear-nav-drawer' aria-label='Main navigation'>";
 
     foreach ($this->userNavTabArr as $key=>$subArr) {
         $html .= "<a href='".$subArr['redirect']."' class='edibear-link'>
@@ -344,18 +356,25 @@ class HEADER {
     }
 
     $html .= "
+                </nav>
+                <button type='button' class='edibear-nav-toggle' id='edibear-nav-toggle' aria-controls='edibear-nav-drawer' aria-expanded='false' aria-label='Open menu'>
+                    <span class='edibear-nav-toggle-bar' aria-hidden='true'></span>
+                    <span class='edibear-nav-toggle-bar' aria-hidden='true'></span>
+                    <span class='edibear-nav-toggle-bar' aria-hidden='true'></span>
+                </button>
+                <div class='edibear-nav-tools'>
                <a href='#' onclick='checkCartAccess()' id='cart-icon' style='position:relative;' class='edibear-link'>
-                    <img src='./img/honey_cart_icon.png' style='width:32px; height:36px; vertical-align: middle;'>
+                    <img src='./img/honey_cart_icon.png' style='width:32px; height:36px; vertical-align: middle;' alt='Cart'>
                     <span id='cart-dot' style='position:absolute; top:-5px; right:-5px; width:10px; height:10px; background:#28a745; border-radius:50%; display:none;'></span>
                </a>
-               
                <a href='#' id='accountIcon' class='edibear-signin' style='display:none;'>
                     <i class='fa fa-user'></i>
                </a>
                <a href='./login' id='userAuthBtn' class='edibear-signin'>
                     <i class='fa fa-user'></i> Sign In
                </a>
-            </div>
+                </div>
+                </div>
         </div>
     </div>
     <script>
@@ -374,6 +393,45 @@ class HEADER {
     }
 
     updateCartDot();
+
+    (function () {
+        var wrap = document.querySelector('.edibear-header-wrapper');
+        var btn = document.getElementById('edibear-nav-toggle');
+        var drawer = document.getElementById('edibear-nav-drawer');
+        if (!wrap || !btn || !drawer) {
+            return;
+        }
+        function setOpen(open) {
+            wrap.classList.toggle('edibear-nav-menu-open', !!open);
+            btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+            btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+        }
+        btn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            setOpen(!wrap.classList.contains('edibear-nav-menu-open'));
+        });
+        document.addEventListener('click', function () {
+            setOpen(false);
+        });
+        drawer.addEventListener('click', function (e) {
+            e.stopPropagation();
+        });
+        drawer.querySelectorAll('a').forEach(function (a) {
+            a.addEventListener('click', function () {
+                setOpen(false);
+            });
+        });
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                setOpen(false);
+            }
+        });
+        window.addEventListener('resize', function () {
+            if (window.innerWidth >= 992) {
+                setOpen(false);
+            }
+        });
+    })();
 
 });
         function checkCartAccess() {

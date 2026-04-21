@@ -274,6 +274,8 @@ body.index .HomeCarousel #header-carousel .carousel-item {
 /* ----- Nav / chrome ----- */
 .edibear-topline {
   background: var(--edi-green) !important;
+  width: 100%;
+  max-width: 100%;
 }
 
 .edibear-link {
@@ -286,6 +288,146 @@ body.index .HomeCarousel #header-carousel .carousel-item {
 
 .edibear-challenge {
   color: var(--edi-gold) !important;
+}
+
+/* ----- Public navbar (printUserNav): desktop + mobile drawer ----- */
+.edibear-header-wrapper {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.edibear-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.edibear-nav-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.edibear-nav-toggle:focus {
+  outline: 2px solid rgba(51, 166, 117, 0.45);
+  outline-offset: 2px;
+}
+
+.edibear-nav-toggle-bar {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: #4a4a4a;
+  border-radius: 1px;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.edibear-header-wrapper.edibear-nav-menu-open .edibear-nav-toggle-bar:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.edibear-header-wrapper.edibear-nav-menu-open .edibear-nav-toggle-bar:nth-child(2) {
+  opacity: 0;
+}
+
+.edibear-header-wrapper.edibear-nav-menu-open .edibear-nav-toggle-bar:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+@media (max-width: 991.98px) {
+  .edibear-nav-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .edibear-logo img {
+    height: 48px !important;
+  }
+
+  .edibear-nav-main {
+    gap: 8px !important;
+    justify-content: flex-end !important;
+  }
+
+  .edibear-nav-toggle {
+    display: inline-flex !important;
+  }
+
+  .edibear-navbar {
+    position: relative !important;
+  }
+
+  .edibear-nav-links {
+    position: absolute !important;
+    left: 0 !important;
+    right: 0 !important;
+    top: 100% !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12) !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: max-height 0.28s ease, opacity 0.2s ease, visibility 0.2s ease !important;
+    z-index: 1002 !important;
+  }
+
+  .edibear-header-wrapper.edibear-nav-menu-open .edibear-nav-links {
+    max-height: 320px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    padding: 8px 0 12px !important;
+  }
+
+  .edibear-nav-links .edibear-link {
+    padding: 14px 20px !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06) !important;
+  }
+
+  .edibear-nav-links .edibear-link:last-child {
+    border-bottom: none !important;
+  }
+
+  .edibear-signin {
+    font-size: 14px !important;
+    margin-left: 0 !important;
+    white-space: nowrap;
+  }
+}
+
+@media (min-width: 992px) {
+  .edibear-nav-toggle {
+    display: none !important;
+  }
+
+  .edibear-nav-links {
+    position: static !important;
+    max-height: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    overflow: visible !important;
+    flex-direction: row !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    background: transparent !important;
+  }
 }
 
 /* ----- Icons & outlines ----- */
@@ -545,6 +687,22 @@ h6.text-primary:not(.text-white),
   background: var(--edi-gold);
   border-radius: 1px;
 }
+
+@media (max-width: 780px){
+
+  .edi-intro-image img {
+      max-height: 520px;
+      max-width: -webkit-fill-available;
+      padding-left: 0px !important;
+      margin-left: auto;
+  }
+  .edi-intro-text {
+      padding-right: 20px;
+      margin-right: auto;
+      margin-left: auto;
+  }
+  image.png
+  }
 
 /* ----- Blogs listing (The Hidden Den) — full-width 3 columns, header aligns with grid ----- */
 .edi-blogs-page-title-row .edi-blogs-main-title {
