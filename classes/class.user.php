@@ -85,6 +85,10 @@ class USER{
 	    if (defined('PUBLIC_PAGE') && PUBLIC_PAGE === true) {
         return true;
     }
+		if (!isset($_SESSION['timeout'])) {
+			$_SESSION['timeout'] = time();
+			return true;
+		}
 		$session_life = time() - $_SESSION['timeout'];
 		if($session_life < $this->inactive) {
 			$_SESSION['timeout']=time();

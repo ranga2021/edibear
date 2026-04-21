@@ -2,19 +2,26 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// SESSION FIX
-if (!is_dir('/tmp')) {
-    mkdir('/tmp', 0777, true);
-}
-session_save_path('/tmp');
-session_start();
-
+require_once("../classes/session_config.php");
 require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
 
-$adminHeader = new HEADER("add-blog");
 $user = new USER();
+
+if (!$user->is_loggedin()) {
+    $user->doLogout();
+}
+
+// Long edit forms: idle timer is not refreshed until the next request. Treat a blog
+// save POST as activity so createSiteMap's checkTimeout does not log the user out.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['addNewBlogSubmit']) || isset($_POST['updateBlogSubmit']))) {
+    $_SESSION['timeout'] = time();
+} elseif (!$user->checkTimeout()) {
+    $user->doLogout();
+}
+
+$adminHeader = new HEADER("add-blog");
 $widgets = new WIDGETS();
 
 $editMode = false;
