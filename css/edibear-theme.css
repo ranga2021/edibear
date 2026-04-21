@@ -273,6 +273,8 @@ body.index .HomeCarousel #header-carousel .carousel-item {
 
 /* ----- Nav / chrome ----- */
 .edibear-topline {
+  height: 10px !important;
+  min-height: 10px;
   background: var(--edi-green) !important;
   width: 100%;
   max-width: 100%;
@@ -1085,4 +1087,64 @@ h6.text-primary:not(.text-white),
     padding-right: 6px;
     margin-bottom: 12px;
   }
+}
+
+/* ----- Site-wide polish: rhythm, type, mobile readability ----- */
+
+/* Main nav bar aligns with page content width (1140) */
+.edibear-nav-container {
+  max-width: 1140px;
+}
+
+@media (max-width: 991.98px) {
+  .edibear-navbar {
+    padding-top: 18px !important;
+    padding-bottom: 12px !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  /* Justified blocks are hard to read on narrow screens */
+  p.text-justify,
+  .text-justify {
+    text-align: left !important;
+  }
+
+  .page-header-content {
+    padding-top: 1rem !important;
+    padding-bottom: 1.5rem !important;
+  }
+
+  .edi-page-title-row {
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0.5rem 0 1rem;
+  }
+
+  .edi-page-title-row h1 {
+    font-size: clamp(1.45rem, 5.5vw, 1.85rem) !important;
+    line-height: 1.2;
+  }
+
+  .edi-page-title-row h2 {
+    font-size: clamp(1.3rem, 4.5vw, 1.6rem) !important;
+    line-height: 1.2;
+  }
+
+  .page-header-content > .container,
+  .page-header-content.container-fluid > .container,
+  .page-header-content.container {
+    padding-left: clamp(14px, 4vw, 18px);
+    padding-right: clamp(14px, 4vw, 18px);
+  }
+
+  .edi-breadcrumb {
+    font-size: 0.8125rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Long-form copy: comfortable line height inside main content shells */
+.page-header-content p {
+  line-height: 1.65;
 }

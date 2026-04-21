@@ -269,7 +269,7 @@ class HEADER {
 
 /* Ensure the green line is visible and not collapsed */
 .edibear-topline {
-    height: 12px !important;
+    height: 10px !important;
     background-color: #33a675 !important;
     display: block !important;
     width: 100%;
@@ -293,7 +293,7 @@ class HEADER {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            max-width: 1300px;
+            max-width: 1140px;
             margin: 0 auto;
             padding: 0 40px;
             gap: 12px;
@@ -317,7 +317,7 @@ class HEADER {
 
         .edibear-link {
             text-decoration: none !important;
-            color: #4a4a4a !important;
+            color: #606062 !important;
             font-size: 14px;
             font-weight: 400; /* Regular weight, not bold */
             text-transform: uppercase;

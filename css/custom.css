@@ -37,7 +37,7 @@
 
 /* CONTAINER */
 .edibear-nav-container{
-    max-width:1200px;
+    max-width:1140px;
     margin:auto;
     display:flex;
     align-items:center;
@@ -57,11 +57,11 @@
     gap:28px;
 }
 
-/* LINKS */
+/* LINKS (color matches edibear-theme --edi-body) */
 .edibear-link{
     font-family:'Poppins',sans-serif;
     font-weight:600;
-    color:#666;
+    color:#606062;
     text-decoration:none;
     letter-spacing:1px;
 }
