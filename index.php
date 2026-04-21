@@ -15,63 +15,113 @@
     
 ?>
 <?php
-    
-    // ✅ GET UNIQUE TAGS FROM PDF
-    $pdfTagsRaw = $user->fetchAll(["tag"], ["pdf_details"], ["status"=>1]);
 
-    $pdfTags = [];
+    $conn = $user->getConnection();
 
-    foreach($pdfTagsRaw as $row){
-       $tag = trim($row['tag']);
-       if($tag != "" && !in_array($tag, $pdfTags)){
-           $pdfTags[] = $tag;
-       }
+    $explorerLanguages = array();
+    $explorerGrades = array();
+    $productCategories = array();
+    $productSubcategoriesAll = array();
+    try {
+        $explorerLanguages = $user->fetchAll(array("id", "title"), array("languages"), array());
+    } catch (Throwable $e) {
+        $explorerLanguages = array();
+    }
+    try {
+        $explorerGrades = $user->fetchAll(array("id", "title"), array("grades"), array());
+    } catch (Throwable $e) {
+        $explorerGrades = array();
+    }
+    try {
+        $productCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array("status" => 1));
+    } catch (Throwable $e) {
+        try {
+            $productCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array());
+        } catch (Throwable $e2) {
+            $productCategories = array();
+        }
+    }
+    try {
+        $pscStmt = $conn->query("SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC");
+        if ($pscStmt) {
+            $productSubcategoriesAll = $pscStmt->fetchAll(PDO::FETCH_ASSOC);
+        }
+    } catch (Throwable $e) {
+        $productSubcategoriesAll = array();
     }
 
-    
-    $subcategories = $user->fetchAll(
-    array("id", "title", "main_cat_id"),
-    array("sub_category"),
-    array()
-    );
-
-   
-    $languageFilter = $_GET['language'] ?? '';
-    $gradeFilter = $_GET['grade'] ?? '';
-    $categoryFilter = $_GET['category'] ?? '';
-    $subCategoryFilter = $_GET['sub_category'] ?? '';
-    
-    if (!empty($_GET)) {
-
-    $categoryId = $_GET['category'] ?? '';
-
-    $queryParams = http_build_query([
-        'language' => $languageFilter,
-        'grade' => $gradeFilter,
-        'sub_category' => $subCategoryFilter
-    ]);
-
-    switch ($categoryId) {
-        case 1: // Leisure Activities → Coloring Pages
-            header("Location: pdf.php?$queryParams");
-            exit;
-
-        case 2: // Books & Papers → Brain Boosters
-            header("Location: books.php?$queryParams");
-            exit;
-
-        case 3: // Study Packs → Worksheets
-            header("Location: homework.php?$queryParams");
-            exit;
+    $hasProductSubcategoryColumn = false;
+    try {
+        $colStmt = $conn->query("SHOW COLUMNS FROM products LIKE 'product_subcategory_id'");
+        $hasProductSubcategoryColumn = $colStmt && $colStmt->rowCount() > 0;
+    } catch (Throwable $e) {
+        $hasProductSubcategoryColumn = false;
     }
-}
 
-    
-     $productQuery = "SELECT * FROM products WHERE status = 1 ORDER BY id DESC LIMIT 4";
+    $explorerSearch = isset($_GET['explorer']) && (string) $_GET['explorer'] === '1';
+    $expLangId = (int) ($_GET['exp_lang'] ?? 0);
+    $expGradeId = (int) ($_GET['exp_grade'] ?? 0);
+    $expCatId = (int) ($_GET['exp_cat'] ?? 0);
+    $expSubId = (int) ($_GET['exp_sub'] ?? 0);
 
-     $stmt = $user->getConnection()->prepare($productQuery);
-     $stmt->execute();
-     $products = $stmt->fetchAll();
+    $explorerError = '';
+    if ($explorerSearch && ($expLangId <= 0 || $expGradeId <= 0 || $expCatId <= 0)) {
+        $explorerError = 'Please choose language, grade, and category before exploring.';
+        $explorerSearch = false;
+    }
+
+    $languageTitle = '';
+    if ($expLangId > 0) {
+        foreach ($explorerLanguages as $lr) {
+            if ((int) $lr['id'] === $expLangId) {
+                $languageTitle = trim((string) $lr['title']);
+                break;
+            }
+        }
+    }
+    $gradeTitle = '';
+    if ($expGradeId > 0) {
+        foreach ($explorerGrades as $gr) {
+            if ((int) $gr['id'] === $expGradeId) {
+                $gradeTitle = trim((string) $gr['title']);
+                break;
+            }
+        }
+    }
+
+    if ($explorerSearch && ($languageTitle === '' || $gradeTitle === '')) {
+        $explorerError = 'Invalid language or grade selection.';
+        $explorerSearch = false;
+    }
+
+    if ($explorerSearch) {
+        $productQuery = "SELECT * FROM products WHERE status = 1 AND category_id = :cid";
+        $params = array(':cid' => $expCatId);
+
+        if ($languageTitle !== '') {
+            $productQuery .= " AND LOWER(TRIM(COALESCE(language, ''))) = LOWER(:lang)";
+            $params[':lang'] = $languageTitle;
+        }
+        if ($gradeTitle !== '') {
+            $productQuery .= " AND TRIM(COALESCE(age_group, '')) = :grade";
+            $params[':grade'] = $gradeTitle;
+        }
+        if ($expSubId > 0 && $hasProductSubcategoryColumn) {
+            $productQuery .= " AND product_subcategory_id = :psub";
+            $params[':psub'] = $expSubId;
+        }
+
+        $productQuery .= " ORDER BY id DESC LIMIT 48";
+
+        $stmt = $conn->prepare($productQuery);
+        $stmt->execute($params);
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } else {
+        $productQuery = "SELECT * FROM products WHERE status = 1 ORDER BY id DESC LIMIT 4";
+        $stmt = $conn->prepare($productQuery);
+        $stmt->execute();
+        $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     $braveHeartQuery = "SELECT * FROM braveheart_events WHERE status = 1 ORDER BY id DESC LIMIT 1";
     $braveStmt = $user->getConnection()->prepare($braveHeartQuery);
@@ -213,53 +263,38 @@
         <form method="GET" action="" id="searchForm">
         <div class="row justify-content-center align-items-end">
             <div class="col-md-3 mb-2">
-                    <select class="explorer-select" name="language">
-                        <option>Language (Required)</option>
-                        <option value="English" <?php echo ($languageFilter == 'English' ? 'selected' : ''); ?>>English</option>
-                        <option value="Sinhala" <?php echo ($languageFilter == 'Sinhala' ? 'selected' : ''); ?>>Sinhala</option>
-                        <option value="Tamil" <?php echo ($languageFilter == 'Tamil' ? 'selected' : ''); ?>>Tamil</option>
+                    <select class="explorer-select" name="exp_lang" id="explorer_exp_lang" required>
+                        <option value="">Language (Required)</option>
+                        <?php foreach ($explorerLanguages as $lr): ?>
+                        <option value="<?php echo (int) $lr['id']; ?>" <?php echo ($expLangId === (int) $lr['id'] ? 'selected' : ''); ?>><?php echo htmlspecialchars((string) $lr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
+                        <?php endforeach; ?>
                     </select>
             </div>
 
             <div class="col-md-3 mb-2">
-                <select class="explorer-select" name="grade">
-                    <option>Grade (Required)</option>
-                    <option value="Pre School" <?php echo ($gradeFilter == 'Pre School' ? 'selected' : ''); ?>>Pre School</option>
-                    <option value="Grade 1" <?php echo ($gradeFilter == 'Grade 1' ? 'selected' : ''); ?>>Grade 1</option>
-                    <option value="Grade 2" <?php echo ($gradeFilter == 'Grade 2' ? 'selected' : ''); ?>>Grade 2</option>
+                <select class="explorer-select" name="exp_grade" id="explorer_exp_grade" required>
+                    <option value="">Grade (Required)</option>
+                    <?php foreach ($explorerGrades as $gr): ?>
+                    <option value="<?php echo (int) $gr['id']; ?>" <?php echo ($expGradeId === (int) $gr['id'] ? 'selected' : ''); ?>><?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
+                    <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="col-md-3 mb-2">
-                <select class="explorer-select" name="category">
-    <option>Category (Required)</option>
-
-    <!-- ✅ PDF TAG BASED CATEGORIES -->
-    <?php foreach ($pdfTags as $tag): ?>
-        <option value="pdf_<?php echo $tag; ?>" 
-        <?php echo ($categoryFilter == "pdf_".$tag ? 'selected' : ''); ?>>
-            <?php echo $tag; ?>
-        </option>
-    <?php endforeach; ?>
-
-    <!-- ✅ STATIC CATEGORIES -->
-    <option value="books" <?php echo ($categoryFilter == 'books' ? 'selected' : ''); ?>>
-        Books
-    </option>
-
-    <option value="homework" <?php echo ($categoryFilter == 'homework' ? 'selected' : ''); ?>>
-        Picture Cards
-    </option>
-
-</select>
+                <select class="explorer-select" name="exp_cat" id="explorer_exp_cat" required>
+                    <option value="">Category (Required)</option>
+                    <?php foreach ($productCategories as $pc): ?>
+                    <option value="<?php echo (int) $pc['id']; ?>" <?php echo ($expCatId === (int) $pc['id'] ? 'selected' : ''); ?>><?php echo htmlspecialchars((string) $pc['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
             <div class="col-md-3 mb-2">
-                    <select class="explorer-select" name="sub_category">
-                     <option value="">Sub Category (Optional)</option>
-                    <?php foreach ($subcategories as $sub): ?>
-                      <option value="<?php echo $sub['id']; ?>" <?php echo ($subCategoryFilter == $sub['id'] ? 'selected' : ''); ?>>
-                     <?php echo $sub['title']; ?>
+                    <select class="explorer-select" name="exp_sub" id="explorer_exp_sub">
+                     <option value="">Subcategory (Optional)</option>
+                    <?php foreach ($productSubcategoriesAll as $sub): ?>
+                      <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>" <?php echo ($expSubId === (int) $sub['id'] ? 'selected' : ''); ?>>
+                     <?php echo htmlspecialchars((string) $sub['title'], ENT_QUOTES, 'UTF-8'); ?>
                       </option>
                     <?php endforeach; ?>
                   </select>
@@ -268,7 +303,7 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="explore-btn edi-home-section-cta">EXPLORE</button>
+            <button type="submit" name="explorer" value="1" class="explore-btn edi-home-section-cta">EXPLORE</button>
         </div>
         </form>
     </div>
@@ -279,6 +314,9 @@
 
        <div class="text-center">
         <h1 class="text-danger">THE HONEY MARKET</h1>
+      <?php if ($explorerError !== ''): ?>
+        <p class="text-danger mb-2"><?php echo htmlspecialchars($explorerError, ENT_QUOTES, 'UTF-8'); ?></p>
+      <?php endif; ?>
       <p style="max-width:890px; margin:0 auto; line-height:1.6; text-align: justify;">
         This is your second destination! Explore every trail and collect new treasures
         to sharpen your knowledge and brighten your brave hearts!Discover your favourite things to make this journey truly memorable. It's time to bring the fun home for your next big adventure!
@@ -292,7 +330,11 @@
             // We now use the $products array we fetched at the top.
             
             if (empty($products)) {
-                echo "<div class='col-12 text-center'><p>No treasures found in this trail. Try another search!</p></div>";
+                if ($explorerSearch) {
+                    echo "<div class='col-12 text-center'><p>No treasures match these filters. Try different language, grade, or category, or browse the full <a href=\"./product_page.php\">Honey Market</a>.</p></div>";
+                } else {
+                    echo "<div class='col-12 text-center'><p>No treasures found in this trail. Try another search!</p></div>";
+                }
             } else {
                 foreach($products as $product) {
                     $price = $product['discounted_price'] > 0 ? $product['discounted_price'] : $product['price'];
@@ -735,49 +777,39 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 });
 </script>
 <script>
-document.getElementById("searchForm").addEventListener("submit", function(e){
-    e.preventDefault();
+(function () {
+    var catSel = document.getElementById("explorer_exp_cat");
+    var subSel = document.getElementById("explorer_exp_sub");
+    if (!catSel || !subSel) return;
 
-    const language = document.querySelector('[name="language"]').value;
-    const grade    = document.querySelector('[name="grade"]').value;
-    const category = document.querySelector('[name="category"]').value;
-    const sub      = document.querySelector('[name="sub_category"]').value;
-
-    if (language === "Language (Required)" || grade === "Grade (Required)" || category === "Category (Required)") {
-        alert("Please select Language, Grade, and Category");
-        return;
+    function filterSubcategories() {
+        var cid = catSel.value;
+        var opts = subSel.querySelectorAll("option[value]");
+        var current = subSel.value;
+        var stillOk = false;
+        for (var i = 0; i < opts.length; i++) {
+            var o = opts[i];
+            var pc = o.getAttribute("data-product-category-id");
+            var show = !cid || !pc || String(pc) === String(cid);
+            o.hidden = !show;
+            o.disabled = !show;
+            if (show && o.value === current) stillOk = true;
+        }
+        if (!stillOk) subSel.value = "";
     }
 
-    let targetPage = "";
-    let urlParams = new URLSearchParams();
+    catSel.addEventListener("change", filterSubcategories);
+    filterSubcategories();
 
-    urlParams.append("language", language);
-    urlParams.append("grade", grade);
-    if (sub !== "") urlParams.append("sub_cat_id", sub);
-
-    // Dynamic PDF tag category (e.g., pdf_COLORING)
-    if (category.startsWith("pdf_")) {
-        const tag = category.replace("pdf_", "");
-        targetPage = "pdf.php";
-        urlParams.append("tag", tag);
+    if (window.location.search.indexOf("explorer=1") !== -1) {
+        var honey = document.getElementById("honey-market-section");
+        if (honey) {
+            setTimeout(function () {
+                honey.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 200);
+        }
     }
-    // Static categories
-    else if (category === "books") {
-        targetPage = "books.php";
-    }
-    else if (category === "homework") {
-        targetPage = "homework.php";
-    }
-    else {
-        alert("Invalid category selected");
-        return;
-    }
-
-    const queryString = urlParams.toString();
-    const finalUrl = targetPage + (queryString ? "?" + queryString : "");
-
-    window.location.href = finalUrl;
-});
+})();
 </script>
 </body>
 
