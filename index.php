@@ -281,8 +281,8 @@
                             }
                             ?>
                         </div>
-                        <div style='padding-left:5px !important;'>
-                        <form method="POST" action="add_to_cart.php" style="padding-right: 60px; padding-left: 10px;">
+                        <div class="product-card-cart-row">
+                        <form method="POST" action="add_to_cart.php" class="m-0 p-0">
                             <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                             <button type="submit" class="btn newgreen1-btn collect-btn add-to-cart-btn">Collect</button>
                         </form>

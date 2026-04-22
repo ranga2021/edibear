@@ -333,7 +333,12 @@
 .product-card{
 background:white;
 padding:1px;
+text-align: left; /* column may use .text-center; keep title, price, Collect aligned */
+}
 
+.product-card-cart-row {
+    padding-left: 5px;
+    margin: 0;
 }
 
 .product-img{
