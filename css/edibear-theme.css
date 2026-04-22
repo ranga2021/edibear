@@ -65,7 +65,6 @@ h4.text-danger {
 }
 
 .edi-hello,
-.edi-welcome,
 .edi-paragraph,
 .explorer-desc {
   color: var(--edi-body) !important;
@@ -305,9 +304,36 @@ body.index .HomeCarousel #header-carousel .carousel-item {
 
 .edibear-nav-cart-img {
   display: block;
-  width: 30px;
-  height: 30px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
+}
+
+/* Tighter icon + label in navbar auth control */
+#userAuthBtn.edibear-signin .fa-user,
+#userAuthBtn.edibear-signin .fa-sign-out {
+  margin-right: 0;
+}
+
+.edibear-cart-badge {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: #28a745;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 10px;
+  border: 2px solid #fff;
+  box-sizing: border-box;
+  font-family: var(--edi-font-sans), "Poppins", sans-serif;
 }
 
 .edibear-nav-links {
@@ -410,6 +436,16 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   .edibear-nav-tools .edibear-nav-cart-img {
     width: 22px !important;
     height: 22px !important;
+  }
+
+  .edibear-nav-tools .edibear-cart-badge {
+    top: -2px;
+    right: -4px;
+    min-width: 16px;
+    height: 16px;
+    font-size: 10px;
+    padding: 0 3px;
+    border-width: 1px;
   }
 
   .edibear-nav-tools .edibear-nav-tool .fa-user,
@@ -933,6 +969,66 @@ h6.text-primary:not(.text-white),
 .edi-hidden-den-intro {
   color: var(--edi-body);
   line-height: 1.65;
+}
+
+/* lg+: two columns share one row height; featured card grows so its bottom lines up with the 2×2 grid */
+@media (min-width: 992px) {
+  .edi-hidden-den-grid {
+    align-items: stretch;
+  }
+
+  .edi-hidden-den-grid > [class*="col-"] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .edi-hidden-den-featured {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .edi-hidden-den-featured > .row {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .edi-hidden-den-featured .edi-blog-col {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex !important;
+  }
+
+  .edi-hidden-den-featured .edi-blog-card--featured {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
+
+  .edi-hidden-den-featured .edi-blog-thumb-link {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .edi-hidden-den-featured .edi-blog-thumb {
+    flex: 1 1 auto;
+    min-height: 160px;
+    aspect-ratio: unset;
+    position: relative;
+  }
+
+  .edi-hidden-den-featured .edi-blog-thumb img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .edi-hidden-den-grid .edi-blog-col {

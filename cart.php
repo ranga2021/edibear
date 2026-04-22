@@ -156,9 +156,9 @@ $orderTotal = $total + $shipping;
         // ✅ Clear cart count when cart is empty
         localStorage.removeItem('cart_count');
 
-        // Optional: hide cart dot
-        const dot = document.getElementById('cart-dot');
-        if (dot) dot.style.display = 'none';
+        if (typeof window.edibearSyncCartBadge === 'function') {
+            window.edibearSyncCartBadge();
+        }
     </script>
     <?php else: ?>
         <div class="row">
@@ -241,6 +241,9 @@ $orderTotal = $total + $shipping;
 <?php if (!empty($cartItems)): ?>
 <script>
     localStorage.setItem('cart_count', String(<?php echo (int) $totalItems; ?>));
+    if (typeof window.edibearSyncCartBadge === 'function') {
+        window.edibearSyncCartBadge();
+    }
 </script>
 <?php endif; ?>
 

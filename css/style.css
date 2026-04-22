@@ -10138,19 +10138,15 @@ a.text-info:hover, a.text-info:focus {
   border-radius: 10px !important;
 }
 
-.coloring-pages{
- color: #606062 !important;
- 
+.coloring-pages, .books-paper, .homeworks{
+ color: #131313 !important;
+ font-size: 20px !important;
 }
 
 .books{
     background-image: url(../img/New%folder/Headder%Banner.jpg);
 }
 
-.books-paper {
- color: #606062 !important;
-
-}
 
 .newsl-subscribe-btn{
  color: #fff;
@@ -10163,10 +10159,7 @@ a.text-info:hover, a.text-info:focus {
   border-color: #33a675 !important;
   border-width: 2px !important;
 }
-.homeworks {
- color: #606062 !important;
 
-}
 
 .indextestimonials{
   z-index: -1;

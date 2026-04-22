@@ -4,6 +4,7 @@ require_once("./classes/class.user.php");
 require_once("./classes/edi_taxonomy.php");
 require_once("./classes/class.header.php");
 require_once("./classes/class.widgets.php");
+require_once("./classes/edi_discount_badge.php");
 
 $userHeader = new HEADER("shop");
 $user = new USER();
@@ -239,31 +240,43 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
         })();
         </script>
 
-        <div class="row treasures-product-grid">
+        <div class="row treasures-product-grid mt-2">
             <?php if(empty($products)): ?>
                 <div class="col-12 text-center py-5"><h4>No treasures found!</h4></div>
             <?php else: foreach($products as $p): ?>
-                <div class="col-lg-3 col-md-4 col-6 mb-4">
-                    <div class="treasure-card">
-                        <div class="img-container">
-                            <a href="product_details.php?product_id=<?= $p['id'] ?>">
-                               <img src="./img/products/<?= $p['image'] ?>" class="img-fluid cart-product-image">
-                            </a>
+                <?php
+                $pid = (int) $p['id'];
+                $pname = htmlspecialchars((string) $p['product_name'], ENT_QUOTES, 'UTF-8');
+                $pimg = htmlspecialchars((string) $p['image'], ENT_QUOTES, 'UTF-8');
+                $discountPct = edi_discount_badge_pct($p);
+                ?>
+                <div class="col-lg-3 col-md-6 text-center mb-4">
+                    <div class="product-card">
+                        <div class="product-card-thumb-wrap">
+                        <?php if ($discountPct !== null) { ?>
+                            <span class="edi-discount-hex" aria-label="<?= (int) $discountPct; ?> percent off"><?= (int) $discountPct; ?>%</span>
+                        <?php } ?>
+                        <a href="product_details.php?product_id=<?= $pid ?>">
+                            <img src="./img/products/<?= $pimg ?>" class="product-img cart-product-image" alt="<?= $pname ?>">
+                        </a>
                         </div>
-                        <h6 class="product-name"><?= strtoupper($p['product_name']) ?></h6>
-                        <div class="price-box">
+                        <h6 class="mt-3" style="text-align: left; padding-left: 5px;">
+                            <a href="product_details.php?product_id=<?= $pid ?>" style="text-decoration: none; color: inherit;"><?= $pname ?></a>
+                        </h6>
+                        <div class="price" style="text-align: left; padding-left: 5px;">
                             <?php if ((float) $p['discounted_price'] > 0): ?>
                                 <span class="old-price">LKR <?= number_format((float) $p['price'], 2, '.', '') ?></span>
-                                <span class="new-price text-success">LKR <?= number_format((float) $p['discounted_price'], 2, '.', '') ?></span>
+                                <span class="new-price">LKR <?= number_format((float) $p['discounted_price'], 2, '.', '') ?></span>
                             <?php else: ?>
                                 <span class="new-price">LKR <?= number_format((float) $p['price'], 2, '.', '') ?></span>
                             <?php endif; ?>
                         </div>
-                        
-                        <form class="cart-form">
-                            <input type="hidden" name="product_id" value="<?= $p['id'] ?>">
-                            <button type="button" class="collect-btn add-to-cart-btn">Collect</button>
-                        </form>
+                        <div class="product-card-cart-row">
+                            <form class="cart-form m-0 p-0">
+                                <input type="hidden" name="product_id" value="<?= $pid ?>">
+                                <button type="button" class="btn newgreen1-btn collect-btn add-to-cart-btn">Collect</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; endif; ?>
@@ -292,7 +305,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 }
 
                 const form = this.closest("form");
-                const productCard = this.closest(".treasure-card");
+                const productCard = this.closest(".product-card");
                 const productImage = productCard ? productCard.querySelector(".cart-product-image") : null;
                 const cartIcon = document.querySelector("#cart-icon");
 
@@ -339,12 +352,11 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 .then(data => {
                     // increase cart count
 let count = localStorage.getItem('cart_count');
-count = count ? parseInt(count) : 0;
-localStorage.setItem('cart_count', count + 1);
-
-// show dot instantly
-const dot = document.getElementById('cart-dot');
-if (dot) dot.style.display = 'block';
+count = count ? parseInt(count, 10) : 0;
+localStorage.setItem('cart_count', String(count + 1));
+if (typeof window.edibearSyncCartBadge === 'function') {
+    window.edibearSyncCartBadge();
+}
                     /* CART BOUNCE EFFECT */
                     if (cartIcon) {
                         cartIcon.classList.add("bounce");

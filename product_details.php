@@ -3,6 +3,7 @@
 require_once("./classes/class.user.php");
 require_once("./classes/class.header.php");
 require_once("./classes/class.widgets.php");
+require_once("./classes/edi_discount_badge.php");
 
 $userHeader = new HEADER("shop");
 $user = new USER();
@@ -107,6 +108,12 @@ if ($totalReviews > 0) {
             <div class="col-lg-6 mb-4 mb-lg-0">
                 <div class="edi-treasure-gallery">
                     <div class="edi-treasure-gallery-main">
+                        <?php
+                        $galleryDiscountPct = edi_discount_badge_pct($product);
+                        if ($galleryDiscountPct !== null) {
+                            echo '<span class="edi-discount-hex edi-discount-hex--large" aria-label="' . (int) $galleryDiscountPct . ' percent off">' . (int) $galleryDiscountPct . '%</span>';
+                        }
+                        ?>
                         <img src="./img/products/<?= htmlspecialchars((string) $product['image'], ENT_QUOTES, 'UTF-8') ?>" class="img-fluid main-product-image" alt="<?= htmlspecialchars((string) $product['product_name'], ENT_QUOTES, 'UTF-8') ?>">
                     </div>
                     <div class="edi-treasure-gallery-thumbs" aria-hidden="true">
@@ -403,8 +410,9 @@ if ($totalReviews > 0) {
                                 var count = localStorage.getItem("cart_count");
                                 count = count ? parseInt(count, 10) : 0;
                                 localStorage.setItem("cart_count", String(count + 1));
-                                var dot = document.getElementById("cart-dot");
-                                if (dot) dot.style.display = "block";
+                                if (typeof window.edibearSyncCartBadge === "function") {
+                                    window.edibearSyncCartBadge();
+                                }
                                 if (cartIcon) {
                                     cartIcon.classList.add("bounce");
                                     setTimeout(function () { cartIcon.classList.remove("bounce"); }, 400);

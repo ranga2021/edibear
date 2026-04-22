@@ -285,8 +285,9 @@
                             <td>$testimonialStatusText</td>
                             <td>$testimonialTimestamp</td>
                             <td>
-                              <div class='d-flex align-items-center'>
-                                <form method='POST' action='' id='toggleForm_$testimonialID' class='mr-2'>
+                              <div class='d-flex align-items-center flex-wrap'>
+                                <a href='./edit-testimonial?id=$testimonialID' class='btn btn-sm btn-primary mb-0 mr-2' onclick='event.stopPropagation();'>Edit</a>
+                                <form method='POST' action='' id='toggleForm_$testimonialID' class='mr-2 mb-0'>
                                   <input type='hidden' name='testimonialID' value='$testimonialID'>
                                   <input type='hidden' name='testimonialStatus' value='$targetStatusForToggle'>
                                   <label class='switch mb-0'>
@@ -295,7 +296,6 @@
                                   </label>
                                   <input type='hidden' name='changeTestimonialStatusSubmit' value='1'>
                                 </form>
-                                
                               </div>
                             </td>
                           </tr>

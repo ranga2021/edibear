@@ -10,6 +10,7 @@
     require_once("./classes/edi_taxonomy.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
+    require_once("./classes/edi_discount_badge.php");
     $userHeader = new HEADER("home");
     $user = new USER();
     $widgets = new WIDGETS();
@@ -258,13 +259,19 @@
             } else {
                 foreach($products as $product) {
                     $price = $product['discounted_price'] > 0 ? $product['discounted_price'] : $product['price'];
+                    $discountPct = edi_discount_badge_pct($product);
             ?>
                 <div class="col-lg-3 col-md-6 text-center mb-4">
                     <div class="product-card">
 
+    <div class="product-card-thumb-wrap">
+    <?php if ($discountPct !== null) { ?>
+        <span class="edi-discount-hex" aria-label="<?php echo (int) $discountPct; ?> percent off"><?php echo (int) $discountPct; ?>%</span>
+    <?php } ?>
     <a href="product_details.php?product_id=<?php echo $product['id']; ?>">
-        <img src="./img/products/<?php echo $product['image']; ?>" class="product-img cart-product-image">
+        <img src="./img/products/<?php echo htmlspecialchars((string) $product['image'], ENT_QUOTES, 'UTF-8'); ?>" class="product-img cart-product-image" alt="<?php echo htmlspecialchars((string) $product['product_name'], ENT_QUOTES, 'UTF-8'); ?>">
     </a>
+    </div>
 
     <h6 class="mt-3" style='text-align: left; padding-left:5px;'>
         <a href="product_details.php?product_id=<?php echo $product['id']; ?>" style="text-decoration:none; color:inherit;">
@@ -389,7 +396,7 @@
     <div class="pb-4"></div> -->
 
     <!-- Blog Start -->
-    <div class="container-fluid py-4 edi-hidden-den-section" id="play-section">
+    <div class="container-fluid edi-hidden-den-section" id="play-section">
         <div class="container py-5">
             <div class="text-center">
                 <h1 class="text-danger">THE HIDDEN DEN</h1>
@@ -438,7 +445,7 @@
     </div>
     <!-- Blog End -->
 
-    <section id="challenge-section" class="py-5 bg-white w-100 clearfix" style="margin-top:0;">
+    <section id="challenge-section" class="bg-white w-100 clearfix" style="margin-top:0;">
     <div class="container">
         <div class="text-center mb-4">
             <h1 class="text-danger">BRAVE HEART CHALLENGE</h1>
@@ -454,7 +461,7 @@
         <?php if ($recentChallenge): ?>
         <div class="row justify-content-center mt-4">
             <div class="col-lg-10">
-                <h5 class="text-uppercase mb-3" style="letter-spacing: 1px; font-weight: 700;">
+                <h5 class="text-uppercase mb-3" style="font-weight: 700 !important;">
                     UPCOMING – <?php echo htmlspecialchars($recentChallenge['title']); ?>
                 </h5>
                 
@@ -609,12 +616,11 @@ document.querySelectorAll(".add-to-cart-btn").forEach(button => {
             }
             // increase cart count
 let count = localStorage.getItem('cart_count');
-count = count ? parseInt(count) : 0;
-localStorage.setItem('cart_count', count + 1);
-
-// show dot instantly
-const dot = document.getElementById('cart-dot');
-if (dot) dot.style.display = 'block';
+count = count ? parseInt(count, 10) : 0;
+localStorage.setItem('cart_count', String(count + 1));
+if (typeof window.edibearSyncCartBadge === 'function') {
+    window.edibearSyncCartBadge();
+}
         })
         .catch(err => console.error(err));
     });

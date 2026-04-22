@@ -145,7 +145,7 @@
 
 .edi-welcome{
     font-weight:700;
-    color:#606062;
+    color:#131313;
     margin-bottom:20px;
 }
 
@@ -339,6 +339,36 @@ text-align: left; /* column may use .text-center; keep title, price, Collect ali
 .product-card-cart-row {
     padding-left: 5px;
     margin: 0;
+}
+
+/* Honey Market cards: hex discount badge on image (matches brand gold) */
+.product-card-thumb-wrap {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    max-width: 100%;
+}
+
+.edi-discount-hex {
+    position: absolute;
+    z-index: 2;
+    top: 2px;
+    left: 2px;
+    width: 42px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ffcc29;
+    color: #fff;
+    font-weight: 800;
+    font-size: 11px;
+    line-height: 1;
+    font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    pointer-events: none;
+    letter-spacing: -0.03em;
 }
 
 .product-img{

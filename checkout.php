@@ -52,6 +52,9 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // clear cart indicator
             localStorage.removeItem('cart_count');
+            if (typeof window.edibearSyncCartBadge === 'function') {
+                window.edibearSyncCartBadge();
+            }
 
         });
     }

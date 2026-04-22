@@ -332,8 +332,8 @@ class HEADER {
             font-size: 15px;
             display: flex;
             align-items: center;
-            gap: 5px;
-            margin-left: 10px;
+            gap: 2px;
+            margin-left: 6px;
         }
     </style>
 
@@ -364,8 +364,8 @@ class HEADER {
                 </button>
                 <div class='edibear-nav-tools'>
                <a href='#' onclick='checkCartAccess()' id='cart-icon' class='edibear-link edibear-nav-tool edibear-nav-cart' aria-label='Cart'>
-                    <img src='./img/honey_cart_icon.png' class='edibear-nav-cart-img' alt='Cart'>
-                    <span id='cart-dot' style='position:absolute; top:-5px; right:-5px; width:10px; height:10px; background:#28a745; border-radius:50%; display:none;'></span>
+                    <img src='./img/honey_cart_icon.png' class='edibear-nav-cart-img' alt=''>
+                    <span id='cart-badge' class='edibear-cart-badge' aria-hidden='true'></span>
                </a>
                <a href='#' id='accountIcon' class='edibear-signin edibear-nav-tool edibear-nav-account' style='display:none;' aria-label='My account'>
                     <i class='fa fa-user' aria-hidden='true'></i>
@@ -380,19 +380,28 @@ class HEADER {
     <script>
     document.addEventListener('DOMContentLoaded', function () {
 
-    const cartDot = document.getElementById('cart-dot');
-
-    function updateCartDot() {
-        const cartCount = localStorage.getItem('cart_count');
-
-        if (cartCount && parseInt(cartCount) > 0) {
-            cartDot.style.display = 'block';
+    function edibearSyncCartBadge() {
+        var el = document.getElementById('cart-badge');
+        var link = document.getElementById('cart-icon');
+        if (!el) return;
+        var raw = localStorage.getItem('cart_count');
+        var n = raw ? parseInt(raw, 10) : 0;
+        if (isNaN(n) || n < 0) n = 0;
+        if (n > 0) {
+            el.textContent = n > 99 ? '99+' : String(n);
+            el.style.display = 'flex';
+            if (link) link.setAttribute('aria-label', 'Cart, ' + n + (n === 1 ? ' item' : ' items'));
         } else {
-            cartDot.style.display = 'none';
+            el.textContent = '';
+            el.style.display = 'none';
+            if (link) link.setAttribute('aria-label', 'Cart');
         }
     }
-
-    updateCartDot();
+    window.edibearSyncCartBadge = edibearSyncCartBadge;
+    edibearSyncCartBadge();
+    window.addEventListener('storage', function (e) {
+        if (e.key === 'cart_count') edibearSyncCartBadge();
+    });
 
     (function () {
         var wrap = document.querySelector('.edibear-header-wrapper');
@@ -523,7 +532,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
         // ✅ Logged in → Logout
-        authBtn.innerHTML = \"<i class='fa fa-sign-out' aria-hidden='true'></i><span class='edibear-nav-auth-label'> Logout</span>\";
+        authBtn.innerHTML = \"<i class='fa fa-sign-out' aria-hidden='true'></i><span class='edibear-nav-auth-label'>Logout</span>\";
         authBtn.href = '#';
 
         authBtn.onclick = function(e) {
@@ -536,7 +545,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
       if (accountIcon) accountIcon.style.display = 'none';
         // ❌ Not logged in → Sign In
-        authBtn.innerHTML = \"<i class='fa fa-user' aria-hidden='true'></i><span class='edibear-nav-auth-label'> Sign In</span>\";
+        authBtn.innerHTML = \"<i class='fa fa-user' aria-hidden='true'></i><span class='edibear-nav-auth-label'>Sign In</span>\";
         authBtn.href = './login';
     }
 
