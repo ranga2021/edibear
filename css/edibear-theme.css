@@ -134,6 +134,20 @@ input[type="submit"].btn,
   color: #fff !important;
 }
 
+/* Homepage (index): equal vertical space above & below MORE / READ MORE CTAs */
+body.index .edi-home-cta-band {
+  margin-top: var(--edi-home-cta-gap);
+  margin-bottom: var(--edi-home-cta-gap);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+@media (max-width: 575.98px) {
+  body.index {
+    --edi-home-cta-gap: 2rem;
+  }
+}
+
 /* Homepage (index): same width + height for main green section buttons */
 button.edi-home-section-cta.explore-btn,
 a.btn.edi-home-section-cta.newgreen1-btn,
@@ -181,6 +195,7 @@ button.edi-home-section-cta.explore-btn {
  */
 body.index {
   --edi-home-carousel-lift: 85px;
+  --edi-home-cta-gap: 2.5rem;
 }
 
 @media (min-width: 992px) {
@@ -260,20 +275,6 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   display: block;
 }
 
-/* Homepage hero: scalloped white edge along the bottom (above next section) */
-body.index .HomeCarousel #header-carousel .carousel-item::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: clamp(52px, 9vw, 88px);
-  z-index: 1;
-  pointer-events: none;
-  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 100' preserveAspectRatio='none'%3E%3Cpath fill='%23ffffff' d='M0,54Q200,18,400,48Q600,88,800,40Q1000,12,1200,52L1200,100L0,100Z'/%3E%3C/svg%3E")
-    center bottom / 100% 100% no-repeat;
-}
-
 #header-carousel .carousel-caption {
   bottom: 0 !important;
   top: 0;
@@ -282,10 +283,6 @@ body.index .HomeCarousel #header-carousel .carousel-item::after {
   z-index: 2;
   padding-bottom: 1.25rem !important;
   justify-content: flex-end !important;
-}
-
-body.index #header-carousel .carousel-caption {
-  padding-bottom: clamp(3.25rem, 8vw, 5.5rem) !important;
 }
 
 /* ----- Nav / chrome ----- */
@@ -1184,6 +1181,9 @@ h6.text-primary:not(.text-white),
   padding-left: 8px;
   padding-right: 8px;
   margin-bottom: 1.35rem;
+}
+.edi-blog-subgrid{
+ row-gap: 15px;
 }
 
 @media (max-width: 575.98px) {

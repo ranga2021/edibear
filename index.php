@@ -237,7 +237,7 @@
     </div>
 </div>
 
-    <div class="container-fluid py-5" id="honey-market-section">
+    <div class="container-fluid pt-5 pb-0" id="honey-market-section">
       <div class="container">
 
        <div class="text-center">
@@ -303,7 +303,7 @@
 
 </div>
 
-<div class="text-center mt-4">
+<div class="text-center edi-home-cta-band">
 <a href="./product_page.php" class="btn newgreen1-btn edi-home-section-cta">MORE</a>
 </div>
 
@@ -348,8 +348,8 @@
 
     <!-- Tour Packages (section removed; keep PHP from running broken tour block) -->
 
-    <div class="container-fluid pt-4 px-0 edi-trail-tales-wrap">
-        <div class="container pt-5 pb-4">
+    <div class="container-fluid pt-0 px-0 edi-trail-tales-wrap">
+        <div class="container pt-0 pb-3">
         <div class="text-center">
             <h1 class="text-danger">TRAIL OF TALES</h1>
         </div>
@@ -376,7 +376,7 @@
         </div>
     </div>
 
-    <div class="text-center pt-4 pb-5">
+    <div class="text-center edi-home-cta-band">
         <button class="btn newgreen1-btn edi-home-section-cta" type="button" onclick="location.href='./testimonials'">READ MORE</button>
     </div>
 </div>
@@ -397,7 +397,7 @@
 
     <!-- Blog Start -->
     <div class="container-fluid edi-hidden-den-section" id="play-section">
-        <div class="container py-5">
+        <div class="container pt-0 pb-5">
             <div class="text-center">
                 <h1 class="text-danger">THE HIDDEN DEN</h1>
             </div>

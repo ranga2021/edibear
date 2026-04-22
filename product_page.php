@@ -106,6 +106,81 @@ if ($priceF === "low") {
 $stmt = $conn->prepare($query);
 $stmt->execute($params);
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Breadcrumb trail: Home > The Honey Market > … explorer filters (lang, grade, category, subcategory)
+$shopExtraParams = array();
+if ($brandF !== "") {
+    $shopExtraParams["brand"] = $brandF;
+}
+if ($priceF !== "") {
+    $shopExtraParams["price"] = $priceF;
+}
+if ($offerF !== "") {
+    $shopExtraParams["offers"] = $offerF;
+}
+
+$categoryNameForCrumb = "";
+if ($catF !== "") {
+    foreach ($categories as $cRow) {
+        if ((string) $cRow["id"] === (string) $catF) {
+            $categoryNameForCrumb = (string) $cRow["name"];
+            break;
+        }
+    }
+    if ($categoryNameForCrumb === "") {
+        $categoryNameForCrumb = "Category";
+    }
+}
+
+$subTitleForCrumb = "";
+if ($subF > 0) {
+    foreach ($productSubcategoriesAll as $sRow) {
+        if ((int) $sRow["id"] === $subF) {
+            $subTitleForCrumb = (string) $sRow["title"];
+            break;
+        }
+    }
+    if ($subTitleForCrumb === "") {
+        $subTitleForCrumb = "Subcategory";
+    }
+}
+
+$explorerSegments = array();
+if ($langF !== "") {
+    $explorerSegments[] = array("key" => "lang", "value" => $langF, "label" => $langF);
+}
+if ($ageF !== "") {
+    $explorerSegments[] = array("key" => "age", "value" => $ageF, "label" => $ageF);
+}
+if ($catF !== "") {
+    $explorerSegments[] = array("key" => "category", "value" => $catF, "label" => $categoryNameForCrumb);
+}
+if ($subF > 0) {
+    $explorerSegments[] = array("key" => "sub", "value" => (string) $subF, "label" => $subTitleForCrumb);
+}
+
+$treasuresBreadcrumbs = array(
+    array("label" => "Home", "href" => "./", "current" => false),
+);
+if (count($explorerSegments) === 0) {
+    $treasuresBreadcrumbs[] = array("label" => "The Honey Market", "href" => null, "current" => true);
+} else {
+    $treasuresBreadcrumbs[] = array("label" => "The Honey Market", "href" => "product_page.php", "current" => false);
+    $built = array();
+    $n = count($explorerSegments);
+    for ($i = 0; $i < $n; $i++) {
+        $seg = $explorerSegments[$i];
+        $built[$seg["key"]] = $seg["value"];
+        $q = array_merge($built, $shopExtraParams);
+        $isLast = ($i === $n - 1);
+        $href = "product_page.php?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
+        $treasuresBreadcrumbs[] = array(
+            "label" => $seg["label"],
+            "href" => $isLast ? null : $href,
+            "current" => $isLast,
+        );
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -122,9 +197,22 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="container mt-5 page-header-content">
          <div class="col-lg-8 ">
                 <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-                    <ol class="breadcrumb bg-transparent p-0 mb-0">
-                        <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">The Honey Market</li>
+                    <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
+                        <?php foreach ($treasuresBreadcrumbs as $bc): ?>
+                            <?php
+                            $rawLabel = (string) $bc["label"];
+                            $bcLabel = htmlspecialchars($rawLabel, ENT_QUOTES, "UTF-8");
+                            $bcHref = isset($bc["href"]) && $bc["href"] !== null ? htmlspecialchars((string) $bc["href"], ENT_QUOTES, "UTF-8") : "";
+                            $isCurrent = !empty($bc["current"]);
+                            ?>
+                            <?php if ($isCurrent): ?>
+                                <li class="breadcrumb-item active" aria-current="page"><?php echo $bcLabel; ?></li>
+                            <?php elseif ($rawLabel === "Home"): ?>
+                                <li class="breadcrumb-item"><a href="<?php echo $bcHref; ?>"><i class="fa fa-home" aria-hidden="true"></i> <?php echo $bcLabel; ?></a></li>
+                            <?php else: ?>
+                                <li class="breadcrumb-item"><a href="<?php echo $bcHref; ?>"><?php echo $bcLabel; ?></a></li>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
                     </ol>
                 </nav>
                  
