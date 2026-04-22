@@ -358,6 +358,14 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   gap: 25px;
 }
 
+/* Hamburger + cart + auth: one horizontal cluster (avoids stray flex space on mobile) */
+.edibear-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
 .edibear-nav-toggle {
   display: none;
   flex-direction: column;
@@ -414,8 +422,12 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   .edibear-nav-main {
     gap: 2px !important;
     justify-content: flex-end !important;
-    flex: 1;
+    flex: 1 1 0%;
     min-width: 0;
+  }
+
+  .edibear-nav-actions {
+    gap: 2px !important;
   }
 
   /* Same tap target + aligned icon size (menu, cart, account) */
@@ -450,8 +462,8 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   }
 
   .edibear-nav-tools .edibear-nav-cart-img {
-    width: 22px !important;
-    height: 22px !important;
+    width: 30px !important;
+    height: 30px !important;
   }
 
   .edibear-nav-tools .edibear-cart-badge {

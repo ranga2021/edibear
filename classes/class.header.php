@@ -308,6 +308,13 @@ class HEADER {
             gap: 20px;
         }
 
+        .edibear-nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
         .edibear-nav-tools {
             display: flex;
             align-items: center;
@@ -357,6 +364,7 @@ class HEADER {
 
     $html .= "
                 </nav>
+                <div class='edibear-nav-actions'>
                 <button type='button' class='edibear-nav-toggle' id='edibear-nav-toggle' aria-controls='edibear-nav-drawer' aria-expanded='false' aria-label='Open menu'>
                     <span class='edibear-nav-toggle-bar' aria-hidden='true'></span>
                     <span class='edibear-nav-toggle-bar' aria-hidden='true'></span>
@@ -375,7 +383,9 @@ class HEADER {
                </a>
                 </div>
                 </div>
+                </div>
         </div>
+    </div>
     </div>
     <script>
     document.addEventListener('DOMContentLoaded', function () {
