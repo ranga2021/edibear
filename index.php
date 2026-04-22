@@ -397,7 +397,7 @@
 
     <!-- Blog Start -->
     <div class="container-fluid edi-hidden-den-section" id="play-section">
-        <div class="container pt-0 pb-5">
+        <div class="container pt-0">
             <div class="text-center">
                 <h1 class="text-danger">THE HIDDEN DEN</h1>
             </div>

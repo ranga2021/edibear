@@ -610,7 +610,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     <div class='text-center footerEmailCustom pl-2 pr-2 pl-md-2 pr-md-2 pl-sm-3 pr-sm-3'>
                         <h1 class='text-danger'>JOIN MY FAMILY</h1>
                         <p style='
-    text-align:left;
+    text-align:justify;
     color:#666;
     line-height:1.7;
 '>
