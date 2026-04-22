@@ -682,7 +682,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class='container-fluid pl-0 pr-0' style='background-color:#004924;'>
                 
                     <div class='col-lg-12 text-center '>
-                        <p class='copyrighttext text-white mb-0'>Copyright &copy; <a href='./' class='text-white'>edibear</a>. All Rights Reserved.</a>
+                        <p class='copyrighttext text-center text-white mb-0'>Copyright &copy; <a href='./' class='text-white'>edibear</a>. All Rights Reserved.</a>
                         </p>
                         <p class='copyright-small'>All rights of the four pictures of edibear (Edi's) which have used in this edibear.com website is reserved to the <a href='./' class='text-ash'>edibear.com</a></p>
                     </div>
