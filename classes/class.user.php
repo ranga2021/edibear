@@ -123,8 +123,12 @@ class USER{
 	}
 
 	public function doLogout($returnPage="", $session="session_tourism"){
-		session_destroy();
-		unset($_SESSION[$session]);
+		if (session_status() === PHP_SESSION_ACTIVE) {
+			session_destroy();
+		}
+		if (isset($_SESSION) && is_array($_SESSION)) {
+			unset($_SESSION[$session]);
+		}
 
 		
 		if (trim($returnPage) === "") {
@@ -141,8 +145,12 @@ class USER{
 	}
 
 	public function doLogout2($returnPage="", $session="session_tourism"){
-		session_destroy();
-		unset($_SESSION[$session]);
+		if (session_status() === PHP_SESSION_ACTIVE) {
+			session_destroy();
+		}
+		if (isset($_SESSION) && is_array($_SESSION)) {
+			unset($_SESSION[$session]);
+		}
 		$this->redirect($returnPage);
 	}
 
