@@ -1064,7 +1064,7 @@ h6.text-primary:not(.text-white),
 }
 
 .edi-blog-card--grid .edi-blog-thumb {
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 16 / 9;
 }
 
 .edi-blog-card--list .edi-blog-thumb {
