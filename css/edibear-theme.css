@@ -550,6 +550,7 @@ body.index .HomeCarousel #header-carousel .carousel-item {
     height: 40px;
     padding: 0 !important;
     gap: 0;
+    display: none !important;
   }
 
   .edibear-nav-tools #userAuthBtn .edibear-nav-auth-label {
