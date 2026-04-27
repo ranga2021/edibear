@@ -402,9 +402,6 @@ if (count($explorerSegments) === 0) {
             $freeQ = $explorerListQuery;
         ?>
         <div class="mt-5">
-            <h2 class="h4 text-center mb-4" style="color:#1a1a1a;">Free learning resources (same search)</h2>
-            <p class="text-center text-muted small mb-4">Items below use the <strong>Product category</strong> and optional <strong>Subcategory</strong> you set when adding each resource in admin. The tag on older items can match a category <strong>name</strong> until you assign a category in the form.</p>
-
             <?php if (!empty($explorerPdfs)) : ?>
             <div class="mb-5">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">

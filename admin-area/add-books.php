@@ -13,11 +13,16 @@ require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
 require_once("../classes/edi_explorer_content.php");
+require_once("../classes/edi_taxonomy.php");
 
 $adminHeader = new HEADER("add-books");
 $user = new USER();
 $widgets = new WIDGETS();
 $ediConn = $user->getConnection();
+$ediLanguages = EdiTaxonomy::loadLanguages($ediConn);
+$ediGrades = EdiTaxonomy::loadGrades($ediConn);
+$ediCurLanguageId = 0;
+$ediCurGradeId = 0;
 $ediHasPcat = EdiExplorerContent::columnExists($ediConn, "books_details", "product_category_id");
 $ediProductCategories = array();
 $ediProductSubcategories = array();
@@ -59,10 +64,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         $editMode = true;
 
         $booksDetailsArr = $user->fetchAll(
-            array("tag","title","image","description","video","video_status","pdfupload"),
+            array("tag","title","image","description","video","video_status","pdfupload","language_id","grade_id"),
             array("books_details"),
             array("id"=>$currentbooksID)
         )[0];
+        $ediCurLanguageId = (int)($booksDetailsArr['language_id'] ?? 0);
+        $ediCurGradeId = (int)($booksDetailsArr['grade_id'] ?? 0);
 
         $currentbooksTag = $booksDetailsArr['tag'];
         $currentbooksTitle = $booksDetailsArr['title'];
@@ -133,6 +140,11 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
         } elseif ($eps > 0 && $epc <= 0) {
             $eps = 0;
         }
+        $lg = EdiTaxonomy::contentLanguageGradeFromPost($ediLanguages, $ediGrades);
+        if ($lg['language_id'] === null || $lg['grade_id'] === null) {
+            echo "<script>alert('Please select a valid language and grade.');history.back();</script>";
+            exit;
+        }
         $insertRowB = array(
             "tag"=>$inputbooksTag,
             "title"=>$inputbooksTitle,
@@ -144,7 +156,9 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
             "status"=>1,
             "download_count"=>0,
             "main_cat_id"=>1,
-            "sub_cat_id"=>1
+            "sub_cat_id"=>1,
+            "language_id"=>$lg['language_id'],
+            "grade_id"=>$lg['grade_id']
         );
         if ($ediHasPcat) {
             $insertRowB["product_category_id"] = $epc > 0 ? $epc : null;
@@ -158,12 +172,19 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
     // ================= UPDATE =================
     if (isset($_POST['updatebooksSubmit'])) {
 
+        $lg = EdiTaxonomy::contentLanguageGradeFromPost($ediLanguages, $ediGrades);
+        if ($lg['language_id'] === null || $lg['grade_id'] === null) {
+            echo "<script>alert('Please select a valid language and grade.');history.back();</script>";
+            exit;
+        }
         $upB = array(
             "tag"=>$inputbooksTag,
             "title"=>$inputbooksTitle,
             "description"=>$inputbooksMainDescription,
             "video"=>$inputbooksVideoUrl,
-            "video_status"=>$booksVideoStatus
+            "video_status"=>$booksVideoStatus,
+            "language_id"=>$lg['language_id'],
+            "grade_id"=>$lg['grade_id']
         );
         if ($ediHasPcat) {
             $epc = isset($_POST['edi_content_product_category']) ? (int) $_POST['edi_content_product_category'] : 0;
@@ -242,6 +263,7 @@ echo $widgets->inputGroup("books Tag", "inputbooksTag", "col-md-6", $currentbook
 echo $widgets->inputGroup("books Title", "inputbooksTitle", "col-md-6", $currentbooksTitle);
 ?>
 </div>
+<?php require __DIR__ . "/content_language_grade_fields.php"; ?>
 <?php require __DIR__ . "/product_taxonomy_content_fields.php"; ?>
 
 <div class="row mt-3">

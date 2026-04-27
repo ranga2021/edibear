@@ -108,4 +108,29 @@ class EdiTaxonomy
         }
         return array_keys($out);
     }
+
+    /**
+     * Read content_language_id and content_grade_id from POST, validated against
+     * rows from loadLanguages / loadGrades. Returns int ids or null if empty/invalid.
+     */
+    public static function contentLanguageGradeFromPost(array $langRows, array $gradeRows)
+    {
+        $pl = (int) ($_POST["content_language_id"] ?? 0);
+        $pg = (int) ($_POST["content_grade_id"] ?? 0);
+        $okL = null;
+        $okG = null;
+        foreach ($langRows as $r) {
+            if ((int) ($r["id"] ?? 0) === $pl && $pl > 0) {
+                $okL = $pl;
+                break;
+            }
+        }
+        foreach ($gradeRows as $r) {
+            if ((int) ($r["id"] ?? 0) === $pg && $pg > 0) {
+                $okG = $pg;
+                break;
+            }
+        }
+        return array("language_id" => $okL, "grade_id" => $okG);
+    }
 }

@@ -13,11 +13,16 @@ require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
 require_once("../classes/edi_explorer_content.php");
+require_once("../classes/edi_taxonomy.php");
 
 $adminHeader = new HEADER("add-pdf");
 $user = new USER();
 $widgets = new WIDGETS();
 $ediConn = $user->getConnection();
+$ediLanguages = EdiTaxonomy::loadLanguages($ediConn);
+$ediGrades = EdiTaxonomy::loadGrades($ediConn);
+$ediCurLanguageId = 0;
+$ediCurGradeId = 0;
 $ediHasPcat = EdiExplorerContent::columnExists($ediConn, "pdf_details", "product_category_id");
 $ediProductCategories = array();
 $ediProductSubcategories = array();
@@ -59,10 +64,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         $editMode = true;
 
         $pdfDetailsArr = $user->fetchAll(
-            array("tag","title","image","description","video","video_status","pdfupload"),
+            array("tag","title","image","description","video","video_status","pdfupload","language_id","grade_id"),
             array("pdf_details"),
             array("id"=>$currentpdfID)
         )[0];
+        $ediCurLanguageId = (int)($pdfDetailsArr['language_id'] ?? 0);
+        $ediCurGradeId = (int)($pdfDetailsArr['grade_id'] ?? 0);
 
         $currentpdfTag = $pdfDetailsArr['tag'];
         $currentpdfTitle = $pdfDetailsArr['title'];
@@ -133,6 +140,11 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
         } elseif ($eps > 0 && $epc <= 0) {
             $eps = 0;
         }
+        $lg = EdiTaxonomy::contentLanguageGradeFromPost($ediLanguages, $ediGrades);
+        if ($lg['language_id'] === null || $lg['grade_id'] === null) {
+            echo "<script>alert('Please select a valid language and grade.');history.back();</script>";
+            exit;
+        }
         $insertRow = array(
             "tag"=>$inputpdfTag,
             "title"=>$inputpdfTitle,
@@ -144,7 +156,9 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
             "status"=>1,
             "download_count"=>0,
             "main_cat_id"=>1,
-            "sub_cat_id"=>1
+            "sub_cat_id"=>1,
+            "language_id"=>$lg['language_id'],
+            "grade_id"=>$lg['grade_id']
         );
         if ($ediHasPcat) {
             $insertRow["product_category_id"] = $epc > 0 ? $epc : null;
@@ -158,12 +172,19 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
     // ================= UPDATE =================
     if (isset($_POST['updatepdfSubmit'])) {
 
+        $lg = EdiTaxonomy::contentLanguageGradeFromPost($ediLanguages, $ediGrades);
+        if ($lg['language_id'] === null || $lg['grade_id'] === null) {
+            echo "<script>alert('Please select a valid language and grade.');history.back();</script>";
+            exit;
+        }
         $upRow = array(
             "tag"=>$inputpdfTag,
             "title"=>$inputpdfTitle,
             "description"=>$inputpdfMainDescription,
             "video"=>$inputpdfVideoUrl,
-            "video_status"=>$pdfVideoStatus
+            "video_status"=>$pdfVideoStatus,
+            "language_id"=>$lg['language_id'],
+            "grade_id"=>$lg['grade_id']
         );
         if ($ediHasPcat) {
             $epc = isset($_POST['edi_content_product_category']) ? (int) $_POST['edi_content_product_category'] : 0;
@@ -242,6 +263,7 @@ echo $widgets->inputGroup("PDF Tag", "inputpdfTag", "col-md-6", $currentpdfTag);
 echo $widgets->inputGroup("PDF Title", "inputpdfTitle", "col-md-6", $currentpdfTitle);
 ?>
 </div>
+<?php require __DIR__ . "/content_language_grade_fields.php"; ?>
 <?php require __DIR__ . "/product_taxonomy_content_fields.php"; ?>
 
 <div class="row mt-3">

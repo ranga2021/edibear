@@ -13,11 +13,16 @@ require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
 require_once("../classes/edi_explorer_content.php");
+require_once("../classes/edi_taxonomy.php");
 
 $adminHeader = new HEADER("add-homework");
 $user = new USER();
 $widgets = new WIDGETS();
 $ediConn = $user->getConnection();
+$ediLanguages = EdiTaxonomy::loadLanguages($ediConn);
+$ediGrades = EdiTaxonomy::loadGrades($ediConn);
+$ediCurLanguageId = 0;
+$ediCurGradeId = 0;
 $ediHasPcat = EdiExplorerContent::columnExists($ediConn, "homework_details", "product_category_id");
 $ediProductCategories = array();
 $ediProductSubcategories = array();
@@ -57,10 +62,12 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         $editMode = true;
 
         $data = $user->fetchAll(
-            ["tag","title","image","description","pdfupload"],
+            ["tag","title","image","description","pdfupload","language_id","grade_id"],
             ["homework_details"],
             ["id"=>$currenthomeworkID]
         )[0];
+        $ediCurLanguageId = (int)($data['language_id'] ?? 0);
+        $ediCurGradeId = (int)($data['grade_id'] ?? 0);
 
         $currenthomeworkTag = $data['tag'];
         $currenthomeworkTitle = $data['title'];
@@ -110,6 +117,12 @@ if (isset($_POST['addNewhomeworkSubmit'])) {
         $eps = 0;
     }
 
+    $lg = EdiTaxonomy::contentLanguageGradeFromPost($ediLanguages, $ediGrades);
+    if ($lg['language_id'] === null || $lg['grade_id'] === null) {
+        echo "<script>alert('Please select a valid language and grade.');history.back();</script>";
+        exit;
+    }
+
     $insH = array(
     "tag"=>$tag,
     "title"=>$title,
@@ -119,8 +132,8 @@ if (isset($_POST['addNewhomeworkSubmit'])) {
     "video_status"=>0,
     "pdfupload"=>"",
     "download_count"=>0,
-    "language_id"=>0,
-    "grade_id"=>0,
+    "language_id"=>$lg['language_id'],
+    "grade_id"=>$lg['grade_id'],
     "main_cat_id"=>0,
     "sub_cat_id"=>0
     );
@@ -163,10 +176,17 @@ if (isset($_POST['updatehomeworkSubmit'])) {
     $title = htmlspecialchars($_POST['inputhomeworkTitle'] ?? "");
     $desc  = strip_tags($_POST['inputhomeworkMainDescription'] ?? "", "<br>");
 
+    $lg = EdiTaxonomy::contentLanguageGradeFromPost($ediLanguages, $ediGrades);
+    if ($lg['language_id'] === null || $lg['grade_id'] === null) {
+        echo "<script>alert('Please select a valid language and grade.');history.back();</script>";
+        exit;
+    }
     $upH = [
         "tag"=>$tag,
         "title"=>$title,
-        "description"=>$desc
+        "description"=>$desc,
+        "language_id"=>$lg['language_id'],
+        "grade_id"=>$lg['grade_id']
     ];
     if ($ediHasPcat) {
         $epc = isset($_POST['edi_content_product_category']) ? (int) $_POST['edi_content_product_category'] : 0;
@@ -250,6 +270,7 @@ if (isset($_POST['confirmDeletehomeworkSubmit'])) {
                     echo $widgets->inputGroup("homework Title", "inputhomeworkTitle", "col-md-6", $currenthomeworkTitle);
                   ?>
                 </div>
+                <?php require __DIR__ . "/content_language_grade_fields.php"; ?>
                 <?php require __DIR__ . "/product_taxonomy_content_fields.php"; ?>
                 <div class="row border mx-3 mb-2">
                   <div class="col-md-6 d-flex align-items-center justify-content-center">
