@@ -5,6 +5,7 @@ require_once("./classes/edi_taxonomy.php");
 require_once("./classes/class.header.php");
 require_once("./classes/class.widgets.php");
 require_once("./classes/edi_discount_badge.php");
+require_once("./classes/edi_explorer_content.php");
 
 $userHeader = new HEADER("shop");
 $user = new USER();
@@ -106,6 +107,29 @@ if ($priceF === "low") {
 $stmt = $conn->prepare($query);
 $stmt->execute($params);
 $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$explorerPdfs = array();
+$explorerBooks = array();
+$explorerHomeworks = array();
+if ($catF !== "") {
+    $explorerPdfs = EdiExplorerContent::fetchMatching($conn, "pdf_details", $langF, $ageF, $catF, $subF, 6);
+    $explorerBooks = EdiExplorerContent::fetchMatching($conn, "books_details", $langF, $ageF, $catF, $subF, 6);
+    $explorerHomeworks = EdiExplorerContent::fetchMatching($conn, "homework_details", $langF, $ageF, $catF, $subF, 6);
+}
+
+$explorerListQuery = array();
+if ($langF !== "") {
+    $explorerListQuery["language"] = $langF;
+}
+if ($ageF !== "") {
+    $explorerListQuery["grade"] = $ageF;
+}
+if ($catF !== "") {
+    $explorerListQuery["category"] = $catF;
+}
+if ($subF > 0) {
+    $explorerListQuery["sub"] = (string) $subF;
+}
 
 // Breadcrumb trail: Home > The Honey Market > … explorer filters (lang, grade, category, subcategory)
 $shopExtraParams = array();
@@ -329,9 +353,12 @@ if (count($explorerSegments) === 0) {
         </script>
 
         <div class="row treasures-product-grid mt-2">
-            <?php if(empty($products)): ?>
+            <?php if (empty($products) && $catF !== "" && empty($explorerPdfs) && empty($explorerBooks) && empty($explorerHomeworks)): ?>
+                <div class="col-12 text-center py-5"><h4>No treasures found for these filters.</h4></div>
+            <?php elseif (empty($products) && $catF === ""): ?>
                 <div class="col-12 text-center py-5"><h4>No treasures found!</h4></div>
-            <?php else: foreach($products as $p): ?>
+            <?php endif; ?>
+            <?php if (!empty($products)) : foreach($products as $p): ?>
                 <?php
                 $pid = (int) $p['id'];
                 $pname = htmlspecialchars((string) $p['product_name'], ENT_QUOTES, 'UTF-8');
@@ -369,6 +396,64 @@ if (count($explorerSegments) === 0) {
                 </div>
             <?php endforeach; endif; ?>
         </div>
+
+        <?php
+        if ($catF !== "" && (!empty($explorerPdfs) || !empty($explorerBooks) || !empty($explorerHomeworks))):
+            $freeQ = $explorerListQuery;
+        ?>
+        <div class="mt-5">
+            <h2 class="h4 text-center mb-4" style="color:#1a1a1a;">Free learning resources (same search)</h2>
+            <p class="text-center text-muted small mb-4">Items below use the <strong>Product category</strong> and optional <strong>Subcategory</strong> you set when adding each resource in admin. The tag on older items can match a category <strong>name</strong> until you assign a category in the form.</p>
+
+            <?php if (!empty($explorerPdfs)) : ?>
+            <div class="mb-5">
+                <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                    <h3 class="h5 text-warning mb-0">Coloring pages</h3>
+                    <a class="btn btn-sm btn-outline-secondary" href="pdf.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
+                </div>
+                <div class="row">
+                    <?php
+                    foreach ($explorerPdfs as $row) {
+                        echo $widgets->displaypdfBrief($row, false, "col-md-3", 200);
+                    }
+                    ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($explorerBooks)) : ?>
+            <div class="mb-5">
+                <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                    <h3 class="h5 text-warning mb-0">Books &amp; papers</h3>
+                    <a class="btn btn-sm btn-outline-secondary" href="books.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
+                </div>
+                <div class="row">
+                    <?php
+                    foreach ($explorerBooks as $row) {
+                        echo $widgets->displaybooksBrief(false, $row, "col-md-3", 200);
+                    }
+                    ?>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <?php if (!empty($explorerHomeworks)) : ?>
+            <div class="mb-2">
+                <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                    <h3 class="h5 text-warning mb-0">Homeworks</h3>
+                    <a class="btn btn-sm btn-outline-secondary" href="homework.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
+                </div>
+                <div class="row">
+                    <?php
+                    foreach ($explorerHomeworks as $row) {
+                        echo $widgets->displayhomeworkBrief($row, false, "col-md-3", 200);
+                    }
+                    ?>
+                </div>
+            </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
     </div>
 
     <?php echo $userHeader->printUserFooter(); ?>
@@ -453,6 +538,36 @@ if (typeof window.edibearSyncCartBadge === 'function') {
                 });
             });
         });
+    </script>
+    <script>
+    (function () {
+        function fKey() { return "edibear_fav_pdf"; }
+        function read() { try { return JSON.parse(localStorage.getItem(fKey()) || "[]"); } catch (e) { return []; } }
+        function write(a) { localStorage.setItem(fKey(), JSON.stringify(a)); }
+        function paint(btn, on) {
+            var ic = btn.querySelector("i");
+            if (ic) ic.className = on ? "fa fa-heart text-danger" : "fa fa-heart-o text-secondary";
+            btn.setAttribute("aria-pressed", on ? "true" : "false");
+        }
+        document.addEventListener("click", function (e) {
+            var t = e.target && e.target.closest && e.target.closest(".edi-fav-tgl");
+            if (!t) return;
+            e.preventDefault();
+            var id = parseInt(t.getAttribute("data-fav-id"), 10);
+            if (!id) return;
+            var a = read();
+            var i = a.indexOf(id);
+            if (i >= 0) { a.splice(i, 1); paint(t, false); } else { a.push(id); paint(t, true); }
+            write(a);
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            var a = read();
+            document.querySelectorAll(".edi-fav-tgl").forEach(function (btn) {
+                var id = parseInt(btn.getAttribute("data-fav-id"), 10);
+                if (a.indexOf(id) >= 0) paint(btn, true);
+            });
+        });
+    })();
     </script>
 </body>
 </html>

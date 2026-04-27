@@ -540,26 +540,29 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200) 
     ";
     }
     else{
-        
+        $cardTag = htmlspecialchars($this->getTitleTag($row['title']) ?: trim($row['tag'] ?? ''), ENT_QUOTES, 'UTF-8');
+        $safeTitle = htmlspecialchars($row['title'] ?? '', ENT_QUOTES, 'UTF-8');
         $html = "
         <div class='$col mb-4 pb-2'>
-            <div class='blog-item'>
-                <div class='imageframe position-relative'>
-                    <img class='img-fluid w-100' src='$imageName' alt=''>
+            <div class='blog-item edi-pdf-result-card' style='border:1px solid #e0e0e0; border-radius:6px; overflow:hidden; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.04);'>
+                <div class='imageframe position-relative' style='border:2px solid #2d8a54; border-radius:4px; margin:8px;'>
+                    <img class='img-fluid w-100' src='$imageName' alt='' style='display:block;'>
                 </div>
-                <div class='bg-white p-2'>
-                    <div class='d-flex mb-2' style='font-size:12px;'>
-    <i class='fa fa-tag fa-sm p-1' style='color:#FFC107;'></i>
-    <span style='color:#FFC107; font-weight:500;'>". $this->getTitleTag($row['title']) ."</span>
-</div>
-                    <h5 class='text-primary text-uppercase font-weight-bold mb-0' style='font-size: 18px;'>".$row['title']."</h5>
-                    <p class='mb-2' style='font-size: 12px;'>$pdfDescription</p>
-                    <hr class='border-warning mt-1 mb-3'>
-                    <div class='d-flex align-items-center'>
-                    <button id='$buttonId' type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal_".$pdfId."'>
+                <div class='bg-white px-2 pb-3 pt-0'>
+                    <div class='d-flex align-items-center mb-1' style='font-size:12px;'>
+                        <i class='fa fa-tag fa-sm p-1' style='color:#f57c00;' aria-hidden='true'></i>
+                        <span class='text-uppercase' style='color:#f57c00; font-weight:600; letter-spacing:.02em;'>$cardTag</span>
+                    </div>
+                    <h5 class='text-danger text-uppercase font-weight-bold mb-1' style='font-size:1rem; line-height:1.2;'>$safeTitle</h5>
+                    <p class='mb-2 text-muted' style='font-size: 13px; line-height:1.35;'>$pdfDescription</p>
+                    <div class='d-flex align-items-center justify-content-between border-top pt-2 mt-1'>
+                    <div class='d-flex align-items-center flex-wrap'> 
+                    <button id='$buttonId' type='button' class='btn newgreen1-btn btn-sm' data-toggle='modal' data-target='#exampleModal_".$pdfId."'>
                         Download
                     </button>
-                        <div id='$countId' class='pl-2 mb-0'>($downloadcount)</div>
+                    <div id='$countId' class='pl-2 mb-0' style='font-size:0.9rem; font-weight:600;'>($downloadcount)</div>
+                    </div>
+                    <button type='button' class='btn btn-link p-0 edi-fav-tgl' data-fav-type='pdf' data-fav-id='$pdfId' aria-pressed='false' title='Save' style='line-height:1;'><i class='fa fa-heart-o text-secondary' style='font-size:1.15rem' aria-hidden='true'></i></button>
                     </div>
 
                         <!-- Modal -->

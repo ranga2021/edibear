@@ -12,10 +12,32 @@ session_start();
 require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
+require_once("../classes/edi_explorer_content.php");
 
 $adminHeader = new HEADER("add-pdf");
 $user = new USER();
 $widgets = new WIDGETS();
+$ediConn = $user->getConnection();
+$ediHasPcat = EdiExplorerContent::columnExists($ediConn, "pdf_details", "product_category_id");
+$ediProductCategories = array();
+$ediProductSubcategories = array();
+$ediCurPcat = 0;
+$ediCurPsub = 0;
+if ($ediHasPcat) {
+    try {
+        $ediProductCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array("status" => 1));
+    } catch (Throwable $e) {
+        $ediProductCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array());
+    }
+    try {
+        $psc = $ediConn->query("SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC");
+        if ($psc) {
+            $ediProductSubcategories = $psc->fetchAll(PDO::FETCH_ASSOC);
+        }
+    } catch (Throwable $e) {
+        $ediProductSubcategories = array();
+    }
+}
 
 $editMode = false;
 $currentpdfID = 0;
@@ -50,6 +72,17 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
         if (!empty($pdfDetailsArr['image'])) {
             $currentpdfMainImage = "src='".$widgets->createCachelessImage("../img/pdf/".$pdfDetailsArr['image'])."'";
+        }
+
+        if ($ediHasPcat) {
+            $r = $ediConn->query("SELECT `product_category_id`, `product_subcategory_id` FROM `pdf_details` WHERE `id` = " . (int) $currentpdfID);
+            if ($r) {
+                $ediRow = $r->fetch(PDO::FETCH_ASSOC);
+                if ($ediRow) {
+                    $ediCurPcat = (int)($ediRow["product_category_id"] ?? 0);
+                    $ediCurPsub = (int)($ediRow["product_subcategory_id"] ?? 0);
+                }
+            }
         }
 
     } else {
@@ -89,8 +122,18 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
             move_uploaded_file($_FILES["inputpdfpdfupload"]["tmp_name"], "../img/pdf/".$pdfName);
         }
 
-        // ✅ FIXED INSERT (MATCH DATABASE)
-        $pdfID = $user->insertTable("pdf_details", array(
+        $epc = isset($_POST['edi_content_product_category']) ? (int) $_POST['edi_content_product_category'] : 0;
+        $eps = isset($_POST['edi_content_product_subcategory']) ? (int) $_POST['edi_content_product_subcategory'] : 0;
+        if ($epc > 0 && $eps > 0) {
+            $chk = $ediConn->prepare("SELECT `id` FROM `product_subcategories` WHERE `id` = ? AND `product_category_id` = ?");
+            $chk->execute(array($eps, $epc));
+            if ($chk->fetchColumn() === false) {
+                $eps = 0;
+            }
+        } elseif ($eps > 0 && $epc <= 0) {
+            $eps = 0;
+        }
+        $insertRow = array(
             "tag"=>$inputpdfTag,
             "title"=>$inputpdfTitle,
             "description"=>$inputpdfMainDescription,
@@ -102,7 +145,12 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
             "download_count"=>0,
             "main_cat_id"=>1,
             "sub_cat_id"=>1
-        ), true);
+        );
+        if ($ediHasPcat) {
+            $insertRow["product_category_id"] = $epc > 0 ? $epc : null;
+            $insertRow["product_subcategory_id"] = $eps > 0 ? $eps : null;
+        }
+        $pdfID = $user->insertTable("pdf_details", $insertRow, true);
 
         echo "<script>alert('PDF added successfully');location.href='./createSiteMap?redirect=pdf'</script>";
     }
@@ -110,13 +158,29 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
     // ================= UPDATE =================
     if (isset($_POST['updatepdfSubmit'])) {
 
-        $user->updateTable("pdf_details", array(
+        $upRow = array(
             "tag"=>$inputpdfTag,
             "title"=>$inputpdfTitle,
             "description"=>$inputpdfMainDescription,
             "video"=>$inputpdfVideoUrl,
             "video_status"=>$pdfVideoStatus
-        ), array("id"=>$currentpdfID));
+        );
+        if ($ediHasPcat) {
+            $epc = isset($_POST['edi_content_product_category']) ? (int) $_POST['edi_content_product_category'] : 0;
+            $eps = isset($_POST['edi_content_product_subcategory']) ? (int) $_POST['edi_content_product_subcategory'] : 0;
+            if ($epc > 0 && $eps > 0) {
+                $chk = $ediConn->prepare("SELECT `id` FROM `product_subcategories` WHERE `id` = ? AND `product_category_id` = ?");
+                $chk->execute(array($eps, $epc));
+                if ($chk->fetchColumn() === false) {
+                    $eps = 0;
+                }
+            } elseif ($eps > 0 && $epc <= 0) {
+                $eps = 0;
+            }
+            $upRow["product_category_id"] = $epc > 0 ? $epc : null;
+            $upRow["product_subcategory_id"] = $eps > 0 ? $eps : null;
+        }
+        $user->updateTable("pdf_details", $upRow, array("id"=>$currentpdfID));
 
         // IMAGE UPDATE
         if (!empty($_FILES["inputpdfMainImage"]["name"])) {
@@ -178,6 +242,7 @@ echo $widgets->inputGroup("PDF Tag", "inputpdfTag", "col-md-6", $currentpdfTag);
 echo $widgets->inputGroup("PDF Title", "inputpdfTitle", "col-md-6", $currentpdfTitle);
 ?>
 </div>
+<?php require __DIR__ . "/product_taxonomy_content_fields.php"; ?>
 
 <div class="row mt-3">
 <div class="col-md-6">

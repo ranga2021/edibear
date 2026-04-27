@@ -12,10 +12,32 @@ session_start();
 require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
+require_once("../classes/edi_explorer_content.php");
 
 $adminHeader = new HEADER("add-homework");
 $user = new USER();
 $widgets = new WIDGETS();
+$ediConn = $user->getConnection();
+$ediHasPcat = EdiExplorerContent::columnExists($ediConn, "homework_details", "product_category_id");
+$ediProductCategories = array();
+$ediProductSubcategories = array();
+$ediCurPcat = 0;
+$ediCurPsub = 0;
+if ($ediHasPcat) {
+    try {
+        $ediProductCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array("status" => 1));
+    } catch (Throwable $e) {
+        $ediProductCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array());
+    }
+    try {
+        $psc = $ediConn->query("SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC");
+        if ($psc) {
+            $ediProductSubcategories = $psc->fetchAll(PDO::FETCH_ASSOC);
+        }
+    } catch (Throwable $e) {
+        $ediProductSubcategories = array();
+    }
+}
 
 $editMode = false;
 $currenthomeworkTag = "";
@@ -52,6 +74,17 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
             $currenthomeworkpdfupload = "src='".$widgets->createCachelessImage("../img/homework/".$data['pdfupload'])."'";
         }
 
+        if ($ediHasPcat) {
+            $r = $ediConn->query("SELECT `product_category_id`, `product_subcategory_id` FROM `homework_details` WHERE `id` = " . (int) $currenthomeworkID);
+            if ($r) {
+                $ediRow = $r->fetch(PDO::FETCH_ASSOC);
+                if ($ediRow) {
+                    $ediCurPcat = (int)($ediRow["product_category_id"] ?? 0);
+                    $ediCurPsub = (int)($ediRow["product_subcategory_id"] ?? 0);
+                }
+            }
+        }
+
     } else {
         header("Location: ./add-homework");
         exit;
@@ -65,7 +98,19 @@ if (isset($_POST['addNewhomeworkSubmit'])) {
     $title = htmlspecialchars($_POST['inputhomeworkTitle'] ?? "");
     $desc  = strip_tags($_POST['inputhomeworkMainDescription'] ?? "", "<br>");
 
-    $homeworkID = $user->insertTable("homework_details", [
+    $epc = isset($_POST['edi_content_product_category']) ? (int) $_POST['edi_content_product_category'] : 0;
+    $eps = isset($_POST['edi_content_product_subcategory']) ? (int) $_POST['edi_content_product_subcategory'] : 0;
+    if ($epc > 0 && $eps > 0) {
+        $chk = $ediConn->prepare("SELECT `id` FROM `product_subcategories` WHERE `id` = ? AND `product_category_id` = ?");
+        $chk->execute(array($eps, $epc));
+        if ($chk->fetchColumn() === false) {
+            $eps = 0;
+        }
+    } elseif ($eps > 0 && $epc <= 0) {
+        $eps = 0;
+    }
+
+    $insH = array(
     "tag"=>$tag,
     "title"=>$title,
     "description"=>$desc,
@@ -78,8 +123,12 @@ if (isset($_POST['addNewhomeworkSubmit'])) {
     "grade_id"=>0,
     "main_cat_id"=>0,
     "sub_cat_id"=>0
-    // ✅ FIX
-], true);
+    );
+    if ($ediHasPcat) {
+        $insH["product_category_id"] = $epc > 0 ? $epc : null;
+        $insH["product_subcategory_id"] = $eps > 0 ? $eps : null;
+    }
+    $homeworkID = $user->insertTable("homework_details", $insH, true);
 
     $uploadDir = "../img/homework/";
     if (!is_dir($uploadDir)) mkdir($uploadDir, 0775, true);
@@ -114,11 +163,27 @@ if (isset($_POST['updatehomeworkSubmit'])) {
     $title = htmlspecialchars($_POST['inputhomeworkTitle'] ?? "");
     $desc  = strip_tags($_POST['inputhomeworkMainDescription'] ?? "", "<br>");
 
-    $user->updateTable("homework_details", [
+    $upH = [
         "tag"=>$tag,
         "title"=>$title,
         "description"=>$desc
-    ], ["id"=>$currenthomeworkID]);
+    ];
+    if ($ediHasPcat) {
+        $epc = isset($_POST['edi_content_product_category']) ? (int) $_POST['edi_content_product_category'] : 0;
+        $eps = isset($_POST['edi_content_product_subcategory']) ? (int) $_POST['edi_content_product_subcategory'] : 0;
+        if ($epc > 0 && $eps > 0) {
+            $chk = $ediConn->prepare("SELECT `id` FROM `product_subcategories` WHERE `id` = ? AND `product_category_id` = ?");
+            $chk->execute(array($eps, $epc));
+            if ($chk->fetchColumn() === false) {
+                $eps = 0;
+            }
+        } elseif ($eps > 0 && $epc <= 0) {
+            $eps = 0;
+        }
+        $upH["product_category_id"] = $epc > 0 ? $epc : null;
+        $upH["product_subcategory_id"] = $eps > 0 ? $eps : null;
+    }
+    $user->updateTable("homework_details", $upH, ["id"=>$currenthomeworkID]);
 
     $uploadDir = "../img/homework/";
 
@@ -185,6 +250,7 @@ if (isset($_POST['confirmDeletehomeworkSubmit'])) {
                     echo $widgets->inputGroup("homework Title", "inputhomeworkTitle", "col-md-6", $currenthomeworkTitle);
                   ?>
                 </div>
+                <?php require __DIR__ . "/product_taxonomy_content_fields.php"; ?>
                 <div class="row border mx-3 mb-2">
                   <div class="col-md-6 d-flex align-items-center justify-content-center">
                     <div class="form-group">

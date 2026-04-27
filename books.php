@@ -3,14 +3,16 @@
     require_once("./classes/class.user.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
+    require_once("./classes/edi_explorer_content.php");
     
     $userHeader = new HEADER("books");
     $user = new USER();
     $widgets = new WIDGETS();
+    $conn = $user->getConnection();
     
       // ✅ NEW FILTER VARIABLES
-$language = isset($_GET['language']) ? $_GET['language'] : '';
-$grade = isset($_GET['grade']) ? $_GET['grade'] : '';
+$language = isset($_GET['language']) ? $_GET['language'] : (isset($_GET['lang']) ? $_GET['lang'] : '');
+$grade = isset($_GET['grade']) ? $_GET['grade'] : (isset($_GET['age']) ? $_GET['age'] : '');
 $main_cat_id = isset($_GET['main_cat_id']) ? $_GET['main_cat_id'] : '';
 $sub_cat_id = isset($_GET['sub_cat_id']) ? $_GET['sub_cat_id'] : '';
 
@@ -130,7 +132,22 @@ if($sub_cat_id != ""){
         $pagingUrlParm .= "&search=$searchKey";
     }
 
-    $totalbooksPages = ceil( count($user->fetchAll(array("id"), array("books_details"), $conditions, "", $searchTagLike . " AND " . $searchKeyLike)) / 16);
+    if (isset($_GET['category']) && (int) $_GET['category'] > 0) {
+        $pagingUrlParm .= "&category=" . (int) $_GET['category'];
+        if (isset($_GET['sub']) && (int) $_GET['sub'] > 0) {
+            $pagingUrlParm .= "&sub=" . (int) $_GET['sub'];
+        }
+    }
+
+    $shopListExtraB = (isset($_GET['category']) && (int) $_GET['category'] > 0)
+        ? EdiExplorerContent::listPageExtraSql($conn, "books_details", (int) $_GET['category'], isset($_GET['sub']) ? (int) $_GET['sub'] : 0)
+        : "";
+    $listComboOtherB = $searchTagLike . " AND " . $searchKeyLike;
+    if ($shopListExtraB !== "") {
+        $listComboOtherB = "(" . $listComboOtherB . ") AND (" . $shopListExtraB . ")";
+    }
+
+    $totalbooksPages = ceil( count($user->fetchAll(array("id"), array("books_details"), $conditions, "", $listComboOtherB)) / 16);
     if ( isset($_GET['page']) ) {
         $booksPageNo = (int)$_GET['page'];
         if ( $totalbooksPages < $booksPageNo ) {
@@ -263,14 +280,14 @@ if($sub_cat_id != ""){
                         <?php
                             if ( $booksPageNo > 1 ) {
                                 $limit = ( $booksPageNo - 1 ) * 16;
-                                $other = "id<" . $user->fetchAll(array("id"), array("books_details"), $conditions, "id DESC LIMIT $limit", $searchTagLike . " AND " . $searchKeyLike)[$limit-1]['id'];
+                                $other = "id<" . $user->fetchAll(array("id"), array("books_details"), $conditions, "id DESC LIMIT $limit", $listComboOtherB)[$limit-1]['id'];
                             } else {
                                 $other = "";
                             }
                             if ( $other!="" ) {
-                                $other = "$other AND $searchTagLike AND $searchKeyLike";
+                                $other = "$other AND $listComboOtherB";
                             } else {
-                                $other = "$searchTagLike AND $searchKeyLike";
+                                $other = $listComboOtherB;
                             }
                             // card views have defined by using below code block. if you need to change the card count you may change the DESC LIMIT {number-you-need-to-show} 
                             foreach ( $user->fetchAll(array("id","tag","title","image", "description","timestamp","pdfupload","download_count"), array("books_details"), array("status"=>"1"), "id DESC LIMIT 16", $other) as $row ) {

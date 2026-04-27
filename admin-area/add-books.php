@@ -12,10 +12,32 @@ session_start();
 require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
+require_once("../classes/edi_explorer_content.php");
 
 $adminHeader = new HEADER("add-books");
 $user = new USER();
 $widgets = new WIDGETS();
+$ediConn = $user->getConnection();
+$ediHasPcat = EdiExplorerContent::columnExists($ediConn, "books_details", "product_category_id");
+$ediProductCategories = array();
+$ediProductSubcategories = array();
+$ediCurPcat = 0;
+$ediCurPsub = 0;
+if ($ediHasPcat) {
+    try {
+        $ediProductCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array("status" => 1));
+    } catch (Throwable $e) {
+        $ediProductCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array());
+    }
+    try {
+        $psc = $ediConn->query("SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC");
+        if ($psc) {
+            $ediProductSubcategories = $psc->fetchAll(PDO::FETCH_ASSOC);
+        }
+    } catch (Throwable $e) {
+        $ediProductSubcategories = array();
+    }
+}
 
 $editMode = false;
 $currentbooksID = 0;
@@ -50,6 +72,17 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
 
         if (!empty($booksDetailsArr['image'])) {
             $currentbooksMainImage = "src='".$widgets->createCachelessImage("../img/books/".$booksDetailsArr['image'])."'";
+        }
+
+        if ($ediHasPcat) {
+            $r = $ediConn->query("SELECT `product_category_id`, `product_subcategory_id` FROM `books_details` WHERE `id` = " . (int) $currentbooksID);
+            if ($r) {
+                $ediRow = $r->fetch(PDO::FETCH_ASSOC);
+                if ($ediRow) {
+                    $ediCurPcat = (int)($ediRow["product_category_id"] ?? 0);
+                    $ediCurPsub = (int)($ediRow["product_subcategory_id"] ?? 0);
+                }
+            }
         }
 
     } else {
@@ -89,8 +122,18 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
             move_uploaded_file($_FILES["inputbookspdfupload"]["tmp_name"], "../img/books/".$pdfName);
         }
 
-        // ðŸ”¥ INSERT WITH IMAGE (MAIN FIX)
-        $booksID = $user->insertTable("books_details", array(
+        $epc = isset($_POST['edi_content_product_category']) ? (int) $_POST['edi_content_product_category'] : 0;
+        $eps = isset($_POST['edi_content_product_subcategory']) ? (int) $_POST['edi_content_product_subcategory'] : 0;
+        if ($epc > 0 && $eps > 0) {
+            $chk = $ediConn->prepare("SELECT `id` FROM `product_subcategories` WHERE `id` = ? AND `product_category_id` = ?");
+            $chk->execute(array($eps, $epc));
+            if ($chk->fetchColumn() === false) {
+                $eps = 0;
+            }
+        } elseif ($eps > 0 && $epc <= 0) {
+            $eps = 0;
+        }
+        $insertRowB = array(
             "tag"=>$inputbooksTag,
             "title"=>$inputbooksTitle,
             "description"=>$inputbooksMainDescription,
@@ -102,7 +145,12 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
             "download_count"=>0,
             "main_cat_id"=>1,
             "sub_cat_id"=>1
-        ), true);
+        );
+        if ($ediHasPcat) {
+            $insertRowB["product_category_id"] = $epc > 0 ? $epc : null;
+            $insertRowB["product_subcategory_id"] = $eps > 0 ? $eps : null;
+        }
+        $booksID = $user->insertTable("books_details", $insertRowB, true);
 
         echo "<script>alert('Book added successfully');location.href='./createSiteMap?redirect=books'</script>";
     }
@@ -110,13 +158,29 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
     // ================= UPDATE =================
     if (isset($_POST['updatebooksSubmit'])) {
 
-        $user->updateTable("books_details", array(
+        $upB = array(
             "tag"=>$inputbooksTag,
             "title"=>$inputbooksTitle,
             "description"=>$inputbooksMainDescription,
             "video"=>$inputbooksVideoUrl,
             "video_status"=>$booksVideoStatus
-        ), array("id"=>$currentbooksID));
+        );
+        if ($ediHasPcat) {
+            $epc = isset($_POST['edi_content_product_category']) ? (int) $_POST['edi_content_product_category'] : 0;
+            $eps = isset($_POST['edi_content_product_subcategory']) ? (int) $_POST['edi_content_product_subcategory'] : 0;
+            if ($epc > 0 && $eps > 0) {
+                $chk = $ediConn->prepare("SELECT `id` FROM `product_subcategories` WHERE `id` = ? AND `product_category_id` = ?");
+                $chk->execute(array($eps, $epc));
+                if ($chk->fetchColumn() === false) {
+                    $eps = 0;
+                }
+            } elseif ($eps > 0 && $epc <= 0) {
+                $eps = 0;
+            }
+            $upB["product_category_id"] = $epc > 0 ? $epc : null;
+            $upB["product_subcategory_id"] = $eps > 0 ? $eps : null;
+        }
+        $user->updateTable("books_details", $upB, array("id"=>$currentbooksID));
 
         // IMAGE UPDATE
         if (!empty($_FILES["inputbooksMainImage"]["name"])) {
@@ -178,6 +242,7 @@ echo $widgets->inputGroup("books Tag", "inputbooksTag", "col-md-6", $currentbook
 echo $widgets->inputGroup("books Title", "inputbooksTitle", "col-md-6", $currentbooksTitle);
 ?>
 </div>
+<?php require __DIR__ . "/product_taxonomy_content_fields.php"; ?>
 
 <div class="row mt-3">
 <div class="col-md-6">

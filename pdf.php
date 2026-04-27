@@ -3,13 +3,15 @@
     require_once("./classes/class.user.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
+    require_once("./classes/edi_explorer_content.php");
     
     $userHeader = new HEADER("pdf");
     $user = new USER();
     $widgets = new WIDGETS();
+    $conn = $user->getConnection();
 
-  $language   = $_GET['language'] ?? '';
-$grade      = $_GET['grade'] ?? '';
+  $language   = $_GET['language'] ?? $_GET['lang'] ?? '';
+$grade      = $_GET['grade'] ?? $_GET['age'] ?? '';
 $tag        = $_GET['tag'] ?? '';           // from dynamic category
 $sub_cat_id = $_GET['sub_cat_id'] ?? '';
 
@@ -135,8 +137,8 @@ if($searchTag != ""){
         $searchKeyLike = "title LIKE '%%'";
         $pagingUrlParm .= "&search=$searchKey";
     } else if (isset($_GET['search'])) {
-        $searchKey = $_GET['search'];
-        $pagingUrlParm .= "&search=$searchKey";
+        $searchKey = strip_tags(trim((string) $_GET['search']));
+        $pagingUrlParm .= "&search=" . rawurlencode($searchKey);
         $searchKeyLike = "title LIKE '%$searchKey%'";
     } else {
         $searchKey = "";
@@ -144,12 +146,77 @@ if($searchTag != ""){
         $pagingUrlParm .= "&search=$searchKey";
     }
 
+    if (isset($_GET['category']) && (int) $_GET['category'] > 0) {
+        $pagingUrlParm .= "&category=" . (int) $_GET['category'];
+        if (isset($_GET['sub']) && (int) $_GET['sub'] > 0) {
+            $pagingUrlParm .= "&sub=" . (int) $_GET['sub'];
+        }
+    }
+
+    $shopListExtra = (isset($_GET['category']) && (int) $_GET['category'] > 0)
+        ? EdiExplorerContent::listPageExtraSql($conn, "pdf_details", (int) $_GET['category'], isset($_GET['sub']) ? (int) $_GET['sub'] : 0)
+        : "";
+    $listComboOther = $tagFilterLike . " AND " . $searchKeyLike;
+    if ($shopListExtra !== "") {
+        $listComboOther = "(" . $listComboOther . ") AND (" . $shopListExtra . ")";
+    }
+
+    $shopCategoryId = isset($_GET['category']) ? (int) $_GET['category'] : 0;
+    $shopSubId = isset($_GET['sub']) ? (int) $_GET['sub'] : 0;
+    $ediProductSubTitle = "";
+    if ($shopSubId > 0) {
+        try {
+            $est = $conn->prepare("SELECT `title` FROM `product_subcategories` WHERE `id` = ?");
+            $est->execute(array($shopSubId));
+            $ediProductSubTitle = trim((string) $est->fetchColumn());
+        } catch (Throwable $e) {
+            $ediProductSubTitle = "";
+        }
+    }
+    if ($ediProductSubTitle !== "") {
+        $pageHeroTitleForPdf = strtoupper($ediProductSubTitle);
+    } elseif (isset($subCatTitle) && $subCatTitle !== "" && $subCatTitle !== "Sub Category") {
+        $pageHeroTitleForPdf = strtoupper(trim($subCatTitle));
+    } elseif (isset($titleTag) && $titleTag !== "") {
+        $pageHeroTitleForPdf = strtoupper(strip_tags($titleTag));
+    } elseif ($searchTag !== "") {
+        $pageHeroTitleForPdf = strtoupper(trim($searchTag));
+    } else {
+        $pageHeroTitleForPdf = "COLORING PAGES";
+    }
+
+    $ediPdfListParams = array();
+    if ($language !== "") {
+        $ediPdfListParams["language"] = $language;
+    }
+    if ($grade !== "") {
+        $ediPdfListParams["grade"] = $grade;
+    }
+    if (!empty($searchTag)) {
+        $ediPdfListParams["tag"] = $searchTag;
+    }
+    if ($sub_cat_id !== "") {
+        $ediPdfListParams["sub_cat_id"] = (string) (int) $sub_cat_id;
+    }
+    if ($shopCategoryId > 0) {
+        $ediPdfListParams["category"] = (string) $shopCategoryId;
+    }
+    if ($shopSubId > 0) {
+        $ediPdfListParams["sub"] = (string) $shopSubId;
+    }
+    if (isset($searchKey) && $searchKey !== "") {
+        $ediPdfListParams["search"] = $searchKey;
+    }
+    if (isset($titleTag) && (string) $titleTag !== "") {
+        $ediPdfListParams["title_tag"] = (string) $titleTag;
+    }
+
     $totalpdfPages = ceil( count($user->fetchAll(
     array("id"), 
     array("pdf_details"), 
     $conditions, 
     "", 
-    $tagFilterLike . " AND " . $searchKeyLike
+    $listComboOther
 )) / 16);
 
     if ( isset($_GET['page']) ) {
@@ -194,20 +261,31 @@ if($searchTag != ""){
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
                     <li class="breadcrumb-item"><?php echo htmlspecialchars($languageTitle, ENT_QUOTES, 'UTF-8'); ?></li>
                     <li class="breadcrumb-item"><?php echo htmlspecialchars($gradeTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($tag, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li class="breadcrumb-item active" aria-current="page">Coloring pages</li>
                 </ol>
             </nav>
                 
-                    <div class="row mt-3 mt-lg-0">
-                        <h4 class="col-lg-6 col-md-12 text-warning mt-2">COLORING PAGES</h4>                      
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h1 class="h2 text-uppercase font-weight-bold mb-1" style="letter-spacing:.04em;"><?php echo htmlspecialchars($pageHeroTitleForPdf, ENT_QUOTES, 'UTF-8'); ?></h1>
+                            <div class="edi-pdf-hero-rule" style="height:2px; background:linear-gradient(90deg, #2e8b57, rgba(46,139,87,.2)); max-width:420px;"></div>
+                        </div>
                     </div>
 
             </div>
             <div class="col-lg-4 searchcol d-flex align-items-end">
-                <div class="search-container">
-                        <form method="post" class="d-flex">
-                            <input type="text"  name="search">
-                            <button type="submit" name="submit"><!--i class="fa fa-search"></i-->Search</button>
+                <div class="search-container w-100">
+                        <form method="get" action="pdf.php" class="d-flex">
+                            <?php
+                            foreach ($ediPdfListParams as $qk => $qv) {
+                                if ((string) $qv === "" || (string) $qk === "search") {
+                                    continue;
+                                }
+                                echo '<input type="hidden" name="' . htmlspecialchars((string) $qk, ENT_QUOTES, 'UTF-8') . '" value="' . htmlspecialchars((string) $qv, ENT_QUOTES, 'UTF-8') . '">';
+                            }
+                            ?>
+                            <input type="text" name="search" value="<?php echo htmlspecialchars($searchKey ?? '', ENT_QUOTES, 'UTF-8'); ?>" placeholder="Search by title" class="form-control" style="min-width:0;">
+                            <button type="submit" class="btn newgreen1-btn ml-1">Search</button>
                         </form>
                 </div>
             </div>
@@ -215,15 +293,11 @@ if($searchTag != ""){
         </div>
 
 
-            <!-- Tag Cloud -->
-            <div class="row d-flex mb-2 mt-3">
-                <div class="col-1 pr-0">
-                <h5 class="text-warning mb-1" >Tags</h5> 
+            <!-- Sub-tags (refine, same as results) -->
+            <div class="row mb-2 mt-1">
+                <div class="col-12 col-lg-8">
+                <p class="text-dark mb-1" style="font-size:0.8rem; font-weight:600;">Narrow by topic <span class="text-muted" style="font-weight:400;">(tap a word to filter results)</span></p>
                 </div>
-                
-                <div class="col-11 tagline">
-                <img src="./img/Web pic/tagline.png" alt="tagline" width="100%" height="">
-                </div> 
             </div>
 
             <!-- Navitage to page top -->
@@ -231,76 +305,67 @@ if($searchTag != ""){
 
 
             <?php
-            $tagsArr = [];
+            $tagsArr = array();
 
-// ✅ FETCH FILTERED DATA (based on sub_cat_id, language, grade)
-$pdfRows = $user->fetchAll(
-    ["title"],
-    ["pdf_details"],
-    $conditions   // 🔥 THIS IS THE FIX
-);
+            $pdfRows = $user->fetchAll(
+                array("title"),
+                array("pdf_details"),
+                $conditions,
+                "id DESC LIMIT 500",
+                $listComboOther
+            );
 
-foreach ($pdfRows as $row) {
-
-    $words = preg_split('/[\s,]+/', $row['title']);
-
-    foreach ($words as $word) {
-        $clean = ucfirst(strtolower(trim($word)));
-
-        // remove small words
-        if(strlen($clean) > 2){
-            if(!in_array($clean, $tagsArr)){
-                $tagsArr[] = $clean;
+            foreach ($pdfRows as $row) {
+                $words = preg_split('/[\s,&-]+/', $row["title"]);
+                foreach ($words as $word) {
+                    $clean = ucfirst(strtolower(trim($word, " -–—:.")));
+                    if (strlen($clean) > 2) {
+                        if (!in_array($clean, $tagsArr, true)) {
+                            $tagsArr[] = $clean;
+                        }
+                    }
+                }
             }
-        }
-    }
-}
-
+            sort($tagsArr, SORT_NATURAL | SORT_FLAG_CASE);
             $totalTags = count($tagsArr);
-            $visibleTags = min(15, $totalTags);
+            $visibleTags = min(20, $totalTags);
 
-            echo "<div style='font-size:15px; color:#666; line-height:1.8;'>";
+            echo "<div class=\"edi-pdf-tag-chips text-dark\" style=\"font-size:15px; line-height:2.1;\">";
             for ($i = 0; $i < $visibleTags; $i++) {
-    $tagWord = $tagsArr[$i];
-
-    echo "<a href='?title_tag=$tagWord"
-    .($tag ? "&tag=$tag" : "")
-    .($language ? "&language=$language" : "")
-    .($grade ? "&grade=$grade" : "")
-    .($sub_cat_id ? "&sub_cat_id=$sub_cat_id" : "")
-    ."' style='color:#555; text-decoration:none;'>$tagWord</a>";
-
-    if($i < $visibleTags - 1){
-        echo ", ";
-    }
-}
-           
-
+                $tagWord = $tagsArr[$i];
+                $qNext = $ediPdfListParams;
+                $qNext["title_tag"] = $tagWord;
+                $href = "pdf.php?" . http_build_query($qNext, "", "&", PHP_QUERY_RFC3986);
+                $safeWord = htmlspecialchars($tagWord, ENT_QUOTES, "UTF-8");
+                echo "<a href=\"" . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . "\" class=\"edi-pdf-topic-link\" style=\"color:#f57c00; text-decoration:none; font-weight:600; border-bottom:1px solid rgba(245,124,0,.35);\">" . $safeWord . "</a>";
+                if ($i < $visibleTags - 1) {
+                    echo "<span class=\"text-muted\" style=\"margin:0 5px 0 2px;\">,</span> ";
+                }
+            }
             if ($totalTags > $visibleTags) {
-                echo "<button id='seeMoreButton' class='tagfont morebutton mb-1'>More..</button>";
-                
-                echo "<div id='hiddenTags'  style='display: none; margin-top: 6px;'>";
-                
+                echo " <span class=\"text-muted\">&hellip;</span> ";
+                echo "<button type=\"button\" id=\"seeMoreButton\" class=\"tagfont morebutton mb-1 text-warning font-weight-bold\" style=\"background:none;border:0;cursor:pointer;\">See more</button>";
+                echo "<div id=\"hiddenTags\" style=\"display: none; margin-top: 10px;\">";
                 for ($i = $visibleTags; $i < $totalTags; $i++) {
-                     $tagWord = $tagsArr[$i];
-                    echo "<a  style='color:#000; border-color:#a7a7a7; border-style:solid;' class='tagfont px-3 py-1 mr-1 mb-2 mt-1' href='./pdf?title_tag=$tagWord' class='btn btn-light m-1'>$tagWord</a>";
+                    $tagWord = $tagsArr[$i];
+                    $qNext = $ediPdfListParams;
+                    $qNext["title_tag"] = $tagWord;
+                    $href = "pdf.php?" . http_build_query($qNext, "", "&", PHP_QUERY_RFC3986);
+                    $safeWord = htmlspecialchars($tagWord, ENT_QUOTES, "UTF-8");
+                    echo " <a href=\"" . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . "\" class=\"btn btn-sm btn-light border px-2 py-0 mb-1 mr-1 text-dark\">" . $safeWord . "</a>";
                 }
                 echo "</div>";
-                echo "</div>";
-
-                // JavaScript to handle the "See More" button functionality
                 echo "
                 <script>
-                    const seeMoreButton = document.getElementById('seeMoreButton');
-                    const hiddenTags = document.getElementById('hiddenTags');
-
-                    seeMoreButton.addEventListener('click', function() {
-                        hiddenTags.style.display = 'block';
-                        seeMoreButton.style.display = 'none';
-                    });
-                </script>
-                ";
+                (function() {
+                    var b = document.getElementById('seeMoreButton');
+                    var h = document.getElementById('hiddenTags');
+                    if (b && h) b.addEventListener('click', function() { h.style.display = 'block'; b.style.display = 'none'; });
+                })();
+                </script>";
             }
+            echo "</div>";
+            echo "<div class=\"edi-pdf-section-divider border-bottom my-3\"></div>";
             ?>
 
 
@@ -316,7 +381,7 @@ foreach ($pdfRows as $row) {
         array("pdf_details"),
         $conditions,
         "id DESC LIMIT $limit",
-        $searchKeyLike
+        $listComboOther
     );
 
     if(!empty($temp)){
@@ -330,9 +395,9 @@ foreach ($pdfRows as $row) {
 }
 
 if ( $other != "" ) {
-    $other = "$other AND $tagFilterLike AND $searchKeyLike";
+    $other = "$other AND $listComboOther";
 } else {
-    $other = "$tagFilterLike AND $searchKeyLike";
+    $other = $listComboOther;
 }
                             
                            // card views have defined by using below code block. if you need to change the card count you may change the DESC LIMIT {number-you-need-to-show} 
@@ -439,6 +504,36 @@ if ( $other != "" ) {
     <!-- Footer Start -->
     <?php echo $userHeader->printUserFooter(); ?>
     <!-- Footer End -->
+    <script>
+    (function () {
+        function fKey() { return "edibear_fav_pdf"; }
+        function read() { try { return JSON.parse(localStorage.getItem(fKey()) || "[]"); } catch (e) { return []; } }
+        function write(a) { localStorage.setItem(fKey(), JSON.stringify(a)); }
+        function paint(btn, on) {
+            var ic = btn.querySelector("i");
+            if (ic) ic.className = on ? "fa fa-heart text-danger" : "fa fa-heart-o text-secondary";
+            btn.setAttribute("aria-pressed", on ? "true" : "false");
+        }
+        document.addEventListener("click", function (e) {
+            var t = e.target && e.target.closest && e.target.closest(".edi-fav-tgl");
+            if (!t) return;
+            e.preventDefault();
+            var id = parseInt(t.getAttribute("data-fav-id"), 10);
+            if (!id) return;
+            var a = read();
+            var i = a.indexOf(id);
+            if (i >= 0) { a.splice(i, 1); paint(t, false); } else { a.push(id); paint(t, true); }
+            write(a);
+        });
+        document.addEventListener("DOMContentLoaded", function () {
+            var a = read();
+            document.querySelectorAll(".edi-fav-tgl").forEach(function (btn) {
+                var id = parseInt(btn.getAttribute("data-fav-id"), 10);
+                if (a.indexOf(id) >= 0) paint(btn, true);
+            });
+        });
+    })();
+    </script>
     <script>
         var buttonName = ':input[name="quoteSubmit"]';
         $(buttonName).prop('disabled', true);
