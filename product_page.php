@@ -67,6 +67,8 @@ $priceF = isset($_GET["price"]) ? trim((string) $_GET["price"]) : "";
 $offerF = isset($_GET["offers"]) ? trim((string) $_GET["offers"]) : "";
 $langF = isset($_GET["lang"]) ? trim((string) $_GET["lang"]) : "";
 $subF = isset($_GET["sub"]) ? (int) $_GET["sub"] : 0;
+$mcatF = isset($_GET["main_cat_id"]) ? (int) $_GET["main_cat_id"] : 0;
+$scatF = isset($_GET["sub_cat_id"]) ? (int) $_GET["sub_cat_id"] : 0;
 
 $query = "SELECT * FROM products WHERE status = 1";
 $params = array();
@@ -111,10 +113,10 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 $explorerPdfs = array();
 $explorerBooks = array();
 $explorerHomeworks = array();
-if ($catF !== "") {
-    $explorerPdfs = EdiExplorerContent::fetchMatching($conn, "pdf_details", $langF, $ageF, $catF, $subF, 6);
-    $explorerBooks = EdiExplorerContent::fetchMatching($conn, "books_details", $langF, $ageF, $catF, $subF, 6);
-    $explorerHomeworks = EdiExplorerContent::fetchMatching($conn, "homework_details", $langF, $ageF, $catF, $subF, 6);
+if ($mcatF > 0) {
+    $explorerPdfs = EdiExplorerContent::fetchMatching($conn, "pdf_details", $langF, $ageF, $mcatF, $scatF, 6);
+    $explorerBooks = EdiExplorerContent::fetchMatching($conn, "books_details", $langF, $ageF, $mcatF, $scatF, 6);
+    $explorerHomeworks = EdiExplorerContent::fetchMatching($conn, "homework_details", $langF, $ageF, $mcatF, $scatF, 6);
 }
 
 $explorerListQuery = array();
@@ -124,11 +126,11 @@ if ($langF !== "") {
 if ($ageF !== "") {
     $explorerListQuery["grade"] = $ageF;
 }
-if ($catF !== "") {
-    $explorerListQuery["category"] = $catF;
+if ($mcatF > 0) {
+    $explorerListQuery["main_cat_id"] = (string) $mcatF;
 }
-if ($subF > 0) {
-    $explorerListQuery["sub"] = (string) $subF;
+if ($scatF > 0) {
+    $explorerListQuery["sub_cat_id"] = (string) $scatF;
 }
 
 // Breadcrumb trail: Home > The Honey Market > … explorer filters (lang, grade, category, subcategory)
@@ -169,6 +171,33 @@ if ($subF > 0) {
     }
 }
 
+$contentMainTitle = "";
+if ($mcatF > 0) {
+    try {
+        $mst = $conn->prepare("SELECT `title` FROM `main_category` WHERE `id` = ?");
+        $mst->execute(array($mcatF));
+        $contentMainTitle = trim((string) $mst->fetchColumn());
+    } catch (Throwable $e) {
+        $contentMainTitle = "";
+    }
+    if ($contentMainTitle === "") {
+        $contentMainTitle = "Category";
+    }
+}
+$contentSubTitle = "";
+if ($scatF > 0) {
+    try {
+        $sst = $conn->prepare("SELECT `title` FROM `sub_category` WHERE `id` = ?");
+        $sst->execute(array($scatF));
+        $contentSubTitle = trim((string) $sst->fetchColumn());
+    } catch (Throwable $e) {
+        $contentSubTitle = "";
+    }
+    if ($contentSubTitle === "") {
+        $contentSubTitle = "Subcategory";
+    }
+}
+
 $explorerSegments = array();
 if ($langF !== "") {
     $explorerSegments[] = array("key" => "lang", "value" => $langF, "label" => $langF);
@@ -176,10 +205,14 @@ if ($langF !== "") {
 if ($ageF !== "") {
     $explorerSegments[] = array("key" => "age", "value" => $ageF, "label" => $ageF);
 }
-if ($catF !== "") {
+if ($mcatF > 0) {
+    $explorerSegments[] = array("key" => "main_cat_id", "value" => (string) $mcatF, "label" => $contentMainTitle);
+} elseif ($catF !== "") {
     $explorerSegments[] = array("key" => "category", "value" => $catF, "label" => $categoryNameForCrumb);
 }
-if ($subF > 0) {
+if ($scatF > 0) {
+    $explorerSegments[] = array("key" => "sub_cat_id", "value" => (string) $scatF, "label" => $contentSubTitle);
+} elseif ($subF > 0) {
     $explorerSegments[] = array("key" => "sub", "value" => (string) $subF, "label" => $subTitleForCrumb);
 }
 
@@ -204,6 +237,10 @@ if (count($explorerSegments) === 0) {
             "current" => $isLast,
         );
     }
+}
+$treasuresPageHeading = "TREASURES";
+if ($mcatF > 0 && $contentMainTitle !== "") {
+    $treasuresPageHeading = strtoupper($contentMainTitle);
 }
 ?>
 
@@ -242,7 +279,7 @@ if (count($explorerSegments) === 0) {
                  
                   <!-- Title + Line -->
         <div class="edi-page-title-row">
-            <h1>TREASURES</h1>
+            <h1><?php echo htmlspecialchars($treasuresPageHeading, ENT_QUOTES, "UTF-8"); ?></h1>
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
                     
@@ -251,6 +288,8 @@ if (count($explorerSegments) === 0) {
         
 
         <form method="GET" action="" class="treasures-filters-form" id="treasures-filters-form" aria-label="Filter treasures">
+            <?php if ($mcatF > 0): ?><input type="hidden" name="main_cat_id" value="<?php echo (int) $mcatF; ?>"><?php endif; ?>
+            <?php if ($scatF > 0): ?><input type="hidden" name="sub_cat_id" value="<?php echo (int) $scatF; ?>"><?php endif; ?>
             <div class="treasures-filters-row">
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-category">Category</label>
@@ -353,9 +392,14 @@ if (count($explorerSegments) === 0) {
         </script>
 
         <div class="row treasures-product-grid mt-2">
-            <?php if (empty($products) && $catF !== "" && empty($explorerPdfs) && empty($explorerBooks) && empty($explorerHomeworks)): ?>
+            <?php
+            $noExplorer = empty($explorerPdfs) && empty($explorerBooks) && empty($explorerHomeworks);
+            $noProducts = empty($products);
+            $filteredNoResult = $noProducts && ( ($mcatF > 0 && $noExplorer) || ($mcatF === 0 && $catF !== "") );
+            ?>
+            <?php if ($filteredNoResult): ?>
                 <div class="col-12 text-center py-5"><h4>No treasures found for these filters.</h4></div>
-            <?php elseif (empty($products) && $catF === ""): ?>
+            <?php elseif ($noProducts && $mcatF === 0 && $catF === ""): ?>
                 <div class="col-12 text-center py-5"><h4>No treasures found!</h4></div>
             <?php endif; ?>
             <?php if (!empty($products)) : foreach($products as $p): ?>
@@ -398,7 +442,7 @@ if (count($explorerSegments) === 0) {
         </div>
 
         <?php
-        if ($catF !== "" && (!empty($explorerPdfs) || !empty($explorerBooks) || !empty($explorerHomeworks))):
+        if ($mcatF > 0 && (!empty($explorerPdfs) || !empty($explorerBooks) || !empty($explorerHomeworks))):
             $freeQ = $explorerListQuery;
         ?>
         <div class="mt-5">

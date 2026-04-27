@@ -3,12 +3,10 @@
     require_once("./classes/class.user.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
-    require_once("./classes/edi_explorer_content.php");
     
     $userHeader = new HEADER("homework");
     $user = new USER();
     $widgets = new WIDGETS();
-    $conn = $user->getConnection();
     
     // ✅ NEW FILTER VARIABLES
 $language = isset($_GET['language']) ? $_GET['language'] : (isset($_GET['lang']) ? $_GET['lang'] : '');
@@ -132,20 +130,14 @@ if($sub_cat_id != ""){
         $pagingUrlParm .= "&search=$searchKey";
     }
 
-    if (isset($_GET['category']) && (int) $_GET['category'] > 0) {
-        $pagingUrlParm .= "&category=" . (int) $_GET['category'];
-        if (isset($_GET['sub']) && (int) $_GET['sub'] > 0) {
-            $pagingUrlParm .= "&sub=" . (int) $_GET['sub'];
-        }
+    if (isset($_GET['main_cat_id']) && (int) $_GET['main_cat_id'] > 0) {
+        $pagingUrlParm .= "&main_cat_id=" . (int) $_GET['main_cat_id'];
+    }
+    if (isset($_GET['sub_cat_id']) && (int) $_GET['sub_cat_id'] > 0) {
+        $pagingUrlParm .= "&sub_cat_id=" . (int) $_GET['sub_cat_id'];
     }
 
-    $shopListExtraH = (isset($_GET['category']) && (int) $_GET['category'] > 0)
-        ? EdiExplorerContent::listPageExtraSql($conn, "homework_details", (int) $_GET['category'], isset($_GET['sub']) ? (int) $_GET['sub'] : 0)
-        : "";
     $listComboOtherH = $searchTagLike . " AND " . $searchKeyLike;
-    if ($shopListExtraH !== "") {
-        $listComboOtherH = "(" . $listComboOtherH . ") AND (" . $shopListExtraH . ")";
-    }
 
     $totalhomeworkPages = ceil( count($user->fetchAll(array("id"), array("homework_details"), $conditions, "", $listComboOtherH)) / 16);
     if ( isset($_GET['page']) ) {

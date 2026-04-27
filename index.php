@@ -8,6 +8,7 @@
     
     require_once("./classes/class.user.php");
     require_once("./classes/edi_taxonomy.php");
+    require_once("./classes/edi_explorer_content.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
     require_once("./classes/edi_discount_badge.php");
@@ -22,29 +23,13 @@
 
     $explorerLanguages = array();
     $explorerGrades = array();
-    $productCategories = array();
-    $productSubcategoriesAll = array();
+    $contentMainCategories = array();
+    $contentSubcategories = array();
 
     $explorerLanguages = EdiTaxonomy::loadLanguages($conn);
     $explorerGrades = EdiTaxonomy::loadGrades($conn);
-
-    try {
-        $productCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array("status" => 1));
-    } catch (Throwable $e) {
-        try {
-            $productCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array());
-        } catch (Throwable $e2) {
-            $productCategories = array();
-        }
-    }
-    try {
-        $pscStmt = $conn->query("SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC");
-        if ($pscStmt) {
-            $productSubcategoriesAll = $pscStmt->fetchAll(PDO::FETCH_ASSOC);
-        }
-    } catch (Throwable $e) {
-        $productSubcategoriesAll = array();
-    }
+    $contentMainCategories = EdiExplorerContent::loadContentMainCategoryOptions($conn);
+    $contentSubcategories = EdiExplorerContent::loadContentSubcategoryOptions($conn);
 
     $productQuery = "SELECT * FROM products WHERE status = 1 ORDER BY id DESC LIMIT 4";
     $stmt = $conn->prepare($productQuery);
@@ -209,19 +194,19 @@
             </div>
 
             <div class="col-md-3 mb-2">
-                <select class="explorer-select" name="category" id="explorer_exp_cat" required>
+                <select class="explorer-select" name="main_cat_id" id="explorer_exp_cat" required>
                     <option value="">Category (Required)</option>
-                    <?php foreach ($productCategories as $pc): ?>
-                    <option value="<?php echo (int) $pc['id']; ?>"><?php echo htmlspecialchars((string) $pc['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+                    <?php foreach ($contentMainCategories as $mc): ?>
+                    <option value="<?php echo (int) $mc['id']; ?>"><?php echo htmlspecialchars((string) $mc['title'], ENT_QUOTES, 'UTF-8'); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="col-md-3 mb-2">
-                    <select class="explorer-select" name="sub" id="explorer_exp_sub">
+                    <select class="explorer-select" name="sub_cat_id" id="explorer_exp_sub">
                      <option value="">Subcategory (Optional)</option>
-                    <?php foreach ($productSubcategoriesAll as $sub): ?>
-                      <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>">
+                    <?php foreach ($contentSubcategories as $sub): ?>
+                      <option value="<?php echo (int) $sub['id']; ?>" data-content-main-cat-id="<?php echo (int) $sub['main_cat_id']; ?>">
                      <?php echo htmlspecialchars((string) $sub['title'], ENT_QUOTES, 'UTF-8'); ?>
                       </option>
                     <?php endforeach; ?>
@@ -711,7 +696,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         var stillOk = false;
         for (var i = 0; i < opts.length; i++) {
             var o = opts[i];
-            var pc = o.getAttribute("data-product-category-id");
+            var pc = o.getAttribute("data-content-main-cat-id");
             var show = !cid || !pc || String(pc) === String(cid);
             o.hidden = !show;
             o.disabled = !show;

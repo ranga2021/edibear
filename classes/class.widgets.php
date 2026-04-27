@@ -542,6 +542,7 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200) 
     else{
         $cardTag = htmlspecialchars($this->getTitleTag($row['title']) ?: trim($row['tag'] ?? ''), ENT_QUOTES, 'UTF-8');
         $safeTitle = htmlspecialchars($row['title'] ?? '', ENT_QUOTES, 'UTF-8');
+        $dlA = $this->buildContentDownloadAnchor("./img/pdf", $uploadpdf, $countId, $pdfId, "pdf");
         $html = "
         <div class='$col mb-4 pb-2'>
             <div class='blog-item edi-pdf-result-card' style='border:1px solid #e0e0e0; border-radius:6px; overflow:hidden; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.04);'>
@@ -557,102 +558,48 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200) 
                     <p class='mb-2 text-muted' style='font-size: 13px; line-height:1.35;'>$pdfDescription</p>
                     <div class='d-flex align-items-center justify-content-between border-top pt-2 mt-1'>
                     <div class='d-flex align-items-center flex-wrap'> 
-                    <button id='$buttonId' type='button' class='btn newgreen1-btn btn-sm' data-toggle='modal' data-target='#exampleModal_".$pdfId."'>
-                        Download
-                    </button>
+                    ".$dlA."
                     <div id='$countId' class='pl-2 mb-0' style='font-size:0.9rem; font-weight:600;'>($downloadcount)</div>
                     </div>
                     <button type='button' class='btn btn-link p-0 edi-fav-tgl' data-fav-type='pdf' data-fav-id='$pdfId' aria-pressed='false' title='Save' style='line-height:1;'><i class='fa fa-heart-o text-secondary' style='font-size:1.15rem' aria-hidden='true'></i></button>
                     </div>
-
-                        <!-- Modal -->
-                            <div class='modal fade' id='exampleModal_".$pdfId."' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                                <div class='modal-dialog' role='document'>
-                                <div class='modal-content'>
-                                    <div class='modal-header'>
-                                    <h5 class='modal-title' id='exampleModalLabel'>Thank you for choosing us.</h5>
-                                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-                                        <span aria-hidden='true'>&times;</span>
-                                    </button>
-                                    </div>
-
-
-                                    <div class='modal-body d-flex flex-column align-items-center'>
-                                        Please wait... Download in progress....
-
-                                        <!-- partial:index.partial.html -->
-                                        <div class='downloadcontainer'>
-                                            <a class='btn btn-primary' href='#succes_<?php echo $pdfId; ?>'>
-                                                <span>
-                                                    <i class='fa fa-arrow-down pl-2' aria-hidden='true'></i>Download</span>
-                                            </a>
-                                            <a id='succes_<?php echo $pdfId; ?>' target='_blank' href='./img/pdf/$uploadpdf' download>  
-                                            
-                                                    <div>
-                                                        <div class='donestatus'>
-                                                        <i class='fa fa-check' aria-hidden='true'></i>
-                                                        <button id='Button_".$pdfId."' type='button' class='btn btn-primary'>Download</button>
-                                                        </div>
-                                                        <div class='downloader'></div>
-                                                    </div>
-
-
-                                            </a>
-
-
-
-                                        </div>
-                                    </div>
-
-                                    <div class='modal-footer'>
-                                                                                
-                                        <div style='display:flex; justify-content:space-around; width: 100%' class='mt-5 mb-5'>
-                                        <div style='background-color: #fff; height: 180px; width: 100%; display:flex; align-items:center; justify-content:space-around; border:1px solid #000;'>
-                                            <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
-                                        </div>
-
-                                        </div>
-
-                                        
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-
-                    <script>
-                        document.getElementById('Button_".$pdfId."').addEventListener('click', function () {
-                            const pdfId = ".$pdfId.";
-                            console.log(pdfId)
-                            fetch('./update_download_count.php', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/x-www-form-urlencoded',
-                                },
-                                body: 'downloadButton=1&pdfId=' + pdfId + '&type=pdf',
-                            })
-                            .then(response => response.text())
-                            .then(count => {
-                                document.getElementById('$countId').innerText = '(' + count + ')';
-                            })
-                            .catch(error => {
-                                console.error('Error:', error);
-                            });
-                        });
-                    </script>
                 </div>
             </div>
         </div>
-
-                        
     ";
-
-    
-        
     }
     
 
     return $html;
 }
+
+/**
+ * Direct file download; bumps server count via update_download_count.php.
+ * $path like "./img/pdf/filename.pdf"; $type: pdf|book|homework
+ */
+private function buildContentDownloadAnchor($pathRel, $uploadName, $countId, $contentId, $type, $classBtn = "btn newgreen1-btn btn-sm")
+    {
+        $id = (int) $contentId;
+        $uploadName = trim((string) $uploadName);
+        if ($id < 1 || $uploadName === "") {
+            return "<span class=\"text-muted small\">—</span>";
+        }
+        $t = "pdf";
+        if ($type === "book") {
+            $t = "book";
+        } elseif ($type === "homework") {
+            $t = "homework";
+        }
+        $fileBase = str_replace("..", "", $uploadName);
+        $fileBase = basename($fileBase);
+        $href = rtrim($pathRel, "/") . "/" . $fileBase;
+        $on = "fetch('update_download_count.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'downloadButton=1&pdfId=" . $id . "&type=" . $t . "'}).then(function(r){return r.text()}).then(function(c){var n=document.getElementById('" . $countId . "');if(n){n.textContent='('+c+')';}});return true;";
+        $escH = htmlspecialchars($href, ENT_QUOTES, "UTF-8");
+        $escD = htmlspecialchars($fileBase, ENT_QUOTES, "UTF-8");
+        $escC = htmlspecialchars($classBtn, ENT_QUOTES, "UTF-8");
+        $escOn = htmlspecialchars($on, ENT_COMPAT, "UTF-8");
+        return "<a href=\"" . $escH . "\" class=\"" . $escC . "\" download=\"" . $escD . "\" onclick=\"" . $escOn . "\">Download</a>";
+    }
 
 private function getTitleTag($title) {
     $words = preg_split('/[\s,]+/', $title);
@@ -713,7 +660,7 @@ public function displayhomeworkBrief($row, $isHome, $col="col-md-6", $wordCount=
     ";
     }
     else{
-
+        $dlA = $this->buildContentDownloadAnchor("./img/homework", $uploadpdf, $countId, $pdfId, "homework");
         $html = "
         <div class='$col mb-4 pb-2'>
             <div class='blog-item'>
@@ -730,90 +677,13 @@ public function displayhomeworkBrief($row, $isHome, $col="col-md-6", $wordCount=
                     <h5 class='text-primary text-uppercase font-weight-bold mb-0' style='font-size: 18px;'>".$row['title']."</h5>
                     <p class='mb-2' style='font-size: 12px;'>$homeworkDescription</p>
                     <hr class='border-warning mt-1 mb-3'>
-                        <div class='d-flex align-items-center'>
-
-                        <button id='$buttonId' type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal_".$pdfId."'>
-                            Download
-                        </button>
+                    <div class='d-flex align-items-center flex-wrap'>".$dlA."
                         <div id='$countId' class='pl-2 mb-0'>($downloadcount)</div>
-                       
-                        </div>
-
-                        <!-- Modal -->
-                            <div class='modal fade' id='exampleModal_".$pdfId."' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                                <div class='modal-dialog' role='document'>
-                                <div class='modal-content'>
-                                    <div class='modal-header'>
-                                    <h5 class='modal-title' id='exampleModalLabel'>Thank you for choosing us.</h5>
-                                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-                                        <span aria-hidden='true'>&times;</span>
-                                    </button>
-                                    </div>
-
-                                    <div class='modal-body d-flex flex-column align-items-center'>
-                                        Please wait... Download in progress....
-                                        
-                                        <!-- partial:index.partial.html -->
-                                        <div class='downloadcontainer'>
-                                        
-                                            <a class='btn btn-primary' href='#succes_<?php echo $pdfId; ?>'>
-                                            <span >
-                                            <i class='fa fa-arrow-down pl-2' aria-hidden='true'></i>Download</span>
-                                            </a>
-
-                                            <a id='succes_<?php echo $pdfId; ?>' target='_blank' href='./img/homework/$uploadpdf' download>  
-                                            
-                                                <div>
-                                                    <div class='donestatus'>
-                                                    <i class='fa fa-check' aria-hidden='true'></i>
-                                                    <button id='Button_".$pdfId."' type='button' class='btn btn-primary'>Download</button>
-                                                    </div>
-                                                    <div class='downloader'></div>
-                                                </div>
-
-                                            </a>
-
-                                        </div>
-                                    </div>
-
-                                    <div class='modal-footer'>
-                                                                                
-                                        <div style='display:flex; justify-content:space-around; width: 100%' class='mt-5 mb-5'>
-                                        <div style='background-color: #fff; height: 180px; width: 100%; display:flex; align-items:center; justify-content:space-around; border:1px solid #000;'>
-                                            <h4 class='text-center' style='font-size:15px; font-weight:400 !important;'> Advertiesment </h4>
-                                        </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-
-                            <script>
-                                document.getElementById('Button_".$pdfId."').addEventListener('click', function () {
-                                    const pdfId = ".$pdfId.";
-                                    console.log(pdfId)
-                                    fetch('./update_download_count.php', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/x-www-form-urlencoded',
-                                        },
-                                        body: 'downloadButton=1&pdfId=' + pdfId + '&type=homework',
-                                    })
-                                    .then(response => response.text())
-                                    .then(count => {
-                                        document.getElementById('$countId').innerText = '(' + count + ')';
-                                    })
-                                    .catch(error => {
-                                        console.error('Error:', error);
-                                    });
-                                });
-                            </script>
                     </div>
+                </div>
             </div>
         </div>
     ";
-
-        
     }
 
     return $html;
@@ -865,7 +735,7 @@ public function displaybooksBrief($isHome, $row, $col="col-md-6", $wordCount=200
     ";
     }
     else{
-
+        $dlA = $this->buildContentDownloadAnchor("./img/books", $uploadpdf, $countId, $pdfId, "book");
         $html = "
         <div class='$col mb-4 pb-2'>
             <div class='blog-item'>
@@ -882,90 +752,13 @@ public function displaybooksBrief($isHome, $row, $col="col-md-6", $wordCount=200
                     <h5 class='text-primary text-uppercase font-weight-bold mb-0' style='font-size: 18px;'>".$row['title']."</h5>
                     <p class='mb-2' style='font-size: 12px;'>$booksDescription</p>
                     <hr class='border-warning mt-1 mb-3'>
-                        
-                    <div class='d-flex align-items-center'>
-
-                    <button id='$buttonId' type='button' class='btn btn-primary' data-toggle='modal' data-target='#exampleModal_".$pdfId."'>
-                        Download
-                    </button>
+                    <div class='d-flex align-items-center flex-wrap'>".$dlA."
                     <div id='$countId' class='pl-2 mb-0'>($downloadcount)</div>
-                       
                     </div>
-
-                        <!-- Modal -->
-                            <div class='modal fade' id='exampleModal_".$pdfId."' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
-                                <div class='modal-dialog' role='document'>
-                                <div class='modal-content'>
-                                    <div class='modal-header'>
-                                    <h5 class='modal-title' id='exampleModalLabel'>Thank you for choosing us.</h5>
-                                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-                                        <span aria-hidden='true'>&times;</span>
-                                    </button>
-                                    </div>
-                                    
-                                    <div class='modal-body d-flex flex-column align-items-center'>
-                                        Please wait... Download in progress....
-                                        
-                                        <!-- partial:index.partial.html -->
-                                        <div class='downloadcontainer'>
-                                        
-                                            <a class='btn btn-primary' href='#succes_<?php echo $pdfId; ?>'>
-                                            <span >
-                                            <i class='fa fa-arrow-down pl-2' aria-hidden='true'></i>Download</span>
-                                            </a>
-
-                                            <a id='succes_<?php echo $pdfId; ?>' target='_blank' href='./img/books/$uploadpdf' download>  
-                                            
-                                                <div>
-                                                    <div class='donestatus'>
-                                                    <i class='fa fa-check' aria-hidden='true'></i>
-                                                    <button id='Button_".$pdfId."' type='button' class='btn btn-primary'>Download</button>
-                                                    </div>
-                                                    <div class='downloader'></div>
-                                                </div>
-
-                                            </a>
-
-                                        </div>
-                                    </div>
-
-                                    <div class='modal-footer'>
-                                                                                
-                                        <div style='display:flex; justify-content:space-around; width: 100%' class='mt-5 mb-5'>
-                                         <div style='background-color: #fff; height: 180px; width: 100%; display:flex; align-items:center; justify-content:space-around; border:1px solid #000;'>
-                                            <small class='text-black' style='font-size:14px; font-weight:400 !important;'>Advertiesment</small> 
-                                        </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            </div>
-                            <script>
-                                document.getElementById('Button_".$pdfId."').addEventListener('click', function () {
-                                    const pdfId = ".$pdfId.";
-                                    console.log(pdfId)
-                                    fetch('./update_download_count.php', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/x-www-form-urlencoded',
-                                        },
-                                        body: 'downloadButton=1&pdfId=' + pdfId + '&type=book',
-                                    })
-                                    .then(response => response.text())
-                                    .then(count => {
-                                        document.getElementById('$countId').innerText = '(' + count + ')';
-                                    })
-                                    .catch(error => {
-                                        console.error('Error:', error);
-                                    });
-                                });
-                            </script>
-                    </div>
+                </div>
             </div>
         </div>
     ";
-
-        
     }
 
     return $html;

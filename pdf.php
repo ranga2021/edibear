@@ -3,7 +3,6 @@
     require_once("./classes/class.user.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
-    require_once("./classes/edi_explorer_content.php");
     
     $userHeader = new HEADER("pdf");
     $user = new USER();
@@ -12,10 +11,10 @@
 
   $language   = $_GET['language'] ?? $_GET['lang'] ?? '';
 $grade      = $_GET['grade'] ?? $_GET['age'] ?? '';
-$tag        = $_GET['tag'] ?? '';           // from dynamic category
+$tag        = $_GET['tag'] ?? '';
 $sub_cat_id = $_GET['sub_cat_id'] ?? '';
+$main_cat_id = $_GET['main_cat_id'] ?? '';
 
-    
     $conditions = ["status" => 1];
 
     if($language != ""){
@@ -41,27 +40,25 @@ if ($tag !== '') {
     $conditions["tag"] = $cleanTag;
 }
 
-// Sub-category filter (Animal, etc.)
+// Sub-category filter
 if ($sub_cat_id !== '') {
-    $conditions["sub_cat_id"] = (int)$sub_cat_id;
+    $conditions["sub_cat_id"] = (int) $sub_cat_id;
 }
-
-
-// For breadcrumb titles (keep your existing code for $languageTitle, $gradeTitle, etc.)
-// Just make sure $mainCatTitle shows something nice when tag is used, e.g.:
-$mainCatTitle = $tag ? strtoupper($tag) . " Pages" : "Coloring Pages";
-    
+if ($main_cat_id !== '') {
+    $conditions["main_cat_id"] = (int) $main_cat_id;
+}
 
 $languageTitle = $language != "" ? $language : "All Languages";
 $gradeTitle = $grade != "" ? $grade : "All Grades";
 
-// main category title
 $mainCatTitle = "Category";
-if($main_cat_id != ""){
-    $mainCat = $user->fetchAll(["title"], ["main_category"], ["id"=>$main_cat_id]);
-    if(!empty($mainCat)){
-        $mainCatTitle = $mainCat[0]['title'];
+if ($main_cat_id != "") {
+    $mainCat = $user->fetchAll(array("title"), array("main_category"), array("id" => $main_cat_id));
+    if (!empty($mainCat)) {
+        $mainCatTitle = $mainCat[0]["title"];
     }
+} elseif ($tag !== "") {
+    $mainCatTitle = strtoupper(strip_tags($tag)) . " Pages";
 }
 
 $titleTag = $_GET['title_tag'] ?? '';
@@ -146,35 +143,17 @@ if($searchTag != ""){
         $pagingUrlParm .= "&search=$searchKey";
     }
 
-    if (isset($_GET['category']) && (int) $_GET['category'] > 0) {
-        $pagingUrlParm .= "&category=" . (int) $_GET['category'];
-        if (isset($_GET['sub']) && (int) $_GET['sub'] > 0) {
-            $pagingUrlParm .= "&sub=" . (int) $_GET['sub'];
-        }
+    if (isset($_GET['main_cat_id']) && (int) $_GET['main_cat_id'] > 0) {
+        $pagingUrlParm .= "&main_cat_id=" . (int) $_GET['main_cat_id'];
+    }
+    if (isset($_GET['sub_cat_id']) && (int) $_GET['sub_cat_id'] > 0) {
+        $pagingUrlParm .= "&sub_cat_id=" . (int) $_GET['sub_cat_id'];
     }
 
-    $shopListExtra = (isset($_GET['category']) && (int) $_GET['category'] > 0)
-        ? EdiExplorerContent::listPageExtraSql($conn, "pdf_details", (int) $_GET['category'], isset($_GET['sub']) ? (int) $_GET['sub'] : 0)
-        : "";
     $listComboOther = $tagFilterLike . " AND " . $searchKeyLike;
-    if ($shopListExtra !== "") {
-        $listComboOther = "(" . $listComboOther . ") AND (" . $shopListExtra . ")";
-    }
 
-    $shopCategoryId = isset($_GET['category']) ? (int) $_GET['category'] : 0;
-    $shopSubId = isset($_GET['sub']) ? (int) $_GET['sub'] : 0;
-    $ediProductSubTitle = "";
-    if ($shopSubId > 0) {
-        try {
-            $est = $conn->prepare("SELECT `title` FROM `product_subcategories` WHERE `id` = ?");
-            $est->execute(array($shopSubId));
-            $ediProductSubTitle = trim((string) $est->fetchColumn());
-        } catch (Throwable $e) {
-            $ediProductSubTitle = "";
-        }
-    }
-    if ($ediProductSubTitle !== "") {
-        $pageHeroTitleForPdf = strtoupper($ediProductSubTitle);
+    if ($main_cat_id != "" && $mainCatTitle !== "" && $mainCatTitle !== "Category") {
+        $pageHeroTitleForPdf = strtoupper($mainCatTitle);
     } elseif (isset($subCatTitle) && $subCatTitle !== "" && $subCatTitle !== "Sub Category") {
         $pageHeroTitleForPdf = strtoupper(trim($subCatTitle));
     } elseif (isset($titleTag) && $titleTag !== "") {
@@ -198,11 +177,8 @@ if($searchTag != ""){
     if ($sub_cat_id !== "") {
         $ediPdfListParams["sub_cat_id"] = (string) (int) $sub_cat_id;
     }
-    if ($shopCategoryId > 0) {
-        $ediPdfListParams["category"] = (string) $shopCategoryId;
-    }
-    if ($shopSubId > 0) {
-        $ediPdfListParams["sub"] = (string) $shopSubId;
+    if ($main_cat_id !== "") {
+        $ediPdfListParams["main_cat_id"] = (string) (int) $main_cat_id;
     }
     if (isset($searchKey) && $searchKey !== "") {
         $ediPdfListParams["search"] = $searchKey;
