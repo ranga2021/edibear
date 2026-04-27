@@ -6,6 +6,28 @@
  */
 class EdiExplorerContent
 {
+    private static $colCache = array();
+
+    /**
+     * True if a column exists on a table (used by admin add content forms).
+     */
+    public static function columnExists(PDO $conn, $table, $col)
+    {
+        $k = $table . '|' . $col;
+        if (isset(self::$colCache[$k])) {
+            return self::$colCache[$k];
+        }
+        $ok = false;
+        try {
+            $s = $conn->query("SHOW COLUMNS FROM `" . str_replace(array('`', '.'), array('``', ''), $table) . "` LIKE " . $conn->quote($col));
+            $ok = $s && $s->rowCount() > 0;
+        } catch (Throwable $e) {
+            $ok = false;
+        }
+        self::$colCache[$k] = $ok;
+        return $ok;
+    }
+
     /**
      * Distinct main categories (id, title) used by published pdf / books / homework.
      */
