@@ -208,29 +208,39 @@ if($sub_cat_id != ""){
                <nav class="edi-breadcrumb" aria-label="Breadcrumb">
                 <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="./books.php"><?php echo htmlspecialchars("Books & Papers", ENT_QUOTES, 'UTF-8'); ?></a></li>
-                    <?php if ($main_cat_id != "" && ($sub_cat_id != "" || $searchTag != "")): ?>
-                    <li class="breadcrumb-item"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php if ($language !== ""): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($language, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
-                    <?php if ($sub_cat_id != "" && $searchTag != ""): ?>
-                    <li class="breadcrumb-item"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php if ($grade !== ""): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($grade, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
+                    <?php if ($mainCatTitle !== "" && $mainCatTitle !== "Category"): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
+                    <?php if ($subCatTitle !== "" && $subCatTitle !== "Sub Category" && $subCatTitle !== "Subcategory"): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
                     <?php if (!empty($searchTag)): ?>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($searchTag, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php elseif ($sub_cat_id != ""): ?>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php elseif ($main_cat_id != ""): ?>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($searchTag, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($subCatTitle !== "" && $subCatTitle !== "Sub Category" && $subCatTitle !== "Subcategory"): ?>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($mainCatTitle !== "" && $mainCatTitle !== "Category"): ?>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php else: ?>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars("All", ENT_QUOTES, 'UTF-8'); ?></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars("All", ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
                 </ol>
             </nav>
 
 
                 
-                    <div class="row mt-3 mt-lg-0">
-                        <h4 class="col-lg-6 col-md-12 text-warning mt-2">BOOKS & PAPERS</h4>                      
+                    <div class="row mt-3">
+                        <div class="col-12">
+                            <h1 class="h2 text-uppercase font-weight-bold mb-1" style="letter-spacing:.04em;">
+                                <?php echo htmlspecialchars($mainCatTitle !== "Category" ? $mainCatTitle : "BOOKS & PAPERS", ENT_QUOTES, 'UTF-8'); ?>
+                            </h1>
+                            <div class="edi-pdf-hero-rule" style="height:2px; background:linear-gradient(90deg, #2e8b57, rgba(46,139,87,.2)); max-width:420px;"></div>
+                        </div>
                     </div>
 
             </div>
@@ -245,15 +255,10 @@ if($sub_cat_id != ""){
 
         </div>
         
-            <!-- Tag Cloud -->
-            <div class="row d-flex mb-2 mt-3">
-                <div class="col-1 pr-0">
-                <h5 class="text-warning mb-1" >Tags</h5> 
+            <div class="row mb-2 mt-2">
+                <div class="col-12">
+                    <p class="text-dark mb-1" style="font-size:0.8rem; font-weight:600;">Tags</p>
                 </div>
-                
-                <div class="col-11 tagline">
-                <img src="./img/Web pic/tagline.png" alt="tagline" width="100%" height="">
-                </div> 
             </div>
 
             <!-- Navitage to page top -->

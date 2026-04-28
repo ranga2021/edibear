@@ -249,23 +249,28 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
                 <nav class="edi-breadcrumb" aria-label="Breadcrumb">
                 <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="./pdf.php"><?php echo htmlspecialchars("Coloring pages", ENT_QUOTES, 'UTF-8'); ?></a></li>
-                    <?php if ($main_cat_id != "" && ($sub_cat_id != "" || $searchTag != "" || ((string) $titleTag !== ""))): ?>
-                    <li class="breadcrumb-item"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php if ($language !== ""): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($language, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
-                    <?php if ($sub_cat_id != "" && ($searchTag != "" || ((string) $titleTag !== ""))): ?>
-                    <li class="breadcrumb-item"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php if ($grade !== ""): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($grade, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
+                    <?php if ($mainCatTitle !== "" && $mainCatTitle !== "Category"): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
+                    <?php if ($subCatTitle !== "" && $subCatTitle !== "Sub Category" && $subCatTitle !== "Subcategory"): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
                     <?php if (!empty($searchTag)): ?>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($searchTag, ENT_QUOTES, 'UTF-8'); ?></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($searchTag, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php elseif ((string) $titleTag !== ""): ?>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars((string) $titleTag, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php elseif ($sub_cat_id != ""): ?>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php elseif ($main_cat_id != ""): ?>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars((string) $titleTag, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($subCatTitle !== "" && $subCatTitle !== "Sub Category" && $subCatTitle !== "Subcategory"): ?>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($mainCatTitle !== "" && $mainCatTitle !== "Category"): ?>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php else: ?>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars("All", ENT_QUOTES, 'UTF-8'); ?></li>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars("All", ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
                 </ol>
             </nav>
