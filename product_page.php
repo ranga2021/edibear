@@ -70,45 +70,49 @@ $subF = isset($_GET["sub"]) ? (int) $_GET["sub"] : 0;
 $mcatF = isset($_GET["main_cat_id"]) ? (int) $_GET["main_cat_id"] : 0;
 $scatF = isset($_GET["sub_cat_id"]) ? (int) $_GET["sub_cat_id"] : 0;
 
-$query = "SELECT * FROM products WHERE status = 1";
-$params = array();
+// Homepage EXPLORE (content category): free resources only — no Honey Market products.
+$products = array();
+if ($mcatF === 0) {
+    $query = "SELECT * FROM products WHERE status = 1";
+    $params = array();
 
-if ($catF !== "") {
-    $query .= " AND category_id = :cat";
-    $params[":cat"] = $catF;
-}
-if ($ageF !== "") {
-    $query .= " AND TRIM(COALESCE(age_group, '')) = :age";
-    $params[":age"] = $ageF;
-}
-if ($brandF !== "") {
-    $query .= " AND brand = :brand";
-    $params[":brand"] = $brandF;
-}
-if ($langF !== "") {
-    $query .= " AND LOWER(TRIM(COALESCE(language, ''))) = LOWER(:lang)";
-    $params[":lang"] = $langF;
-}
-if ($subF > 0 && $hasProductSubcategoryColumn) {
-    $query .= " AND product_subcategory_id = :psub";
-    $params[":psub"] = $subF;
-}
+    if ($catF !== "") {
+        $query .= " AND category_id = :cat";
+        $params[":cat"] = $catF;
+    }
+    if ($ageF !== "") {
+        $query .= " AND TRIM(COALESCE(age_group, '')) = :age";
+        $params[":age"] = $ageF;
+    }
+    if ($brandF !== "") {
+        $query .= " AND brand = :brand";
+        $params[":brand"] = $brandF;
+    }
+    if ($langF !== "") {
+        $query .= " AND LOWER(TRIM(COALESCE(language, ''))) = LOWER(:lang)";
+        $params[":lang"] = $langF;
+    }
+    if ($subF > 0 && $hasProductSubcategoryColumn) {
+        $query .= " AND product_subcategory_id = :psub";
+        $params[":psub"] = $subF;
+    }
 
-if ($offerF === "available") {
-    $query .= " AND discount_percentage > 0";
-}
+    if ($offerF === "available") {
+        $query .= " AND discount_percentage > 0";
+    }
 
-if ($priceF === "low") {
-    $query .= " ORDER BY discounted_price ASC";
-} elseif ($priceF === "high") {
-    $query .= " ORDER BY discounted_price DESC";
-} else {
-    $query .= " ORDER BY id DESC";
-}
+    if ($priceF === "low") {
+        $query .= " ORDER BY discounted_price ASC";
+    } elseif ($priceF === "high") {
+        $query .= " ORDER BY discounted_price DESC";
+    } else {
+        $query .= " ORDER BY id DESC";
+    }
 
-$stmt = $conn->prepare($query);
-$stmt->execute($params);
-$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $stmt = $conn->prepare($query);
+    $stmt->execute($params);
+    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
 $explorerPdfs = array();
 $explorerBooks = array();
@@ -291,6 +295,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
             <?php if ($mcatF > 0): ?><input type="hidden" name="main_cat_id" value="<?php echo (int) $mcatF; ?>"><?php endif; ?>
             <?php if ($scatF > 0): ?><input type="hidden" name="sub_cat_id" value="<?php echo (int) $scatF; ?>"><?php endif; ?>
             <div class="treasures-filters-row">
+                <?php if ($mcatF === 0): ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-category">Category</label>
                     <select id="filter-category" name="category" class="form-control treasures-filter-select" onchange="this.form.submit()">
@@ -302,6 +307,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                         <?php endforeach; ?>
                     </select>
                 </div>
+                <?php endif; ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-age">Grade</label>
                     <select id="filter-age" name="age" class="form-control treasures-filter-select" onchange="this.form.submit()">
@@ -325,7 +331,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <?php if (count($productSubcategoriesAll) > 0): ?>
+                <?php if ($mcatF === 0 && count($productSubcategoriesAll) > 0): ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-sub">Subcategory</label>
                     <select id="filter-sub" name="sub" class="form-control treasures-filter-select" onchange="this.form.submit()">
@@ -340,6 +346,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                     </select>
                 </div>
                 <?php endif; ?>
+                <?php if ($mcatF === 0): ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-brand">Brands</label>
                     <select id="filter-brand" name="brand" class="form-control treasures-filter-select" onchange="this.form.submit()">
@@ -366,6 +373,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                         <option value="available" <?= ($offerF === 'available') ? 'selected' : '' ?>>Available</option>
                     </select>
                 </div>
+                <?php endif; ?>
             </div>
         </form>
 
