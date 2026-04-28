@@ -52,7 +52,20 @@ class EdiExplorerContent
         } catch (Throwable $e) {
             $rows = array();
         }
-        return $rows;
+        $rows = self::sanitizeMainCategoryRows($rows);
+        if (!empty($rows)) {
+            return $rows;
+        }
+        // Fallback to full taxonomy when content-linked rows are missing/misconfigured.
+        try {
+            $s2 = $conn->query("SELECT `id`, `title` FROM `main_category` ORDER BY `title` ASC");
+            if ($s2) {
+                $rows = $s2->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } catch (Throwable $e) {
+            $rows = array();
+        }
+        return self::sanitizeMainCategoryRows($rows);
     }
 
     /**
@@ -89,7 +102,69 @@ class EdiExplorerContent
         } catch (Throwable $e) {
             $rows = array();
         }
-        return $rows;
+        $rows = self::sanitizeSubcategoryRows($rows);
+        if (!empty($rows)) {
+            return $rows;
+        }
+        // Fallback to full taxonomy when content-linked rows are missing/misconfigured.
+        try {
+            $s2 = $conn->query("SELECT `id`, `main_cat_id`, `title` FROM `sub_category` ORDER BY `main_cat_id` ASC, `title` ASC");
+            if ($s2) {
+                $rows = $s2->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } catch (Throwable $e) {
+            $rows = array();
+        }
+        return self::sanitizeSubcategoryRows($rows);
+    }
+
+    private static function sanitizeMainCategoryRows(array $rows)
+    {
+        $out = array();
+        foreach ($rows as $r) {
+            $title = trim((string) ($r['title'] ?? ''));
+            if (!self::isValidTaxonomyTitle($title)) {
+                continue;
+            }
+            $out[] = array(
+                'id' => (int) ($r['id'] ?? 0),
+                'title' => $title,
+            );
+        }
+        return $out;
+    }
+
+    private static function sanitizeSubcategoryRows(array $rows)
+    {
+        $out = array();
+        foreach ($rows as $r) {
+            $title = trim((string) ($r['title'] ?? ''));
+            if (!self::isValidTaxonomyTitle($title)) {
+                continue;
+            }
+            $out[] = array(
+                'id' => (int) ($r['id'] ?? 0),
+                'main_cat_id' => (int) ($r['main_cat_id'] ?? 0),
+                'title' => $title,
+            );
+        }
+        return $out;
+    }
+
+    private static function isValidTaxonomyTitle($title)
+    {
+        $norm = strtolower(trim((string) $title));
+        if ($norm === '') {
+            return false;
+        }
+        // Ignore UI placeholder-like labels accidentally saved to taxonomy.
+        if (strpos($norm, 'required') !== false || strpos($norm, 'optional') !== false) {
+            return false;
+        }
+        if ($norm === 'category' || $norm === 'subcategory') {
+            return false;
+        }
+        return true;
     }
 
     /**
