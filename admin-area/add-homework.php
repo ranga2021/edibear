@@ -123,6 +123,10 @@ if (isset($_POST['addNewhomeworkSubmit'])) {
         exit;
     }
 
+    $mappedH = array("main_cat_id" => null, "sub_cat_id" => null);
+    if ($ediHasPcat) {
+        $mappedH = EdiExplorerContent::mapProductSelectionsToContentCategoryIds($ediConn, $epc, $eps);
+    }
     $insH = array(
     "tag"=>$tag,
     "title"=>$title,
@@ -134,8 +138,8 @@ if (isset($_POST['addNewhomeworkSubmit'])) {
     "download_count"=>0,
     "language_id"=>$lg['language_id'],
     "grade_id"=>$lg['grade_id'],
-    "main_cat_id"=>0,
-    "sub_cat_id"=>0
+    "main_cat_id"=>$mappedH["main_cat_id"],
+    "sub_cat_id"=>$mappedH["sub_cat_id"]
     );
     if ($ediHasPcat) {
         $insH["product_category_id"] = $epc > 0 ? $epc : null;
@@ -202,6 +206,9 @@ if (isset($_POST['updatehomeworkSubmit'])) {
         }
         $upH["product_category_id"] = $epc > 0 ? $epc : null;
         $upH["product_subcategory_id"] = $eps > 0 ? $eps : null;
+        $mappedH = EdiExplorerContent::mapProductSelectionsToContentCategoryIds($ediConn, $epc, $eps);
+        $upH["main_cat_id"] = $mappedH["main_cat_id"];
+        $upH["sub_cat_id"] = $mappedH["sub_cat_id"];
     }
     $user->updateTable("homework_details", $upH, ["id"=>$currenthomeworkID]);
 

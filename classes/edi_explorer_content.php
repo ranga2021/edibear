@@ -155,4 +155,100 @@ class EdiExplorerContent
         $st->execute($params);
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Map shop product category / subcategory picks to free-content main_category / sub_category IDs.
+     * The site EXPLORE and list pages use main_cat_id & sub_cat_id, not product_category_id.
+     * Matching: same title/name (case-insensitive), then common synonyms (e.g. "Coloring Pages" → Leisure Activities).
+     *
+     * @return array{main_cat_id: int|null, sub_cat_id: int|null}
+     */
+    public static function mapProductSelectionsToContentCategoryIds(PDO $conn, $productCatId, $productSubId)
+    {
+        $out = array("main_cat_id" => null, "sub_cat_id" => null);
+        $pcid = (int) $productCatId;
+        $psid = (int) $productSubId;
+        if ($pcid <= 0) {
+            return $out;
+        }
+        try {
+            $st = $conn->prepare("SELECT `name` FROM `product_categories` WHERE `id` = ?");
+            $st->execute(array($pcid));
+            $pname = trim((string) $st->fetchColumn());
+        } catch (Throwable $e) {
+            return $out;
+        }
+        if ($pname === "") {
+            return $out;
+        }
+        $mainId = self::resolveMainCategoryIdFromProductName($conn, $pname);
+        if ($mainId === null) {
+            return $out;
+        }
+        $out["main_cat_id"] = $mainId;
+        if ($psid <= 0) {
+            return $out;
+        }
+        try {
+            $st3 = $conn->prepare("SELECT `title` FROM `product_subcategories` WHERE `id` = ? AND `product_category_id` = ?");
+            $st3->execute(array($psid, $pcid));
+            $stitle = trim((string) $st3->fetchColumn());
+        } catch (Throwable $e) {
+            return $out;
+        }
+        if ($stitle === "") {
+            return $out;
+        }
+        $st4 = $conn->prepare("SELECT `id` FROM `sub_category` WHERE `main_cat_id` = ? AND LOWER(TRIM(`title`)) = LOWER(?) LIMIT 1");
+        $st4->execute(array($mainId, $stitle));
+        $sid = $st4->fetchColumn();
+        if ($sid !== false) {
+            $out["sub_cat_id"] = (int) $sid;
+        }
+        return $out;
+    }
+
+    /**
+     * @return int|null
+     */
+    private static function resolveMainCategoryIdFromProductName(PDO $conn, $productCategoryName)
+    {
+        $name = trim((string) $productCategoryName);
+        $st = $conn->prepare("SELECT `id` FROM `main_category` WHERE LOWER(TRIM(`title`)) = LOWER(?) LIMIT 1");
+        $st->execute(array($name));
+        $id = $st->fetchColumn();
+        if ($id !== false) {
+            return (int) $id;
+        }
+        $syn = self::synonymMainCategoryTitleForProductCategory(strtolower($name));
+        if ($syn === null) {
+            return null;
+        }
+        $st2 = $conn->prepare("SELECT `id` FROM `main_category` WHERE LOWER(TRIM(`title`)) = LOWER(?) LIMIT 1");
+        $st2->execute(array($syn));
+        $id2 = $st2->fetchColumn();
+        return $id2 === false ? null : (int) $id2;
+    }
+
+    /**
+     * When product_categories.name does not match main_category.title exactly.
+     *
+     * @return string|null target main_category.title
+     */
+    private static function synonymMainCategoryTitleForProductCategory($lowerName)
+    {
+        $map = array(
+            "coloring pages" => "Leisure Activities",
+            "colouring pages" => "Leisure Activities",
+            "coloring" => "Leisure Activities",
+            "fun activities" => "Leisure Activities",
+            "worksheets" => "Study Packs",
+            "homework" => "Study Packs",
+            "study packs" => "Study Packs",
+            "brain boosters" => "Books & Papers",
+            "books" => "Books & Papers",
+            "books & papers" => "Books & Papers",
+        );
+        return isset($map[$lowerName]) ? $map[$lowerName] : null;
+    }
 }

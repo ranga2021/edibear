@@ -8,7 +8,7 @@ $ediCurPsub = isset($ediCurPsub) ? (int) $ediCurPsub : 0;
 <div class="row mt-2">
   <div class="col-md-6">
     <div class="form-group">
-      <label class="form-control-label" for="edi_content_product_category">Product category (Honey Market / shop only)</label>
+      <label class="form-control-label" for="edi_content_product_category">Product category (also syncs free-content category: e.g. Coloring Pages → Leisure Activities; sub must match sub_category title)</label>
       <select class="form-control" name="edi_content_product_category" id="edi_content_product_category">
         <option value="0">— None —</option>
         <?php foreach ($ediProductCategories as $pc) : ?>

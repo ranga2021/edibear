@@ -145,6 +145,16 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
             echo "<script>alert('Please select a valid language and grade.');history.back();</script>";
             exit;
         }
+        $mappedContent = array("main_cat_id" => 1, "sub_cat_id" => 1);
+        if ($ediHasPcat) {
+            $mappedContent = EdiExplorerContent::mapProductSelectionsToContentCategoryIds($ediConn, $epc, $eps);
+            if ($mappedContent["main_cat_id"] === null) {
+                $mappedContent["main_cat_id"] = 1;
+            }
+            if ($mappedContent["sub_cat_id"] === null) {
+                $mappedContent["sub_cat_id"] = 1;
+            }
+        }
         $insertRow = array(
             "tag"=>$inputpdfTag,
             "title"=>$inputpdfTitle,
@@ -155,8 +165,8 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
             "pdfupload"=>$pdfName,
             "status"=>1,
             "download_count"=>0,
-            "main_cat_id"=>1,
-            "sub_cat_id"=>1,
+            "main_cat_id"=>$mappedContent["main_cat_id"],
+            "sub_cat_id"=>$mappedContent["sub_cat_id"],
             "language_id"=>$lg['language_id'],
             "grade_id"=>$lg['grade_id']
         );
@@ -200,6 +210,9 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
             }
             $upRow["product_category_id"] = $epc > 0 ? $epc : null;
             $upRow["product_subcategory_id"] = $eps > 0 ? $eps : null;
+            $mappedContent = EdiExplorerContent::mapProductSelectionsToContentCategoryIds($ediConn, $epc, $eps);
+            $upRow["main_cat_id"] = $mappedContent["main_cat_id"];
+            $upRow["sub_cat_id"] = $mappedContent["sub_cat_id"];
         }
         $user->updateTable("pdf_details", $upRow, array("id"=>$currentpdfID));
 
