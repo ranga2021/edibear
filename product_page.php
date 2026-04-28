@@ -71,9 +71,20 @@ $subF = isset($_GET["sub"]) ? (int) $_GET["sub"] : 0;
 $mcatF = isset($_GET["main_cat_id"]) ? (int) $_GET["main_cat_id"] : 0;
 $scatF = isset($_GET["sub_cat_id"]) ? (int) $_GET["sub_cat_id"] : 0;
 
+// Homepage EXPLORE now sends Honey Market taxonomy ids; map them to free-content ids here.
+$exploreProductCatId = isset($_GET["product_category_id"]) ? (int) $_GET["product_category_id"] : 0;
+$exploreProductSubId = isset($_GET["product_subcategory_id"]) ? (int) $_GET["product_subcategory_id"] : 0;
+$forceExplorer = false;
+if ($exploreProductCatId > 0) {
+    $forceExplorer = true;
+    $mapped = EdiExplorerContent::mapProductSelectionsToContentCategoryIds($conn, $exploreProductCatId, $exploreProductSubId);
+    $mcatF = isset($mapped["main_cat_id"]) && $mapped["main_cat_id"] ? (int) $mapped["main_cat_id"] : 0;
+    $scatF = isset($mapped["sub_cat_id"]) && $mapped["sub_cat_id"] ? (int) $mapped["sub_cat_id"] : 0;
+}
+
 // Homepage EXPLORE (content category): free resources only — no Honey Market products.
 $products = array();
-if ($mcatF === 0) {
+if ($mcatF === 0 && !$forceExplorer) {
     $query = "SELECT * FROM products WHERE status = 1";
     $params = array();
 

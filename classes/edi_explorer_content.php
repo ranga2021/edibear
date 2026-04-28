@@ -9,6 +9,64 @@ class EdiExplorerContent
     private static $colCache = array();
 
     /**
+     * Honey Market product categories (shop taxonomy).
+     *
+     * @return array<int, array{id:int, name:string}>
+     */
+    public static function loadProductCategoryOptions(PDO $conn)
+    {
+        $rows = array();
+        try {
+            $s = $conn->query("SELECT `id`, `name` FROM `product_categories` WHERE COALESCE(`status`, 1) = 1 ORDER BY `name` ASC");
+            if ($s) {
+                $rows = $s->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } catch (Throwable $e) {
+            $rows = array();
+        }
+        $out = array();
+        foreach ($rows as $r) {
+            $name = trim((string) ($r['name'] ?? ''));
+            if (!self::isValidTaxonomyTitle($name)) {
+                continue;
+            }
+            $out[] = array('id' => (int) ($r['id'] ?? 0), 'name' => $name);
+        }
+        return $out;
+    }
+
+    /**
+     * Honey Market product subcategories (shop taxonomy).
+     *
+     * @return array<int, array{id:int, product_category_id:int, title:string}>
+     */
+    public static function loadProductSubcategoryOptions(PDO $conn)
+    {
+        $rows = array();
+        try {
+            $s = $conn->query("SELECT `id`, `product_category_id`, `title` FROM `product_subcategories` WHERE COALESCE(`status`, 1) = 1 ORDER BY `product_category_id` ASC, `title` ASC");
+            if ($s) {
+                $rows = $s->fetchAll(PDO::FETCH_ASSOC);
+            }
+        } catch (Throwable $e) {
+            $rows = array();
+        }
+        $out = array();
+        foreach ($rows as $r) {
+            $title = trim((string) ($r['title'] ?? ''));
+            if (!self::isValidTaxonomyTitle($title)) {
+                continue;
+            }
+            $out[] = array(
+                'id' => (int) ($r['id'] ?? 0),
+                'product_category_id' => (int) ($r['product_category_id'] ?? 0),
+                'title' => $title,
+            );
+        }
+        return $out;
+    }
+
+    /**
      * True if a column exists on a table (used by admin add content forms).
      */
     public static function columnExists(PDO $conn, $table, $col)

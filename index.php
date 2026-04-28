@@ -23,13 +23,15 @@
 
     $explorerLanguages = array();
     $explorerGrades = array();
-    $contentMainCategories = array();
-    $contentSubcategories = array();
+    $exploreProductCategories = array();
+    $exploreProductSubcategories = array();
 
     $explorerLanguages = EdiTaxonomy::loadLanguages($conn);
     $explorerGrades = EdiTaxonomy::loadGrades($conn);
-    $contentMainCategories = EdiExplorerContent::loadContentMainCategoryOptions($conn);
-    $contentSubcategories = EdiExplorerContent::loadContentSubcategoryOptions($conn);
+    // EXPLORE dropdowns should reflect backend shop taxonomy (product categories/subcategories),
+    // while the results page maps these to free-content category ids.
+    $exploreProductCategories = EdiExplorerContent::loadProductCategoryOptions($conn);
+    $exploreProductSubcategories = EdiExplorerContent::loadProductSubcategoryOptions($conn);
 
     $productQuery = "SELECT * FROM products WHERE status = 1 ORDER BY id DESC LIMIT 4";
     $stmt = $conn->prepare($productQuery);
@@ -194,19 +196,19 @@
             </div>
 
             <div class="col-md-3 mb-2">
-                <select class="explorer-select" name="main_cat_id" id="explorer_exp_cat" required>
+                <select class="explorer-select" name="product_category_id" id="explorer_exp_cat" required>
                     <option value="">Category (Required)</option>
-                    <?php foreach ($contentMainCategories as $mc): ?>
-                    <option value="<?php echo (int) $mc['id']; ?>"><?php echo htmlspecialchars((string) $mc['title'], ENT_QUOTES, 'UTF-8'); ?></option>
+                    <?php foreach ($exploreProductCategories as $mc): ?>
+                    <option value="<?php echo (int) $mc['id']; ?>"><?php echo htmlspecialchars((string) $mc['name'], ENT_QUOTES, 'UTF-8'); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="col-md-3 mb-2">
-                    <select class="explorer-select" name="sub_cat_id" id="explorer_exp_sub">
+                    <select class="explorer-select" name="product_subcategory_id" id="explorer_exp_sub">
                      <option value="">Subcategory (Optional)</option>
-                    <?php foreach ($contentSubcategories as $sub): ?>
-                      <option value="<?php echo (int) $sub['id']; ?>" data-content-main-cat-id="<?php echo (int) $sub['main_cat_id']; ?>">
+                    <?php foreach ($exploreProductSubcategories as $sub): ?>
+                      <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>">
                      <?php echo htmlspecialchars((string) $sub['title'], ENT_QUOTES, 'UTF-8'); ?>
                       </option>
                     <?php endforeach; ?>
@@ -696,7 +698,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         var stillOk = false;
         for (var i = 0; i < opts.length; i++) {
             var o = opts[i];
-            var pc = o.getAttribute("data-content-main-cat-id");
+            var pc = o.getAttribute("data-product-category-id");
             var show = !cid || !pc || String(pc) === String(cid);
             o.hidden = !show;
             o.disabled = !show;
