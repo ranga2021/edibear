@@ -550,11 +550,10 @@ if ($forceExplorer && $exploreCategoryName !== "") {
         if (($forceExplorer || $mcatF > 0) && !$noExplorer):
             $freeQ = $explorerListQuery;
         ?>
-        <div class="mt-5">
+        <div class="mt-3">
             <?php if (!empty($explorerPdfs)) : ?>
             <div class="mb-5">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                    <h3 class="h5 text-dark mb-0">Coloring pages</h3>
                     <a class="btn btn-sm btn-outline-secondary" href="pdf.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
                 </div>
                 <div class="row">
