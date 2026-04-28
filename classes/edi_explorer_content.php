@@ -116,4 +116,37 @@ class EdiExplorerContent
         $st->execute($params);
         return $st->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Tag column values for explorer context (same filters as fetchMatching, higher limit for tag cloud).
+     *
+     * @return array<int, array{tag?: string}>
+     */
+    public static function fetchMatchingTagRows(PDO $conn, $table, $langF, $ageF, $mainCatId, $subCatId, $limit = 500)
+    {
+        if ((int) $mainCatId <= 0) {
+            return array();
+        }
+        $sql = "SELECT t.tag FROM `" . str_replace('`', '``', $table) . "` t WHERE t.status = 1";
+        $params = array();
+        $sql .= " AND t.main_cat_id = :mcid";
+        $params[':mcid'] = (int) $mainCatId;
+        if ((int) $subCatId > 0) {
+            $sql .= " AND t.sub_cat_id = :scid";
+            $params[':scid'] = (int) $subCatId;
+        }
+        if ($langF !== '') {
+            $sql .= " AND EXISTS (SELECT 1 FROM `languages` l WHERE l.id = t.language_id AND LOWER(TRIM(l.title)) = LOWER(:langf))";
+            $params[':langf'] = $langF;
+        }
+        if ($ageF !== '') {
+            $sql .= " AND EXISTS (SELECT 1 FROM `grades` g WHERE g.id = t.grade_id AND TRIM(g.title) = :agef)";
+            $params[':agef'] = $ageF;
+        }
+        $lim = max(1, (int) $limit);
+        $sql .= " ORDER BY t.id DESC LIMIT " . $lim;
+        $st = $conn->prepare($sql);
+        $st->execute($params);
+        return $st->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

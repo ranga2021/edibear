@@ -96,3 +96,28 @@
         font-size: 0.9375rem;
     }
 }
+
+/* Explorer (free content) tag row on product_page — comma-separated links */
+.edi-explorer-tag-bar {
+    font-size: 0.95rem;
+    line-height: 1.75;
+}
+.edi-explorer-tag-link {
+    color: #f57c00;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(245, 124, 0, 0.35);
+}
+.edi-explorer-tag-link:hover {
+    color: #e65100;
+    border-bottom-color: rgba(230, 81, 0, 0.55);
+}
+.edi-explorer-tag-sep {
+    color: #6c757d;
+    font-weight: 400;
+}
+.edi-explorer-tag-seemore {
+    margin-left: 0.25rem;
+    font-size: 0.95rem;
+    text-decoration: none !important;
+}

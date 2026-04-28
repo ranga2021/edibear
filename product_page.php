@@ -6,6 +6,7 @@ require_once("./classes/class.header.php");
 require_once("./classes/class.widgets.php");
 require_once("./classes/edi_discount_badge.php");
 require_once("./classes/edi_explorer_content.php");
+require_once("./classes/edi_content_tags.php");
 
 $userHeader = new HEADER("shop");
 $user = new USER();
@@ -121,6 +122,15 @@ if ($mcatF > 0) {
     $explorerPdfs = EdiExplorerContent::fetchMatching($conn, "pdf_details", $langF, $ageF, $mcatF, $scatF, 6);
     $explorerBooks = EdiExplorerContent::fetchMatching($conn, "books_details", $langF, $ageF, $mcatF, $scatF, 6);
     $explorerHomeworks = EdiExplorerContent::fetchMatching($conn, "homework_details", $langF, $ageF, $mcatF, $scatF, 6);
+}
+
+$explorerPdfTags = array();
+$explorerBookTags = array();
+$explorerHomeworkTags = array();
+if ($mcatF > 0) {
+    $explorerPdfTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRows($conn, "pdf_details", $langF, $ageF, $mcatF, $scatF, 500));
+    $explorerBookTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRows($conn, "books_details", $langF, $ageF, $mcatF, $scatF, 500));
+    $explorerHomeworkTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRows($conn, "homework_details", $langF, $ageF, $mcatF, $scatF, 500));
 }
 
 $explorerListQuery = array();
@@ -291,10 +301,13 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
         
 
         <form method="GET" action="" class="treasures-filters-form" id="treasures-filters-form" aria-label="Filter treasures">
-            <?php if ($mcatF > 0): ?><input type="hidden" name="main_cat_id" value="<?php echo (int) $mcatF; ?>"><?php endif; ?>
+            <?php if ($mcatF > 0): ?>
+            <input type="hidden" name="main_cat_id" value="<?php echo (int) $mcatF; ?>">
             <?php if ($scatF > 0): ?><input type="hidden" name="sub_cat_id" value="<?php echo (int) $scatF; ?>"><?php endif; ?>
+            <?php if ($langF !== ""): ?><input type="hidden" name="lang" value="<?php echo htmlspecialchars($langF, ENT_QUOTES, "UTF-8"); ?>"><?php endif; ?>
+            <?php if ($ageF !== ""): ?><input type="hidden" name="age" value="<?php echo htmlspecialchars($ageF, ENT_QUOTES, "UTF-8"); ?>"><?php endif; ?>
+            <?php else: ?>
             <div class="treasures-filters-row">
-                <?php if ($mcatF === 0): ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-category">Category</label>
                     <select id="filter-category" name="category" class="form-control treasures-filter-select" onchange="this.form.submit()">
@@ -306,7 +319,6 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <?php endif; ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-age">Grade</label>
                     <select id="filter-age" name="age" class="form-control treasures-filter-select" onchange="this.form.submit()">
@@ -330,7 +342,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                         <?php endforeach; ?>
                     </select>
                 </div>
-                <?php if ($mcatF === 0 && count($productSubcategoriesAll) > 0): ?>
+                <?php if (count($productSubcategoriesAll) > 0): ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-sub">Subcategory</label>
                     <select id="filter-sub" name="sub" class="form-control treasures-filter-select" onchange="this.form.submit()">
@@ -345,7 +357,6 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                     </select>
                 </div>
                 <?php endif; ?>
-                <?php if ($mcatF === 0): ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-brand">Brands</label>
                     <select id="filter-brand" name="brand" class="form-control treasures-filter-select" onchange="this.form.submit()">
@@ -372,8 +383,8 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                         <option value="available" <?= ($offerF === 'available') ? 'selected' : '' ?>>Available</option>
                     </select>
                 </div>
-                <?php endif; ?>
             </div>
+            <?php endif; ?>
         </form>
 
         <script>
@@ -459,6 +470,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                     <h3 class="h5 text-warning mb-0">Coloring pages</h3>
                     <a class="btn btn-sm btn-outline-secondary" href="pdf.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
                 </div>
+                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerPdfTags, "pdf.php", $freeQ, 12, "pdf"); ?>
                 <div class="row">
                     <?php
                     foreach ($explorerPdfs as $row) {
@@ -475,6 +487,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                     <h3 class="h5 text-warning mb-0">Books &amp; papers</h3>
                     <a class="btn btn-sm btn-outline-secondary" href="books.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
                 </div>
+                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerBookTags, "books.php", $freeQ, 12, "books"); ?>
                 <div class="row">
                     <?php
                     foreach ($explorerBooks as $row) {
@@ -491,6 +504,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                     <h3 class="h5 text-warning mb-0">Homeworks</h3>
                     <a class="btn btn-sm btn-outline-secondary" href="homework.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
                 </div>
+                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerHomeworkTags, "homework.php", $freeQ, 12, "hw"); ?>
                 <div class="row">
                     <?php
                     foreach ($explorerHomeworks as $row) {

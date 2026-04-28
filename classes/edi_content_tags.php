@@ -68,4 +68,47 @@ class EdiContentTags
         }
         return $q;
     }
+
+    /**
+     * Comma-separated tag links (mockup style) for product_page explorer sections.
+     *
+     * @param string[] $tags
+     * @param string   $listPhp e.g. "pdf.php"
+     * @param array<string, string> $preserveQuery language, grade, main_cat_id, sub_cat_id
+     */
+    public static function renderExplorerCommaTagBarHtml(array $tags, $listPhp, array $preserveQuery, $visibleFirst = 12, $uidSuffix = "x")
+    {
+        if (count($tags) === 0) {
+            return "";
+        }
+        $visibleFirst = max(1, (int) $visibleFirst);
+        $moreId = "edi-explorer-tags-more-" . $uidSuffix;
+        $btnId = "edi-explorer-tags-btn-" . $uidSuffix;
+
+        $html = '<div class="edi-explorer-tag-bar mb-3" role="navigation" aria-label="Tags">';
+        $n = count($tags);
+        $show = min($n, $visibleFirst);
+        for ($i = 0; $i < $show; $i++) {
+            if ($i > 0) {
+                $html .= '<span class="edi-explorer-tag-sep">, </span>';
+            }
+            $q = array_merge($preserveQuery, array("tag" => $tags[$i]));
+            $href = $listPhp . "?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
+            $html .= '<a class="edi-explorer-tag-link" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8") . "</a>";
+        }
+        if ($n > $show) {
+            $html .= '<span id="' . htmlspecialchars($moreId, ENT_QUOTES, "UTF-8") . '" class="edi-explorer-tag-more" hidden>';
+            for ($i = $show; $i < $n; $i++) {
+                $html .= '<span class="edi-explorer-tag-sep">, </span>';
+                $q = array_merge($preserveQuery, array("tag" => $tags[$i]));
+                $href = $listPhp . "?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
+                $html .= '<a class="edi-explorer-tag-link" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8") . "</a>";
+            }
+            $html .= "</span>";
+            $html .= ' <button type="button" class="edi-explorer-tag-seemore btn btn-link p-0 align-baseline text-warning font-weight-bold" id="' . htmlspecialchars($btnId, ENT_QUOTES, "UTF-8") . '">See more</button>';
+            $html .= "<script>(function(){var b=document.getElementById(" . json_encode($btnId) . ");var m=document.getElementById(" . json_encode($moreId) . ");if(!b||!m)return;b.addEventListener(\"click\",function(){m.hidden=!m.hidden;b.textContent=m.hidden?\"See more\":\"See less\";});})();</script>";
+        }
+        $html .= "</div>";
+        return $html;
+    }
 }
