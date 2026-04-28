@@ -3,17 +3,17 @@
     require_once("./classes/class.user.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
+    require_once("./classes/edi_content_tags.php");
     
     $userHeader = new HEADER("pdf");
     $user = new USER();
     $widgets = new WIDGETS();
-    $conn = $user->getConnection();
 
   $language   = $_GET['language'] ?? $_GET['lang'] ?? '';
 $grade      = $_GET['grade'] ?? $_GET['age'] ?? '';
-$tag        = $_GET['tag'] ?? '';
 $sub_cat_id = $_GET['sub_cat_id'] ?? '';
 $main_cat_id = $_GET['main_cat_id'] ?? '';
+$searchTag  = isset($_GET['tag']) ? strip_tags((string) $_GET['tag']) : "";
 
     $conditions = ["status" => 1];
 
@@ -31,14 +31,7 @@ $main_cat_id = $_GET['main_cat_id'] ?? '';
         }
     }
 
-   // Tag filter (for COLORING, etc.)
 $tagFilterLike = "1=1";
-
-// ✅ MAIN CATEGORY FILTER (pdf_details.tag column)
-if ($tag !== '') {
-    $cleanTag = strip_tags($tag);
-    $conditions["tag"] = $cleanTag;
-}
 
 // Sub-category filter
 if ($sub_cat_id !== '') {
@@ -48,17 +41,14 @@ if ($main_cat_id !== '') {
     $conditions["main_cat_id"] = (int) $main_cat_id;
 }
 
-$languageTitle = $language != "" ? $language : "All Languages";
-$gradeTitle = $grade != "" ? $grade : "All Grades";
-
 $mainCatTitle = "Category";
 if ($main_cat_id != "") {
     $mainCat = $user->fetchAll(array("title"), array("main_category"), array("id" => $main_cat_id));
     if (!empty($mainCat)) {
         $mainCatTitle = $mainCat[0]["title"];
     }
-} elseif ($tag !== "") {
-    $mainCatTitle = strtoupper(strip_tags($tag)) . " Pages";
+} elseif ($searchTag !== "") {
+    $mainCatTitle = strtoupper($searchTag) . " Pages";
 }
 
 $titleTag = $_GET['title_tag'] ?? '';
@@ -113,19 +103,9 @@ if($sub_cat_id != ""){
         echo "<script>alert('Successfully sent the message.')</script>";
     }
 
-    $searchTag = isset($_GET['tag']) ? strip_tags($_GET['tag']) : "";
-
-if($searchTag != ""){
-    $pagingUrlParm = "&tag=$searchTag";
-
-    
-    $conditions["tag"] = $searchTag;
-
-} else {
     $pagingUrlParm = "";
-}
 
-    if ( isset($_POST['search']) && !empty($_POST['search'])) {
+if ( isset($_POST['search']) && !empty($_POST['search'])) {
         $searchKey = strip_tags($_POST['search']);
         $pagingUrlParm .= "&search=$searchKey";
         $searchKeyLike = "title LIKE '%$searchKey%'";
@@ -149,8 +129,21 @@ if($searchTag != ""){
     if (isset($_GET['sub_cat_id']) && (int) $_GET['sub_cat_id'] > 0) {
         $pagingUrlParm .= "&sub_cat_id=" . (int) $_GET['sub_cat_id'];
     }
+    if ($language !== "") {
+        $pagingUrlParm .= "&language=" . rawurlencode($language);
+    }
+    if ($grade !== "") {
+        $pagingUrlParm .= "&grade=" . rawurlencode($grade);
+    }
+    if ($searchTag !== "") {
+        $pagingUrlParm .= "&tag=" . rawurlencode($searchTag);
+    }
 
-    $listComboOther = $tagFilterLike . " AND " . $searchKeyLike;
+    $searchTagLike = ($searchTag !== "") ? ("tag LIKE '%" . str_replace(array("\\", "'", "%", "_"), array("\\\\", "''", "\\%", "\\_"), $searchTag) . "%'") : "1=1";
+    $listComboOther = "(" . $tagFilterLike . ") AND (" . $searchKeyLike . ") AND (" . $searchTagLike . ")";
+    $listComboForTagCloud = "(" . $tagFilterLike . ") AND (" . $searchKeyLike . ")";
+
+    $pdfPreserveParams = EdiContentTags::preserveListParams($language, $grade, $main_cat_id, $sub_cat_id);
 
     if ($main_cat_id != "" && $mainCatTitle !== "" && $mainCatTitle !== "Category") {
         $pageHeroTitleForPdf = strtoupper($mainCatTitle);
@@ -233,11 +226,26 @@ if($searchTag != ""){
             
             <div class="col-lg-8 ">
                 <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                    <li class="breadcrumb-item"><?php echo htmlspecialchars($languageTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li class="breadcrumb-item"><?php echo htmlspecialchars($gradeTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li class="breadcrumb-item active" aria-current="page">Coloring pages</li>
+                    <li class="breadcrumb-item"><a href="./pdf.php"><?php echo htmlspecialchars("Coloring pages", ENT_QUOTES, 'UTF-8'); ?></a></li>
+                    <?php if ($main_cat_id != "" && ($sub_cat_id != "" || $searchTag != "" || ((string) $titleTag !== ""))): ?>
+                    <li class="breadcrumb-item"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
+                    <?php if ($sub_cat_id != "" && ($searchTag != "" || ((string) $titleTag !== ""))): ?>
+                    <li class="breadcrumb-item"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
+                    <?php if (!empty($searchTag)): ?>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($searchTag, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ((string) $titleTag !== ""): ?>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars((string) $titleTag, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($sub_cat_id != ""): ?>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($main_cat_id != ""): ?>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php else: ?>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars("All", ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
                 </ol>
             </nav>
                 
@@ -269,10 +277,10 @@ if($searchTag != ""){
         </div>
 
 
-            <!-- Sub-tags (refine, same as results) -->
+            <!-- Tags from admin (pdf_details.tag, slash-separated) -->
             <div class="row mb-2 mt-1">
                 <div class="col-12 col-lg-8">
-                <p class="text-dark mb-1" style="font-size:0.8rem; font-weight:600;">Narrow by topic <span class="text-muted" style="font-weight:400;">(tap a word to filter results)</span></p>
+                <p class="text-dark mb-1" style="font-size:0.8rem; font-weight:600;">Tags <span class="text-muted" style="font-weight:400;">(set in admin when adding a coloring page)</span></p>
                 </div>
             </div>
 
@@ -281,36 +289,25 @@ if($searchTag != ""){
 
 
             <?php
-            $tagsArr = array();
-
-            $pdfRows = $user->fetchAll(
-                array("title"),
+            $pdfTagRows = $user->fetchAll(
+                array("tag"),
                 array("pdf_details"),
                 $conditions,
                 "id DESC LIMIT 500",
-                $listComboOther
+                $listComboForTagCloud
             );
+            $tagsArr = EdiContentTags::distinctFromRows($pdfTagRows);
 
-            foreach ($pdfRows as $row) {
-                $words = preg_split('/[\s,&-]+/', $row["title"]);
-                foreach ($words as $word) {
-                    $clean = ucfirst(strtolower(trim($word, " -–—:.")));
-                    if (strlen($clean) > 2) {
-                        if (!in_array($clean, $tagsArr, true)) {
-                            $tagsArr[] = $clean;
-                        }
-                    }
-                }
-            }
-            sort($tagsArr, SORT_NATURAL | SORT_FLAG_CASE);
             $totalTags = count($tagsArr);
             $visibleTags = min(20, $totalTags);
 
             echo "<div class=\"edi-pdf-tag-chips text-dark\" style=\"font-size:15px; line-height:2.1;\">";
             for ($i = 0; $i < $visibleTags; $i++) {
                 $tagWord = $tagsArr[$i];
-                $qNext = $ediPdfListParams;
-                $qNext["title_tag"] = $tagWord;
+                $qNext = array_merge($pdfPreserveParams, array("tag" => $tagWord));
+                if (isset($searchKey) && $searchKey !== "") {
+                    $qNext["search"] = $searchKey;
+                }
                 $href = "pdf.php?" . http_build_query($qNext, "", "&", PHP_QUERY_RFC3986);
                 $safeWord = htmlspecialchars($tagWord, ENT_QUOTES, "UTF-8");
                 echo "<a href=\"" . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . "\" class=\"edi-pdf-topic-link\" style=\"color:#f57c00; text-decoration:none; font-weight:600; border-bottom:1px solid rgba(245,124,0,.35);\">" . $safeWord . "</a>";
@@ -324,8 +321,10 @@ if($searchTag != ""){
                 echo "<div id=\"hiddenTags\" style=\"display: none; margin-top: 10px;\">";
                 for ($i = $visibleTags; $i < $totalTags; $i++) {
                     $tagWord = $tagsArr[$i];
-                    $qNext = $ediPdfListParams;
-                    $qNext["title_tag"] = $tagWord;
+                    $qNext = array_merge($pdfPreserveParams, array("tag" => $tagWord));
+                    if (isset($searchKey) && $searchKey !== "") {
+                        $qNext["search"] = $searchKey;
+                    }
                     $href = "pdf.php?" . http_build_query($qNext, "", "&", PHP_QUERY_RFC3986);
                     $safeWord = htmlspecialchars($tagWord, ENT_QUOTES, "UTF-8");
                     echo " <a href=\"" . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . "\" class=\"btn btn-sm btn-light border px-2 py-0 mb-1 mr-1 text-dark\">" . $safeWord . "</a>";

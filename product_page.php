@@ -137,7 +137,7 @@ if ($scatF > 0) {
     $explorerListQuery["sub_cat_id"] = (string) $scatF;
 }
 
-// Breadcrumb trail: Home > The Honey Market > … explorer filters (lang, grade, category, subcategory)
+// Breadcrumb trail: Home > explorer filters (no Honey Market segment on this page)
 $shopExtraParams = array();
 if ($brandF !== "") {
     $shopExtraParams["brand"] = $brandF;
@@ -224,9 +224,8 @@ $treasuresBreadcrumbs = array(
     array("label" => "Home", "href" => "./", "current" => false),
 );
 if (count($explorerSegments) === 0) {
-    $treasuresBreadcrumbs[] = array("label" => "The Honey Market", "href" => null, "current" => true);
+    $treasuresBreadcrumbs[] = array("label" => "Treasures", "href" => null, "current" => true);
 } else {
-    $treasuresBreadcrumbs[] = array("label" => "The Honey Market", "href" => "product_page.php", "current" => false);
     $built = array();
     $n = count($explorerSegments);
     for ($i = 0; $i < $n; $i++) {

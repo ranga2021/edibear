@@ -3,6 +3,7 @@
     require_once("./classes/class.user.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
+    require_once("./classes/edi_content_tags.php");
     
     $userHeader = new HEADER("homework");
     $user = new USER();
@@ -42,11 +43,6 @@ if($main_cat_id != ""){
 if($sub_cat_id != ""){
     $conditions["sub_cat_id"] = $sub_cat_id;
 }
-
-// ✅ FETCH TITLES FOR BREADCRUMB
-
-$languageTitle = $language != "" ? $language : "All Languages";
-$gradeTitle = $grade != "" ? $grade : "All Grades";
 
 // main category title
 $mainCatTitle = "Category";
@@ -136,8 +132,17 @@ if($sub_cat_id != ""){
     if (isset($_GET['sub_cat_id']) && (int) $_GET['sub_cat_id'] > 0) {
         $pagingUrlParm .= "&sub_cat_id=" . (int) $_GET['sub_cat_id'];
     }
+    if ($language !== "") {
+        $pagingUrlParm .= "&language=" . rawurlencode($language);
+    }
+    if ($grade !== "") {
+        $pagingUrlParm .= "&grade=" . rawurlencode($grade);
+    }
 
     $listComboOtherH = $searchTagLike . " AND " . $searchKeyLike;
+    $listComboForTagCloud = $searchKeyLike;
+
+    $homeworkPreserveParams = EdiContentTags::preserveListParams($language, $grade, $main_cat_id, $sub_cat_id);
 
     $totalhomeworkPages = ceil( count($user->fetchAll(array("id"), array("homework_details"), $conditions, "", $listComboOtherH)) / 16);
     if ( isset($_GET['page']) ) {
@@ -177,11 +182,24 @@ if($sub_cat_id != ""){
             
             <div class="col-lg-8 ">
                <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                    <li class="breadcrumb-item"><?php echo htmlspecialchars($languageTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li class="breadcrumb-item"><?php echo htmlspecialchars($gradeTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li class="breadcrumb-item"><a href="./homework.php"><?php echo htmlspecialchars("Study packs", ENT_QUOTES, 'UTF-8'); ?></a></li>
+                    <?php if ($main_cat_id != "" && ($sub_cat_id != "" || $searchTag != "")): ?>
+                    <li class="breadcrumb-item"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
+                    <?php if ($sub_cat_id != "" && $searchTag != ""): ?>
+                    <li class="breadcrumb-item"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
+                    <?php if (!empty($searchTag)): ?>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($searchTag, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($sub_cat_id != ""): ?>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($main_cat_id != ""): ?>
                     <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php else: ?>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars("All", ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php endif; ?>
                 </ol>
             </nav>
 
@@ -217,14 +235,8 @@ if($sub_cat_id != ""){
             <a id="page-top"></a>
 
             <?php
-            $tagsArr = array();
-            foreach ($user->fetchAll(array("tag"), array("homework_details"), array("status" => 1)) as $row) {
-                foreach (explode("/", $row["tag"]) as $value) {
-                    if (array_search($value, $tagsArr) === false) {
-                        array_push($tagsArr, $value);
-                    }
-                }
-            }
+            $tagRowsForCloudH = $user->fetchAll(array("tag"), array("homework_details"), $conditions, "", $listComboForTagCloud);
+            $tagsArr = EdiContentTags::distinctFromRows($tagRowsForCloudH);
 
             $totalTags = count($tagsArr);
             $visibleTags = min(14, $totalTags);
@@ -232,7 +244,11 @@ if($sub_cat_id != ""){
             echo "<div class='d-flex flex-wrap m-n1'>";
             for ($i = 0; $i < $visibleTags; $i++) {
                 $tag = $tagsArr[$i];
-                echo "<a  style='color:#000;  border-color:#a7a7a7; border-style:solid; border-width: 1px;' class='px-3 py-1 mr-1 mb-2' href='./homework?tag=$tag' class='btn btn-light m-1'>$tag</a>";
+                $tagQ = array_merge($homeworkPreserveParams, array("tag" => $tag));
+                $tagHref = "./homework.php?" . http_build_query($tagQ, "", "&", PHP_QUERY_RFC3986);
+                $safeTag = htmlspecialchars($tag, ENT_QUOTES, "UTF-8");
+                $safeHref = htmlspecialchars($tagHref, ENT_QUOTES, "UTF-8");
+                echo "<a style='color:#000; border-color:#a7a7a7; border-style:solid; border-width: 1px;' class='px-3 py-1 mr-1 mb-2' href='" . $safeHref . "'>" . $safeTag . "</a>";
             }
            
 
@@ -243,7 +259,11 @@ if($sub_cat_id != ""){
                 
                 for ($i = $visibleTags; $i < $totalTags; $i++) {
                     $tag = $tagsArr[$i];
-                    echo "<a  style='color:#000; border-color:#a7a7a7; border-style:solid; border-width: 1px;' class='px-3 py-1 mr-1 mb-2 mt-1' href='./homework?tag=$tag' class='btn btn-light m-1'>$tag</a>";
+                    $tagQ = array_merge($homeworkPreserveParams, array("tag" => $tag));
+                    $tagHref = "./homework.php?" . http_build_query($tagQ, "", "&", PHP_QUERY_RFC3986);
+                    $safeTag = htmlspecialchars($tag, ENT_QUOTES, "UTF-8");
+                    $safeHref = htmlspecialchars($tagHref, ENT_QUOTES, "UTF-8");
+                    echo "<a style='color:#000; border-color:#a7a7a7; border-style:solid; border-width: 1px;' class='px-3 py-1 mr-1 mb-2 mt-1' href='" . $safeHref . "'>" . $safeTag . "</a>";
                 }
                 echo "</div>";
                 echo "</div>";

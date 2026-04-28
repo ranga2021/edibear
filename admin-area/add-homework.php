@@ -266,7 +266,7 @@ if (isset($_POST['confirmDeletehomeworkSubmit'])) {
               <form accept="" method="post" enctype="multipart/form-data">
                 <div class="row">
                   <?php
-                    echo $widgets->inputGroup("homework Tag", "inputhomeworkTag", "col-md-6", $currenthomeworkTag);
+                    echo $widgets->inputGroup("Tags (slash-separated, e.g. Math / Practice)", "inputhomeworkTag", "col-md-6", $currenthomeworkTag);
                     echo $widgets->inputGroup("homework Title", "inputhomeworkTitle", "col-md-6", $currenthomeworkTitle);
                   ?>
                 </div>

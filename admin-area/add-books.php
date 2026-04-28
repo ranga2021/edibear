@@ -259,7 +259,7 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
 
 <div class="row">
 <?php
-echo $widgets->inputGroup("books Tag", "inputbooksTag", "col-md-6", $currentbooksTag);
+echo $widgets->inputGroup("Tags (slash-separated, e.g. Fun / Grade 1)", "inputbooksTag", "col-md-6", $currentbooksTag);
 echo $widgets->inputGroup("books Title", "inputbooksTitle", "col-md-6", $currentbooksTitle);
 ?>
 </div>

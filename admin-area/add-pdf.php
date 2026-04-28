@@ -259,7 +259,7 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
 
 <div class="row">
 <?php
-echo $widgets->inputGroup("PDF Tag", "inputpdfTag", "col-md-6", $currentpdfTag);
+echo $widgets->inputGroup("Tags (slash-separated, e.g. Animals / Easy)", "inputpdfTag", "col-md-6", $currentpdfTag);
 echo $widgets->inputGroup("PDF Title", "inputpdfTitle", "col-md-6", $currentpdfTitle);
 ?>
 </div>
