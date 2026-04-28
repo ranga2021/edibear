@@ -183,6 +183,32 @@ if ($offerF !== "") {
     $shopExtraParams["offers"] = $offerF;
 }
 
+$exploreCategoryName = "";
+if ($forceExplorer && $exploreProductCatId > 0) {
+    foreach ($categories as $cRow) {
+        if ((int) $cRow["id"] === (int) $exploreProductCatId) {
+            $exploreCategoryName = (string) $cRow["name"];
+            break;
+        }
+    }
+    if ($exploreCategoryName === "") {
+        $exploreCategoryName = "Category";
+    }
+}
+
+$exploreSubcategoryTitle = "";
+if ($forceExplorer && $exploreProductSubId > 0) {
+    foreach ($productSubcategoriesAll as $sRow) {
+        if ((int) $sRow["id"] === (int) $exploreProductSubId) {
+            $exploreSubcategoryTitle = (string) $sRow["title"];
+            break;
+        }
+    }
+    if ($exploreSubcategoryTitle === "") {
+        $exploreSubcategoryTitle = "Subcategory";
+    }
+}
+
 $categoryNameForCrumb = "";
 if ($catF !== "") {
     foreach ($categories as $cRow) {
@@ -237,21 +263,29 @@ if ($scatF > 0) {
 }
 
 $explorerSegments = array();
-if ($langF !== "") {
-    $explorerSegments[] = array("key" => "lang", "value" => $langF, "label" => $langF);
-}
-if ($ageF !== "") {
-    $explorerSegments[] = array("key" => "age", "value" => $ageF, "label" => $ageF);
-}
-if ($mcatF > 0) {
-    $explorerSegments[] = array("key" => "main_cat_id", "value" => (string) $mcatF, "label" => $contentMainTitle);
-} elseif ($catF !== "") {
-    $explorerSegments[] = array("key" => "category", "value" => $catF, "label" => $categoryNameForCrumb);
-}
-if ($scatF > 0) {
-    $explorerSegments[] = array("key" => "sub_cat_id", "value" => (string) $scatF, "label" => $contentSubTitle);
-} elseif ($subF > 0) {
-    $explorerSegments[] = array("key" => "sub", "value" => (string) $subF, "label" => $subTitleForCrumb);
+if ($forceExplorer) {
+    // For homepage EXPLORE: breadcrumb should reflect the chosen category/subcategory.
+    $explorerSegments[] = array("key" => "product_category_id", "value" => (string) $exploreProductCatId, "label" => $exploreCategoryName);
+    if ($exploreProductSubId > 0) {
+        $explorerSegments[] = array("key" => "product_subcategory_id", "value" => (string) $exploreProductSubId, "label" => $exploreSubcategoryTitle);
+    }
+} else {
+    if ($langF !== "") {
+        $explorerSegments[] = array("key" => "lang", "value" => $langF, "label" => $langF);
+    }
+    if ($ageF !== "") {
+        $explorerSegments[] = array("key" => "age", "value" => $ageF, "label" => $ageF);
+    }
+    if ($mcatF > 0) {
+        $explorerSegments[] = array("key" => "main_cat_id", "value" => (string) $mcatF, "label" => $contentMainTitle);
+    } elseif ($catF !== "") {
+        $explorerSegments[] = array("key" => "category", "value" => $catF, "label" => $categoryNameForCrumb);
+    }
+    if ($scatF > 0) {
+        $explorerSegments[] = array("key" => "sub_cat_id", "value" => (string) $scatF, "label" => $contentSubTitle);
+    } elseif ($subF > 0) {
+        $explorerSegments[] = array("key" => "sub", "value" => (string) $subF, "label" => $subTitleForCrumb);
+    }
 }
 
 $treasuresBreadcrumbs = array(
@@ -276,7 +310,9 @@ if (count($explorerSegments) === 0) {
     }
 }
 $treasuresPageHeading = "TREASURES";
-if ($mcatF > 0 && $contentMainTitle !== "") {
+if ($forceExplorer && $exploreCategoryName !== "") {
+    $treasuresPageHeading = strtoupper($exploreCategoryName);
+} elseif ($mcatF > 0 && $contentMainTitle !== "") {
     $treasuresPageHeading = strtoupper($contentMainTitle);
 }
 ?>
@@ -324,6 +360,7 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
             </div>
         
 
+        <?php if (!$forceExplorer): ?>
         <form method="GET" action="" class="treasures-filters-form" id="treasures-filters-form" aria-label="Filter treasures">
             <?php if ($mcatF > 0): ?>
             <input type="hidden" name="main_cat_id" value="<?php echo (int) $mcatF; ?>">
@@ -482,9 +519,16 @@ if ($mcatF > 0 && $contentMainTitle !== "") {
                 </div>
             <?php endforeach; endif; ?>
         </div>
+        <?php endif; ?>
 
         <?php
-        if ($mcatF > 0 && (!empty($explorerPdfs) || !empty($explorerBooks) || !empty($explorerHomeworks))):
+        $noExplorer = empty($explorerPdfs) && empty($explorerBooks) && empty($explorerHomeworks);
+        if ($forceExplorer && $noExplorer):
+        ?>
+            <div class="col-12 text-center py-5"><h4>No resources found for these filters.</h4></div>
+        <?php
+        endif;
+        if (($forceExplorer || $mcatF > 0) && !$noExplorer):
             $freeQ = $explorerListQuery;
         ?>
         <div class="mt-5">
