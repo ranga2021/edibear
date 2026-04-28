@@ -17,7 +17,11 @@ class EdiExplorerContent
     {
         $rows = array();
         try {
-            $s = $conn->query("SELECT `id`, `name` FROM `product_categories` WHERE COALESCE(`status`, 1) = 1 ORDER BY `name` ASC");
+            $where = "";
+            if (self::columnExists($conn, "product_categories", "status")) {
+                $where = " WHERE `status` = 1";
+            }
+            $s = $conn->query("SELECT `id`, `name` FROM `product_categories`" . $where . " ORDER BY `name` ASC");
             if ($s) {
                 $rows = $s->fetchAll(PDO::FETCH_ASSOC);
             }
@@ -44,7 +48,11 @@ class EdiExplorerContent
     {
         $rows = array();
         try {
-            $s = $conn->query("SELECT `id`, `product_category_id`, `title` FROM `product_subcategories` WHERE COALESCE(`status`, 1) = 1 ORDER BY `product_category_id` ASC, `title` ASC");
+            $where = "";
+            if (self::columnExists($conn, "product_subcategories", "status")) {
+                $where = " WHERE `status` = 1";
+            }
+            $s = $conn->query("SELECT `id`, `product_category_id`, `title` FROM `product_subcategories`" . $where . " ORDER BY `product_category_id` ASC, `title` ASC");
             if ($s) {
                 $rows = $s->fetchAll(PDO::FETCH_ASSOC);
             }
