@@ -264,7 +264,13 @@ if ($scatF > 0) {
 
 $explorerSegments = array();
 if ($forceExplorer) {
-    // For homepage EXPLORE: breadcrumb should reflect the chosen category/subcategory.
+    // For homepage EXPLORE: breadcrumb should follow selected search criteria.
+    if ($langF !== "") {
+        $explorerSegments[] = array("key" => "lang", "value" => $langF, "label" => $langF);
+    }
+    if ($ageF !== "") {
+        $explorerSegments[] = array("key" => "age", "value" => $ageF, "label" => $ageF);
+    }
     $explorerSegments[] = array("key" => "product_category_id", "value" => (string) $exploreProductCatId, "label" => $exploreCategoryName);
     if ($exploreProductSubId > 0) {
         $explorerSegments[] = array("key" => "product_subcategory_id", "value" => (string) $exploreProductSubId, "label" => $exploreSubcategoryTitle);
@@ -355,6 +361,19 @@ if ($forceExplorer && $exploreCategoryName !== "") {
             <h1><?php echo htmlspecialchars($treasuresPageHeading, ENT_QUOTES, "UTF-8"); ?></h1>
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
+        <?php if ($forceExplorer): ?>
+        <div class="mt-2 mb-3">
+            <?php if (!empty($explorerPdfTags)): ?>
+                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerPdfTags, "pdf.php", $explorerListQuery, 10, "pdf"); ?>
+            <?php endif; ?>
+            <?php if (!empty($explorerBookTags)): ?>
+                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerBookTags, "books.php", $explorerListQuery, 10, "books"); ?>
+            <?php endif; ?>
+            <?php if (!empty($explorerHomeworkTags)): ?>
+                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerHomeworkTags, "homework.php", $explorerListQuery, 10, "hw"); ?>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
                     
 
             </div>
@@ -535,10 +554,9 @@ if ($forceExplorer && $exploreCategoryName !== "") {
             <?php if (!empty($explorerPdfs)) : ?>
             <div class="mb-5">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                    <h3 class="h5 text-warning mb-0">Coloring pages</h3>
+                    <h3 class="h5 text-dark mb-0">Coloring pages</h3>
                     <a class="btn btn-sm btn-outline-secondary" href="pdf.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
                 </div>
-                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerPdfTags, "pdf.php", $freeQ, 12, "pdf"); ?>
                 <div class="row">
                     <?php
                     foreach ($explorerPdfs as $row) {
@@ -552,10 +570,9 @@ if ($forceExplorer && $exploreCategoryName !== "") {
             <?php if (!empty($explorerBooks)) : ?>
             <div class="mb-5">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                    <h3 class="h5 text-warning mb-0">Books &amp; papers</h3>
+                    <h3 class="h5 text-dark mb-0">Books &amp; papers</h3>
                     <a class="btn btn-sm btn-outline-secondary" href="books.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
                 </div>
-                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerBookTags, "books.php", $freeQ, 12, "books"); ?>
                 <div class="row">
                     <?php
                     foreach ($explorerBooks as $row) {
@@ -569,10 +586,9 @@ if ($forceExplorer && $exploreCategoryName !== "") {
             <?php if (!empty($explorerHomeworks)) : ?>
             <div class="mb-2">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                    <h3 class="h5 text-warning mb-0">Homeworks</h3>
+                    <h3 class="h5 text-dark mb-0">Homeworks</h3>
                     <a class="btn btn-sm btn-outline-secondary" href="homework.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
                 </div>
-                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerHomeworkTags, "homework.php", $freeQ, 12, "hw"); ?>
                 <div class="row">
                     <?php
                     foreach ($explorerHomeworks as $row) {
