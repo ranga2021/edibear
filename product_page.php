@@ -129,7 +129,11 @@ if ($mcatF === 0 && !$forceExplorer) {
 $explorerPdfs = array();
 $explorerBooks = array();
 $explorerHomeworks = array();
-if ($mcatF > 0) {
+if ($forceExplorer) {
+    $explorerPdfs = EdiExplorerContent::fetchMatchingByProductTaxonomy($conn, "pdf_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, 6);
+    $explorerBooks = EdiExplorerContent::fetchMatchingByProductTaxonomy($conn, "books_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, 6);
+    $explorerHomeworks = EdiExplorerContent::fetchMatchingByProductTaxonomy($conn, "homework_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, 6);
+} elseif ($mcatF > 0) {
     $explorerPdfs = EdiExplorerContent::fetchMatching($conn, "pdf_details", $langF, $ageF, $mcatF, $scatF, 6);
     $explorerBooks = EdiExplorerContent::fetchMatching($conn, "books_details", $langF, $ageF, $mcatF, $scatF, 6);
     $explorerHomeworks = EdiExplorerContent::fetchMatching($conn, "homework_details", $langF, $ageF, $mcatF, $scatF, 6);
@@ -138,7 +142,11 @@ if ($mcatF > 0) {
 $explorerPdfTags = array();
 $explorerBookTags = array();
 $explorerHomeworkTags = array();
-if ($mcatF > 0) {
+if ($forceExplorer) {
+    $explorerPdfTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRowsByProductTaxonomy($conn, "pdf_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, 500));
+    $explorerBookTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRowsByProductTaxonomy($conn, "books_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, 500));
+    $explorerHomeworkTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRowsByProductTaxonomy($conn, "homework_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, 500));
+} elseif ($mcatF > 0) {
     $explorerPdfTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRows($conn, "pdf_details", $langF, $ageF, $mcatF, $scatF, 500));
     $explorerBookTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRows($conn, "books_details", $langF, $ageF, $mcatF, $scatF, 500));
     $explorerHomeworkTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRows($conn, "homework_details", $langF, $ageF, $mcatF, $scatF, 500));
@@ -151,7 +159,12 @@ if ($langF !== "") {
 if ($ageF !== "") {
     $explorerListQuery["grade"] = $ageF;
 }
-if ($mcatF > 0) {
+if ($forceExplorer && $exploreProductCatId > 0) {
+    $explorerListQuery["product_category_id"] = (string) $exploreProductCatId;
+    if ($exploreProductSubId > 0) {
+        $explorerListQuery["product_subcategory_id"] = (string) $exploreProductSubId;
+    }
+} elseif ($mcatF > 0) {
     $explorerListQuery["main_cat_id"] = (string) $mcatF;
 }
 if ($scatF > 0) {

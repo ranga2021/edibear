@@ -4,15 +4,19 @@
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
     require_once("./classes/edi_content_tags.php");
+    require_once("./classes/edi_explorer_content.php");
     
     $userHeader = new HEADER("pdf");
     $user = new USER();
     $widgets = new WIDGETS();
+    $conn = $user->getConnection();
 
   $language   = $_GET['language'] ?? $_GET['lang'] ?? '';
 $grade      = $_GET['grade'] ?? $_GET['age'] ?? '';
 $sub_cat_id = $_GET['sub_cat_id'] ?? '';
 $main_cat_id = $_GET['main_cat_id'] ?? '';
+$product_category_id = $_GET['product_category_id'] ?? '';
+$product_subcategory_id = $_GET['product_subcategory_id'] ?? '';
 $searchTag  = isset($_GET['tag']) ? strip_tags((string) $_GET['tag']) : "";
 
     $conditions = ["status" => 1];
@@ -40,12 +44,24 @@ if ($sub_cat_id !== '') {
 if ($main_cat_id !== '') {
     $conditions["main_cat_id"] = (int) $main_cat_id;
 }
+// If using Honey Market taxonomy params (from homepage EXPLORE), filter by those columns when present.
+if ($main_cat_id === '' && $product_category_id !== '' && EdiExplorerContent::columnExists($conn, "pdf_details", "product_category_id")) {
+    $conditions["product_category_id"] = (int) $product_category_id;
+    if ($product_subcategory_id !== '' && EdiExplorerContent::columnExists($conn, "pdf_details", "product_subcategory_id")) {
+        $conditions["product_subcategory_id"] = (int) $product_subcategory_id;
+    }
+}
 
 $mainCatTitle = "Category";
 if ($main_cat_id != "") {
     $mainCat = $user->fetchAll(array("title"), array("main_category"), array("id" => $main_cat_id));
     if (!empty($mainCat)) {
         $mainCatTitle = $mainCat[0]["title"];
+    }
+} elseif ($product_category_id !== "") {
+    $pc = $user->fetchAll(array("name"), array("product_categories"), array("id" => (int) $product_category_id));
+    if (!empty($pc) && isset($pc[0]["name"])) {
+        $mainCatTitle = (string) $pc[0]["name"];
     }
 } elseif ($searchTag !== "") {
     $mainCatTitle = strtoupper($searchTag) . " Pages";
@@ -64,6 +80,11 @@ if($sub_cat_id != ""){
     $subCat = $user->fetchAll(["title"], ["sub_category"], ["id"=>$sub_cat_id]);
     if(!empty($subCat)){
         $subCatTitle = $subCat[0]['title'];
+    }
+} elseif ($product_subcategory_id !== "") {
+    $ps = $user->fetchAll(array("title"), array("product_subcategories"), array("id" => (int) $product_subcategory_id));
+    if (!empty($ps) && isset($ps[0]["title"])) {
+        $subCatTitle = (string) $ps[0]["title"];
     }
 }
 

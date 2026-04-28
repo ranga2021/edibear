@@ -246,6 +246,81 @@ class EdiExplorerContent
     }
 
     /**
+     * Fetch rows by Honey Market product category/subcategory (works even if main_cat_id is not yet backfilled).
+     * Requires the content table to have product_category_id and (optionally) product_subcategory_id columns.
+     */
+    public static function fetchMatchingByProductTaxonomy(PDO $conn, $table, $langF, $ageF, $productCatId, $productSubId, $limit = 8)
+    {
+        $pcid = (int) $productCatId;
+        $psid = (int) $productSubId;
+        if ($pcid <= 0) {
+            return array();
+        }
+        if (!self::columnExists($conn, $table, "product_category_id")) {
+            return array();
+        }
+        $hasSub = self::columnExists($conn, $table, "product_subcategory_id");
+
+        $sql = "SELECT t.* FROM `" . str_replace('`', '``', $table) . "` t WHERE t.status = 1 AND t.product_category_id = :pcid";
+        $params = array(':pcid' => $pcid);
+        if ($psid > 0 && $hasSub) {
+            $sql .= " AND t.product_subcategory_id = :psid";
+            $params[':psid'] = $psid;
+        }
+        if ($langF !== '') {
+            $sql .= " AND EXISTS (SELECT 1 FROM `languages` l WHERE l.id = t.language_id AND LOWER(TRIM(l.title)) = LOWER(:langf))";
+            $params[':langf'] = $langF;
+        }
+        if ($ageF !== '') {
+            $sql .= " AND EXISTS (SELECT 1 FROM `grades` g WHERE g.id = t.grade_id AND TRIM(g.title) = :agef)";
+            $params[':agef'] = $ageF;
+        }
+        $lim = max(1, (int) $limit);
+        $sql .= " ORDER BY t.id DESC LIMIT " . $lim;
+        $st = $conn->prepare($sql);
+        $st->execute($params);
+        return $st->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Tag rows by Honey Market product category/subcategory.
+     *
+     * @return array<int, array{tag?: string}>
+     */
+    public static function fetchMatchingTagRowsByProductTaxonomy(PDO $conn, $table, $langF, $ageF, $productCatId, $productSubId, $limit = 500)
+    {
+        $pcid = (int) $productCatId;
+        $psid = (int) $productSubId;
+        if ($pcid <= 0) {
+            return array();
+        }
+        if (!self::columnExists($conn, $table, "product_category_id")) {
+            return array();
+        }
+        $hasSub = self::columnExists($conn, $table, "product_subcategory_id");
+
+        $sql = "SELECT t.tag FROM `" . str_replace('`', '``', $table) . "` t WHERE t.status = 1 AND t.product_category_id = :pcid";
+        $params = array(':pcid' => $pcid);
+        if ($psid > 0 && $hasSub) {
+            $sql .= " AND t.product_subcategory_id = :psid";
+            $params[':psid'] = $psid;
+        }
+        if ($langF !== '') {
+            $sql .= " AND EXISTS (SELECT 1 FROM `languages` l WHERE l.id = t.language_id AND LOWER(TRIM(l.title)) = LOWER(:langf))";
+            $params[':langf'] = $langF;
+        }
+        if ($ageF !== '') {
+            $sql .= " AND EXISTS (SELECT 1 FROM `grades` g WHERE g.id = t.grade_id AND TRIM(g.title) = :agef)";
+            $params[':agef'] = $ageF;
+        }
+        $lim = max(1, (int) $limit);
+        $sql .= " ORDER BY t.id DESC LIMIT " . $lim;
+        $st = $conn->prepare($sql);
+        $st->execute($params);
+        return $st->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Map shop product category / subcategory picks to free-content main_category / sub_category IDs.
      * The site EXPLORE and list pages use main_cat_id & sub_cat_id, not product_category_id.
      * Matching: same title/name (case-insensitive), then common synonyms (e.g. "Coloring Pages" → Leisure Activities).

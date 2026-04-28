@@ -4,16 +4,20 @@
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
     require_once("./classes/edi_content_tags.php");
+    require_once("./classes/edi_explorer_content.php");
     
     $userHeader = new HEADER("books");
     $user = new USER();
     $widgets = new WIDGETS();
+    $conn = $user->getConnection();
     
       // ✅ NEW FILTER VARIABLES
 $language = isset($_GET['language']) ? $_GET['language'] : (isset($_GET['lang']) ? $_GET['lang'] : '');
 $grade = isset($_GET['grade']) ? $_GET['grade'] : (isset($_GET['age']) ? $_GET['age'] : '');
 $main_cat_id = isset($_GET['main_cat_id']) ? $_GET['main_cat_id'] : '';
 $sub_cat_id = isset($_GET['sub_cat_id']) ? $_GET['sub_cat_id'] : '';
+$product_category_id = isset($_GET['product_category_id']) ? $_GET['product_category_id'] : '';
+$product_subcategory_id = isset($_GET['product_subcategory_id']) ? $_GET['product_subcategory_id'] : '';
 
 // ✅ BUILD CONDITIONS
 $conditions = ["status" => 1];
@@ -44,6 +48,13 @@ if($sub_cat_id != ""){
     $conditions["sub_cat_id"] = $sub_cat_id;
 }
 
+if ($main_cat_id === '' && $product_category_id !== '' && EdiExplorerContent::columnExists($conn, "books_details", "product_category_id")) {
+    $conditions["product_category_id"] = (int) $product_category_id;
+    if ($product_subcategory_id !== '' && EdiExplorerContent::columnExists($conn, "books_details", "product_subcategory_id")) {
+        $conditions["product_subcategory_id"] = (int) $product_subcategory_id;
+    }
+}
+
 // Breadcrumb + tag links: section and categories only (language/grade stay in URL for deep links, not shown as crumbs).
 
 // main category title
@@ -53,6 +64,11 @@ if($main_cat_id != ""){
     if(!empty($mainCat)){
         $mainCatTitle = $mainCat[0]['title'];
     }
+} elseif ($product_category_id !== "") {
+    $pc = $user->fetchAll(array("name"), array("product_categories"), array("id" => (int) $product_category_id));
+    if (!empty($pc) && isset($pc[0]["name"])) {
+        $mainCatTitle = (string) $pc[0]["name"];
+    }
 }
 
 // sub category title
@@ -61,6 +77,11 @@ if($sub_cat_id != ""){
     $subCat = $user->fetchAll(["title"], ["sub_category"], ["id"=>$sub_cat_id]);
     if(!empty($subCat)){
         $subCatTitle = $subCat[0]['title'];
+    }
+} elseif ($product_subcategory_id !== "") {
+    $ps = $user->fetchAll(array("title"), array("product_subcategories"), array("id" => (int) $product_subcategory_id));
+    if (!empty($ps) && isset($ps[0]["title"])) {
+        $subCatTitle = (string) $ps[0]["title"];
     }
 }
 
