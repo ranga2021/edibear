@@ -29,7 +29,8 @@ class EdiExplorerContent
     }
 
     /**
-     * Distinct main categories (id, title) used by published pdf / books / homework.
+     * Distinct main categories (main_category table) tied to published free content only.
+     * Does not use product_categories / Honey Market shop taxonomy.
      */
     public static function loadContentMainCategoryOptions(PDO $conn)
     {
@@ -37,14 +38,11 @@ class EdiExplorerContent
         $sql = "
             SELECT DISTINCT m.id, m.title
             FROM `main_category` m
-            INNER JOIN (
-                SELECT `main_cat_id` AS `cid` FROM `pdf_details` WHERE `status` = 1 AND `main_cat_id` IS NOT NULL
-                UNION
-                SELECT `main_cat_id` FROM `books_details` WHERE `status` = 1 AND `main_cat_id` IS NOT NULL
-                UNION
-                SELECT `main_cat_id` FROM `homework_details` WHERE `status` = 1 AND `main_cat_id` IS NOT NULL
-            ) u ON m.id = u.cid
-            ORDER BY m.title ASC
+            WHERE
+                EXISTS (SELECT 1 FROM `pdf_details` p WHERE p.`status` = 1 AND p.`main_cat_id` = m.`id`)
+                OR EXISTS (SELECT 1 FROM `books_details` b WHERE b.`status` = 1 AND b.`main_cat_id` = m.`id`)
+                OR EXISTS (SELECT 1 FROM `homework_details` h WHERE h.`status` = 1 AND h.`main_cat_id` = m.`id`)
+            ORDER BY m.`title` ASC
         ";
         try {
             $s = $conn->query($sql);
@@ -58,7 +56,8 @@ class EdiExplorerContent
     }
 
     /**
-     * Subcategories (id, main_cat_id, title) that appear in published content.
+     * Subcategories (sub_category table) used on published pdf / books / homework rows.
+     * Parent main_cat_id must also appear on at least one such row (never product_subcategories).
      */
     public static function loadContentSubcategoryOptions(PDO $conn)
     {
@@ -66,14 +65,21 @@ class EdiExplorerContent
         $sql = "
             SELECT DISTINCT s.id, s.main_cat_id, s.title
             FROM `sub_category` s
-            INNER JOIN (
-                SELECT `sub_cat_id` AS `sid` FROM `pdf_details` WHERE `status` = 1 AND `sub_cat_id` IS NOT NULL
-                UNION
-                SELECT `sub_cat_id` FROM `books_details` WHERE `status` = 1 AND `sub_cat_id` IS NOT NULL
-                UNION
-                SELECT `sub_cat_id` FROM `homework_details` WHERE `status` = 1 AND `sub_cat_id` IS NOT NULL
-            ) u ON s.id = u.sid
-            ORDER BY s.main_cat_id ASC, s.title ASC
+            WHERE s.`main_cat_id` IN (
+                SELECT DISTINCT u.`cid` FROM (
+                    SELECT `main_cat_id` AS `cid` FROM `pdf_details` WHERE `status` = 1 AND `main_cat_id` IS NOT NULL
+                    UNION
+                    SELECT `main_cat_id` FROM `books_details` WHERE `status` = 1 AND `main_cat_id` IS NOT NULL
+                    UNION
+                    SELECT `main_cat_id` FROM `homework_details` WHERE `status` = 1 AND `main_cat_id` IS NOT NULL
+                ) u
+            )
+            AND (
+                EXISTS (SELECT 1 FROM `pdf_details` p WHERE p.`status` = 1 AND p.`sub_cat_id` = s.`id`)
+                OR EXISTS (SELECT 1 FROM `books_details` b WHERE b.`status` = 1 AND b.`sub_cat_id` = s.`id`)
+                OR EXISTS (SELECT 1 FROM `homework_details` h WHERE h.`status` = 1 AND h.`sub_cat_id` = s.`id`)
+            )
+            ORDER BY s.`main_cat_id` ASC, s.`title` ASC
         ";
         try {
             $s = $conn->query($sql);
