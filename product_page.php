@@ -569,7 +569,6 @@ if ($forceExplorer && $exploreCategoryName !== "") {
             <?php if (!empty($explorerBooks)) : ?>
             <div class="mb-5">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                    <h3 class="h5 text-dark mb-0">Books &amp; papers</h3>
                     <a class="btn btn-sm btn-outline-secondary" href="books.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
                 </div>
                 <div class="row">
@@ -585,7 +584,6 @@ if ($forceExplorer && $exploreCategoryName !== "") {
             <?php if (!empty($explorerHomeworks)) : ?>
             <div class="mb-2">
                 <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                    <h3 class="h5 text-dark mb-0">Homeworks</h3>
                     <a class="btn btn-sm btn-outline-secondary" href="homework.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
                 </div>
                 <div class="row">
