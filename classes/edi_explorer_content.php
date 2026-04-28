@@ -35,32 +35,11 @@ class EdiExplorerContent
     public static function loadContentMainCategoryOptions(PDO $conn)
     {
         $rows = array();
-        $sql = "
-            SELECT DISTINCT m.id, m.title
-            FROM `main_category` m
-            WHERE
-                EXISTS (SELECT 1 FROM `pdf_details` p WHERE p.`status` = 1 AND p.`main_cat_id` = m.`id`)
-                OR EXISTS (SELECT 1 FROM `books_details` b WHERE b.`status` = 1 AND b.`main_cat_id` = m.`id`)
-                OR EXISTS (SELECT 1 FROM `homework_details` h WHERE h.`status` = 1 AND h.`main_cat_id` = m.`id`)
-            ORDER BY m.`title` ASC
-        ";
+        $sql = "SELECT `id`, `title` FROM `main_category` ORDER BY `title` ASC";
         try {
             $s = $conn->query($sql);
             if ($s) {
                 $rows = $s->fetchAll(PDO::FETCH_ASSOC);
-            }
-        } catch (Throwable $e) {
-            $rows = array();
-        }
-        $rows = self::sanitizeMainCategoryRows($rows);
-        if (!empty($rows)) {
-            return $rows;
-        }
-        // Fallback to full taxonomy when content-linked rows are missing/misconfigured.
-        try {
-            $s2 = $conn->query("SELECT `id`, `title` FROM `main_category` ORDER BY `title` ASC");
-            if ($s2) {
-                $rows = $s2->fetchAll(PDO::FETCH_ASSOC);
             }
         } catch (Throwable $e) {
             $rows = array();
@@ -75,42 +54,11 @@ class EdiExplorerContent
     public static function loadContentSubcategoryOptions(PDO $conn)
     {
         $rows = array();
-        $sql = "
-            SELECT DISTINCT s.id, s.main_cat_id, s.title
-            FROM `sub_category` s
-            WHERE s.`main_cat_id` IN (
-                SELECT DISTINCT u.`cid` FROM (
-                    SELECT `main_cat_id` AS `cid` FROM `pdf_details` WHERE `status` = 1 AND `main_cat_id` IS NOT NULL
-                    UNION
-                    SELECT `main_cat_id` FROM `books_details` WHERE `status` = 1 AND `main_cat_id` IS NOT NULL
-                    UNION
-                    SELECT `main_cat_id` FROM `homework_details` WHERE `status` = 1 AND `main_cat_id` IS NOT NULL
-                ) u
-            )
-            AND (
-                EXISTS (SELECT 1 FROM `pdf_details` p WHERE p.`status` = 1 AND p.`sub_cat_id` = s.`id`)
-                OR EXISTS (SELECT 1 FROM `books_details` b WHERE b.`status` = 1 AND b.`sub_cat_id` = s.`id`)
-                OR EXISTS (SELECT 1 FROM `homework_details` h WHERE h.`status` = 1 AND h.`sub_cat_id` = s.`id`)
-            )
-            ORDER BY s.`main_cat_id` ASC, s.`title` ASC
-        ";
+        $sql = "SELECT `id`, `main_cat_id`, `title` FROM `sub_category` ORDER BY `main_cat_id` ASC, `title` ASC";
         try {
             $s = $conn->query($sql);
             if ($s) {
                 $rows = $s->fetchAll(PDO::FETCH_ASSOC);
-            }
-        } catch (Throwable $e) {
-            $rows = array();
-        }
-        $rows = self::sanitizeSubcategoryRows($rows);
-        if (!empty($rows)) {
-            return $rows;
-        }
-        // Fallback to full taxonomy when content-linked rows are missing/misconfigured.
-        try {
-            $s2 = $conn->query("SELECT `id`, `main_cat_id`, `title` FROM `sub_category` ORDER BY `main_cat_id` ASC, `title` ASC");
-            if ($s2) {
-                $rows = $s2->fetchAll(PDO::FETCH_ASSOC);
             }
         } catch (Throwable $e) {
             $rows = array();
