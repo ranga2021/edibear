@@ -199,8 +199,7 @@ if($sub_cat_id != ""){
     <div class="page-header-bg"></div>
 
     <!-- books Start -->
-    <div class="container-fluid py-3 page-header-content" style="margin-top: 0px !important;">
-        <div class="container pt-3">
+    <div class="container mt-5 page-header-content">
 
         <div class="d-flex pageheaderdiv">
             
@@ -242,12 +241,6 @@ if($sub_cat_id != ""){
             </div>
         </div>
         
-            <div class="row mb-2 mt-2">
-                <div class="col-12">
-                    <p class="text-dark mb-1" style="font-size:0.8rem; font-weight:600;">Tags</p>
-                </div>
-            </div>
-
             <!-- Navitage to page top -->
             <a id="page-top"></a>
 
@@ -402,8 +395,6 @@ if($sub_cat_id != ""){
                 </div>
                
             </div>
-        </div>
-    </div>
     </div>
     <!-- books End -->
 

@@ -240,8 +240,7 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
     <div class="page-header-bg"></div>
 
     <!-- pdf Start -->
-    <div class="container-fluid py-3 page-header-content" style="margin-top: 0px !important;">
-        <div class="container pt-3">
+    <div class="container mt-5 page-header-content">
 
         <div class="d-flex pageheaderdiv">
             
@@ -283,13 +282,6 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
             </div>
         </div>
 
-
-            <!-- Tags from admin (pdf_details.tag, slash-separated) -->
-            <div class="row mb-2 mt-1">
-                <div class="col-12 col-lg-8">
-                <p class="text-dark mb-1" style="font-size:0.8rem; font-weight:600;">Tags</p>
-                </div>
-            </div>
 
             <!-- Navitage to page top -->
             <a id="page-top"></a>
@@ -347,7 +339,6 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
                 </script>";
             }
             echo "</div>";
-            echo "<div class=\"edi-pdf-section-divider border-bottom my-3\"></div>";
             ?>
 
 
@@ -468,8 +459,6 @@ if ( $other != "" ) {
                 </div>
      
             </div>
-        </div>
-    </div>
     </div>
     <!-- pdf End -->
 
