@@ -247,7 +247,7 @@ if($sub_cat_id != ""){
             $totalTags = count($tagsArr);
             $visibleTags = min(14, $totalTags);
 
-            echo "<div class='d-flex flex-wrap m-n1'>";
+            echo "<div class='d-flex flex-wrap' style='margin-left:15px;'>";
             for ($i = 0; $i < $visibleTags; $i++) {
                 $tag = $tagsArr[$i];
                 $tagQ = array_merge($homeworkPreserveParams, array("tag" => $tag));

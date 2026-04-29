@@ -300,7 +300,7 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
             $totalTags = count($tagsArr);
             $visibleTags = min(20, $totalTags);
 
-            echo "<div class=\"edi-pdf-tag-chips text-dark\" style=\"font-size:15px; line-height:2.1;\">";
+            echo "<div class=\"edi-pdf-tag-chips text-dark\" style=\"font-size:15px; line-height:2.1; margin-left:15px;\">";
             for ($i = 0; $i < $visibleTags; $i++) {
                 $tagWord = $tagsArr[$i];
                 $qNext = array_merge($pdfPreserveParams, array("tag" => $tagWord));
