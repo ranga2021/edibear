@@ -553,9 +553,6 @@ if ($forceExplorer && $exploreCategoryName !== "") {
         <div class="mt-3">
             <?php if (!empty($explorerPdfs)) : ?>
             <div class="mb-5">
-                <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                    <a class="btn btn-sm btn-outline-secondary" href="pdf.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
-                </div>
                 <div class="row">
                     <?php
                     foreach ($explorerPdfs as $row) {
@@ -568,9 +565,6 @@ if ($forceExplorer && $exploreCategoryName !== "") {
 
             <?php if (!empty($explorerBooks)) : ?>
             <div class="mb-5">
-                <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                    <a class="btn btn-sm btn-outline-secondary" href="books.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
-                </div>
                 <div class="row">
                     <?php
                     foreach ($explorerBooks as $row) {
@@ -583,9 +577,6 @@ if ($forceExplorer && $exploreCategoryName !== "") {
 
             <?php if (!empty($explorerHomeworks)) : ?>
             <div class="mb-2">
-                <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
-                    <a class="btn btn-sm btn-outline-secondary" href="homework.php?<?php echo http_build_query($freeQ, "", "&", PHP_QUERY_RFC3986); ?>#page-top">View all in this filter</a>
-                </div>
                 <div class="row">
                     <?php
                     foreach ($explorerHomeworks as $row) {

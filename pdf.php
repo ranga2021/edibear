@@ -275,38 +275,19 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
                 </ol>
             </nav>
                 
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <h1 class="h2 text-uppercase font-weight-bold mb-1" style="letter-spacing:.04em;"><?php echo htmlspecialchars($pageHeroTitleForPdf, ENT_QUOTES, 'UTF-8'); ?></h1>
-                            <div class="edi-pdf-hero-rule" style="height:2px; background:linear-gradient(90deg, #2e8b57, rgba(46,139,87,.2)); max-width:420px;"></div>
-                        </div>
+                    <div class="edi-page-title-row mt-2">
+                        <h1><?php echo htmlspecialchars($pageHeroTitleForPdf, ENT_QUOTES, 'UTF-8'); ?></h1>
+                        <div class="edi-page-title-rule" role="presentation"></div>
                     </div>
 
             </div>
-            <div class="col-lg-4 searchcol d-flex align-items-end">
-                <div class="search-container w-100">
-                        <form method="get" action="pdf.php" class="d-flex">
-                            <?php
-                            foreach ($ediPdfListParams as $qk => $qv) {
-                                if ((string) $qv === "" || (string) $qk === "search") {
-                                    continue;
-                                }
-                                echo '<input type="hidden" name="' . htmlspecialchars((string) $qk, ENT_QUOTES, 'UTF-8') . '" value="' . htmlspecialchars((string) $qv, ENT_QUOTES, 'UTF-8') . '">';
-                            }
-                            ?>
-                            <input type="text" name="search" value="<?php echo htmlspecialchars($searchKey ?? '', ENT_QUOTES, 'UTF-8'); ?>" placeholder="Search by title" class="form-control" style="min-width:0;">
-                            <button type="submit" class="btn newgreen1-btn ml-1">Search</button>
-                        </form>
-                </div>
-            </div>
-
         </div>
 
 
             <!-- Tags from admin (pdf_details.tag, slash-separated) -->
             <div class="row mb-2 mt-1">
                 <div class="col-12 col-lg-8">
-                <p class="text-dark mb-1" style="font-size:0.8rem; font-weight:600;">Tags <span class="text-muted" style="font-weight:400;">(set in admin when adding a coloring page)</span></p>
+                <p class="text-dark mb-1" style="font-size:0.8rem; font-weight:600;">Tags</p>
                 </div>
             </div>
 

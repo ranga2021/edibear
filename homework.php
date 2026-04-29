@@ -230,25 +230,12 @@ if($sub_cat_id != ""){
             </nav>
 
                 
-                    <div class="row mt-3">
-                        <div class="col-12">
-                            <h1 class="h2 text-uppercase font-weight-bold mb-1" style="letter-spacing:.04em;">
-                                <?php echo htmlspecialchars($mainCatTitle !== "Category" ? $mainCatTitle : "STUDY PACKS", ENT_QUOTES, 'UTF-8'); ?>
-                            </h1>
-                            <div class="edi-pdf-hero-rule" style="height:2px; background:linear-gradient(90deg, #2e8b57, rgba(46,139,87,.2)); max-width:420px;"></div>
-                        </div>
+                    <div class="edi-page-title-row mt-2">
+                        <h1><?php echo htmlspecialchars($mainCatTitle !== "Category" ? $mainCatTitle : "STUDY PACKS", ENT_QUOTES, 'UTF-8'); ?></h1>
+                        <div class="edi-page-title-rule" role="presentation"></div>
                     </div>
 
             </div>
-            <div class="col-lg-4 searchcol d-flex align-items-end">
-                <div class="search-container">
-                        <form method="post" class="d-flex">
-                            <input type="text"  name="search">
-                            <button type="submit" name="submit"><!--i class="fa fa-search"></i-->Search</button>
-                        </form>
-                </div>
-            </div>
-
         </div>
             
                <div class="row mb-2 mt-2">
