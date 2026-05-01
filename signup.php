@@ -42,10 +42,14 @@ if (isset($_POST["signupSubmit"])) {
             "timestamp" => date("Y-m-d H:i:s"),
         );
 
-        if ($user->insertTable("tourists", $insertData)) {
-            $signupSuccess = true;
-            $newUserID = $user->fetchAll(array("id"), array("tourists"), array("username" => $username))[0]["id"];
-        } else {
+        try {
+            if ($user->insertTable("tourists", $insertData)) {
+                $signupSuccess = true;
+                $newUserID = (int) $user->getConnection()->lastInsertId();
+            } else {
+                $errorOccurred = true;
+            }
+        } catch (PDOException $e) {
             $errorOccurred = true;
         }
     }
@@ -76,6 +80,10 @@ if (isset($_POST["signupSubmit"])) {
 
         <?php if ($pwdMismatch): ?>
             <div class="edi-auth-alert err">Passwords do not match. Please try again.</div>
+        <?php endif; ?>
+
+        <?php if ($errorOccurred && !$pwdMismatch): ?>
+            <div class="edi-auth-alert err">We couldn’t create your account. Please try again or use a different email. If it keeps failing, contact support.</div>
         <?php endif; ?>
 
         <div class="edi-auth-card">
