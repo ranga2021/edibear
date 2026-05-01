@@ -616,6 +616,7 @@ document.addEventListener('DOMContentLoaded', function() {
     public function printUserFooter() {
         $html = "
             <div class='container-fluid footer pl-3 pr-3 d-flex flex-column align-items-center'>
+                <div class='container align-self-stretch'>
                 <div class='row mb-4 py-5 justify-content-center'>
                     <div class='col-12 col-lg-10 col-md-12 text-center footerEmailCustom px-3'>
                         <h1 class='text-danger'>JOIN MY FAMILY</h1>
@@ -631,6 +632,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </div>
                         </div>
                     </div>
+                </div>
                 </div>
                 <div class='row footercontentwidth footer-overlap-row justify-content-center pt-5'>
                     <div class='col-lg-4 col-md-6 mb-5'>
