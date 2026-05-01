@@ -617,14 +617,14 @@ document.addEventListener('DOMContentLoaded', function() {
         $html = "
             <div class='container-fluid footer pl-3 pr-3 d-flex flex-column align-items-center'>
                 <div class='row mb-4 py-5 justify-content-center'>
-                    <div class='text-center footerEmailCustom pl-2 pr-2 pl-md-2 pr-md-2 pl-sm-3 pr-sm-3'>
+                    <div class='col-12 col-lg-10 col-md-12 text-center footerEmailCustom px-3'>
                         <h1 class='text-danger'>JOIN MY FAMILY</h1>
                         <p class='edi-home-lead' style='color:#666;'>
     Don’t miss a single adventure! Sign up for Edi’s newsletter to get new worksheets,
     ‘Brave Heart’ challenge alerts, and special surprises delivered straight to your inbox.
     Come on in — there’s always a seat for you at our table!
 </p>
-                        <div class='input-group mt-4 px-2 px-sm-5'>
+                        <div class='input-group mt-4 edi-footer-newsletter-form'>
                             <input type='email' class='form-control newsl-border' id='newsletterEmail' style='padding: 25px;' placeholder='Your Email Here'>
                             <div class='input-group-append'>
                                 <button class='btn newsl-subscribe-btn px-4' onclick='subscribeNewsletter()' style='background-color:#33a675;'>JOIN NOW</button>

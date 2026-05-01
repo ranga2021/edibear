@@ -1033,11 +1033,10 @@ h6.text-primary:not(.text-white),
   line-height: 1.65;
 }
 
-/* Newsletter sits outside col-lg-10; keep a comfortable measure */
-.footerEmailCustom .edi-home-lead {
-  max-width: 870px;
-  margin-left: auto;
-  margin-right: auto;
+/* Newsletter form: same horizontal span as .edi-home-lead above it (full col width) */
+.footerEmailCustom .edi-footer-newsletter-form {
+  width: 100%;
+  max-width: 100%;
 }
 
 /* lg+: two columns share one row height; featured card grows so its bottom lines up with the 2×2 grid */
