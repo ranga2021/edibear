@@ -447,16 +447,12 @@
                 <div class="col-lg-10 col-md-12">
                 <p class="edi-home-lead mb-0">
                 Explorer! We’ve reached the end of the adventure. It’s time to show off your amazing talents and celebrate everything you’ve learned along the way. I’ve set new missions with exciting challenges to test your skills! Grab your tools, join the fun, and you could even win a special prize. Let’s see what you can do!</p>
-                </div>
-            </div>
 
         <?php if ($recentChallenge): ?>
-        <div class="row justify-content-center mt-4">
-            <div class="col-lg-10">
-                <h5 class="text-uppercase mb-3" style="font-weight: 700 !important;">
+                <h5 class="text-uppercase mb-3 mt-4" style="font-weight: 700 !important;">
                     UPCOMING – <?php echo htmlspecialchars($recentChallenge['title']); ?>
                 </h5>
-                
+
                 <div class="challenge-banner-container mb-4">
                     <img src="./img/braveheart/<?php echo $recentChallenge['main_image']; ?>" 
                          alt="Challenge Banner" 
@@ -469,13 +465,13 @@
                         ACCEPT
                     </a>
                 </div>
-            </div>
-        </div>
         <?php else: ?>
-            <div class="text-center">
-                <p>New challenges are coming soon! Stay tuned, Explorer!</p>
-            </div>
+                <div class="text-center mt-4">
+                    <p class="mb-0">New challenges are coming soon! Stay tuned, Explorer!</p>
+                </div>
         <?php endif; ?>
+                </div>
+            </div>
     </div>
     </section>
 

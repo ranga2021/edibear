@@ -1019,19 +1019,25 @@ h6.text-primary:not(.text-white),
   background-color: #fff;
 }
 
-/* Home (and footer newsletter): same reading width + justified body copy */
+/* Home (and footer newsletter): full width of parent column + justified copy.
+   Width matches sibling blocks in the same Bootstrap col (e.g. Brave Heart banner). */
 .edi-home-lead {
   box-sizing: border-box;
   width: 100%;
-  max-width: 870px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: none;
   text-align: justify;
   text-justify: inter-word;
   hyphens: auto;
   -webkit-hyphens: auto;
   color: var(--edi-body);
   line-height: 1.65;
+}
+
+/* Newsletter sits outside col-lg-10; keep a comfortable measure */
+.footerEmailCustom .edi-home-lead {
+  max-width: 870px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* lg+: two columns share one row height; featured card grows so its bottom lines up with the 2×2 grid */
