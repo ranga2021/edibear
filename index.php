@@ -205,8 +205,9 @@
             </div>
 
             <div class="col-md-3 mb-2">
-                    <select class="explorer-select" name="product_subcategory_id" id="explorer_exp_sub">
-                     <option value="">Subcategory (Optional)</option>
+                    <select class="explorer-select" name="product_subcategory_id" id="explorer_exp_sub" disabled>
+                     <option value="" disabled selected class="edi-exp-sub-need-cat">Please select a category first to see subcategories.</option>
+                     <option value="" class="edi-exp-sub-none">Subcategory (optional)</option>
                     <?php foreach ($exploreProductSubcategories as $sub): ?>
                       <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>">
                      <?php echo htmlspecialchars((string) $sub['title'], ENT_QUOTES, 'UTF-8'); ?>
@@ -691,20 +692,55 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     var subSel = document.getElementById("explorer_exp_sub");
     if (!catSel || !subSel) return;
 
+    var needCat = subSel.querySelector("option.edi-exp-sub-need-cat");
+    var noneOpt = subSel.querySelector("option.edi-exp-sub-none");
+
     function filterSubcategories() {
-        var cid = catSel.value;
-        var opts = subSel.querySelectorAll("option[value]");
-        var current = subSel.value;
+        var cid = String(catSel.value || "");
+        var realOpts = subSel.querySelectorAll("option[data-product-category-id]");
+        if (!cid) {
+            subSel.disabled = true;
+            if (needCat) {
+                needCat.hidden = false;
+                needCat.disabled = true;
+                needCat.selected = true;
+            }
+            if (noneOpt) {
+                noneOpt.hidden = true;
+                noneOpt.disabled = true;
+                noneOpt.selected = false;
+            }
+            for (var i = 0; i < realOpts.length; i++) {
+                realOpts[i].hidden = true;
+                realOpts[i].disabled = true;
+            }
+            return;
+        }
+        subSel.disabled = false;
+        if (needCat) {
+            needCat.hidden = true;
+            needCat.disabled = true;
+            needCat.selected = false;
+        }
+        if (noneOpt) {
+            noneOpt.hidden = false;
+            noneOpt.disabled = false;
+        }
+        var current = String(subSel.value || "");
         var stillOk = false;
-        for (var i = 0; i < opts.length; i++) {
-            var o = opts[i];
+        for (var j = 0; j < realOpts.length; j++) {
+            var o = realOpts[j];
             var pc = o.getAttribute("data-product-category-id");
-            var show = !cid || !pc || String(pc) === String(cid);
+            var show = String(pc) === String(cid);
             o.hidden = !show;
             o.disabled = !show;
-            if (show && o.value === current) stillOk = true;
+            if (show && o.value === current) {
+                stillOk = true;
+            }
         }
-        if (!stillOk) subSel.value = "";
+        if (!stillOk && noneOpt) {
+            noneOpt.selected = true;
+        }
     }
 
     catSel.addEventListener("change", filterSubcategories);

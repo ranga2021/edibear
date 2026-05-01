@@ -25,6 +25,7 @@
 
 .product-details-page .product-details-info .old-price {
   font-size: 12px;
+  color: #f65247;
 }
 
 .product-details-page .product-tags {
@@ -320,11 +321,22 @@ img[style*="position: fixed"] {
 }
 
 .edi-treasure-gallery-main {
+  box-sizing: border-box;
   position: relative;
+  width: 100%;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+  /* A4 portrait (210 × 297 mm) */
+  aspect-ratio: 210 / 297;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 12px;
   background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
   text-align: center;
 }
 
@@ -337,8 +349,11 @@ img[style*="position: fixed"] {
 }
 
 .edi-treasure-gallery-main .main-product-image {
-  max-height: 420px;
+  max-width: 100%;
+  max-height: 100%;
   width: auto;
+  height: auto;
+  object-fit: contain;
   margin: 0 auto;
 }
 
@@ -398,4 +413,28 @@ img[style*="position: fixed"] {
 
 .edi-treasure-price-row .new-price {
   font-size: 1.25rem;
+}
+
+/* Treasure detail: quantity + Collect on one baseline */
+.product-details-page .edi-treasure-cart-row {
+  gap: 0.75rem 1rem;
+  align-items: center !important;
+}
+
+.product-details-page .edi-treasure-cart-row .quantity-selector-container,
+.product-details-page .edi-treasure-cart-row .collect-btn {
+  margin: 0;
+}
+
+.product-details-page .edi-treasure-cart-row .collect-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  box-sizing: border-box;
+}
+
+.product-details-page .edi-treasure-cart-row .stock-status-text,
+.product-details-page .edi-treasure-cart-row .edi-wishlist-btn {
+  margin-bottom: 0;
 }

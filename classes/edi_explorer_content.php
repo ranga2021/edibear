@@ -71,6 +71,40 @@ class EdiExplorerContent
                 'title' => $title,
             );
         }
+        return self::dedupeProductSubcategoryRows($out);
+    }
+
+    /**
+     * Collapse duplicate subcategory titles within the same parent category (keeps first row).
+     * Prevents duplicate labels in dropdowns when the database has accidental duplicates.
+     *
+     * @param array<int, array{id?:int, product_category_id?:int, title?:string}> $rows
+     * @return array<int, array{id:int, product_category_id:int, title:string}>
+     */
+    public static function dedupeProductSubcategoryRows(array $rows)
+    {
+        $seen = array();
+        $out = array();
+        foreach ($rows as $r) {
+            if (!is_array($r)) {
+                continue;
+            }
+            $pcid = (int) ($r['product_category_id'] ?? 0);
+            $title = strtolower(trim((string) ($r['title'] ?? '')));
+            if ($title === '') {
+                continue;
+            }
+            $key = $pcid . "\0" . $title;
+            if (isset($seen[$key])) {
+                continue;
+            }
+            $seen[$key] = true;
+            $out[] = array(
+                'id' => (int) ($r['id'] ?? 0),
+                'product_category_id' => $pcid,
+                'title' => trim((string) ($r['title'] ?? '')),
+            );
+        }
         return $out;
     }
 

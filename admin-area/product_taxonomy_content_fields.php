@@ -23,7 +23,8 @@ $ediCurPsub = isset($ediCurPsub) ? (int) $ediCurPsub : 0;
     <div class="form-group">
       <label class="form-control-label" for="edi_content_product_subcategory">Product subcategory (optional)</label>
       <select class="form-control" name="edi_content_product_subcategory" id="edi_content_product_subcategory">
-        <option value="0">— None —</option>
+        <option value="" disabled class="edi-admin-sub-need-cat"<?php echo ($ediCurPcat < 1) ? ' selected' : ''; ?>>Please select a product category first to see subcategories.</option>
+        <option value="0"<?php echo ($ediCurPcat >= 1 && (int) $ediCurPsub === 0) ? " selected" : ""; ?>>— None —</option>
         <?php foreach ($ediProductSubcategories as $s) : ?>
         <option value="<?php echo (int) $s['id']; ?>" data-product-category-id="<?php echo (int) $s['product_category_id']; ?>"<?php if ((int) $s['id'] === $ediCurPsub) {
             echo ' selected';
@@ -39,12 +40,30 @@ $ediCurPsub = isset($ediCurPsub) ? (int) $ediCurPsub : 0;
   var s = document.getElementById("edi_content_product_subcategory");
   if (!c || !s) return;
   function sync() {
-    var cid = c.value;
-    for (var i = 0; i < s.options.length; i++) {
-      var o = s.options[i];
-      if (!o.value) { o.hidden = false; o.disabled = false; continue; }
+    var cid = String(c.value || "0");
+    var needCat = s.querySelector("option.edi-admin-sub-need-cat");
+    var realOpts = s.querySelectorAll("option[data-product-category-id]");
+    if (!cid || cid === "0") {
+      if (needCat) {
+        needCat.hidden = false;
+        needCat.disabled = true;
+        needCat.selected = true;
+      }
+      for (var i = 0; i < realOpts.length; i++) {
+        realOpts[i].hidden = true;
+        realOpts[i].disabled = true;
+      }
+      return;
+    }
+    if (needCat) {
+      needCat.hidden = true;
+      needCat.disabled = true;
+      needCat.selected = false;
+    }
+    for (var j = 0; j < realOpts.length; j++) {
+      var o = realOpts[j];
       var pc = o.getAttribute("data-product-category-id");
-      var show = !cid || cid === "0" || !pc || String(pc) === String(cid);
+      var show = String(pc) === String(cid);
       o.hidden = !show;
       o.disabled = !show;
     }

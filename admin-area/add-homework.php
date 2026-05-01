@@ -37,7 +37,7 @@ if ($ediHasPcat) {
     try {
         $psc = $ediConn->query("SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC");
         if ($psc) {
-            $ediProductSubcategories = $psc->fetchAll(PDO::FETCH_ASSOC);
+            $ediProductSubcategories = EdiExplorerContent::dedupeProductSubcategoryRows($psc->fetchAll(PDO::FETCH_ASSOC));
         }
     } catch (Throwable $e) {
         $ediProductSubcategories = array();

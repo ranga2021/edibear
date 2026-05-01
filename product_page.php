@@ -33,7 +33,7 @@ $productSubcategoriesAll = array();
 try {
     $pscStmt = $conn->query("SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC");
     if ($pscStmt) {
-        $productSubcategoriesAll = $pscStmt->fetchAll(PDO::FETCH_ASSOC);
+        $productSubcategoriesAll = EdiExplorerContent::dedupeProductSubcategoryRows($pscStmt->fetchAll(PDO::FETCH_ASSOC));
     }
 } catch (Throwable $e) {
     $productSubcategoriesAll = array();
@@ -423,10 +423,12 @@ if ($forceExplorer && $exploreCategoryName !== "") {
                     </select>
                 </div>
                 <?php if (count($productSubcategoriesAll) > 0): ?>
+                <?php $shopCatChosen = ($catF !== ""); ?>
                 <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-sub">Subcategory</label>
                     <select id="filter-sub" name="sub" class="form-control treasures-filter-select" onchange="this.form.submit()">
-                        <option value="">Subcategory</option>
+                        <option value="" disabled class="edi-sub-need-cat"<?= !$shopCatChosen ? ' selected' : '' ?>>Please select a category first to see subcategories.</option>
+                        <option value="" class="edi-sub-none"<?= ($shopCatChosen && $subF === 0) ? ' selected' : '' ?>>Subcategory</option>
                         <?php foreach ($productSubcategoriesAll as $sub): ?>
                             <option value="<?= (int) $sub['id'] ?>"
                                 data-product-category-id="<?= (int) $sub['product_category_id'] ?>"
@@ -472,16 +474,55 @@ if ($forceExplorer && $exploreCategoryName !== "") {
             var cat = document.getElementById("filter-category");
             var sub = document.getElementById("filter-sub");
             if (!cat || !sub) return;
+            var needCat = sub.querySelector("option.edi-sub-need-cat");
+            var noneOpt = sub.querySelector("option.edi-sub-none");
             function syncSubcategories() {
                 var cid = String(cat.value || "");
-                for (var i = 0; i < sub.options.length; i++) {
-                    var o = sub.options[i];
-                    if (o.value === "") { o.hidden = false; o.disabled = false; continue; }
+                var realOpts = sub.querySelectorAll("option[data-product-category-id]");
+                if (!cid) {
+                    if (needCat) {
+                        needCat.hidden = false;
+                        needCat.disabled = true;
+                        needCat.selected = true;
+                    }
+                    if (noneOpt) {
+                        noneOpt.hidden = true;
+                        noneOpt.disabled = true;
+                        noneOpt.selected = false;
+                    }
+                    for (var i = 0; i < realOpts.length; i++) {
+                        realOpts[i].hidden = true;
+                        realOpts[i].disabled = true;
+                    }
+                    return;
+                }
+                if (needCat) {
+                    needCat.hidden = true;
+                    needCat.disabled = true;
+                    needCat.selected = false;
+                }
+                if (noneOpt) {
+                    noneOpt.hidden = false;
+                    noneOpt.disabled = false;
+                }
+                var sel = String(sub.value || "");
+                var stillOk = false;
+                for (var j = 0; j < realOpts.length; j++) {
+                    var o = realOpts[j];
                     var pc = o.getAttribute("data-product-category-id");
-                    var show = !cid || !pc || String(pc) === String(cid);
+                    var show = String(pc) === String(cid);
                     o.hidden = !show;
                     o.disabled = !show;
-                    if (!show && o.selected) { sub.selectedIndex = 0; }
+                    if (show && o.value === sel) {
+                        stillOk = true;
+                    }
+                }
+                if (!stillOk) {
+                    if (noneOpt) {
+                        noneOpt.selected = true;
+                    } else {
+                        sub.selectedIndex = 0;
+                    }
                 }
             }
             cat.addEventListener("change", syncSubcategories);

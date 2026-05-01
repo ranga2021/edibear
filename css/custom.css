@@ -379,7 +379,7 @@ text-align: left; /* column may use .text-center; keep title, price, Collect ali
 }
 
 .old-price{
-color:red;
+color:#f65247;
 text-decoration:line-through;
 margin-right:8px;
 }

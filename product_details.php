@@ -193,14 +193,14 @@ if ($totalReviews > 0) {
 
                 <form class="edi-treasure-cart-row d-flex flex-wrap align-items-center mb-3" id="productDetailsCartForm" method="POST" action="add_to_cart.php">
                     <input type="hidden" name="product_id" value="<?= (int) $product['id'] ?>">
-                    <div class="quantity-selector-container mr-2 mb-2">
+                    <div class="quantity-selector-container">
                         <button type="button" class="qty-btn" id="decreaseBtn">−</button>
                         <input type="number" id="quantity" name="quantity" min="1" max="<?= $stock ?>" value="1" class="qty-input" readonly>
                         <button type="button" class="qty-btn" id="increaseBtn">+</button>
                     </div>
-                    <button type="submit" class="collect-btn add-to-cart-btn mr-2 mb-2" id="addToCartBtn">Collect</button>
-                    <div class="stock-status-text mb-2"><?= (int) $stock ?> In Stock</div>
-                    <button type="button" class="btn btn-link text-danger edi-wishlist-btn mb-2 p-0 ml-lg-2" title="Wishlist" aria-label="Add to wishlist">♥</button>
+                    <button type="submit" class="collect-btn add-to-cart-btn" id="addToCartBtn">Collect</button>
+                    <div class="stock-status-text"><?= (int) $stock ?> In Stock</div>
+                    <button type="button" class="btn btn-link text-danger edi-wishlist-btn p-0 ml-lg-2" title="Wishlist" aria-label="Add to wishlist">♥</button>
                 </form>
 
                 <p class="product-tags">Tags: <?= htmlspecialchars($catTag, ENT_QUOTES, 'UTF-8') ?><?= $ageLabel !== '' ? ', ' . htmlspecialchars($ageDisplay, ENT_QUOTES, 'UTF-8') : '' ?><?= !empty($product['brand']) ? ', ' . htmlspecialchars((string) $product['brand'], ENT_QUOTES, 'UTF-8') : '' ?></p>

@@ -2,6 +2,7 @@
 require_once("../classes/session_config.php");
 require_once("../classes/class.user.php");
 require_once("../classes/edi_taxonomy.php");
+require_once("../classes/edi_explorer_content.php");
 require_once("../classes/class.header.php");
 
 $adminHeader = new HEADER("products");
@@ -23,6 +24,8 @@ if (!$product) {
     exit;
 }
 
+$ediProductHasShopCategory = (int) ($product["category_id"] ?? 0) > 0;
+
 $product_subcategories = [];
 try {
     $catStmt = $user->runQuery("SELECT * FROM product_categories ORDER BY name ASC");
@@ -33,7 +36,7 @@ try {
         "SELECT id, product_category_id, title FROM product_subcategories ORDER BY product_category_id ASC, title ASC"
     );
     $subCatStmt->execute();
-    $product_subcategories = $subCatStmt->fetchAll(PDO::FETCH_ASSOC);
+    $product_subcategories = EdiExplorerContent::dedupeProductSubcategoryRows($subCatStmt->fetchAll(PDO::FETCH_ASSOC));
 } catch (PDOException $e) {
     $categories = [];
     $product_subcategories = [];
@@ -248,8 +251,9 @@ if (isset($_POST["btn-update-product"])) {
 
                   <div class="col-md-3">
                     <label>Subcategory</label>
-                    <select name="product_subcategory" id="product_subcategory_select" class="form-control">
-                      <option value="">Select Subcategory</option>
+                    <select name="product_subcategory" id="product_subcategory_select" class="form-control"<?php echo $ediProductHasShopCategory ? "" : " disabled"; ?>>
+                      <option value="-1" disabled class="edi-shop-sub-need-cat"<?php echo !$ediProductHasShopCategory ? " selected" : ""; ?>>Please select a category first to see subcategories.</option>
+                      <option value="" class="edi-shop-sub-none"<?php echo ($ediProductHasShopCategory && (int) ($product["product_subcategory_id"] ?? 0) === 0) ? " selected" : ""; ?> <?php echo !$ediProductHasShopCategory ? "hidden disabled" : ""; ?>>Subcategory (optional)</option>
                       <?php foreach ($product_subcategories as $sub): ?>
                         <option value="<?php echo (int) $sub["id"]; ?>"
                           data-product-category-id="<?php echo (int) $sub["product_category_id"]; ?>"
@@ -429,22 +433,60 @@ if (isset($_POST["btn-update-product"])) {
         const cat = document.getElementById("product_category_select");
         const sub = document.getElementById("product_subcategory_select");
         if (!cat || !sub) return;
+        const needCat = sub.querySelector("option.edi-shop-sub-need-cat");
+        const noneOpt = sub.querySelector("option.edi-shop-sub-none");
         function syncSubcategories() {
             const cid = String(cat.value || "");
-            for (let i = 0; i < sub.options.length; i++) {
-                const opt = sub.options[i];
-                if (opt.value === "") {
-                    opt.disabled = false;
-                    continue;
+            const realOpts = sub.querySelectorAll("option[data-product-category-id]");
+            if (!cid) {
+                sub.disabled = true;
+                if (needCat) {
+                    needCat.hidden = false;
+                    needCat.disabled = true;
+                    needCat.selected = true;
                 }
-                const ok = cid !== "" && opt.getAttribute("data-product-category-id") === cid;
+                if (noneOpt) {
+                    noneOpt.hidden = true;
+                    noneOpt.disabled = true;
+                    noneOpt.selected = false;
+                }
+                for (let i = 0; i < realOpts.length; i++) {
+                    realOpts[i].hidden = true;
+                    realOpts[i].disabled = true;
+                }
+                return;
+            }
+            sub.disabled = false;
+            if (needCat) {
+                needCat.hidden = true;
+                needCat.disabled = true;
+                needCat.selected = false;
+            }
+            if (noneOpt) {
+                noneOpt.hidden = false;
+                noneOpt.disabled = false;
+            }
+            const sel = String(sub.value || "");
+            let stillOk = false;
+            for (let j = 0; j < realOpts.length; j++) {
+                const opt = realOpts[j];
+                const ok = opt.getAttribute("data-product-category-id") === cid;
+                opt.hidden = !ok;
                 opt.disabled = !ok;
-                if (!ok && opt.selected) {
-                    sub.selectedIndex = 0;
+                if (ok && opt.value === sel) {
+                    stillOk = true;
                 }
             }
+            if (!stillOk && noneOpt) {
+                noneOpt.selected = true;
+            }
         }
-        cat.addEventListener("change", syncSubcategories);
+        cat.addEventListener("change", function () {
+            if (noneOpt) {
+                noneOpt.selected = true;
+            }
+            syncSubcategories();
+        });
         syncSubcategories();
     })();
 </script>

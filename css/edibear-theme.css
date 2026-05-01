@@ -598,6 +598,9 @@ body.index .HomeCarousel #header-carousel .carousel-item {
 }
 
 /* ----- Prices / success accents ----- */
+.old-price {
+  color: #f65247;
+}
 .new-price,
 .text-success {
   color: var(--edi-green) !important;
