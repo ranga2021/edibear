@@ -177,7 +177,6 @@ button.edi-home-section-cta.explore-btn {
 .homeLetsGoBtn {
   background: #fff !important;
   color: var(--edi-green) !important;
-  border: 2px solid var(--edi-green) !important;
 }
 
 .homeLetsGoBtn:hover {
@@ -1021,6 +1020,9 @@ h6.text-primary:not(.text-white),
 }
 
 .edi-hidden-den-intro {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
   color: var(--edi-body);
   line-height: 1.65;
 }

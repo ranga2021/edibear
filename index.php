@@ -392,7 +392,7 @@
 
             <div class="row mt-3 justify-content-center">
                 <div class="col-lg-10 col-md-12">
-                    <p class="text-center mb-0 edi-hidden-den-intro">
+                    <p class="mb-0 edi-hidden-den-intro">
                 Hurrah! You've reached the third destination. This is very special. Inside the Hidden Den, you can discover exciting things that make learning feel just like play! Step inside and explore what you want to learn while Edi guides you step-by-step. Now, you're ready to face any challenge with total confidence!</p>
                 </div>
             </div>

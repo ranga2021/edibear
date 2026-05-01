@@ -70,15 +70,6 @@
             </div>
 
             <div class="row">
-                <div class="col-lg-2 mt-3 text-center">
-                    <div class='justify-content-center'>
-                        <a class='btn btn-outline-primary btn-square m-1' href="<?php echo htmlspecialchars((string) $fbShare, ENT_QUOTES, "UTF-8"); ?>" target="_blank" rel="noopener noreferrer"><i class='fab fa-facebook-f'></i></a>
-                        <a class='btn btn-outline-primary btn-square m-1' href='https://instagram.com/edibearsworld?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D' target="_blank" rel="noopener noreferrer"><i class='fab fa-instagram'></i></a><br>
-                        <a class='btn btn-outline-primary btn-square m-1' href='https://www.youtube.com/channel/UCEMob_TpTUErMEKeK9jiz_w' target="_blank" rel="noopener noreferrer"><i class='fab fa-youtube'></i></a>
-                        <a class='btn btn-outline-primary btn-square m-1' target='_blank' rel="noopener noreferrer" href='https://www.pinterest.com/edibearsworld/'><i class='fab fa-pinterest'></i></a>
-                    </div>
-                    <span class="font-weight-bold text-warning">SHARE</span><br>
-                </div>
                 <div class="col-lg-10">
                     <div class="row mb-2 pt-3">
                         <div class="col-12 text-left">
@@ -129,6 +120,15 @@
 
                             ";
                     ?>
+                </div>
+                <div class="col-lg-2 mt-3 text-center edi-blog-single-share">
+                    <div class='justify-content-center'>
+                        <a class='btn btn-outline-primary btn-square m-1' href="<?php echo htmlspecialchars((string) $fbShare, ENT_QUOTES, "UTF-8"); ?>" target="_blank" rel="noopener noreferrer"><i class='fab fa-facebook-f'></i></a>
+                        <a class='btn btn-outline-primary btn-square m-1' href='https://instagram.com/edibearsworld?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D' target="_blank" rel="noopener noreferrer"><i class='fab fa-instagram'></i></a><br>
+                        <a class='btn btn-outline-primary btn-square m-1' href='https://www.youtube.com/channel/UCEMob_TpTUErMEKeK9jiz_w' target="_blank" rel="noopener noreferrer"><i class='fab fa-youtube'></i></a>
+                        <a class='btn btn-outline-primary btn-square m-1' target='_blank' rel="noopener noreferrer" href='https://www.pinterest.com/edibearsworld/'><i class='fab fa-pinterest'></i></a>
+                    </div>
+                    <span class="font-weight-bold text-warning">SHARE</span><br>
                 </div>
             </div>
     </div>
