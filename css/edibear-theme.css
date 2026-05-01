@@ -1019,10 +1019,17 @@ h6.text-primary:not(.text-white),
   background-color: #fff;
 }
 
-.edi-hidden-den-intro {
+/* Home (and footer newsletter): same reading width + justified body copy */
+.edi-home-lead {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 870px;
+  margin-left: auto;
+  margin-right: auto;
   text-align: justify;
   text-justify: inter-word;
   hyphens: auto;
+  -webkit-hyphens: auto;
   color: var(--edi-body);
   line-height: 1.65;
 }

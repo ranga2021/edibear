@@ -150,8 +150,8 @@
             </div>
 
             <div class='row mt-3 justify-content-center' style='margin-bottom:-50px; margin-top:-50px;'>
-                <div class="col-lg-10 col-md-12 row">
-                <p class="text-justify">
+                <div class="col-lg-10 col-md-12">
+                <p class="edi-home-lead mb-0">
                 Congratulations, Explorer! You’ve reached your first destination. 
         Search every corner to find new resources to polish your skills and boost your brainpower.
         Simply <b>select your Language, Grade, and Category</b> to find exactly what you need. 
@@ -230,11 +230,15 @@
 
        <div class="text-center">
         <h1 class="text-danger">THE HONEY MARKET</h1>
-      <p style="max-width:890px; margin:0 auto; line-height:1.6; text-align: justify;">
+      </div>
+      <div class="row mt-3 justify-content-center">
+        <div class="col-lg-10 col-md-12">
+      <p class="edi-home-lead mb-0">
         This is your second destination! Explore every trail and collect new treasures
-        to sharpen your knowledge and brighten your brave hearts!Discover your favourite things to make this journey truly memorable. It's time to bring the fun home for your next big adventure!
+        to sharpen your knowledge and brighten your brave hearts! Discover your favourite things to make this journey truly memorable. It's time to bring the fun home for your next big adventure!
     </p>
-       </div>
+        </div>
+      </div>
 
 <div class="row mt-4">
 
@@ -343,7 +347,7 @@
         </div>
         <div class='row mt-3 justify-content-center'>
             <div class="col-lg-10 col-md-12">
-                <p class="text-justify" style='max-width:870px;'>
+                <p class="edi-home-lead mb-0">
                     It's time to see what our early buddies and parents think about Edi's adventure! In a busy life, it can be hard to meet all your child's learning and entertainment needs, but I am here to help you every step of the way. Nothing makes me happier than seeing my Little Buddies succeed!
                 </p>
             </div>
@@ -392,7 +396,7 @@
 
             <div class="row mt-3 justify-content-center">
                 <div class="col-lg-10 col-md-12">
-                    <p class="mb-0 edi-hidden-den-intro">
+                    <p class="edi-home-lead mb-0">
                 Hurrah! You've reached the third destination. This is very special. Inside the Hidden Den, you can discover exciting things that make learning feel just like play! Step inside and explore what you want to learn while Edi guides you step-by-step. Now, you're ready to face any challenge with total confidence!</p>
                 </div>
             </div>
@@ -441,7 +445,7 @@
 
             <div class="row mt-3 justify-content-center">
                 <div class="col-lg-10 col-md-12">
-                <p class="text-justify mb-0" style="max-width:1000px;margin-left:auto;margin-right:auto;">
+                <p class="edi-home-lead mb-0">
                 Explorer! We’ve reached the end of the adventure. It’s time to show off your amazing talents and celebrate everything you’ve learned along the way. I’ve set new missions with exciting challenges to test your skills! Grab your tools, join the fun, and you could even win a special prize. Let’s see what you can do!</p>
                 </div>
             </div>

@@ -619,14 +619,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class='row mb-4 py-5 justify-content-center'>
                     <div class='text-center footerEmailCustom pl-2 pr-2 pl-md-2 pr-md-2 pl-sm-3 pr-sm-3'>
                         <h1 class='text-danger'>JOIN MY FAMILY</h1>
-                        <p style='
-    text-align:justify;
-    color:#666;
-    line-height:1.7;
-'>
+                        <p class='edi-home-lead' style='color:#666;'>
     Don’t miss a single adventure! Sign up for Edi’s newsletter to get new worksheets,
-    ‘Brave Heart’ challenge <br>alerts, and special surprises delivered straight to your inbox.
-    Come on in — there’s always a seat for you at <br>our table!
+    ‘Brave Heart’ challenge alerts, and special surprises delivered straight to your inbox.
+    Come on in — there’s always a seat for you at our table!
 </p>
                         <div class='input-group mt-4 px-2 px-sm-5'>
                             <input type='email' class='form-control newsl-border' id='newsletterEmail' style='padding: 25px;' placeholder='Your Email Here'>
