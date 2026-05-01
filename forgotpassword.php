@@ -57,9 +57,9 @@ if ($resetReady && isset($_POST["request_reset"])) {
         $view = "request";
     } else {
         $st = $conn->prepare(
-            "SELECT id, email, name FROM tourists WHERE email = :e AND status = 1 LIMIT 1"
+            "SELECT id, email, name FROM tourists WHERE (email = :e OR username = :e2) AND status = 1 LIMIT 1"
         );
-        $st->execute([":e" => $email]);
+        $st->execute([":e" => $email, ":e2" => $email]);
         $u = $st->fetch(PDO::FETCH_ASSOC);
         if ($u) {
             $tok = bin2hex(random_bytes(32));
@@ -69,7 +69,14 @@ if ($resetReady && isset($_POST["request_reset"])) {
             );
             $upd->execute([":tok" => $tok, ":ex" => $exp, ":id" => (int) $u["id"]]);
             $url = edibear_public_base_url() . "/forgotpassword.php?token=" . rawurlencode($tok);
-            edibear_send_password_reset_email((string) $u["email"], (string) ($u["name"] ?? ""), $url);
+            $to = trim((string) ($u["email"] ?? ""));
+            if ($to === '' || !filter_var($to, FILTER_VALIDATE_EMAIL)) {
+                $to = $email;
+            }
+            $sent = edibear_send_password_reset_email($to, (string) ($u["name"] ?? ""), $url);
+            if (!$sent) {
+                error_log('edibear: password reset email failed to send for tourist id ' . (int) $u['id']);
+            }
         }
         /* Same message whether or not the email exists (avoid account enumeration). */
         $view = "sent";
