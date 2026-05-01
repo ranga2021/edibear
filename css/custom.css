@@ -268,13 +268,13 @@
 .explorer-search-area {
     margin-top: -50px;
     /* Reduce the top/bottom padding to shrink the overall height */
-    padding: 30px 0; 
+    padding: 60px 0; 
     /* Change 'cover' to '100% 100%' to squish the full image into the area */
     background: url("../img/Web pic/Search image.webp") no-repeat;
     background-position: center;
     background-size: 100% 100%; 
     
-    min-height: var(--explorer-search-area-min-height, 200px); 
+    min-height: var(--explorer-search-area-min-height, 250px); 
 }
 
 /* selects */

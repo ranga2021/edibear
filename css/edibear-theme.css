@@ -17,7 +17,7 @@
   --edi-heading: #f65247;
   --edi-body: #606062;
   /* Home category explorer strip: min height for `Search image.webp` banner (tune to match asset) */
-  --explorer-search-area-min-height: 200px;
+  --explorer-search-area-min-height: 250px;
   /* Unified page titles (dark) + banner */
   --edi-title-color: #212529;
   --edi-h1-size: 2.25rem;
@@ -281,7 +281,7 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   left: 0;
   right: 0;
   z-index: 2;
-  padding-bottom: 1.25rem !important;
+  padding-bottom: 7% !important;
   justify-content: flex-end !important;
 }
 
@@ -1033,10 +1033,12 @@ h6.text-primary:not(.text-white),
   line-height: 1.65;
 }
 
-/* Newsletter form: same horizontal span as .edi-home-lead above it (full col width) */
+/* Newsletter form: 60% of column, centered */
 .footerEmailCustom .edi-footer-newsletter-form {
-  width: 100%;
-  max-width: 100%;
+  width: 60%;
+  max-width: 60%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* lg+: two columns share one row height; featured card grows so its bottom lines up with the 2×2 grid */
