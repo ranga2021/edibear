@@ -3,7 +3,7 @@
     require_once("./classes/class.user.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
-    $userHeader = new HEADER();
+    $userHeader = new HEADER("blogs");
     $user = new USER();
     $widgets = new WIDGETS();
     if ( isset($_GET['id']) && $_GET['id'] > 0 ) {
@@ -22,6 +22,11 @@
             $blogDate = date("d M Y", strtotime(substr($blogDetailsArr['timestamp'], 0, 10)));
             $blogMainImage = $widgets->createCachelessImage("./img/blogs/".$blogDetailsArr['image']);
             $fbShare = "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fedibear.com%2Fblog%3Fid%3D".$blogID."&amp;src=sdkpreparse";
+            $tagTrim = trim((string) $blogTag);
+            $tagParts = array_values(array_filter(array_map("trim", explode("/", $tagTrim)), function ($s) {
+                return $s !== "";
+            }));
+            $breadcrumbTopic = !empty($tagParts) ? strtoupper($tagParts[0]) : "BLOG";
         } else {
             $user->redirect("./blogs");
         }
@@ -35,9 +40,10 @@
 <head>
    
     <?php echo $userHeader->printUserHeader($blogTitle, str_replace("'", "", $blogMainDescription), substr($blogMainImage, 2)) ?>
+    <link rel="stylesheet" href="css/product_details.css">
 </head>
 
-<body>
+<body class="edi-blog-single-page">
     <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0" nonce="ndpmmHDo"></script>
     <?php
         echo $userHeader->printUserNav();        //Topbar
@@ -45,44 +51,45 @@
     ?>
     <div class="page-header-bg"></div>
 
-    <div class="container-fluid py-3 p page-header-content" style="margin-top: 0px !important;">
-        <div class="container pt-3">
+    <div class="container mt-5 page-header-content pb-5 edi-blog-single-inner px-lg-4">
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                    <li class="breadcrumb-item"><a href="./blogs">Blog</a></li>
-                    <li class="breadcrumb-item"><?php echo htmlspecialchars($blogTag, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($blogTitle, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <li class="breadcrumb-item"><a href="./blogs">The Hidden Den</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($breadcrumbTopic, ENT_QUOTES, "UTF-8"); ?></li>
                 </ol>
             </nav>
-            <h4 class="text-warning mt-2"><?php echo $blogTitle; ?></h4>
-            <div class="row mt-4">
-                <div class="col-12 text-center">
-                    <img src=<?php echo $blogMainImage ?> class="img-fluid" alt="Blog Main Image" style="width:60%;">
-                </div>
+
+            <div class="edi-page-title-row edi-blogs-page-title-row mt-2">
+                <h1 class="edi-blogs-main-title"><?php echo htmlspecialchars(strtoupper((string) $blogTitle), ENT_QUOTES, "UTF-8"); ?></h1>
+                <div class="edi-page-title-rule" role="presentation"></div>
             </div>
+
+            <div class="edi-blog-single-featured mt-3 mb-4">
+                <img src="<?php echo htmlspecialchars((string) $blogMainImage, ENT_QUOTES, "UTF-8"); ?>" class="edi-blog-single-featured__img img-fluid" alt="<?php echo htmlspecialchars((string) $blogTitle, ENT_QUOTES, "UTF-8"); ?>">
+            </div>
+
             <div class="row">
                 <div class="col-lg-2 mt-3 text-center">
                     <div class='justify-content-center'>
-                        <a class='btn btn-outline-primary btn-square m-1' href=<?php echo $fbShare ?> target="_blank" ><i class='fab fa-facebook-f'></i></a>
-                        <a class='btn btn-outline-primary btn-square m-1' href='https://instagram.com/edibearsworld?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D' target="_blank" ><i class='fab fa-instagram'></i></a><br>
-                        <a class='btn btn-outline-primary btn-square m-1' href='https://www.youtube.com/channel/UCEMob_TpTUErMEKeK9jiz_w'><i class='fab fa-youtube' target="_blank" ></i></a>
-                        <a class='btn btn-outline-primary btn-square m-1' target='_blank' href='https://www.pinterest.com/edibearsworld/'><i class='fab fa-pinterest'></i></a>
+                        <a class='btn btn-outline-primary btn-square m-1' href="<?php echo htmlspecialchars((string) $fbShare, ENT_QUOTES, "UTF-8"); ?>" target="_blank" rel="noopener noreferrer"><i class='fab fa-facebook-f'></i></a>
+                        <a class='btn btn-outline-primary btn-square m-1' href='https://instagram.com/edibearsworld?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D' target="_blank" rel="noopener noreferrer"><i class='fab fa-instagram'></i></a><br>
+                        <a class='btn btn-outline-primary btn-square m-1' href='https://www.youtube.com/channel/UCEMob_TpTUErMEKeK9jiz_w' target="_blank" rel="noopener noreferrer"><i class='fab fa-youtube'></i></a>
+                        <a class='btn btn-outline-primary btn-square m-1' target='_blank' rel="noopener noreferrer" href='https://www.pinterest.com/edibearsworld/'><i class='fab fa-pinterest'></i></a>
                     </div>
                     <span class="font-weight-bold text-warning">SHARE</span><br>
                 </div>
-                <div class="col-lg-10 text-center">
+                <div class="col-lg-10">
                     <div class="row mb-2 pt-3">
                         <div class="col-12 text-left">
                             <i class='fa fa-calendar-alt fa-sm text-warning p-1'></i>
-                            <span class='text-warning pr-4'><?php echo $blogDate; ?></span>
+                            <span class='text-warning pr-4'><?php echo htmlspecialchars($blogDate, ENT_QUOTES, "UTF-8"); ?></span>
                             <i class='fa fa-tag fa-sm text-warning p-1'></i>
-                            <span class='text-warning'><?php echo $blogTag; ?></span>
+                            <span class='text-warning'><?php echo htmlspecialchars($blogTag, ENT_QUOTES, "UTF-8"); ?></span>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-12 text-left">
-                            <span class="font-weight-bold text-primary"><?php echo $blogTitle; ?></span><br>
                             <p class="text-justify mt-2"><?php echo $blogMainDescription; ?></p>
                         </div>
                     </div>
@@ -124,7 +131,6 @@
                     ?>
                 </div>
             </div>
-        </div>
     </div>
 
     <!-- Footer Start -->

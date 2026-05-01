@@ -335,7 +335,6 @@ if ($forceExplorer && $exploreCategoryName !== "") {
    
 
     <div class="container mt-5 page-header-content">
-         <div class="col-lg-8 ">
                 <nav class="edi-breadcrumb" aria-label="Breadcrumb">
                     <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                         <?php foreach ($treasuresBreadcrumbs as $bc): ?>
@@ -374,10 +373,6 @@ if ($forceExplorer && $exploreCategoryName !== "") {
             <?php endif; ?>
         </div>
         <?php endif; ?>
-                    
-
-            </div>
-        
 
         <?php if (!$forceExplorer): ?>
         <form method="GET" action="" class="treasures-filters-form" id="treasures-filters-form" aria-label="Filter treasures">

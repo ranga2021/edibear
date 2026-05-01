@@ -201,9 +201,6 @@ if($sub_cat_id != ""){
     <!-- books Start -->
     <div class="container mt-5 page-header-content">
 
-        <div class="d-flex pageheaderdiv">
-            
-            <div class="col-lg-8 ">
                <nav class="edi-breadcrumb" aria-label="Breadcrumb">
                 <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
@@ -233,13 +230,10 @@ if($sub_cat_id != ""){
 
 
                 
-                    <div class="edi-page-title-row mt-2">
+            <div class="edi-page-title-row mt-2">
                         <h1><?php echo htmlspecialchars($mainCatTitle !== "Category" ? $mainCatTitle : "BOOKS & PAPERS", ENT_QUOTES, 'UTF-8'); ?></h1>
                         <div class="edi-page-title-rule" role="presentation"></div>
-                    </div>
-
             </div>
-        </div>
         
             <!-- Navitage to page top -->
             <a id="page-top"></a>

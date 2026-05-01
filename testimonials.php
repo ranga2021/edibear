@@ -30,21 +30,19 @@
     ?>
     <div class="page-header-bg"></div>
 
-    
     <!-- Testimonials -->
-    <div class="container-fluid pt-4 pb-5 page-header-content">
-        <div class="container pt-5 pb-5">
+    <div class="container mt-5 page-header-content pb-5">
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Testimonials</li>
+                    <li class="breadcrumb-item active" aria-current="page">Trail of Tales</li>
                 </ol>
             </nav>
-            
-             <!-- Title + Line -->
-        <div class="text-center">
-            <h1 class="text-danger">TRAIL OF TALES</h1>
-        </div>
+
+            <div class="edi-page-title-row mt-2">
+                <h1 class="text-danger">TRAIL OF TALES</h1>
+                <div class="edi-page-title-rule" role="presentation"></div>
+            </div>
 
             <div class="row mt-3 justify-content-center">
                 <div class="col-lg-10 col-md-12">
@@ -64,7 +62,6 @@
                     }
                 ?>
             </div>
-        </div>
     </div>
 
     <!-- <div class="testimonial-bg">

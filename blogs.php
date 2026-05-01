@@ -85,7 +85,7 @@
     <div class="container-fluid py-3 page-header-content edi-blogs-page">
         <div class="container pt-3 px-lg-4">
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
-                <ol class="breadcrumb bg-transparent p-0 mb-0">
+                <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">The Hidden Den</li>
                 </ol>
