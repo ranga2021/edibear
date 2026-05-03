@@ -4,6 +4,7 @@ require_once("./classes/class.user.php");
 require_once("./classes/class.header.php");
 require_once("./classes/class.widgets.php");
 require_once("./classes/edi_discount_badge.php");
+require_once("./classes/edi_shipping.php");
 
 $userHeader = new HEADER("shop");
 $user = new USER();
@@ -175,8 +176,11 @@ if ($totalReviews > 0) {
                 if ($metaHas($product['brand'] ?? '')) {
                     $metaRows[] = array('Publisher', trim((string) $product['brand']));
                 }
+                $kgForMeta = EdiShipping::productKgFromRow($product);
                 if ($metaHas($product['weight'] ?? '')) {
                     $metaRows[] = array('Weight', trim((string) $product['weight']));
+                } elseif ($kgForMeta > 0) {
+                    $metaRows[] = array('Weight', rtrim(rtrim(sprintf('%.4f', $kgForMeta), '0'), '.') . ' kg');
                 }
                 ?>
                 <?php if (count($metaRows) > 0): ?>

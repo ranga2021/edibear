@@ -2,6 +2,7 @@
 session_start();
 require_once("./classes/class.user.php");
 require_once("./classes/class.header.php");
+require_once("./classes/edi_shipping.php");
 
 $user = new USER();
 $userHeader = new HEADER("cart");
@@ -44,9 +45,10 @@ $paymentMethod = $paymentRaw === 'bank_transfer' ? 'bank_transfer' : 'cod';
 
 // Recalculate totals
 $total = 0;
+$totalWeightKg = 0.0;
 foreach ($cartItems as $item) {
     $product = $user->fetchAll(
-        array("id","product_name","price","discounted_price"),
+        '',
         array("products"),
         array("id"=>$item['product_id'])
     )[0];
@@ -54,9 +56,12 @@ foreach ($cartItems as $item) {
     $price = $product['discounted_price'] > 0 ? $product['discounted_price'] : $product['price'];
     $subtotal = $price * $item['quantity'];
     $total += $subtotal;
+    $totalWeightKg += EdiShipping::productKgFromRow($product) * (int) $item['quantity'];
 }
 
-$shipping = $total > 0 ? 450 : 0;
+$pdo = $user->getConnection();
+$shipQuote = EdiShipping::quote($pdo, $totalWeightKg, $district);
+$shipping = $total > 0 ? $shipQuote['shipping_total'] : 0.0;
 $orderTotal = $total + $shipping;
 
 // Generate order number

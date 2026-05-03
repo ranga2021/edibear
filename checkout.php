@@ -2,6 +2,7 @@
 session_start();
 require_once("./classes/class.user.php");
 require_once("./classes/class.header.php");
+require_once("./classes/edi_shipping.php");
 
 $user = new USER();
 $userHeader = new HEADER("cart");
@@ -18,10 +19,11 @@ $cartItems = $user->fetchAll(
 
 $total = 0;
 $totalItems = 0;
+$totalWeightKg = 0.0;
 
 foreach ($cartItems as $item) {
     $product = $user->fetchAll(
-        array("id","product_name","price","discounted_price","image","age_group","brand","language"),
+        '',
         array("products"),
         array("id"=>$item['product_id'])
     )[0];
@@ -31,9 +33,21 @@ foreach ($cartItems as $item) {
 
     $total += $subtotal;
     $totalItems += $item['quantity'];
+    $totalWeightKg += EdiShipping::productKgFromRow($product) * (int) $item['quantity'];
 }
 
-$shipping = $total > 0 ? 450 : 0;
+$pdo = $user->getConnection();
+$weightShipFee = $total > 0 ? EdiShipping::weightShippingFee($pdo, $totalWeightKg) : 0.0;
+$districtRows = EdiShipping::fetchDistricts($pdo);
+$districtFeeMap = array();
+foreach ($districtRows as $dr) {
+    $key = strtolower(trim((string) ($dr['name'] ?? '')));
+    if ($key !== '') {
+        $districtFeeMap[$key] = (float) ($dr['fee_lkr'] ?? 0);
+    }
+}
+$districtFeeInitial = 0.0;
+$shipping = $weightShipFee + $districtFeeInitial;
 $orderTotal = $total + $shipping;
 ?>
 
@@ -157,7 +171,22 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label class="checkout-label">District</label>
-                            <input type="text" name="district" class="form-control checkout-input" placeholder="District" required>
+                            <?php if (!empty($districtRows)): ?>
+                            <select name="district" id="ediCheckoutDistrict" class="form-control checkout-input" required>
+                                <option value="" disabled selected hidden>Choose district…</option>
+                                <?php foreach ($districtRows as $dr): ?>
+                                    <?php
+                                    $dn = (string) ($dr['name'] ?? '');
+                                    if ($dn === '') {
+                                        continue;
+                                    }
+                                    ?>
+                                <option value="<?php echo htmlspecialchars($dn, ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars($dn, ENT_QUOTES, 'UTF-8'); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <?php else: ?>
+                            <input type="text" name="district" id="ediCheckoutDistrict" class="form-control checkout-input" placeholder="District" required>
+                            <?php endif; ?>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label class="checkout-label">Mobile Number</label>
@@ -181,8 +210,16 @@ document.addEventListener('DOMContentLoaded', function () {
                             <span>Rs. <?php echo number_format($total, 2); ?></span>
                         </div>
                         <div class="summary-row">
-                            <span>Shipping (Weight Based)</span>
-                            <span>Rs. <?php echo number_format($shipping, 2); ?></span>
+                            <span>Cart weight</span>
+                            <span><?php echo number_format($totalWeightKg, 3); ?> kg</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping (weight tier)</span>
+                            <span id="ediShipWeightLine">Rs. <?php echo number_format($weightShipFee, 2); ?></span>
+                        </div>
+                        <div class="summary-row">
+                            <span>District fee</span>
+                            <span id="ediShipDistrictLine">Rs. <?php echo number_format($districtFeeInitial, 2); ?></span>
                         </div>
 
                         <div class="voucher-block mt-3">
@@ -195,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         <div class="summary-total-row mt-3">
                             <span>Order Total</span>
-                            <span>Rs. <?php echo number_format($orderTotal, 2); ?></span>
+                            <span id="ediCheckoutOrderTotal">Rs. <?php echo number_format($orderTotal, 2); ?></span>
                         </div>
 
                         <div class="payment-options mt-3">
@@ -223,6 +260,35 @@ document.addEventListener('DOMContentLoaded', function () {
 </div>
 
 <?php echo $userHeader->printUserFooter(); ?>
+<?php if (!empty($cartItems)): ?>
+<script>
+(function () {
+    var sub = <?php echo json_encode((float) $total); ?>;
+    var wFee = <?php echo json_encode((float) $weightShipFee); ?>;
+    var distFees = <?php echo json_encode($districtFeeMap); ?>;
+    var sel = document.getElementById('ediCheckoutDistrict');
+    var dLine = document.getElementById('ediShipDistrictLine');
+    var totEl = document.getElementById('ediCheckoutOrderTotal');
+    if (!sel || !dLine || !totEl) return;
+    function money(n) {
+        return 'Rs. ' + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function refresh() {
+        var d = 0;
+        if (sel.tagName === 'SELECT') {
+            var v = (sel.value || '').trim().toLowerCase();
+            if (v && distFees && Object.prototype.hasOwnProperty.call(distFees, v)) {
+                d = parseFloat(distFees[v]) || 0;
+            }
+        }
+        dLine.textContent = money(d);
+        totEl.textContent = money(sub + wFee + d);
+    }
+    sel.addEventListener('change', refresh);
+    sel.addEventListener('input', refresh);
+})();
+</script>
+<?php endif; ?>
 
 </body>
 </html>

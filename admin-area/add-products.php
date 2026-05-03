@@ -73,20 +73,24 @@
       }
       $author      = $_POST['author'];
       $isbn        = trim((string) ($_POST['isbn'] ?? ''));
-      $weight      = trim((string) ($_POST['weight'] ?? ''));
-      
+      $weightKgRaw = trim((string) ($_POST['weight_kg'] ?? ''));
+      $weight_kg = ($weightKgRaw === '') ? null : max(0.0, (float) $weightKgRaw);
+      $weight = ($weight_kg !== null && $weight_kg > 0)
+          ? (rtrim(rtrim(number_format($weight_kg, 4, '.', ''), '0'), '.') . ' kg')
+          : '';
+
       // Image Handling (Simplified - ensure your upload directory exists)
       $main_image = $_FILES['main_image']['name'];
       $target = "../img/products/" . basename($main_image);
       move_uploaded_file($_FILES['main_image']['tmp_name'], $target);
 
       try {
-          $stmt = $user->runQuery("INSERT INTO products (category_id, sub_category_id, product_subcategory_id, brand, product_name, price, discount_percentage, discounted_price, age_group, description, language, author, isbn, weight, stock, image, status) 
-                                 VALUES (:cid, NULL, :pscid, :brand, :pname, :price, :disc, :dprice, :age, :desc, :lang, :auth, :isbn, :weight, :stock, :img, 1)");
+          $stmt = $user->runQuery("INSERT INTO products (category_id, sub_category_id, product_subcategory_id, brand, product_name, price, discount_percentage, discounted_price, age_group, description, language, author, isbn, weight, weight_kg, stock, image, status) 
+                                 VALUES (:cid, NULL, :pscid, :brand, :pname, :price, :disc, :dprice, :age, :desc, :lang, :auth, :isbn, :weight, :wkg, :stock, :img, 1)");
           $stmt->execute(array(
               ":cid"=>$category_id, ":pscid"=>$product_subcategory_id, ":brand"=>$brand, ":pname"=>$p_name, ":price"=>$price, 
               ":disc"=>$discountPct, ":dprice"=>$disc_price, ":age"=>$age_group, ":desc"=>$description, 
-              ":lang"=>$language, ":auth"=>$author, ":isbn"=>$isbn, ":weight"=>$weight, ":stock"=>$stock, ":img"=>$main_image
+              ":lang"=>$language, ":auth"=>$author, ":isbn"=>$isbn, ":weight"=>$weight, ":wkg"=>$weight_kg, ":stock"=>$stock, ":img"=>$main_image
           ));
           $msg = "<div class='alert alert-success'>Product added successfully!</div>";
       } catch (PDOException $e) {
@@ -236,10 +240,10 @@
                             </div>
                         </div>
                         <div class="row mb-2">
-                            <div class="col-5"><label class="form-label mb-0 d-block pt-2">Weight</label></div>
+                            <div class="col-5"><label class="form-label mb-0 d-block pt-2">Weight (kg)</label></div>
                             <div class="col-7">
-                              <input type="text" name="weight" class="form-control" placeholder="e.g. 0.20 kg">
-                              <small class="text-muted">Optional; shown on the product page.</small>
+                              <input type="number" name="weight_kg" class="form-control" step="0.0001" min="0" placeholder="e.g. 0.25">
+                              <small class="text-muted">Optional. Used for cart total weight and shipping tiers.</small>
                             </div>
                         </div>
                         <button type="button" class="btn btn-sm btn-success mt-2">ADD ANOTHER OPTION +</button>

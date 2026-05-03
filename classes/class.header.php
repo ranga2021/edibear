@@ -67,6 +67,11 @@ class HEADER {
             "redirect"=>"./manage-product-subcategories",
             "icon"=>"fas fa-sitemap text-info"
         ),
+        "shipping-rates"=>array(
+            "name"=>"Shipping rates",
+            "redirect"=>"./shipping-rates",
+            "icon"=>"fas fa-truck text-info"
+        ),
 
         "add-blog"=>array(
             "name"=>"Add Blog",

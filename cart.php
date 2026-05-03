@@ -2,6 +2,7 @@
 // session_start(); // You can likely remove this if you are purely using localStorage
 require_once("./classes/class.user.php");
 require_once("./classes/class.header.php");
+require_once("./classes/edi_shipping.php");
 
 $user = new USER();
 $userHeader = new HEADER("cart");
@@ -102,11 +103,12 @@ if ($user_id > 0) {
 <?php
 $total = 0;
 $totalItems = 0;
+$totalWeightKg = 0.0;
 
 // Calculate Totals
 foreach ($cartItems as $item) {
     $productResult = $user->fetchAll(
-        array("price","discounted_price"),
+        '',
         array("products"),
         array("id"=>$item['product_id'])
     );
@@ -116,10 +118,13 @@ foreach ($cartItems as $item) {
         $price = $product['discounted_price'] > 0 ? $product['discounted_price'] : $product['price'];
         $total += ($price * $item['quantity']);
         $totalItems += $item['quantity'];
+        $totalWeightKg += EdiShipping::productKgFromRow($product) * (int) $item['quantity'];
     }
 }
 
-$shipping = ($total > 0) ? 450 : 0;
+$pdo = $user->getConnection();
+$shippingWeight = ($total > 0) ? EdiShipping::weightShippingFee($pdo, $totalWeightKg) : 0.0;
+$shipping = $shippingWeight;
 $orderTotal = $total + $shipping;
 ?>
 
@@ -221,10 +226,14 @@ $orderTotal = $total + $shipping;
                         <span>Rs. <?php echo number_format($total, 2); ?></span>
                     </div>
                     <div class="summary-row">
-                        <span>Shipping</span>
+                        <span>Total weight</span>
+                        <span><?php echo number_format($totalWeightKg, 3); ?> kg</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping (weight tier)</span>
                         <span>Rs. <?php echo number_format($shipping, 2); ?></span>
                     </div>
-                    <p class="summary-note">* Shipping based on weight and location.</p>
+                    <p class="summary-note">* District surcharge is added at checkout when you choose your district.</p>
                     <div class="summary-total-row">
                         <span>Order Total</span>
                         <span>Rs. <?php echo number_format($orderTotal, 2); ?></span>
