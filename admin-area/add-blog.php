@@ -338,7 +338,7 @@ for ($ei = 0; $ei < 8; $ei++) {
 }
 ?>
 
-<div class="mt-4">
+<div class="mt-4 edi-admin-form-actions">
 <?php
 if ($editMode) {
     echo "<button type='submit' name='updateBlogSubmit' class='btn btn-primary'>Update</button>";

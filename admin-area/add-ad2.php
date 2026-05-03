@@ -248,6 +248,7 @@ if (isset($_POST['addNewad2Submit']) || isset($_POST['updatead2Submit'])) {
                 <div class="row">
                   <div class="col-12">
                     <input type="hidden" name="howManyDescriptions" value="1">
+                    <div class="edi-admin-form-actions">
                     <?php
                       if ( $editMode ) {
                         echo "
@@ -259,6 +260,7 @@ if (isset($_POST['addNewad2Submit']) || isset($_POST['updatead2Submit'])) {
                       }
                     ?>
                     <input type="button" class="btn btn-secondary" value="Cancel" onclick="location.href='./add-ad2'">
+                    </div>
                   </div>
                 </div>
               </form>
@@ -285,9 +287,10 @@ if (isset($_POST['addNewad2Submit']) || isset($_POST['updatead2Submit'])) {
                 ad2 Title : $currentad2Title<br>
                 ad2 Tag : $currentad2Tag<br>
                 <input type='hidden' name='deletead2ID' value='$currentad2ID'>
-              <br>
+              <div class='edi-admin-form-actions justify-content-center mt-2'>
               <input type='submit' class='btn btn-danger btn-sm' name='confirmDeletead2Submit' value='Delete'>
               <button class='btn btn-sm btn-secondary' type='button' onclick='location.reload()'>Cancel</button>
+              </div>
             </form>
             </div>
           </div>

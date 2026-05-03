@@ -341,13 +341,13 @@ require __DIR__ . "/partials/edi_worksheet_metadata_form.php";
   </div>
 </div>
 
-<div class="mt-4">
+<div class="mt-4 edi-admin-form-actions">
 <?php
 if ($editMode) {
-    echo "<button type='submit' name='updatebooksSubmit' class='btn btn-success mr-2'>Update</button>";
-    echo "<button type='button' class='btn btn-danger mr-2' onclick='deletebooksSubmit()'>Delete</button>";
+    echo "<button type='submit' name='updatebooksSubmit' class='btn btn-success'>Update</button>";
+    echo "<button type='button' class='btn btn-danger' onclick='deletebooksSubmit()'>Delete</button>";
 } else {
-    echo "<button type='submit' name='addNewbooksSubmit' class='btn btn-success mr-2'>Add</button>";
+    echo "<button type='submit' name='addNewbooksSubmit' class='btn btn-success'>Add</button>";
 }
 ?>
 <button type="button" class="btn btn-secondary" onclick="location.href='./books'">Cancel</button>
@@ -376,8 +376,10 @@ if ($editMode) {
         <form method='post' class='text-center'>
           <p class='mb-2'>Document title: <strong>$ediDelTitle</strong><br>Tag: <strong>$ediDelTag</strong></p>
           <input type='hidden' name='deletebooksID' value='" . (int) $currentbooksID . "'>
+          <div class='edi-admin-form-actions justify-content-center mt-2'>
           <input type='submit' class='btn btn-danger btn-sm' name='confirmDeletebooksSubmit' value='Delete'>
           <button class='btn btn-sm btn-secondary' type='button' data-dismiss='modal'>Cancel</button>
+          </div>
         </form>
       </div>
     </div>

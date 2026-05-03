@@ -134,3 +134,171 @@ footer.footer.edibear-admin-footer {
 .sidenav .navbar-nav > .nav-item > .nav-link.active .icon.icon-shape i {
   color: #fff !important;
 }
+
+/* Even-sized primary form actions (Update / Delete / Cancel, etc.) */
+main.main-content .edi-admin-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+main.main-content .edi-admin-form-actions > .btn,
+main.main-content .edi-admin-form-actions > input[type="submit"].btn,
+main.main-content .edi-admin-form-actions > input[type="button"].btn,
+main.main-content .edi-admin-form-actions > input[type="reset"].btn,
+main.main-content .edi-admin-form-actions > a.btn {
+  min-width: 8rem;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+main.main-content .edi-admin-form-actions > .btn-sm,
+main.main-content .edi-admin-form-actions > input.btn-sm,
+main.main-content .edi-admin-form-actions > button.btn-sm {
+  min-width: 6.75rem;
+}
+
+main.main-content .edi-admin-form-actions.justify-content-center {
+  justify-content: center;
+}
+
+/* Add / edit product admin form (mock layout) */
+main.main-content .edi-product-form .edi-product-section-title {
+  letter-spacing: 0.06em;
+}
+main.main-content .edi-product-form .form-control {
+  border-radius: 0.375rem;
+}
+main.main-content .edi-product-thumb {
+  overflow: hidden;
+}
+main.main-content .edi-product-thumb--sm {
+  width: 80px;
+  height: 80px;
+}
+
+/* Admin products list (mock layout) */
+main.main-content .edi-products-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+main.main-content .edi-products-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #e53e3e;
+  margin: 0;
+}
+main.main-content .edi-products-search {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.5rem;
+}
+main.main-content .edi-products-search .form-control {
+  min-width: 12rem;
+  border-radius: 0.375rem;
+}
+main.main-content .edi-products-filters {
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  background: #fff;
+}
+main.main-content .edi-products-filters .edi-products-filters-heading {
+  font-weight: 700;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  color: #344767;
+}
+main.main-content .edi-products-filters label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #67748e;
+  margin-bottom: 0.35rem;
+  display: block;
+}
+main.main-content .edi-products-table-wrap {
+  border: 1px solid #dee2e6;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #fff;
+}
+main.main-content .edi-products-table-wrap .table {
+  margin-bottom: 0;
+}
+main.main-content .edi-products-table-wrap .table thead th {
+  border-bottom: 1px solid #dee2e6;
+  border-top: none;
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  color: #67748e;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+  background: #f8f9fa;
+}
+main.main-content .edi-products-table-wrap .table tbody td {
+  border-top: 1px solid #e9ecef;
+  border-left: none;
+  border-right: none;
+  vertical-align: middle;
+  font-size: 0.8125rem;
+  color: #344767;
+}
+main.main-content .edi-products-table-wrap .table tbody tr:first-child td {
+  border-top: none;
+}
+main.main-content .edi-products-table-wrap .edi-product-name-cell {
+  font-weight: 600;
+  color: #344767;
+}
+/* Status toggle on products list */
+main.main-content .edi-product-status-switch {
+  position: relative;
+  display: inline-block;
+  width: 45px;
+  height: 22px;
+}
+main.main-content .edi-product-status-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+main.main-content .edi-product-status-switch .edi-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e0;
+  transition: 0.25s;
+  border-radius: 34px;
+}
+main.main-content .edi-product-status-switch .edi-slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: 0.25s;
+  border-radius: 50%;
+}
+main.main-content .edi-product-status-switch input:checked + .edi-slider {
+  background-color: #2dce89;
+}
+main.main-content .edi-product-status-switch input:checked + .edi-slider:before {
+  transform: translateX(23px);
+}

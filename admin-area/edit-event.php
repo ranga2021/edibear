@@ -270,7 +270,7 @@
                 <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="addWinnerRow()">Add Winners +</button>
 
                 <div class="row mt-4">
-                  <div class="col-12">
+                  <div class="col-12 edi-admin-form-actions">
                     <input type="submit" class="btn btn-success" name="updateEventSubmit" value="Update">
                     <input type="submit" class="btn btn-danger" name="deleteEventSubmit" value="Delete" onclick="return confirm('Are you sure you want to delete this event?');">
                     <a href="event.php" class="btn btn-secondary">Cancel</a>

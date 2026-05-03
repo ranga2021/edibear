@@ -205,12 +205,12 @@ if (isset($_POST["confirmDeleteSubmit"])) {
               <label class="form-label">Description</label>
               <textarea name="description" class="form-control" rows="3" maxlength="2000"><?php echo htmlspecialchars($formDesc); ?></textarea>
             </div>
-            <div class="d-flex flex-wrap">
+            <div class="edi-admin-form-actions">
               <?php
               if ($editMode) {
-                  echo "<button type='submit' name='updateCategorySubmit' class='btn btn-primary me-2 mb-2'>Update</button>
-                        <button type='submit' name='deleteCategorySubmit' class='btn btn-danger me-2 mb-2'>Delete</button>
-                        <a href='./manage-product-categories' class='btn btn-outline-secondary mb-2'>Cancel</a>";
+                  echo "<button type='submit' name='updateCategorySubmit' class='btn btn-primary'>Update</button>
+                        <button type='submit' name='deleteCategorySubmit' class='btn btn-danger'>Delete</button>
+                        <a href='./manage-product-categories' class='btn btn-outline-secondary'>Cancel</a>";
               } else {
                   echo "<button type='submit' name='addCategorySubmit' class='btn btn-success'>Add category</button>";
               }

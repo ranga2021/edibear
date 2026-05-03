@@ -3,6 +3,7 @@ require_once("../classes/session_config.php");
 require_once("../classes/class.user.php");
 require_once("../classes/edi_taxonomy.php");
 require_once("../classes/edi_explorer_content.php");
+require_once("../classes/edi_product_admin.php");
 require_once("../classes/class.header.php");
 
 $adminHeader = new HEADER("products");
@@ -41,6 +42,12 @@ try {
     $categories = [];
     $product_subcategories = [];
 }
+
+$pdo = $user->getConnection();
+$hasMoreDetails = EdiExplorerContent::columnExists($pdo, "products", "more_details");
+$hasGalleryImages = EdiExplorerContent::columnExists($pdo, "products", "gallery_images");
+$hasOptionsExtra = EdiExplorerContent::columnExists($pdo, "products", "options_extra");
+$hasPsub = EdiExplorerContent::columnExists($pdo, "products", "product_subcategory_id");
 
 $msg = "";
 
@@ -97,109 +104,100 @@ if (isset($_POST["btn-update-product"])) {
         : "";
 
     $main_image = $product["image"];
-    if (!empty($_FILES["main_image"]["name"])) {
-        $main_image = basename($_FILES["main_image"]["name"]);
+    if (!empty($_FILES["main_image"]["name"]) && is_uploaded_file($_FILES["main_image"]["tmp_name"])) {
+        $main_image = basename((string) $_FILES["main_image"]["name"]);
         $target = "../img/products/" . $main_image;
         move_uploaded_file($_FILES["main_image"]["tmp_name"], $target);
     }
 
-    try {
-        $hasMore = array_key_exists("more_details", $product);
-        $hasPsub = array_key_exists("product_subcategory_id", $product);
-
-        if ($hasPsub && $hasMore) {
-            $stmt = $user->runQuery(
-                "UPDATE products SET category_id=:cid, sub_category_id=NULL, product_subcategory_id=:pscid, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, isbn=:isbn, weight=:weight, weight_kg=:wkg, stock=:stock, image=:img, more_details=:md WHERE id=:id"
-            );
-            $stmt->execute([
-                ":cid" => $category_id,
-                ":pscid" => $product_subcategory_id,
-                ":brand" => $brand,
-                ":pname" => $p_name,
-                ":price" => $price,
-                ":disc" => $discountPct,
-                ":dprice" => $disc_price,
-                ":age" => $age_group,
-                ":desc" => $description,
-                ":lang" => $language,
-                ":auth" => $author,
-                ":isbn" => $isbn,
-                ":weight" => $weight,
-                ":wkg" => $weight_kg,
-                ":stock" => $stock,
-                ":img" => $main_image,
-                ":md" => $_POST["more_details"] ?? "",
-                ":id" => $id,
-            ]);
-        } elseif ($hasPsub) {
-            $stmt = $user->runQuery(
-                "UPDATE products SET category_id=:cid, sub_category_id=NULL, product_subcategory_id=:pscid, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, isbn=:isbn, weight=:weight, weight_kg=:wkg, stock=:stock, image=:img WHERE id=:id"
-            );
-            $stmt->execute([
-                ":cid" => $category_id,
-                ":pscid" => $product_subcategory_id,
-                ":brand" => $brand,
-                ":pname" => $p_name,
-                ":price" => $price,
-                ":disc" => $discountPct,
-                ":dprice" => $disc_price,
-                ":age" => $age_group,
-                ":desc" => $description,
-                ":lang" => $language,
-                ":auth" => $author,
-                ":isbn" => $isbn,
-                ":weight" => $weight,
-                ":wkg" => $weight_kg,
-                ":stock" => $stock,
-                ":img" => $main_image,
-                ":id" => $id,
-            ]);
-        } elseif ($hasMore) {
-            $stmt = $user->runQuery(
-                "UPDATE products SET category_id=:cid, sub_category_id=NULL, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, isbn=:isbn, weight=:weight, weight_kg=:wkg, stock=:stock, image=:img, more_details=:md WHERE id=:id"
-            );
-            $stmt->execute([
-                ":cid" => $category_id,
-                ":brand" => $brand,
-                ":pname" => $p_name,
-                ":price" => $price,
-                ":disc" => $discountPct,
-                ":dprice" => $disc_price,
-                ":age" => $age_group,
-                ":desc" => $description,
-                ":lang" => $language,
-                ":auth" => $author,
-                ":isbn" => $isbn,
-                ":weight" => $weight,
-                ":wkg" => $weight_kg,
-                ":stock" => $stock,
-                ":img" => $main_image,
-                ":md" => $_POST["more_details"] ?? "",
-                ":id" => $id,
-            ]);
-        } else {
-            $stmt = $user->runQuery(
-                "UPDATE products SET category_id=:cid, sub_category_id=NULL, brand=:brand, product_name=:pname, price=:price, discount_percentage=:disc, discounted_price=:dprice, age_group=:age, description=:desc, language=:lang, author=:auth, isbn=:isbn, weight=:weight, weight_kg=:wkg, stock=:stock, image=:img WHERE id=:id"
-            );
-            $stmt->execute([
-                ":cid" => $category_id,
-                ":brand" => $brand,
-                ":pname" => $p_name,
-                ":price" => $price,
-                ":disc" => $discountPct,
-                ":dprice" => $disc_price,
-                ":age" => $age_group,
-                ":desc" => $description,
-                ":lang" => $language,
-                ":auth" => $author,
-                ":isbn" => $isbn,
-                ":weight" => $weight,
-                ":wkg" => $weight_kg,
-                ":stock" => $stock,
-                ":img" => $main_image,
-                ":id" => $id,
-            ]);
+    $optsJson = null;
+    if ($hasOptionsExtra) {
+        $ks = isset($_POST["extra_opt_k"]) ? (array) $_POST["extra_opt_k"] : array();
+        $vs = isset($_POST["extra_opt_v"]) ? (array) $_POST["extra_opt_v"] : array();
+        $pairs = array();
+        $n = max(count($ks), count($vs));
+        for ($i = 0; $i < $n; $i++) {
+            $k = trim((string) ($ks[$i] ?? ""));
+            $v = trim((string) ($vs[$i] ?? ""));
+            if ($k !== "" || $v !== "") {
+                $pairs[] = array("k" => $k, "v" => $v);
+            }
         }
+        $optsJson = $pairs === array() ? null : json_encode($pairs, JSON_UNESCAPED_UNICODE);
+    }
+
+    $galleryEnc = null;
+    if ($hasGalleryImages) {
+        $slots = EdiProductAdmin::gallerySlotsFromDb((string) ($product["gallery_images"] ?? ""));
+        $imgDir = dirname(__DIR__) . "/img/products";
+        for ($g = 1; $g <= 3; $g++) {
+            $fk = "gallery_" . $g;
+            $newFn = EdiProductAdmin::saveUploadedProductImage(isset($_FILES[$fk]) ? $_FILES[$fk] : null, $imgDir);
+            if ($newFn !== "") {
+                $slots[$g - 1] = $newFn;
+            } else {
+                $slots[$g - 1] = isset($_POST["gallery_keep_" . $g]) ? trim((string) $_POST["gallery_keep_" . $g]) : $slots[$g - 1];
+            }
+        }
+        $galleryEnc = EdiProductAdmin::encodeGallerySlots($slots);
+    }
+
+    try {
+        $sets = array("category_id=:cid", "sub_category_id=NULL");
+        $exec = array(":cid" => $category_id, ":id" => $id);
+        if ($hasPsub) {
+            $sets[] = "product_subcategory_id=:pscid";
+            $exec[":pscid"] = $product_subcategory_id;
+        }
+        $sets = array_merge(
+            $sets,
+            array(
+                "brand=:brand",
+                "product_name=:pname",
+                "price=:price",
+                "discount_percentage=:disc",
+                "discounted_price=:dprice",
+                "age_group=:age",
+                "description=:desc",
+                "language=:lang",
+                "author=:auth",
+                "isbn=:isbn",
+                "weight=:weight",
+                "weight_kg=:wkg",
+                "stock=:stock",
+                "image=:img",
+            )
+        );
+        $exec[":brand"] = $brand;
+        $exec[":pname"] = $p_name;
+        $exec[":price"] = $price;
+        $exec[":disc"] = $discountPct;
+        $exec[":dprice"] = $disc_price;
+        $exec[":age"] = $age_group;
+        $exec[":desc"] = $description;
+        $exec[":lang"] = $language;
+        $exec[":auth"] = $author;
+        $exec[":isbn"] = $isbn;
+        $exec[":weight"] = $weight;
+        $exec[":wkg"] = $weight_kg;
+        $exec[":stock"] = $stock;
+        $exec[":img"] = $main_image;
+        if ($hasMoreDetails) {
+            $sets[] = "more_details=:md";
+            $exec[":md"] = isset($_POST["more_details"]) ? (string) $_POST["more_details"] : "";
+        }
+        if ($hasGalleryImages) {
+            $sets[] = "gallery_images=:gal";
+            $exec[":gal"] = $galleryEnc;
+        }
+        if ($hasOptionsExtra) {
+            $sets[] = "options_extra=:ox";
+            $exec[":ox"] = $optsJson;
+        }
+
+        $sql = "UPDATE products SET " . implode(", ", $sets) . " WHERE id=:id";
+        $stmt = $user->runQuery($sql);
+        $stmt->execute($exec);
         $msg = "<div class='alert alert-success'>Product updated.</div>";
         $st = $user->runQuery("SELECT * FROM products WHERE id = :id LIMIT 1");
         $st->execute([":id" => $id]);
@@ -207,6 +205,25 @@ if (isset($_POST["btn-update-product"])) {
     } catch (PDOException $e) {
         $msg = "<div class='alert alert-danger'>Error: " . htmlspecialchars($e->getMessage()) . "</div>";
     }
+}
+
+$galSlots = $hasGalleryImages ? EdiProductAdmin::gallerySlotsFromDb((string) ($product["gallery_images"] ?? "")) : array("", "", "");
+$decodedExtraOpts = array();
+if ($hasOptionsExtra) {
+    if (!empty($product["options_extra"])) {
+        $d = json_decode((string) $product["options_extra"], true);
+        if (is_array($d)) {
+            foreach ($d as $pair) {
+                if (is_array($pair)) {
+                    $decodedExtraOpts[] = array(
+                        "k" => trim((string) ($pair["k"] ?? "")),
+                        "v" => trim((string) ($pair["v"] ?? "")),
+                    );
+                }
+            }
+        }
+    }
+    $decodedExtraOpts[] = array("k" => "", "v" => "");
 }
 ?>
 <script>
@@ -237,15 +254,16 @@ if (isset($_POST["btn-update-product"])) {
         <div class="col-12">
           <div class="card mb-4">
             <div class="card-header pb-0 d-flex justify-content-between align-items-center">
-              <h6>PRODUCT INFORMATION</h6>
+              <span class="text-muted small font-weight-bold text-uppercase">Edit product</span>
               <a href="./products" class="btn btn-sm btn-outline-secondary">Back to list</a>
             </div>
-            <div class="card-body px-4 pt-0 pb-2">
+            <div class="card-body px-4 py-3 edi-product-form">
               <?php echo $msg; ?>
-              <form method="post" enctype="multipart/form-data">
+              <h2 class="text-uppercase text-danger font-weight-bold h5 mb-4 edi-product-section-title">Product information</h2>
+              <form id="edi-edit-product-form" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="product_id" value="<?php echo (int) $id; ?>">
                 <div class="row">
-                  <div class="col-md-4">
+                  <div class="col-md-4 mb-3">
                     <label>Category</label>
                     <select name="category" id="product_category_select" class="form-control" required>
                       <option value="">Select Category</option>
@@ -256,29 +274,14 @@ if (isset($_POST["btn-update-product"])) {
                       <?php endforeach; ?>
                     </select>
                   </div>
-
-                  <div class="col-md-3">
-                    <label>Subcategory</label>
-                    <select name="product_subcategory" id="product_subcategory_select" class="form-control"<?php echo $ediProductHasShopCategory ? "" : " disabled"; ?>>
-                      <option value="-1" disabled class="edi-shop-sub-need-cat"<?php echo !$ediProductHasShopCategory ? " selected" : ""; ?>>Please select a category first to see subcategories.</option>
-                      <option value="" class="edi-shop-sub-none"<?php echo ($ediProductHasShopCategory && (int) ($product["product_subcategory_id"] ?? 0) === 0) ? " selected" : ""; ?> <?php echo !$ediProductHasShopCategory ? "hidden disabled" : ""; ?>>Subcategory (optional)</option>
-                      <?php foreach ($product_subcategories as $sub): ?>
-                        <option value="<?php echo (int) $sub["id"]; ?>"
-                          data-product-category-id="<?php echo (int) $sub["product_category_id"]; ?>"
-                          <?php echo (isset($product["product_subcategory_id"]) && (int) $product["product_subcategory_id"] === (int) $sub["id"]) ? "selected" : ""; ?>>
-                          <?php echo htmlspecialchars($sub["title"]); ?>
-                        </option>
-                      <?php endforeach; ?>
-                    </select>
-                  </div>
-                  <div class="col-md-4">
+                  <div class="col-md-4 mb-3">
                     <label>Brand</label>
                     <input type="text" name="brand" class="form-control" value="<?php echo htmlspecialchars((string) ($product["brand"] ?? "")); ?>">
                   </div>
-                  <div class="col-md-3">
-                    <label>Grade</label>
+                  <div class="col-md-4 mb-3">
+                    <label>Age group</label>
                     <select name="age_group" class="form-control" required>
-                      <option value="">Select grade</option>
+                      <option value="">Select age group</option>
                       <?php
                       $curAge = trim((string) ($product["age_group"] ?? ""));
                       $ageMatched = false;
@@ -298,44 +301,62 @@ if (isset($_POST["btn-update-product"])) {
                   </div>
                 </div>
 
-                <div class="row mt-3">
-                  <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label>Sub category</label>
+                    <select name="product_subcategory" id="product_subcategory_select" class="form-control"<?php echo $ediProductHasShopCategory ? "" : " disabled"; ?>>
+                      <option value="-1" disabled class="edi-shop-sub-need-cat"<?php echo !$ediProductHasShopCategory ? " selected" : ""; ?>>Please select a category first to see subcategories.</option>
+                      <option value="" class="edi-shop-sub-none"<?php echo ($ediProductHasShopCategory && (int) ($product["product_subcategory_id"] ?? 0) === 0) ? " selected" : ""; ?> <?php echo !$ediProductHasShopCategory ? "hidden disabled" : ""; ?>>Subcategory (optional)</option>
+                      <?php foreach ($product_subcategories as $sub): ?>
+                        <option value="<?php echo (int) $sub["id"]; ?>"
+                          data-product-category-id="<?php echo (int) $sub["product_category_id"]; ?>"
+                          <?php echo (isset($product["product_subcategory_id"]) && (int) $product["product_subcategory_id"] === (int) $sub["id"]) ? "selected" : ""; ?>>
+                          <?php echo htmlspecialchars($sub["title"]); ?>
+                        </option>
+                      <?php endforeach; ?>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-4 mb-3">
                     <label>Price</label>
                     <input type="number" step="0.01" name="price" id="price" class="form-control" value="<?php echo htmlspecialchars((string) $product["price"]); ?>">
                   </div>
-                  <div class="col-md-4">
-                    <label>Discount percentage</label>
+                  <div class="col-md-4 mb-3">
+                    <label>Discount percentage <span class="text-danger">*</span></label>
                     <input type="number" name="discount" id="discount" class="form-control" value="<?php echo htmlspecialchars((string) $product["discount_percentage"]); ?>" min="0" max="100" step="0.01" placeholder="0">
-                    <small class="text-muted">Optional; leave empty or 0 for no discount.</small>
+                    <small class="text-muted">Leave empty or 0 for no discount.</small>
                   </div>
-                  <div class="col-md-4">
-                    <label>Discounted price (auto)</label>
+                  <div class="col-md-4 mb-3">
+                    <label>Discounted price (Auto cal)</label>
                     <input type="text" id="discounted_price_display" class="form-control" readonly>
                     <input type="hidden" name="discounted_price" id="discounted_price_value" value="<?php echo htmlspecialchars((string) $product["discounted_price"]); ?>">
                   </div>
                 </div>
 
-                <div class="row mt-3">
-                  <div class="col-md-8">
-                    <label>Product Name</label>
-                    <input type="text" name="product_name" class="form-control" required value="<?php echo htmlspecialchars((string) $product["product_name"]); ?>">
+                <div class="row">
+                  <div class="col-md-8 mb-3">
+                    <label>Product name</label>
+                    <input type="text" name="product_name" class="form-control font-weight-bold" required value="<?php echo htmlspecialchars((string) $product["product_name"]); ?>">
                   </div>
-                  <div class="col-md-4">
+                  <div class="col-md-4 mb-3">
                     <label>Available</label>
                     <input type="number" name="available" class="form-control" value="<?php echo htmlspecialchars((string) $product["stock"]); ?>">
+                    <small class="text-muted">Auto decrease when sold.</small>
                   </div>
                 </div>
 
-                <div class="row mt-3">
-                  <div class="col-12">
-                    <label>Main Description</label>
-                    <textarea name="description" class="form-control" rows="4"><?php echo htmlspecialchars((string) ($product["description"] ?? "")); ?></textarea>
+                <div class="row">
+                  <div class="col-12 mb-3">
+                    <label>Main description</label>
+                    <textarea name="description" class="form-control" rows="6"><?php echo htmlspecialchars((string) ($product["description"] ?? "")); ?></textarea>
                   </div>
                 </div>
 
-                <div class="row mt-4">
-                  <div class="col-md-6">
-                    <h6>Options</h6>
+                <div class="row mt-2">
+                  <div class="<?php echo $hasMoreDetails ? "col-md-6" : "col-12"; ?> mb-3">
+                    <h6 class="font-weight-bold mb-3">Options</h6>
                     <div class="row mb-2">
                       <div class="col-5"><label class="form-label mb-0 d-block pt-2">Language</label></div>
                       <div class="col-7">
@@ -360,7 +381,7 @@ if (isset($_POST["btn-update-product"])) {
                       </div>
                     </div>
                     <div class="row mb-2">
-                      <div class="col-5"><input type="text" class="form-control" value="Author" readonly></div>
+                      <div class="col-5"><label class="form-label mb-0 d-block pt-2">Author</label></div>
                       <div class="col-7"><input type="text" name="author" class="form-control" value="<?php echo htmlspecialchars((string) ($product["author"] ?? "")); ?>"></div>
                     </div>
                     <div class="row mb-2">
@@ -380,33 +401,74 @@ if (isset($_POST["btn-update-product"])) {
                         }
                         ?>
                         <input type="number" name="weight_kg" class="form-control" step="0.0001" min="0" value="<?php echo htmlspecialchars($wkVal, ENT_QUOTES, "UTF-8"); ?>" placeholder="e.g. 0.25">
-                        <small class="text-muted">Optional. Cart shipping uses total kg; label &quot;X kg&quot; is saved for the product page.</small>
+                        <small class="text-muted">Optional; shipping uses total cart weight.</small>
                       </div>
                     </div>
+                    <?php if ($hasOptionsExtra): ?>
+                    <div id="edi-extra-opt-append">
+                      <?php foreach ($decodedExtraOpts as $ex): ?>
+                      <div class="row mb-2 edi-extra-opt-row">
+                        <div class="col-5"><input type="text" class="form-control" name="extra_opt_k[]" placeholder="Key" value="<?php echo htmlspecialchars($ex["k"], ENT_QUOTES, "UTF-8"); ?>"></div>
+                        <div class="col-7"><input type="text" class="form-control" name="extra_opt_v[]" placeholder="Value" value="<?php echo htmlspecialchars($ex["v"], ENT_QUOTES, "UTF-8"); ?>"></div>
+                      </div>
+                      <?php endforeach; ?>
+                    </div>
+                    <button type="button" id="edi-add-opt-row" class="btn btn-sm btn-success mt-2">ADD ANOTHER OPTION +</button>
+                    <?php endif; ?>
                   </div>
-                  <?php if (array_key_exists("more_details", $product)): ?>
-                  <div class="col-md-6">
-                    <h6>More Details</h6>
+                  <?php if ($hasMoreDetails): ?>
+                  <div class="col-md-6 mb-3">
+                    <h6 class="font-weight-bold mb-3">More details</h6>
                     <textarea name="more_details" id="more_details"><?php echo htmlspecialchars((string) ($product["more_details"] ?? "")); ?></textarea>
                     <script>CKEDITOR.replace("more_details");</script>
                   </div>
                   <?php endif; ?>
                 </div>
 
-                <div class="row mt-4">
-                  <div class="col-md-6">
-                    <label>Main Image</label>
-                    <p class="text-xs text-muted mb-1">Current: <code><?php echo htmlspecialchars((string) ($product["image"] ?? "")); ?></code></p>
-                    <?php if (!empty($product["image"])): ?>
-                    <p class="mb-2"><img src="/img/products/<?php echo rawurlencode($product["image"]); ?>" alt="" class="img-fluid rounded" style="max-height:120px;"></p>
-                    <?php endif; ?>
-                    <input type="file" name="main_image" class="form-control">
-                    <small class="text-muted">Leave empty to keep the current file.</small>
+                <div class="row mt-3">
+                  <div class="<?php echo $hasGalleryImages ? "col-lg-6" : "col-12"; ?> mb-3">
+                    <label>Main image</label>
+                    <p class="text-xs text-muted mb-1">Current file: <code><?php echo htmlspecialchars((string) ($product["image"] ?? "")); ?></code></p>
+                    <div class="d-flex flex-wrap align-items-start" style="gap:12px;">
+                      <div style="flex:1;min-width:200px;max-width:320px;">
+                        <input type="file" name="main_image" id="main_image_input" class="form-control" accept="image/*">
+                        <small class="text-muted d-block mt-1">Leave empty to keep the current file.</small>
+                      </div>
+                      <div id="main_image_preview" class="edi-product-thumb border rounded bg-light d-flex align-items-center justify-content-center text-muted small overflow-hidden" style="width:120px;height:120px;flex-shrink:0;">
+                        <?php if (!empty($product["image"])): ?>
+                          <img src="/img/products/<?php echo rawurlencode($product["image"]); ?>" alt="" class="rounded" style="width:100%;height:100%;object-fit:cover;">
+                        <?php else: ?>
+                          Preview
+                        <?php endif; ?>
+                      </div>
+                    </div>
                   </div>
+                  <?php if ($hasGalleryImages): ?>
+                  <div class="col-lg-6 mb-3">
+                    <label>Other images (3)</label>
+                    <?php for ($gi = 1; $gi <= 3; $gi++):
+                        $slotFn = $galSlots[$gi - 1] ?? "";
+                        ?>
+                    <input type="hidden" name="gallery_keep_<?php echo $gi; ?>" value="<?php echo htmlspecialchars($slotFn, ENT_QUOTES, "UTF-8"); ?>">
+                    <div class="d-flex flex-wrap align-items-start mb-2" style="gap:10px;">
+                      <div style="flex:1;min-width:180px;max-width:280px;">
+                        <input type="file" name="gallery_<?php echo $gi; ?>" id="gallery_<?php echo $gi; ?>_input" class="form-control" accept="image/*">
+                      </div>
+                      <div id="gallery_preview_<?php echo $gi; ?>" class="edi-product-thumb edi-product-thumb--sm border rounded bg-light d-flex align-items-center justify-content-center text-muted small overflow-hidden" style="width:80px;height:80px;flex-shrink:0;">
+                        <?php if ($slotFn !== ""): ?>
+                          <img src="/img/products/<?php echo rawurlencode($slotFn); ?>" alt="" class="rounded" style="width:100%;height:100%;object-fit:cover;">
+                        <?php else: ?>
+                          <?php echo $gi; ?>
+                        <?php endif; ?>
+                      </div>
+                    </div>
+                    <?php endfor; ?>
+                  </div>
+                  <?php endif; ?>
                 </div>
 
-                <div class="mt-4 mb-4">
-                  <button type="submit" name="btn-update-product" class="btn btn-primary">Save changes</button>
+                <div class="mt-4 mb-2 edi-admin-form-actions">
+                  <button type="submit" name="btn-update-product" class="btn btn-success" value="1">Save changes</button>
                   <a href="./products" class="btn btn-secondary">Cancel</a>
                 </div>
               </form>
@@ -502,6 +564,37 @@ if (isset($_POST["btn-update-product"])) {
             syncSubcategories();
         });
         syncSubcategories();
+    })();
+
+    (function () {
+        function bindPreview(inputId, holderId) {
+            const inp = document.getElementById(inputId);
+            const holder = document.getElementById(holderId);
+            if (!inp || !holder) return;
+            inp.addEventListener("change", function () {
+                const f = inp.files && inp.files[0];
+                if (!f) return;
+                const r = new FileReader();
+                r.onload = function (ev) {
+                    holder.innerHTML = "<img src=\"" + ev.target.result + "\" class=\"rounded\" style=\"width:100%;height:100%;object-fit:cover;\" alt=\"\">";
+                };
+                r.readAsDataURL(f);
+            });
+        }
+        bindPreview("main_image_input", "main_image_preview");
+        for (let i = 1; i <= 3; i++) {
+            bindPreview("gallery_" + i + "_input", "gallery_preview_" + i);
+        }
+        const addOpt = document.getElementById("edi-add-opt-row");
+        const optAppend = document.getElementById("edi-extra-opt-append");
+        if (addOpt && optAppend) {
+            addOpt.addEventListener("click", function () {
+                const row = document.createElement("div");
+                row.className = "row mb-2 edi-extra-opt-row";
+                row.innerHTML = "<div class=\"col-5\"><input type=\"text\" class=\"form-control\" name=\"extra_opt_k[]\" placeholder=\"Key\"></div><div class=\"col-7\"><input type=\"text\" class=\"form-control\" name=\"extra_opt_v[]\" placeholder=\"Value\"></div>";
+                optAppend.appendChild(row);
+            });
+        }
     })();
 </script>
 

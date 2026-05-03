@@ -237,12 +237,12 @@ if (isset($_POST["confirmDeleteSubmit"]) && !$tableMissing) {
               <input type="text" name="description" class="form-control" maxlength="200"
                      value="<?php echo htmlspecialchars($formDesc); ?>">
             </div>
-            <div class="d-flex flex-wrap">
+            <div class="edi-admin-form-actions">
               <?php
               if ($editMode) {
-                  echo "<button type='submit' name='updateSubSubmit' class='btn btn-primary me-2 mb-2'>Update</button>
-                        <button type='submit' name='deleteSubSubmit' class='btn btn-danger me-2 mb-2'>Delete</button>
-                        <a href='./manage-product-subcategories' class='btn btn-outline-secondary mb-2'>Cancel</a>";
+                  echo "<button type='submit' name='updateSubSubmit' class='btn btn-primary'>Update</button>
+                        <button type='submit' name='deleteSubSubmit' class='btn btn-danger'>Delete</button>
+                        <a href='./manage-product-subcategories' class='btn btn-outline-secondary'>Cancel</a>";
               } else {
                   echo "<button type='submit' name='addSubSubmit' class='btn btn-success'" . (empty($productCategories) ? " disabled" : "") . ">Add subcategory</button>";
               }

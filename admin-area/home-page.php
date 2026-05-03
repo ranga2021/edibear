@@ -314,9 +314,11 @@
                   </div>
                   <div class="col-md-6 col-6 text-center">
                     <input type="hidden" name="hiddenCarouselID" value="">
+                    <div class="edi-admin-form-actions justify-content-center">
                     <input type="submit" class="btn btn-success btn-sm" name="carouselAddSubmit" value="Add">
                     <input type="submit" class="btn btn-primary btn-sm" name="carouselUpdateSubmit" value="Update" disabled>
                     <input type="submit" class="btn btn-secondary btn-sm" onclick="location.reload()" value="Cancel">
+                    </div>
                   </div>
                 </div>
               </form>
