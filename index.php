@@ -409,7 +409,7 @@
                             $row = null;
                             $lastBlogID = "";
                             foreach ( $user->fetchAll(array("id","tag","title","image", "description","timestamp"), array("blog_details"), array("status"=>"1"), "id DESC LIMIT 1") as $row ) {
-                                echo $widgets->displayBlogBrief($row, "col-12 px-0", 220, "featured");
+                                echo $widgets->displayBlogBrief($row, "col-12 px-0", 520, "featured");
                             }
                             if ( isset($row['id']) && $row['id'] ) {
                                 $lastBlogID = "id<".$row['id'];

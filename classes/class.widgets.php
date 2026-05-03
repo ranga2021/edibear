@@ -545,7 +545,7 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200) 
         $dlA = $this->buildContentDownloadAnchor("./img/pdf", $uploadpdf, $countId, $pdfId, "pdf");
         $html = "
         <div class='$col mb-4 pb-2'>
-            <div class='blog-item edi-pdf-result-card' style='border:1px solid #e0e0e0; border-radius:6px; overflow:hidden; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.04);'>
+            <div class='blog-item edi-pdf-result-card' style='border-radius:6px; overflow:hidden; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.04);'>
                 <div class='imageframe position-relative' style='border:2px solid #2d8a54; border-radius:4px; margin:8px;'>
                     <img class='img-fluid w-100' src='$imageName' alt='' style='display:block;'>
                 </div>

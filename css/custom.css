@@ -277,35 +277,7 @@
     min-height: var(--explorer-search-area-min-height, 250px); 
 }
 
-/* selects */
-
-.explorer-select {
-    width: 100%;
-    padding: 12px;
-    padding-right: 40px; /* Extra space for the larger arrow */
-    border-radius: 6px;
-    border: none;
-    color: #9c9a9a;
-    font-size: 1rem;
-    
-    /* Hide the default browser arrow */
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-
-    /* Add custom green arrow as a background image */
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2333a675'%3E%3Cpath d='M7 10l5 5 5-5H7z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 30px; /* Increase this number to make the arrow bigger */
-    background-color: #ffffff; /* Ensure background stays white */
-    cursor: pointer;
-}
-
-/* Optional: Support for IE11 to hide the arrow */
-.explorer-select::-ms-expand {
-    display: none;
-}
+/* Home explorer selects: full styling in css/edibear-theme.css (loads after this file) */
 
 /* explore button */
 
