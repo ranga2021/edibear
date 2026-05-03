@@ -1120,9 +1120,6 @@ h6.text-primary:not(.text-white),
 }
 
 .edi-blog-single-article {
-  max-width: 42rem;
-  margin-left: auto;
-  margin-right: auto;
   padding-top: 0.5rem;
 }
 
