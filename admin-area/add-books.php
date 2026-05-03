@@ -15,7 +15,7 @@ require_once("../classes/class.widgets.php");
 require_once("../classes/edi_explorer_content.php");
 require_once("../classes/edi_taxonomy.php");
 
-$adminHeader = new HEADER("add-books");
+$adminHeader = new HEADER("add-worksheet");
 $user = new USER();
 $widgets = new WIDGETS();
 $ediConn = $user->getConnection();

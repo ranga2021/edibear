@@ -2,7 +2,7 @@
   session_start();
   require_once("../classes/class.user.php");
   require_once("../classes/class.header.php");
-  $adminHeader = new HEADER("homework");
+  $adminHeader = new HEADER("worksheet");
   $user = new USER();
 
   

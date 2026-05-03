@@ -14,38 +14,15 @@ class HEADER {
             "icon"=>"fas fa-home text-secondary"
         ),
         
-        
-        "add-pdf"=>array(
-            "name"=>"Add Coloring Pages",
-            "redirect"=>"./add-pdf",
-            "icon"=>"fas fa-palette text-warning"
+        "add-worksheet"=>array(
+            "name"=>"Add Worksheet",
+            "redirect"=>"./add-worksheet",
+            "icon"=>"fas fa-pen-square text-warning"
         ),
-        "pdf"=>array(
-            "name"=>"Coloring Pages",
-            "redirect"=>"./pdf",
-            "icon"=>"fas fa-images text-danger"
-        ),
-        
-        "add-books"=>array(
-            "name"=>"Add Books & Papers",
-            "redirect"=>"./add-books",
-            "icon"=>"fas fa-book-open text-warning"
-        ),
-        "books"=>array(
-            "name"=>"Books & Papers",
-            "redirect"=>"./books",
-            "icon"=>"fas fa-book text-danger"
-        ),
-
-        "add-homework"=>array(
-            "name"=>"Add Homeworks",
-            "redirect"=>"./add-homework",
-            "icon"=>"fas fa-edit text-warning"
-        ),
-        "homework"=>array(
-            "name"=>"Homeworks",
-            "redirect"=>"./homework",
-            "icon"=>"fas fa-tasks text-danger"
+        "worksheet"=>array(
+            "name"=>"Worksheet",
+            "redirect"=>"./worksheet",
+            "icon"=>"fas fa-clipboard-list text-danger"
         ),
         "add-product"=>array(
             "name"=>"Add Product",

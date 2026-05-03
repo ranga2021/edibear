@@ -2,7 +2,7 @@
   
   require_once("../classes/class.user.php");
   require_once("../classes/class.header.php");
-  $adminHeader = new HEADER("pdf");
+  $adminHeader = new HEADER("worksheet");
   $user = new USER();
 
   

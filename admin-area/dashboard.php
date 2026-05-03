@@ -183,6 +183,15 @@ $chartPayload = array(
       margin-bottom: 2rem;
     }
 
+    /* Shared width + column tracks so stat cards and KPI row line up */
+    .dashboard-metrics-shell {
+      max-width: 1280px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 0.25rem;
+      padding-right: 0.25rem;
+    }
+
     .stats-title {
       font-size: 1.4rem;
       font-weight: 700;
@@ -191,10 +200,15 @@ $chartPayload = array(
       margin-bottom: 1.5rem;
     }
 
+    .stats-title--sub {
+      margin-top: 2rem;
+    }
+
     .stats-card-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(5, minmax(0, 1fr));
       gap: 1.2rem;
+      margin-bottom: 1.2rem;
     }
 
     .stats-card {
@@ -254,9 +268,22 @@ $chartPayload = array(
 
     .dashboard-kpi-row {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-      gap: 1rem;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1.2rem;
       margin-bottom: 2rem;
+    }
+
+    /* Three KPIs sit on the same 5-column track as the stat cards: 2 + 2 + 1 */
+    .dashboard-kpi-row .dashboard-kpi:nth-child(1) {
+      grid-column: span 2;
+    }
+
+    .dashboard-kpi-row .dashboard-kpi:nth-child(2) {
+      grid-column: span 2;
+    }
+
+    .dashboard-kpi-row .dashboard-kpi:nth-child(3) {
+      grid-column: span 1;
     }
 
     .dashboard-kpi {
@@ -264,9 +291,11 @@ $chartPayload = array(
       border: 1px solid #e2e8f0;
       border-radius: 14px;
       padding: 1rem 1.15rem;
+      min-height: 4.5rem;
       display: flex;
       align-items: center;
       gap: 0.85rem;
+      min-width: 0;
     }
 
     .dashboard-kpi i {
@@ -292,6 +321,38 @@ $chartPayload = array(
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 1.25rem;
       margin-bottom: 1.25rem;
+    }
+
+    @media (max-width: 1199.98px) {
+      .stats-card-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .dashboard-kpi-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .dashboard-kpi-row .dashboard-kpi:nth-child(1),
+      .dashboard-kpi-row .dashboard-kpi:nth-child(2),
+      .dashboard-kpi-row .dashboard-kpi:nth-child(3) {
+        grid-column: span 1;
+      }
+    }
+
+    @media (max-width: 767.98px) {
+      .stats-card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-kpi-row {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-kpi-row .dashboard-kpi:nth-child(1),
+      .dashboard-kpi-row .dashboard-kpi:nth-child(2),
+      .dashboard-kpi-row .dashboard-kpi:nth-child(3) {
+        grid-column: span 1;
+      }
     }
 
     @media (max-width: 991.98px) {
@@ -344,18 +405,20 @@ $chartPayload = array(
 
 <div class="container-fluid py-4">
 
+  <div class="dashboard-metrics-shell">
+
   <h2 class="stats-title">Statistics</h2>
 
   <div class="stats-card-grid">
 
-    <a href="./blogs" class="stats-card stats-card--link" title="Manage blogs (more content types in the sidebar)">
+    <a href="./blogs" class="stats-card stats-card--link" title="Blogs (worksheet lists: sidebar → Worksheet)">
       <div class="stats-card-icon"><i class="fas fa-layer-group" aria-hidden="true"></i></div>
       <div class="stats-card-value"><?php echo number_format($totalResources); ?></div>
       <div class="stats-card-label">Total Resources</div>
       <div class="stats-card-hint">Open blogs</div>
     </a>
 
-    <a href="./pdf" class="stats-card stats-card--link" title="Coloring pages &amp; download counts">
+    <a href="./worksheet" class="stats-card stats-card--link" title="Worksheets: coloring pages, books, homework">
       <div class="stats-card-icon"><i class="fas fa-cloud-download-alt" aria-hidden="true"></i></div>
       <div class="stats-card-value"><?php echo number_format($totalDownloads); ?></div>
       <div class="stats-card-label">Total Downloads</div>
@@ -409,7 +472,7 @@ $chartPayload = array(
     </div>
   </div>
 
-  <h3 class="stats-title" style="font-size:1.1rem;">Insights</h3>
+  <h3 class="stats-title stats-title--sub" style="font-size:1.1rem;">Insights</h3>
 
   <div class="dashboard-charts-grid">
     <div class="chart-card">
@@ -448,6 +511,8 @@ $chartPayload = array(
       </div>
     </div>
   </div>
+
+  </div><!-- .dashboard-metrics-shell -->
 
 </div>
 
