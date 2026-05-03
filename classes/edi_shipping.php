@@ -84,14 +84,14 @@ class EdiShipping
     }
 
     /**
-     * @return list<array{id: int|string, max_weight_kg: ?string, fee_lkr: string}>
+     * @return list<array{id: int|string, max_weight_kg: ?string, fee_lkr: string, sort_order?: int|string}>
      */
     public static function fetchWeightTiers(PDO $pdo): array
     {
         if (!self::weightTiersTableReady($pdo)) {
             return array();
         }
-        $sql = 'SELECT id, max_weight_kg, fee_lkr FROM edi_shipping_weight_tiers ORDER BY sort_order ASC, (max_weight_kg IS NULL) ASC, max_weight_kg ASC';
+        $sql = 'SELECT id, max_weight_kg, fee_lkr, sort_order FROM edi_shipping_weight_tiers ORDER BY sort_order ASC, (max_weight_kg IS NULL) ASC, max_weight_kg ASC';
         $st = $pdo->query($sql);
         if (!$st) {
             return array();

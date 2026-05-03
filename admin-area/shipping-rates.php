@@ -36,6 +36,35 @@ if ($tablesOk && isset($_POST["edi_add_weight_tier"])) {
     }
 }
 
+if ($tablesOk && isset($_POST["edi_update_weight_tier"], $_POST["tier_id"])) {
+    $tid = (int) $_POST["tier_id"];
+    $fee = isset($_POST["fee_lkr"]) ? (float) $_POST["fee_lkr"] : 0.0;
+    $mx = trim((string) ($_POST["max_weight_kg"] ?? ""));
+    $maxVal = $mx === "" ? null : max(0.0, (float) $mx);
+    $sort = (int) ($_POST["sort_order"] ?? 0);
+    if ($fee < 0) {
+        $fee = 0.0;
+    }
+    if ($tid > 0) {
+        try {
+            $st = $pdo->prepare(
+                "UPDATE edi_shipping_weight_tiers SET max_weight_kg = :mx, fee_lkr = :fee, sort_order = :so WHERE id = :id"
+            );
+            $st->execute(
+                array(
+                    ":mx" => $maxVal,
+                    ":fee" => $fee,
+                    ":so" => $sort,
+                    ":id" => $tid,
+                )
+            );
+            $msg = "<div class='alert alert-success'>Weight tier updated.</div>";
+        } catch (Throwable $e) {
+            $msg = "<div class='alert alert-danger'>Could not update tier.</div>";
+        }
+    }
+}
+
 if ($tablesOk && isset($_POST["edi_delete_weight_tier"], $_POST["tier_id"])) {
     $tid = (int) $_POST["tier_id"];
     if ($tid > 0) {
@@ -61,6 +90,28 @@ if ($tablesOk && isset($_POST["edi_add_district"])) {
             $msg = "<div class='alert alert-success'>District added.</div>";
         } catch (Throwable $e) {
             $msg = "<div class='alert alert-danger'>Could not add district (duplicate name?).</div>";
+        }
+    }
+}
+
+if ($tablesOk && isset($_POST["edi_update_district"], $_POST["district_id"])) {
+    $did = (int) $_POST["district_id"];
+    $name = trim((string) ($_POST["district_name_edit"] ?? ""));
+    $fee = isset($_POST["district_fee_edit"]) ? (float) $_POST["district_fee_edit"] : 0.0;
+    if ($did < 1 || $name === "") {
+        $msg = "<div class='alert alert-warning'>District name is required.</div>";
+    } else {
+        if (function_exists("mb_substr")) {
+            $name = mb_substr($name, 0, 128, "UTF-8");
+        } else {
+            $name = substr($name, 0, 128);
+        }
+        try {
+            $st = $pdo->prepare("UPDATE edi_shipping_districts SET name = :n, fee_lkr = :f WHERE id = :id");
+            $st->execute(array(":n" => $name, ":f" => max(0.0, $fee), ":id" => $did));
+            $msg = "<div class='alert alert-success'>District updated.</div>";
+        } catch (Throwable $e) {
+            $msg = "<div class='alert alert-danger'>Could not update district (duplicate name?).</div>";
         }
     }
 }
@@ -94,6 +145,20 @@ $districts = $tablesOk ? EdiShipping::fetchDistricts($pdo) : array();
 <html lang="en">
 <head>
   <?php echo $adminHeader->printAdminHeader(); ?>
+  <style>
+    .edi-ship-row-editor {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      gap: 0.65rem;
+      padding: 0.65rem 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    .edi-ship-row-editor:last-child { border-bottom: 0; }
+    .edi-ship-row-editor .form-label { font-size: 0.7rem; margin-bottom: 0.15rem; color: #64748b; }
+    .edi-ship-row-editor .form-control-sm { min-width: 5.5rem; }
+    .edi-ship-row-editor .edi-ship-actions { margin-left: auto; display: flex; align-items: center; gap: 0.35rem; flex-wrap: wrap; }
+  </style>
 </head>
 <body class="g-sidenav-show bg-gray-100">
   <div class="min-height-300 bg-primary position-absolute w-100"></div>
@@ -122,35 +187,44 @@ $districts = $tablesOk ? EdiShipping::fetchDistricts($pdo) : array();
                 </p>
               </div>
               <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-sm align-items-center mb-0">
-                    <thead>
-                      <tr>
-                        <th>Max kg (empty = ∞)</th>
-                        <th>Fee (LKR)</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <?php foreach ($tiers as $t): ?>
-                        <?php
-                        $tid = (int) ($t["id"] ?? 0);
-                        $mx = $t["max_weight_kg"] ?? null;
-                        $mxDisp = ($mx === null || $mx === "") ? "—" : htmlspecialchars((string) $mx, ENT_QUOTES, "UTF-8");
-                        ?>
-                        <tr>
-                          <td><?php echo $mxDisp; ?></td>
-                          <td><?php echo number_format((float) ($t["fee_lkr"] ?? 0), 2); ?></td>
-                          <td class="text-end">
-                            <form method="post" class="d-inline" onsubmit="return confirm('Delete this tier?');">
-                              <input type="hidden" name="tier_id" value="<?php echo $tid; ?>">
-                              <button type="submit" name="edi_delete_weight_tier" class="btn btn-link text-danger btn-sm p-0">Delete</button>
-                            </form>
-                          </td>
-                        </tr>
-                      <?php endforeach; ?>
-                    </tbody>
-                  </table>
+                <div class="mb-2">
+                  <div class="text-xs text-uppercase text-muted font-weight-bold px-0 pb-2 border-bottom">Current tiers — edit and save</div>
+                  <?php foreach ($tiers as $t): ?>
+                    <?php
+                    $tid = (int) ($t["id"] ?? 0);
+                    $mx = $t["max_weight_kg"] ?? null;
+                    $mxVal = ($mx === null || $mx === "") ? "" : htmlspecialchars((string) (0 + (float) $mx), ENT_QUOTES, "UTF-8");
+                    $feeVal = htmlspecialchars((string) ((float) ($t["fee_lkr"] ?? 0)), ENT_QUOTES, "UTF-8");
+                    $sortVal = (int) ($t["sort_order"] ?? 0);
+                    ?>
+                    <div class="edi-ship-row-editor">
+                      <form method="post" class="d-flex flex-wrap align-items-end gap-2 flex-grow-1">
+                        <input type="hidden" name="tier_id" value="<?php echo $tid; ?>">
+                        <div>
+                          <label class="form-label d-block">Max kg (∞ empty)</label>
+                          <input type="number" step="0.0001" min="0" name="max_weight_kg" class="form-control form-control-sm" style="width:7rem" value="<?php echo $mxVal; ?>" placeholder="∞">
+                        </div>
+                        <div>
+                          <label class="form-label d-block">Fee LKR</label>
+                          <input type="number" step="0.01" min="0" name="fee_lkr" class="form-control form-control-sm" style="width:7rem" value="<?php echo $feeVal; ?>" required>
+                        </div>
+                        <div>
+                          <label class="form-label d-block">Sort</label>
+                          <input type="number" name="sort_order" class="form-control form-control-sm" style="width:4.5rem" value="<?php echo $sortVal; ?>">
+                        </div>
+                        <button type="submit" name="edi_update_weight_tier" value="1" class="btn btn-sm btn-primary mb-0">Save</button>
+                      </form>
+                      <div class="edi-ship-actions">
+                        <form method="post" class="d-inline m-0" onsubmit="return confirm('Delete this tier?');">
+                          <input type="hidden" name="tier_id" value="<?php echo $tid; ?>">
+                          <button type="submit" name="edi_delete_weight_tier" class="btn btn-link text-danger btn-sm p-0">Delete</button>
+                        </form>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                  <?php if (empty($tiers)): ?>
+                    <p class="text-muted text-sm mb-0 py-2">No weight tiers yet. Add one below.</p>
+                  <?php endif; ?>
                 </div>
                 <hr>
                 <form method="post" class="row g-2 align-items-end">
@@ -183,31 +257,38 @@ $districts = $tablesOk ? EdiShipping::fetchDistricts($pdo) : array();
                 </p>
               </div>
               <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table table-sm mb-0">
-                    <thead>
-                      <tr>
-                        <th>District</th>
-                        <th>Extra fee (LKR)</th>
-                        <th></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <?php foreach ($districts as $d): ?>
-                        <?php $did = (int) ($d["id"] ?? 0); ?>
-                        <tr>
-                          <td><?php echo htmlspecialchars((string) ($d["name"] ?? ""), ENT_QUOTES, "UTF-8"); ?></td>
-                          <td><?php echo number_format((float) ($d["fee_lkr"] ?? 0), 2); ?></td>
-                          <td class="text-end">
-                            <form method="post" class="d-inline" onsubmit="return confirm('Delete this district?');">
-                              <input type="hidden" name="district_id" value="<?php echo $did; ?>">
-                              <button type="submit" name="edi_delete_district" class="btn btn-link text-danger btn-sm p-0">Delete</button>
-                            </form>
-                          </td>
-                        </tr>
-                      <?php endforeach; ?>
-                    </tbody>
-                  </table>
+                <div class="mb-2">
+                  <div class="text-xs text-uppercase text-muted font-weight-bold px-0 pb-2 border-bottom">Current districts — edit and save</div>
+                  <?php foreach ($districts as $d): ?>
+                    <?php
+                    $did = (int) ($d["id"] ?? 0);
+                    $dname = htmlspecialchars((string) ($d["name"] ?? ""), ENT_QUOTES, "UTF-8");
+                    $dfee = htmlspecialchars((string) ((float) ($d["fee_lkr"] ?? 0)), ENT_QUOTES, "UTF-8");
+                    ?>
+                    <div class="edi-ship-row-editor">
+                      <form method="post" class="d-flex flex-wrap align-items-end gap-2 flex-grow-1">
+                        <input type="hidden" name="district_id" value="<?php echo $did; ?>">
+                        <div class="flex-grow-1" style="min-width: 10rem;">
+                          <label class="form-label d-block">District name</label>
+                          <input type="text" name="district_name_edit" class="form-control form-control-sm" maxlength="128" value="<?php echo $dname; ?>" required>
+                        </div>
+                        <div>
+                          <label class="form-label d-block">Extra fee LKR</label>
+                          <input type="number" step="0.01" min="0" name="district_fee_edit" class="form-control form-control-sm" style="width:7rem" value="<?php echo $dfee; ?>" required>
+                        </div>
+                        <button type="submit" name="edi_update_district" value="1" class="btn btn-sm btn-primary mb-0">Save</button>
+                      </form>
+                      <div class="edi-ship-actions">
+                        <form method="post" class="d-inline m-0" onsubmit="return confirm('Delete this district?');">
+                          <input type="hidden" name="district_id" value="<?php echo $did; ?>">
+                          <button type="submit" name="edi_delete_district" class="btn btn-link text-danger btn-sm p-0">Delete</button>
+                        </form>
+                      </div>
+                    </div>
+                  <?php endforeach; ?>
+                  <?php if (empty($districts)): ?>
+                    <p class="text-muted text-sm mb-0 py-2">No districts yet. Add one below.</p>
+                  <?php endif; ?>
                 </div>
                 <hr>
                 <form method="post" class="row g-2 align-items-end">

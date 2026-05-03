@@ -26,7 +26,6 @@ try {
 $categories = $user->fetchAll(array("id", "name"), array("product_categories"), array());
 $ageGroups = $user->fetchAll(array("DISTINCT age_group"), array("products"), array("status" => 1));
 $brands = $user->fetchAll(array("DISTINCT brand"), array("products"), array("status" => 1));
-$shopLanguages = EdiTaxonomy::loadLanguages($conn);
 $shopGrades = EdiTaxonomy::loadGrades($conn);
 
 $productSubcategoriesAll = array();
@@ -406,35 +405,6 @@ if ($forceExplorer && $exploreCategoryName !== "") {
                     </select>
                 </div>
                 <div class="treasures-filter-cell">
-                    <label class="sr-only" for="filter-lang">Language</label>
-                    <select id="filter-lang" name="lang" class="form-control treasures-filter-select" onchange="this.form.submit()">
-                        <option value="">Language</option>
-                        <?php foreach ($shopLanguages as $lng): ?>
-                            <?php $lt = trim((string) ($lng['title'] ?? '')); if ($lt === '') { continue; } ?>
-                            <option value="<?= htmlspecialchars($lt, ENT_QUOTES, 'UTF-8') ?>" <?= ($langF === $lt) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($lt, ENT_QUOTES, 'UTF-8') ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <?php if (count($productSubcategoriesAll) > 0): ?>
-                <?php $shopCatChosen = ($catF !== ""); ?>
-                <div class="treasures-filter-cell">
-                    <label class="sr-only" for="filter-sub">Subcategory</label>
-                    <select id="filter-sub" name="sub" class="form-control treasures-filter-select" onchange="this.form.submit()">
-                        <option value="" disabled class="edi-sub-need-cat"<?= !$shopCatChosen ? ' selected' : '' ?>>Please select a category first to see subcategories.</option>
-                        <option value="" class="edi-sub-none"<?= ($shopCatChosen && $subF === 0) ? ' selected' : '' ?>>Subcategory</option>
-                        <?php foreach ($productSubcategoriesAll as $sub): ?>
-                            <option value="<?= (int) $sub['id'] ?>"
-                                data-product-category-id="<?= (int) $sub['product_category_id'] ?>"
-                                <?= ($subF === (int) $sub['id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars((string) $sub['title'], ENT_QUOTES, 'UTF-8') ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <?php endif; ?>
-                <div class="treasures-filter-cell">
                     <label class="sr-only" for="filter-brand">Brands</label>
                     <select id="filter-brand" name="brand" class="form-control treasures-filter-select" onchange="this.form.submit()">
                         <option value="">Brands</option>
@@ -463,67 +433,6 @@ if ($forceExplorer && $exploreCategoryName !== "") {
             </div>
             <?php endif; ?>
         </form>
-
-        <script>
-        (function () {
-            var cat = document.getElementById("filter-category");
-            var sub = document.getElementById("filter-sub");
-            if (!cat || !sub) return;
-            var needCat = sub.querySelector("option.edi-sub-need-cat");
-            var noneOpt = sub.querySelector("option.edi-sub-none");
-            function syncSubcategories() {
-                var cid = String(cat.value || "");
-                var realOpts = sub.querySelectorAll("option[data-product-category-id]");
-                if (!cid) {
-                    if (needCat) {
-                        needCat.hidden = false;
-                        needCat.disabled = true;
-                        needCat.selected = true;
-                    }
-                    if (noneOpt) {
-                        noneOpt.hidden = true;
-                        noneOpt.disabled = true;
-                        noneOpt.selected = false;
-                    }
-                    for (var i = 0; i < realOpts.length; i++) {
-                        realOpts[i].hidden = true;
-                        realOpts[i].disabled = true;
-                    }
-                    return;
-                }
-                if (needCat) {
-                    needCat.hidden = true;
-                    needCat.disabled = true;
-                    needCat.selected = false;
-                }
-                if (noneOpt) {
-                    noneOpt.hidden = false;
-                    noneOpt.disabled = false;
-                }
-                var sel = String(sub.value || "");
-                var stillOk = false;
-                for (var j = 0; j < realOpts.length; j++) {
-                    var o = realOpts[j];
-                    var pc = o.getAttribute("data-product-category-id");
-                    var show = String(pc) === String(cid);
-                    o.hidden = !show;
-                    o.disabled = !show;
-                    if (show && o.value === sel) {
-                        stillOk = true;
-                    }
-                }
-                if (!stillOk) {
-                    if (noneOpt) {
-                        noneOpt.selected = true;
-                    } else {
-                        sub.selectedIndex = 0;
-                    }
-                }
-            }
-            cat.addEventListener("change", syncSubcategories);
-            syncSubcategories();
-        })();
-        </script>
 
         <div class="row treasures-product-grid mt-2">
             <?php
