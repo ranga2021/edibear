@@ -92,8 +92,10 @@
         </div>
         
         <div class="category-nav mt-2 mb-4">
-            <?php foreach($bhCategories as $cat): ?>
-                <a href="?cat=<?php echo $cat['id']; ?>"><?php echo $cat['name']; ?></a>
+            <?php foreach($bhCategories as $cat):
+                $catLabel = htmlspecialchars(html_entity_decode((string)($cat['name'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+            ?>
+                <a href="?cat=<?php echo (int)$cat['id']; ?>"><?php echo $catLabel; ?></a>
             <?php endforeach; ?>
         </div>
 
@@ -106,19 +108,23 @@
                         $isUpcoming = ($event['deadline_date'] >= $today);
                         $statusText = $isUpcoming ? "UP COMING ..." : "COMPLETED";
                         $statusClass = $isUpcoming ? "status-upcoming" : "status-completed";
+                        $titlePlain = html_entity_decode((string)($event['title'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                        $titleEsc = htmlspecialchars($titlePlain, ENT_QUOTES, 'UTF-8');
+                        $catNamePlain = html_entity_decode((string)($event['cat_name'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                        $catNameEsc = htmlspecialchars($catNamePlain, ENT_QUOTES, 'UTF-8');
                         
                         // Fix for Image Path: Ensure the path matches your folder structure
                         $imagePath = "./img/braveheart/" . $event['main_image'];
                 ?>
                     <div class="event-container">
                         <div class="text-center">
-                            <img src="<?php echo $imagePath; ?>" class="img-fluid event-banner" alt="<?php echo $event['title']; ?>" onerror="this.src='./img/placeholder-banner.jpg';">
+                            <img src="<?php echo htmlspecialchars($imagePath, ENT_QUOTES, 'UTF-8'); ?>" class="img-fluid event-banner" alt="<?php echo $titleEsc; ?>" onerror="this.src='./img/placeholder-banner.jpg';">
                         </div>
 
                         <div class="mt-3">
-                            <span class="category-tag"><i class="fa fa-tag"></i> <?php echo $event['cat_name']; ?></span>
-                            <a href="challenge-details.php?id=<?php echo $event['id']; ?>">
-                             <h4 class="event-title"><?php echo $event['title']; ?></h4>
+                            <span class="category-tag"><i class="fa fa-tag"></i> <?php echo $catNameEsc; ?></span>
+                            <a href="challenge-details.php?id=<?php echo (int)$event['id']; ?>">
+                             <h4 class="event-title"><?php echo $titleEsc; ?></h4>
                             </a>
                             <span class="<?php echo $statusClass; ?> status-badge"><?php echo $statusText; ?></span>
                         </div>

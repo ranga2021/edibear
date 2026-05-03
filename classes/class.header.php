@@ -463,54 +463,24 @@ class HEADER {
         }
         
         function showLoginPopup() {
-            // Create popup HTML
-            const popup = document.createElement('div');
+            var existing = document.getElementById('login-popup');
+            if (existing) return;
+            var popup = document.createElement('div');
             popup.id = 'login-popup';
-            popup.innerHTML = `
-                <div style=\"
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0,0,0,0.5);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 10000;
-                \">
-                    <div style=\"
-                        background: white;
-                        padding: 30px;
-                        border-radius: 10px;
-                        text-align: center;
-                        max-width: 400px;
-                        width: 90%;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                    \">
-                        <h3 style=\"margin-bottom: 20px; color: #333;\">Please login to continue</h3>
-                        <p style=\"margin-bottom: 25px; color: #666;\">You need to be logged in to access your cart.</p>
-                        <a href=\"./login\" style=\"
-                            display: inline-block;
-                            background: #007bff;
-                            color: white;
-                            padding: 12px 24px;
-                            text-decoration: none;
-                            border-radius: 5px;
-                            font-weight: bold;
-                            transition: background 0.3s;
-                        \" onmouseover=\"this.style.background='#0056b3'\" onmouseout=\"this.style.background='#007bff'\">Go to Login</a>
-                        <br><br>
-                        <button onclick=\"closeLoginPopup()\" style=\"
-                            background: none;
-                            border: none;
-                            color: #666;
-                            cursor: pointer;
-                            text-decoration: underline;
-                        \">Close</button>
-                    </div>
-                </div>
-            `;
+            popup.className = 'edi-cart-login-popup';
+            popup.innerHTML = '<div class=\"edi-cart-login-popup__panel\" role=\"dialog\" aria-modal=\"true\" aria-labelledby=\"edi-cart-login-title\">' +
+                '<h3 id=\"edi-cart-login-title\" class=\"edi-cart-login-popup__title\">Please login to continue</h3>' +
+                '<p class=\"edi-cart-login-popup__text\">You need to be logged in to access your cart.</p>' +
+                '<div class=\"edi-cart-login-popup__actions\">' +
+                '<a href=\"./login\" class=\"edi-cart-login-popup__btn edi-cart-login-popup__btn--primary\">Go to Login</a>' +
+                '<button type=\"button\" class=\"edi-cart-login-popup__btn edi-cart-login-popup__btn--ghost\">Close</button>' +
+                '</div></div>';
+            popup.addEventListener('click', function (e) {
+                if (e.target === popup) closeLoginPopup();
+            });
+            var panel = popup.querySelector('.edi-cart-login-popup__panel');
+            var closeBtn = panel ? panel.querySelector('.edi-cart-login-popup__btn--ghost') : null;
+            if (closeBtn) closeBtn.addEventListener('click', closeLoginPopup);
             document.body.appendChild(popup);
         }
 

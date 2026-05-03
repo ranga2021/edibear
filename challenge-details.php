@@ -35,6 +35,11 @@
     $appFile = trim((string) ($event['application_file'] ?? ''));
     $descRaw = (string) ($event['description'] ?? '');
 
+    /* Admin/DB may store HTML entities; decode once before htmlspecialchars to avoid literal "&#039;" on screen */
+    $eventTitlePlain = html_entity_decode($eventTitle, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $catNamePlain = html_entity_decode($catName, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $descPlain = html_entity_decode($descRaw, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
     $host = isset($_SERVER['HTTP_HOST']) ? (string) $_SERVER['HTTP_HOST'] : '';
     $script = isset($_SERVER['SCRIPT_NAME']) ? str_replace('\\', '/', (string) $_SERVER['SCRIPT_NAME']) : '/challenge-details.php';
@@ -44,8 +49,8 @@
     $pageUrl = ($host !== '') ? ($scheme . '://' . $host . $detailPath . '?id=' . $eventId) : ('./challenge-details.php?id=' . $eventId);
 
     $shareUrl = rawurlencode($pageUrl);
-    $shareTitle = rawurlencode($eventTitle);
-    $shareText = rawurlencode($eventTitle . ' — ');
+    $shareTitle = rawurlencode($eventTitlePlain);
+    $shareText = rawurlencode($eventTitlePlain . ' — ');
 
     $fbShare = "https://www.facebook.com/sharer/sharer.php?u=" . $shareUrl;
     $twShare = "https://twitter.com/intent/tweet?url=" . $shareUrl . "&text=" . $shareTitle;
@@ -55,7 +60,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <?php echo $userHeader->printUserHeader($eventTitle, strip_tags($descRaw), $mainImage !== '' ? ('img/braveheart/' . $mainImage) : ''); ?>
+    <?php echo $userHeader->printUserHeader($eventTitlePlain, strip_tags($descPlain), $mainImage !== '' ? ('img/braveheart/' . $mainImage) : ''); ?>
 </head>
 <body class="challenge-details-page">
     <?php echo $userHeader->printUserNav(); ?>
@@ -81,7 +86,7 @@
             <div class="edi-challenge-hero mt-3 mb-3">
                 <img src="./img/braveheart/<?php echo htmlspecialchars($mainImage, ENT_QUOTES, 'UTF-8'); ?>"
                      class="edi-challenge-hero__img img-fluid"
-                     alt="<?php echo htmlspecialchars($eventTitle, ENT_QUOTES, 'UTF-8'); ?>">
+                     alt="<?php echo htmlspecialchars($eventTitlePlain, ENT_QUOTES, 'UTF-8'); ?>">
             </div>
             <?php endif; ?>
 
@@ -89,7 +94,7 @@
                 <div class="edi-blog-single-meta">
                     <?php if ($catName !== ''): ?>
                     <i class="fa fa-tag fa-sm text-warning p-1" aria-hidden="true"></i>
-                    <span class="text-warning"><?php echo htmlspecialchars($catName, ENT_QUOTES, 'UTF-8'); ?></span>
+                    <span class="text-warning"><?php echo htmlspecialchars($catNamePlain, ENT_QUOTES, 'UTF-8'); ?></span>
                     <?php endif; ?>
                 </div>
                 <div class="edi-blog-single-share" aria-label="Share this challenge">
@@ -103,11 +108,11 @@
                 </div>
             </div>
 
-            <h2 class="edi-challenge-detail-title"><?php echo htmlspecialchars(strtoupper($eventTitle), ENT_QUOTES, 'UTF-8'); ?></h2>
+            <h2 class="edi-challenge-detail-title"><?php echo htmlspecialchars(strtoupper($eventTitlePlain), ENT_QUOTES, 'UTF-8'); ?></h2>
 
             <article class="edi-blog-single-article">
                 <div class="edi-blog-single-prose text-justify edi-challenge-detail-body">
-                    <?php echo nl2br(htmlspecialchars($descRaw, ENT_QUOTES, 'UTF-8')); ?>
+                    <?php echo nl2br(htmlspecialchars($descPlain, ENT_QUOTES, 'UTF-8')); ?>
                 </div>
             </article>
 
@@ -139,6 +144,7 @@
                         <?php
                         $wImg = (string) ($winner['image'] ?? '');
                         $wTitle = (string) ($winner['title'] ?? '');
+                        $wTitlePlain = html_entity_decode($wTitle, ENT_QUOTES | ENT_HTML5, 'UTF-8');
                         ?>
                 <div class="col-md-4 mb-3">
                     <div class="edi-challenge-winner-card text-center h-100">
@@ -149,7 +155,7 @@
                                  onerror="this.src='./img/placeholder-winner.jpg';">
                         </div>
                         <div class="edi-challenge-winner-caption">
-                            <?php echo htmlspecialchars($wTitle, ENT_QUOTES, 'UTF-8'); ?>
+                            <?php echo htmlspecialchars($wTitlePlain, ENT_QUOTES, 'UTF-8'); ?>
                         </div>
                     </div>
                 </div>
