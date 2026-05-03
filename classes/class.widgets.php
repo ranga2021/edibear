@@ -18,7 +18,7 @@ class WIDGETS{
         ";
     }
 
-    public function displayHomeMainVideo($homeMainVideoURL) {
+    public function displayHomeMainVideo($homeMainVideoURL, $outerClass = null) {
     // 1. Extract the Video ID using Regex to ensure a clean ID
     // This handles: youtube.com/watch?v=ID, youtu.be/ID, and youtube.com/embed/ID
     $videoId = '';
@@ -29,16 +29,22 @@ class WIDGETS{
     // 2. Only build the iframe if we found a valid ID
     if (!empty($videoId)) {
         $embedURL = "https://www.youtube.com/embed/" . $videoId;
-        
+        $wrap = ($outerClass !== null && $outerClass !== '')
+            ? preg_replace('/[^a-zA-Z0-9_\- ]/', '', (string) $outerClass)
+            : 'container-fluid py-5 blog-video';
+        if ($wrap === '') {
+            $wrap = 'container-fluid py-5 blog-video';
+        }
+
         return "
-            <div class='container-fluid py-5 blog-video'>
+            <div class='" . $wrap . "'>
                 <div class='container pt-1'>
                     <div class='row justify-content-center'>
                         <div class='col-lg-10'>
                             <div class='embed-responsive embed-responsive-16by9 text-center'>
-                                <iframe class='embed-responsive-item' 
-                                        src='$embedURL' 
-                                        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture' 
+                                <iframe class='embed-responsive-item'
+                                        src='$embedURL'
+                                        allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                                         allowfullscreen>
                                 </iframe>
                             </div>
@@ -551,8 +557,8 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200) 
                 </div>
                 <div class='bg-white px-2 pb-3 pt-0'>
                     <div class='d-flex align-items-center mb-1' style='font-size:12px;'>
-                        <i class='fa fa-tag fa-sm p-1' style='color:#f57c00;' aria-hidden='true'></i>
-                        <span class='text-uppercase' style='color:#f57c00; font-weight:600; letter-spacing:.02em;'>$cardTag</span>
+                        <i class='fa fa-tag fa-sm p-1' style='color:#0b0b0b;' aria-hidden='true'></i>
+                        <span class='text-uppercase' style='color:#0b0b0b; font-weight:600; letter-spacing:.02em;'>$cardTag</span>
                     </div>
                     <h5 class='text-danger text-uppercase font-weight-bold mb-1' style='font-size:1rem; line-height:1.2;'>$safeTitle</h5>
                     <p class='mb-2 text-muted' style='font-size: 13px; line-height:1.35;'>$pdfDescription</p>

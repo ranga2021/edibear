@@ -111,4 +111,55 @@ class EdiContentTags
         $html .= "</div>";
         return $html;
     }
+
+    /**
+     * Comma-separated tag links for The Hidden Den (blogs listing) or a single blog hero,
+     * matching the free-resource (e.g. PDF) tag strip pattern: comma links + See more.
+     *
+     * @param string[] $tags Distinct tag strings (e.g. from distinctFromRows or splitTags)
+     * @param int        $visibleFirst Number of tags shown before "See more"
+     * @param string     $uidSuffix    Unique suffix for DOM ids (e.g. "den" or "post-12")
+     */
+    public static function renderBlogTagChipsHtml(array $tags, $visibleFirst = 20, $uidSuffix = "blogs")
+    {
+        if (count($tags) === 0) {
+            return "";
+        }
+        $visibleFirst = max(1, (int) $visibleFirst);
+        $uidSuffix = preg_replace("/[^a-zA-Z0-9_-]/", "", (string) $uidSuffix);
+        if ($uidSuffix === "") {
+            $uidSuffix = "blogs";
+        }
+
+        $n = count($tags);
+        $show = min($n, $visibleFirst);
+        $moreId = "edi-blog-tags-more-" . $uidSuffix;
+        $btnId = "edi-blog-tags-btn-" . $uidSuffix;
+
+        $html = '<div class="edi-blog-tag-chips text-dark" role="navigation" aria-label="Tags">';
+        for ($i = 0; $i < $show; $i++) {
+            if ($i > 0) {
+                $html .= '<span class="text-muted edi-blog-tag-sep">, </span> ';
+            }
+            $q = array("tag" => $tags[$i]);
+            $href = "./blogs?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
+            $safeWord = htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8");
+            $html .= '<a href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '" class="edi-blog-topic-link">' . $safeWord . "</a>";
+        }
+        if ($n > $show) {
+            $html .= ' <span class="text-muted">&hellip;</span> ';
+            $html .= '<button type="button" id="' . htmlspecialchars($btnId, ENT_QUOTES, "UTF-8") . '" class="edi-blog-tag-seemore btn btn-link p-0 align-baseline text-warning font-weight-bold">See more</button>';
+            $html .= '<div id="' . htmlspecialchars($moreId, ENT_QUOTES, "UTF-8") . '" class="edi-blog-tag-more-wrap mt-2" style="display:none">';
+            for ($i = $show; $i < $n; $i++) {
+                $q = array("tag" => $tags[$i]);
+                $href = "./blogs?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
+                $safeWord = htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8");
+                $html .= ' <a href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '" class="btn btn-sm btn-light border px-2 py-0 mb-1 mr-1 text-dark">' . $safeWord . "</a>";
+            }
+            $html .= "</div>";
+            $html .= "<script>(function(){var b=document.getElementById(" . json_encode($btnId) . ");var h=document.getElementById(" . json_encode($moreId) . ");if(!b||!h)return;b.addEventListener(\"click\",function(){var open=h.style.display===\"block\";h.style.display=open?\"none\":\"block\";b.textContent=open?\"See more\":\"See less\";});})();</script>";
+        }
+        $html .= "</div>";
+        return $html;
+    }
 }

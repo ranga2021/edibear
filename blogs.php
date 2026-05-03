@@ -3,6 +3,7 @@
     require_once("./classes/class.user.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
+    require_once("./classes/edi_content_tags.php");
     
     $userHeader = new HEADER("blogs");
     $user = new USER();
@@ -94,24 +95,19 @@
                 <h2 class="edi-blogs-main-title">EXCITING THINGS</h2>
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>
-            <p class="edi-blogs-categories-lead mb-4">Hand craft, Letter practice, Drawings</p>
+            <p class="edi-blogs-categories-lead mb-2">Hand craft, Letter practice, Drawings</p>
 
-             <?php 
-            //     //echo $widgets->displayGetQuoate($user);
-            //     $tagsArr = array();
-            //     foreach ( $user->fetchAll(array("tag"), array("blog_details"), array("status"=>1), "", "", "","","", ) as $row ) {
-            //         foreach ( explode("/", $row["tag"]) as $value ) {
-            //             if ( array_search($value, $tagsArr) === false ) array_push($tagsArr, $value);
-            //         }
-            //     }
-            // ?>
-            <!-- Tag Cloud -->
-            <!--<div class="mb-5 mt-3">-->
-            <!--    <h5 class="text-warning mb-1" >Tags <span style="letter-spacing:-2px;">――――――――――――――――――――――――――――――――――――――――――――――――――――</span>  </h5> <br>-->
-            <!--    <div class="d-flex flex-wrap m-n1">-->
-                   
-            <!--    </div>-->
-            <!--</div>-->
+            <?php
+                $blogTagRows = $user->fetchAll(
+                    array("tag"),
+                    array("blog_details"),
+                    array("status" => 1),
+                    "",
+                    "1=1"
+                );
+                $blogsAllTags = EdiContentTags::distinctFromRows($blogTagRows);
+                echo EdiContentTags::renderBlogTagChipsHtml($blogsAllTags, 20, "hidden-den");
+            ?>
 
 
 

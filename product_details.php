@@ -90,10 +90,11 @@ if ($totalReviews > 0) {
     <?php echo $userHeader->printUserNav(); ?>
 
     <div class="page-header-bg"></div>
-    <div class="container mt-5 page-header-content edi-treasure-detail">
-        <nav class="edi-breadcrumb" aria-label="breadcrumb">
-            <ol class="breadcrumb bg-transparent p-0 mb-0">
-                <li class="breadcrumb-item"><a href="./"><i class="fa fa-home"></i> Home</a></li>
+    <div class="container-fluid mt-5 page-header-content edi-treasure-detail-outer">
+        <div class="container edi-treasure-detail">
+        <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+            <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
+                <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
                 <li class="breadcrumb-item"><a href="./product_page.php">The Honey Market</a></li>
                 <li class="breadcrumb-item active" aria-current="page"><?= htmlspecialchars($product['product_name'], ENT_QUOTES, 'UTF-8') ?></li>
             </ol>
@@ -214,7 +215,7 @@ if ($totalReviews > 0) {
         <button type="button" class="tab-btn" data-tab="reviews" onclick="showTab('reviews')">Reviews</button>
     </div>
 
-    <hr class="custom-hr">
+    <hr class="custom-hr" aria-hidden="true">
 
     <!-- DETAILS TAB -->
     <div id="details" class="tab-content active">
@@ -268,11 +269,10 @@ if ($totalReviews > 0) {
             <?php endif; ?>
         </div>
         </div>
-        
-        <!--m-->
+
+        <hr class="custom-hr custom-hr--before-review" aria-hidden="true">
 
         <div class="write-review-container">
-            <div class="section-divider"></div>
             <h3 class="review-title">WRITE A REVIEW</h3>
             
             <form method="POST" action="submit_review.php" class="review-form">
@@ -309,6 +309,7 @@ if ($totalReviews > 0) {
         </div>
 
     </div>
+        </div>
     </div>
 
     <?php echo $userHeader->printUserFooter(); ?>

@@ -109,14 +109,8 @@
 .write-review-container {
     max-width: 800px; /* Aligns with form width in image */
     margin-left: 0;   /* Left aligns the form */
-    margin-top: 50px;
+    margin-top: 0;    /* Spacing from tabs/details comes from .custom-hr--before-review */
     font-family: 'Poppins', sans-serif; /* Assumed font from previous context */
-}
-
-.section-divider {
-    border-top: 2px solid #ffb74d; /* Yellow/Orange line at top */
-    margin-bottom: 25px;
-    width: 100%;
 }
 
 .review-title {
@@ -278,12 +272,20 @@ img[style*="position: fixed"] {
     display: block;
 }
 
-/* ORANGE LINE */
+/* Orange separator under tabs + before review block (same length/thickness) */
 .custom-hr {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
     border: none;
     height: 2px;
-    background-color: #f39c12; /* orange */
     margin: 10px 0 20px;
+    background-color: #f39c12;
+}
+
+.product-details-page .custom-hr--before-review {
+    margin: 2rem 0 1.5rem;
 }
 
 /* GREEN FRAME TITLE */

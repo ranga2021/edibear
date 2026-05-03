@@ -303,7 +303,7 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
                 }
                 $href = "pdf.php?" . http_build_query($qNext, "", "&", PHP_QUERY_RFC3986);
                 $safeWord = htmlspecialchars($tagWord, ENT_QUOTES, "UTF-8");
-                echo "<a href=\"" . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . "\" class=\"edi-pdf-topic-link\" style=\"color:#f57c00; text-decoration:none; font-weight:600; border-bottom:1px solid rgba(245,124,0,.35);\">" . $safeWord . "</a>";
+                echo "<a href=\"" . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . "\" class=\"edi-pdf-topic-link\" style=\"color:#0b0b0b; text-decoration:none; font-weight:600; border-bottom:1px solid rgba(245,124,0,.35);\">" . $safeWord . "</a>";
                 if ($i < $visibleTags - 1) {
                     echo "<span class=\"text-muted\" style=\"margin:0 5px 0 2px;\">,</span> ";
                 }
