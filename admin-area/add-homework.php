@@ -266,6 +266,7 @@ if (isset($_POST['confirmDeletehomeworkSubmit'])) {
     <?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit homework" : $adminHeader->getActivePageName()); ?>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
+<?php if (!$editMode) { $ediWorksheetAddCurrent = "homework"; require __DIR__ . "/partials/edi_worksheet_type_switch.php"; } ?>
       <div class="row">
         <div class="col-12 mb-4">
           <div class="card">

@@ -263,9 +263,10 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
 
 <main class="main-content position-relative border-radius-lg">
 
-<?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit books" : "Add books"); ?>
+<?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit books" : $adminHeader->getActivePageName()); ?>
 
 <div class="container-fluid py-4">
+<?php if (!$editMode) { $ediWorksheetAddCurrent = "books"; require __DIR__ . "/partials/edi_worksheet_type_switch.php"; } ?>
 <div class="card p-3">
 
 <form method="post" enctype="multipart/form-data">

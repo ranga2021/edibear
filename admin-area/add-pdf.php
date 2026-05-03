@@ -263,9 +263,10 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
 
 <main class="main-content position-relative border-radius-lg">
 
-<?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit PDF" : "Add PDF"); ?>
+<?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit PDF" : $adminHeader->getActivePageName()); ?>
 
 <div class="container-fluid py-4">
+<?php if (!$editMode) { $ediWorksheetAddCurrent = "pdf"; require __DIR__ . "/partials/edi_worksheet_type_switch.php"; } ?>
 <div class="card p-3">
 
 <form method="post" enctype="multipart/form-data">

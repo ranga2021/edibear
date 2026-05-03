@@ -16,7 +16,7 @@ class HEADER {
         
         "add-worksheet"=>array(
             "name"=>"Add Worksheet",
-            "redirect"=>"./add-worksheet",
+            "redirect"=>"./add-pdf",
             "icon"=>"fas fa-pen-square text-warning"
         ),
         "worksheet"=>array(
