@@ -268,22 +268,10 @@ $chartPayload = array(
 
     .dashboard-kpi-row {
       display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 1.2rem;
       margin-bottom: 2rem;
-    }
-
-    /* Three KPIs sit on the same 5-column track as the stat cards: 2 + 2 + 1 */
-    .dashboard-kpi-row .dashboard-kpi:nth-child(1) {
-      grid-column: span 2;
-    }
-
-    .dashboard-kpi-row .dashboard-kpi:nth-child(2) {
-      grid-column: span 2;
-    }
-
-    .dashboard-kpi-row .dashboard-kpi:nth-child(3) {
-      grid-column: span 1;
+      align-items: stretch;
     }
 
     .dashboard-kpi {
@@ -291,7 +279,8 @@ $chartPayload = array(
       border: 1px solid #e2e8f0;
       border-radius: 14px;
       padding: 1rem 1.15rem;
-      min-height: 4.5rem;
+      min-height: 5.25rem;
+      height: 100%;
       display: flex;
       align-items: center;
       gap: 0.85rem;
@@ -331,12 +320,6 @@ $chartPayload = array(
       .dashboard-kpi-row {
         grid-template-columns: repeat(3, minmax(0, 1fr));
       }
-
-      .dashboard-kpi-row .dashboard-kpi:nth-child(1),
-      .dashboard-kpi-row .dashboard-kpi:nth-child(2),
-      .dashboard-kpi-row .dashboard-kpi:nth-child(3) {
-        grid-column: span 1;
-      }
     }
 
     @media (max-width: 767.98px) {
@@ -346,12 +329,6 @@ $chartPayload = array(
 
       .dashboard-kpi-row {
         grid-template-columns: 1fr;
-      }
-
-      .dashboard-kpi-row .dashboard-kpi:nth-child(1),
-      .dashboard-kpi-row .dashboard-kpi:nth-child(2),
-      .dashboard-kpi-row .dashboard-kpi:nth-child(3) {
-        grid-column: span 1;
       }
     }
 
