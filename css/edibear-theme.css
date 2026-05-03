@@ -1119,7 +1119,10 @@ h6.text-primary:not(.text-white),
   transform: translateY(-1px);
 }
 
-.edi-blog-single-article {
+.edi-blog-single-page .edi-blog-single-article {
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
   padding-top: 0.5rem;
 }
 
@@ -1176,6 +1179,182 @@ h6.text-primary:not(.text-white),
   .edi-blog-single-share {
     width: 100%;
     justify-content: flex-start;
+  }
+}
+
+/* ----- Brave Heart: single challenge detail (challenge-details.php) ----- */
+.challenge-details-page .edi-challenge-detail-inner {
+  max-width: 1140px;
+}
+
+.challenge-details-page .edi-challenge-detail-page-title {
+  color: #212121 !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  margin: 0 !important;
+}
+
+.challenge-details-page .edi-challenge-hero {
+  width: 100%;
+  max-width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #f5f5f5;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.challenge-details-page .edi-challenge-hero__img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: min(72vh, 560px);
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.challenge-details-page .edi-challenge-detail-title {
+  color: var(--edi-heading) !important;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+  line-height: 1.3;
+  margin: 0.35rem 0 1rem;
+}
+
+.challenge-details-page .edi-blog-single-article {
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 0.25rem;
+}
+
+.challenge-details-page .edi-challenge-detail-body {
+  margin-bottom: 0.5rem;
+}
+
+.challenge-details-page .edi-challenge-app-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.5rem;
+  margin-top: 2rem;
+  padding: 1.15rem 1.35rem;
+  background: #f8faf9;
+  border: 1px solid rgba(51, 166, 117, 0.22);
+  border-radius: 10px;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.challenge-details-page .edi-challenge-app-label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.challenge-details-page .edi-challenge-app-heading {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: #212121;
+}
+
+.challenge-details-page .edi-challenge-app-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.challenge-details-page .edi-challenge-download-btn {
+  background-color: var(--edi-green) !important;
+  border-color: var(--edi-green) !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 0.5rem 1.35rem;
+  min-width: 9.5rem;
+  text-align: center;
+}
+
+.challenge-details-page .edi-challenge-download-btn:hover:not(:disabled) {
+  background-color: var(--edi-green-dark) !important;
+  border-color: var(--edi-green-dark) !important;
+  color: #fff !important;
+}
+
+.challenge-details-page .edi-challenge-download-btn--disabled,
+.challenge-details-page .edi-challenge-download-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.challenge-details-page .edi-challenge-winners-title {
+  font-size: 1.125rem;
+  font-weight: 800;
+  color: #212121;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.challenge-details-page .edi-challenge-winners-row {
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.challenge-details-page .edi-challenge-winner-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+}
+
+.challenge-details-page .edi-challenge-winner-thumb {
+  background: #fafafa;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.challenge-details-page .edi-challenge-winner-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.challenge-details-page .edi-challenge-winner-caption {
+  padding: 0.65rem 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.35;
+}
+
+@media (max-width: 575.98px) {
+  .challenge-details-page .edi-challenge-app-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .challenge-details-page .edi-challenge-app-actions {
+    justify-content: flex-start;
+  }
+
+  .challenge-details-page .edi-challenge-download-btn {
+    width: 100%;
   }
 }
 

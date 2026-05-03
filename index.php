@@ -457,7 +457,7 @@
                     <img src="./img/braveheart/<?php echo $recentChallenge['main_image']; ?>" 
                          alt="Challenge Banner" 
                          class="img-fluid rounded shadow-sm" 
-                         style="max-width: 100%; height: auto; border: 1px solid #ddd;">
+                         style="max-width: 100%; height: auto;">
                 </div>
 
                 <div class="mt-3 text-center">

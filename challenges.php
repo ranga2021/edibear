@@ -63,7 +63,7 @@
         .status-upcoming { color: #28a745; } 
         .status-completed { color: #8b0000; } 
         
-        .event-title { color: #d35400; font-weight: 800; text-transform: uppercase; margin-top: 10px; margin-bottom: 2px; }
+        .event-title { font-weight: 800; text-transform: uppercase; margin-top: 10px; margin-bottom: 2px; }
         .category-tag { color: #f39c12; font-size: 0.9rem; font-weight: bold; }
         .category-tag i { margin-right: 5px; }
 
