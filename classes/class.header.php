@@ -190,6 +190,14 @@ class HEADER {
             <link rel='stylesheet' href='css/custom.css'>
             <link rel='stylesheet' href='$ediThemeCss'>
         ";
+        require_once __DIR__ . '/class.user.php';
+        require_once __DIR__ . '/edi_home_section_images.php';
+        $ediHomeFooterUser = new USER();
+        $ediFooterBg = EdiHomeSectionImages::assetUrl($ediHomeFooterUser, EdiHomeSectionImages::TYPE_FOOTER);
+        if ($ediFooterBg !== '') {
+            $ediFooterEsc = EdiHomeSectionImages::cssUrlString($ediFooterBg);
+            $html .= "<style>.footer{background-image:url(\"$ediFooterEsc\") !important;}</style>\n        ";
+        }
         return $html;
     }
 

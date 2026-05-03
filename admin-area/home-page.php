@@ -2,6 +2,7 @@
   require_once("../classes/session_config.php");
   require_once("../classes/class.user.php");
   require_once("../classes/class.header.php");
+  require_once("../classes/edi_home_section_images.php");
   $adminHeader = new HEADER("home-page");
   $user = new USER();
   
@@ -37,6 +38,27 @@
         $inputMainVideoStatus = (int)(isset($_POST['homeMainVideoStatus']))?$_POST['homeMainVideoStatus']:0;
         $user->updateTable("carousel", array("src"=>$inputMainVideoURL, "status"=>$inputMainVideoStatus), array("id"=>$inputMainVideoID));
         echo "<script>alert('Successfully updated the Main Video');location.href='./home-page'</script>";
+      } else if ( isset($_POST['homeExploreBgSubmit']) ) {
+        $err = EdiHomeSectionImages::saveUploaded($user, EdiHomeSectionImages::TYPE_EXPLORE, "homeExploreBgFile");
+        if ($err !== null) {
+          echo "<script>alert(" . json_encode($err) . ");location.href='./home-page'</script>";
+        } else {
+          echo "<script>alert('Explore area background image updated.');location.href='./home-page'</script>";
+        }
+      } else if ( isset($_POST['homeTestimonialBgSubmit']) ) {
+        $err = EdiHomeSectionImages::saveUploaded($user, EdiHomeSectionImages::TYPE_TESTIMONIAL, "homeTestimonialBgFile");
+        if ($err !== null) {
+          echo "<script>alert(" . json_encode($err) . ");location.href='./home-page'</script>";
+        } else {
+          echo "<script>alert('Testimonial area background image updated.');location.href='./home-page'</script>";
+        }
+      } else if ( isset($_POST['homeFooterBgSubmit']) ) {
+        $err = EdiHomeSectionImages::saveUploaded($user, EdiHomeSectionImages::TYPE_FOOTER, "homeFooterBgFile");
+        if ($err !== null) {
+          echo "<script>alert(" . json_encode($err) . ");location.href='./home-page'</script>";
+        } else {
+          echo "<script>alert('Footer area image updated.');location.href='./home-page'</script>";
+        }
       }
       $homeMainVideoURL = "";
       $homeMainVideoStatus = "";
@@ -46,6 +68,19 @@
         $homeMainVideoURL = $homeMainVideoData['src'];
         $homeMainVideoStatus = ($homeMainVideoData['status']=='1') ? "checked" : "";
       }
+
+      $ediAdminRel = function ($webPath) {
+        if (strpos($webPath, "./") === 0) {
+          return ".." . substr($webPath, 1);
+        }
+        return $webPath;
+      };
+      $homeExplorePreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE));
+      $homeTestimonialPreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_TESTIMONIAL));
+      $homeFooterPreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_FOOTER));
+      $homeExplorePreview .= (strpos($homeExplorePreview, "?") === false ? "?" : "&") . "v=" . (string) time();
+      $homeTestimonialPreview .= (strpos($homeTestimonialPreview, "?") === false ? "?" : "&") . "v=" . (string) time();
+      $homeFooterPreview .= (strpos($homeFooterPreview, "?") === false ? "?" : "&") . "v=" . (string) time();
     
 ?>
 <script>
@@ -180,6 +215,60 @@
                         </div>
                       </div>
                     </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mb-4">
+          <div class="card">
+            <div class="card-header p-2">
+              <h5>Home section images</h5>
+              <p class="text-xs text-secondary mb-0">Update the Explorer search strip background, Testimonials strip background, and site footer illustration. Run <code>sql/migration_home_section_backgrounds.sql</code> once if uploads fail (column <code>carousel.type</code> must allow longer values).</p>
+            </div>
+            <div class="card-body p-3">
+              <div class="row">
+                <div class="col-lg-4 col-md-12 mb-4">
+                  <h6 class="mb-3">Explore area background</h6>
+                  <p class="text-xs text-muted mb-2">Behind the language / grade / category search on the home page.</p>
+                  <div class="text-center mb-3 p-2 border border-radius-lg" style="min-height:120px;background:#f6f6f6;">
+                    <img src="<?php echo htmlspecialchars($homeExplorePreview, ENT_QUOTES, 'UTF-8'); ?>" alt="Explore preview" style="max-width:100%;max-height:140px;object-fit:contain;">
+                  </div>
+                  <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label class="form-control-label">Image</label>
+                      <input type="file" class="form-control" accept="image/*" name="homeExploreBgFile" required>
+                    </div>
+                    <input type="submit" class="btn btn-success btn-sm" name="homeExploreBgSubmit" value="Update image">
+                  </form>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4">
+                  <h6 class="mb-3">Testimonial area background</h6>
+                  <p class="text-xs text-muted mb-2">Behind the home page testimonial cards.</p>
+                  <div class="text-center mb-3 p-2 border border-radius-lg" style="min-height:120px;background:#f6f6f6;">
+                    <img src="<?php echo htmlspecialchars($homeTestimonialPreview, ENT_QUOTES, 'UTF-8'); ?>" alt="Testimonial preview" style="max-width:100%;max-height:140px;object-fit:contain;">
+                  </div>
+                  <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label class="form-control-label">Image</label>
+                      <input type="file" class="form-control" accept="image/*" name="homeTestimonialBgFile" required>
+                    </div>
+                    <input type="submit" class="btn btn-success btn-sm" name="homeTestimonialBgSubmit" value="Update image">
+                  </form>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4">
+                  <h6 class="mb-3">Footer area image</h6>
+                  <p class="text-xs text-muted mb-2">Illustration along the bottom of the footer site-wide.</p>
+                  <div class="text-center mb-3 p-2 border border-radius-lg" style="min-height:120px;background:#f6f6f6;">
+                    <img src="<?php echo htmlspecialchars($homeFooterPreview, ENT_QUOTES, 'UTF-8'); ?>" alt="Footer preview" style="max-width:100%;max-height:140px;object-fit:contain;">
+                  </div>
+                  <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label class="form-control-label">Image</label>
+                      <input type="file" class="form-control" accept="image/*" name="homeFooterBgFile" required>
+                    </div>
+                    <input type="submit" class="btn btn-success btn-sm" name="homeFooterBgSubmit" value="Update image">
                   </form>
                 </div>
               </div>

@@ -12,9 +12,12 @@
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
     require_once("./classes/edi_discount_badge.php");
+    require_once("./classes/edi_home_section_images.php");
     $userHeader = new HEADER("home");
     $user = new USER();
     $widgets = new WIDGETS();
+    $ediHomeExploreBg = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE));
+    $ediHomeTestimonialBg = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_TESTIMONIAL));
     
 ?>
 <?php
@@ -51,9 +54,13 @@
 
     <?php echo $userHeader->printUserHeader() ?>
     <style>
+        .explorer-search-area {
+            background: url("<?php echo $ediHomeExploreBg; ?>") no-repeat center;
+            background-size: 100% 100%;
+        }
+
         .testimonial-bg {
-        /* Using the path you provided */
-        background: url("./img/Web pic/Trails of tales.webp") no-repeat center;
+        background: url("<?php echo $ediHomeTestimonialBg; ?>") no-repeat center;
          background-size: 100% 80%;
          padding: 0px 0;
     }
