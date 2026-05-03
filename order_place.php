@@ -73,7 +73,7 @@ $createdAt = date('Y-m-d H:i:s');
 $paymentStatus = 'pending';
 $orderStatus = 'Order Placed';
 
-$user->insertTable(
+$orderId = $user->insertTable(
     "orders",
     array(
         "order_number"   => $orderNumber,
@@ -94,8 +94,46 @@ $user->insertTable(
         "shipping"       => $shipping,
         "total"          => $orderTotal,
         "created_at"     => $createdAt
-    )
+    ),
+    true
 );
+
+if ($orderId === false) {
+    header("Location: checkout.php?uid=" . (int) $user_id . "&error=order");
+    exit;
+}
+
+$orderItemsTable = false;
+try {
+    $chk = $pdo->query("SHOW TABLES LIKE " . $pdo->quote("order_items"));
+    $orderItemsTable = $chk && $chk->rowCount() > 0;
+} catch (Throwable $e) {
+    $orderItemsTable = false;
+}
+
+if ($orderItemsTable) {
+    foreach ($cartItems as $item) {
+        $product = $user->fetchAll(
+            "",
+            array("products"),
+            array("id" => $item["product_id"])
+        )[0];
+        $unit = (float) ($product["discounted_price"] > 0 ? $product["discounted_price"] : $product["price"]);
+        $qty = (int) $item["quantity"];
+        $lineTotal = $unit * $qty;
+        $user->insertTable(
+            "order_items",
+            array(
+                "order_id"     => $orderId,
+                "product_id"   => (int) $item["product_id"],
+                "product_name" => (string) ($product["product_name"] ?? ""),
+                "quantity"     => $qty,
+                "unit_price"   => $unit,
+                "line_total"   => $lineTotal,
+            )
+        );
+    }
+}
 
 // Clear cart after placing order using user_id
 $user->deleteTableRow("cart", array("user_id" => $user_id));

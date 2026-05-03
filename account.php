@@ -37,6 +37,7 @@ if ($touristID > 0 && $user->CountRows("tourists", array("id"=>$touristID)) == 1
     /* Orders store shopper id in orders.session_id (see order_place.php) */
     $userOrders = $user->fetchAll(
         array(
+            "id",
             "order_number", "created_at", "total", "subtotal", "shipping",
             "payment_method", "payment_status", "order_status",
             "first_name", "last_name", "email", "mobile",
@@ -46,6 +47,38 @@ if ($touristID > 0 && $user->CountRows("tourists", array("id"=>$touristID)) == 1
         array("session_id" => (string) $touristID),
         "created_at DESC"
     );
+
+    $accountOrderItems = array();
+    if (!empty($userOrders)) {
+        try {
+            $conn = $user->getConnection();
+            $chk = $conn->query("SHOW TABLES LIKE " . $conn->quote("order_items"));
+            if ($chk && $chk->rowCount() > 0) {
+                $oids = array();
+                foreach ($userOrders as $uo) {
+                    if (!empty($uo["id"])) {
+                        $oids[] = (int) $uo["id"];
+                    }
+                }
+                $oids = array_values(array_unique($oids));
+                if (!empty($oids)) {
+                    $inList = implode(",", $oids);
+                    $iq = $conn->query("SELECT * FROM order_items WHERE order_id IN (" . $inList . ") ORDER BY order_id ASC, id ASC");
+                    if ($iq) {
+                        foreach ($iq->fetchAll(PDO::FETCH_ASSOC) as $li) {
+                            $oid = (int) $li["order_id"];
+                            if (!isset($accountOrderItems[$oid])) {
+                                $accountOrderItems[$oid] = array();
+                            }
+                            $accountOrderItems[$oid][] = $li;
+                        }
+                    }
+                }
+            }
+        } catch (Throwable $e) {
+            $accountOrderItems = array();
+        }
+    }
 }
 
 // 🔥 HANDLE DELETE TESTIMONIAL
@@ -304,7 +337,23 @@ if (userSession && !uid) {
                                                 <p class="mb-1"><?php echo htmlspecialchars(trim(($o['city'] ?? '') . ', ' . ($o['district'] ?? '') . ' ' . ($o['postal_code'] ?? '')), ENT_QUOTES, 'UTF-8'); ?></p>
                                                 <p class="mb-1"><strong>Email:</strong> <?php echo htmlspecialchars($o['email'] ?? '', ENT_QUOTES, 'UTF-8'); ?></p>
                                                 <p class="mb-1"><strong>Phone:</strong> <?php echo htmlspecialchars($o['mobile'] ?? '', ENT_QUOTES, 'UTF-8'); ?></p>
-                                                <p class="mb-0"><strong>Subtotal:</strong> Rs. <?php echo number_format((float) ($o['subtotal'] ?? 0), 2); ?> &nbsp; <strong>Shipping:</strong> Rs. <?php echo number_format((float) ($o['shipping'] ?? 0), 2); ?></p>
+                                                <p class="mb-2"><strong>Subtotal:</strong> Rs. <?php echo number_format((float) ($o['subtotal'] ?? 0), 2); ?> &nbsp; <strong>Shipping:</strong> Rs. <?php echo number_format((float) ($o['shipping'] ?? 0), 2); ?></p>
+                                                <?php
+                                                $oidAcc = (int) ($o['id'] ?? 0);
+                                                $lines = ($oidAcc > 0 && !empty($accountOrderItems[$oidAcc])) ? $accountOrderItems[$oidAcc] : array();
+                                                ?>
+                                                <?php if (!empty($lines)): ?>
+                                                <p class="mb-1 font-weight-bold text-dark">Items</p>
+                                                <ul class="mb-0 pl-3">
+                                                    <?php foreach ($lines as $li): ?>
+                                                    <li><?php echo htmlspecialchars((string) ($li['product_name'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>
+                                                        × <?php echo (int) ($li['quantity'] ?? 0); ?>
+                                                        — Rs. <?php echo number_format((float) ($li['line_total'] ?? 0), 2); ?></li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+                                                <?php else: ?>
+                                                <p class="mb-0 text-muted">Item list appears here for orders placed after <code>migration_order_items.sql</code> is applied.</p>
+                                                <?php endif; ?>
                                             </div>
                                         </details>
                                     </td>

@@ -84,12 +84,39 @@
 
   $query .= " ORDER BY id DESC";
 
+  $itemsByOrder = array();
   try {
     $stmt = $user->runQuery($query);
     $stmt->execute($params);
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $pdo = $user->getConnection();
+    $chk = $pdo->query("SHOW TABLES LIKE " . $pdo->quote("order_items"));
+    if ($chk && $chk->rowCount() > 0 && !empty($orders)) {
+      $ids = array();
+      foreach ($orders as $r) {
+        if (!empty($r["id"])) {
+          $ids[] = (int) $r["id"];
+        }
+      }
+      $ids = array_values(array_unique($ids));
+      if (!empty($ids)) {
+        $inList = implode(",", $ids);
+        $iq = $pdo->query("SELECT * FROM order_items WHERE order_id IN (" . $inList . ") ORDER BY order_id ASC, id ASC");
+        if ($iq) {
+          foreach ($iq->fetchAll(PDO::FETCH_ASSOC) as $li) {
+            $oid = (int) $li["order_id"];
+            if (!isset($itemsByOrder[$oid])) {
+              $itemsByOrder[$oid] = array();
+            }
+            $itemsByOrder[$oid][] = $li;
+          }
+        }
+      }
+    }
   } catch (Exception $e) {
     $orders = array();
+    $itemsByOrder = array();
   }
 ?>
 
@@ -283,6 +310,9 @@
                 <?php else: ?>
                   <?php foreach ($orders as $row): ?>
                     <?php
+                      $rowForModal = $row;
+                      $oid = (int) ($row["id"] ?? 0);
+                      $rowForModal["line_items"] = isset($itemsByOrder[$oid]) ? $itemsByOrder[$oid] : array();
                       $orderNumber = $row['order_number'];
                       $customerName = trim(($row['first_name'] ?? '') . ' ' . ($row['last_name'] ?? ''));
                       if ($customerName === '') $customerName = 'Guest';
@@ -303,7 +333,7 @@
                       <td><?php echo htmlspecialchars($paymentStatus, ENT_QUOTES, 'UTF-8'); ?></td>
                       <td><span class="orders-status-pill"><?php echo htmlspecialchars($orderStatus, ENT_QUOTES, 'UTF-8'); ?></span></td>
                       <td class="text-end">
-                        <span class="text-primary text-xs cursor-pointer font-weight-bold view-btn" onclick='showOrderDetails(<?php echo json_encode($row); ?>)'>View</span>
+                        <span class="text-primary text-xs cursor-pointer font-weight-bold view-btn" role="button" tabindex="0" data-order-b64="<?php echo htmlspecialchars(base64_encode(json_encode($rowForModal, JSON_UNESCAPED_UNICODE)), ENT_QUOTES, "UTF-8"); ?>" onclick="showOrderDetailsFromEl(this)">View</span>
                       </td>
                     </tr>
                   <?php endforeach; ?>
@@ -342,6 +372,8 @@
               <p class="text-xs text-secondary mt-1">(Subtotal: <span id="modal_subtotal"></span> + Shipping: <span id="modal_shipping"></span>)</p>
             </div>
           </div>
+          <p class="modal-detail-label mt-3">Ordered products</p>
+          <div id="modal_line_items" class="modal-detail-value mb-0"></div>
           <hr class="horizontal dark mt-4 mb-4">
           <div class="row">
             <div class="col-md-6 border-end">
@@ -372,18 +404,55 @@
 
   <?php echo $adminHeader->printAdminFooterJS(); ?>
   <script>
+    function ediEscapeHtml(text) {
+        const d = document.createElement("div");
+        d.textContent = text == null ? "" : String(text);
+        return d.innerHTML;
+    }
+
+    function renderOrderLineItems(data) {
+        const wrap = document.getElementById("modal_line_items");
+        if (!wrap) return;
+        const items = data.line_items || [];
+        if (!items.length) {
+            wrap.innerHTML = "<p class=\"text-muted small mb-0\">No line items are stored for this order. Run <code>sql/migration_order_items.sql</code> and new checkouts will list products here.</p>";
+            return;
+        }
+        let html = "<table class=\"table table-sm table-bordered mb-0\"><thead><tr><th>Product</th><th class=\"text-center\">Qty</th><th class=\"text-right\">Unit</th><th class=\"text-right\">Line</th></tr></thead><tbody>";
+        items.forEach(function (it) {
+            const unit = parseFloat(it.unit_price);
+            const line = parseFloat(it.line_total);
+            html += "<tr><td>" + ediEscapeHtml(it.product_name) + "</td><td class=\"text-center\">" + ediEscapeHtml(it.quantity) + "</td>";
+            html += "<td class=\"text-right\">LKR " + unit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "</td>";
+            html += "<td class=\"text-right\">LKR " + line.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "</td></tr>";
+        });
+        html += "</tbody></table>";
+        wrap.innerHTML = html;
+    }
+
+    function showOrderDetailsFromEl(el) {
+        var raw = el.getAttribute("data-order-b64") || "";
+        try {
+            var json = atob(raw);
+            showOrderDetails(JSON.parse(json));
+        } catch (e) {
+            alert("Could not load order details.");
+        }
+    }
+
     function showOrderDetails(data) {
-        document.getElementById('modal_order_number').innerText = data.order_number;
-        document.getElementById('modal_customer_name').innerText = data.first_name + ' ' + data.last_name;
-        document.getElementById('modal_contact').innerText = data.email + ' / ' + data.mobile;
-        document.getElementById('modal_address').innerText = data.address_line + ', ' + data.city + ', ' + data.district + ' (' + data.postal_code + ')';
-        document.getElementById('modal_payment_method').innerText = data.payment_method.toUpperCase();
-        document.getElementById('modal_total').innerText = 'LKR ' + parseFloat(data.total).toLocaleString(undefined, {minimumFractionDigits: 2});
-        document.getElementById('modal_subtotal').innerText = 'LKR ' + parseFloat(data.subtotal).toLocaleString(undefined, {minimumFractionDigits: 2});
-        document.getElementById('modal_shipping').innerText = 'LKR ' + parseFloat(data.shipping).toLocaleString(undefined, {minimumFractionDigits: 2});
-        document.getElementById('payment_order_id').value = data.id;
-        document.getElementById('status_order_id').value = data.id;
-        var myModal = new bootstrap.Modal(document.getElementById('orderViewModal'));
+        document.getElementById("modal_order_number").innerText = data.order_number;
+        document.getElementById("modal_customer_name").innerText = data.first_name + " " + data.last_name;
+        document.getElementById("modal_contact").innerText = data.email + " / " + data.mobile;
+        document.getElementById("modal_address").innerText = data.address_line + ", " + data.city + ", " + data.district + " (" + data.postal_code + ")";
+        document.getElementById("modal_payment_method").innerText = (data.payment_method || "").toUpperCase();
+        document.getElementById("modal_total").innerText = "LKR " + parseFloat(data.total).toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById("modal_subtotal").innerText = "LKR " + parseFloat(data.subtotal).toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById("modal_shipping").innerText = "LKR " + parseFloat(data.shipping).toLocaleString(undefined, { minimumFractionDigits: 2 });
+        document.getElementById("payment_order_id").value = data.id;
+        document.getElementById("status_order_id").value = data.id;
+        renderOrderLineItems(data);
+        var myModal = new bootstrap.Modal(document.getElementById("orderViewModal"));
         myModal.show();
     }
   </script>
