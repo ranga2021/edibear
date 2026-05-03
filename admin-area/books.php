@@ -39,75 +39,21 @@
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">books Title</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">books Tag</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php
-                      $rowNumber = 0;
-                      foreach ( $user->fetchAll(array("id","tag","title","status"), array("books_details"), "", "timestamp DESC") as $rowFetchbooks ) {
-                        $booksID = $rowFetchbooks['id'];
-                        $booksTag = $rowFetchbooks['tag'];
-                        $booksTitle = $rowFetchbooks['title'];
-                        $booksStatus = ($rowFetchbooks['status']=='1') ? "checked" : "";
-                        echo "
-                        <tr>
-                          <td class='align-middle text-center cursorPointer' onclick='editbooks($booksID)'>
-                            <span class='text-secondary text-xs font-weight-bold'>$booksTitle</span>
-                          </td>
-                          <td class='align-middle text-center cursorPointer' onclick='editbooks($booksID)'>
-                            <span class='text-secondary text-xs font-weight-bold'>$booksTag</span>
-                          </td>
-                          <td class='align-middle text-center'>
-                            <div class='form-check form-switch justify-content-center'>
-                              <input class='form-check-input' type='checkbox' name='booksStatus$booksID' value='1' $booksStatus onchange='chngbooksSts($booksID)'>
-                            </div>
-                          </td>
-                        </tr>
-                        ";
-                      }
-                    ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          <?php
+          $ediWsTable = 'books_details';
+          $ediWsEditUrl = './add-books';
+          $ediWsAjaxKey = 'chngbooksSts';
+          $ediWsPrefix = 'books';
+          $ediWsJsEdit = 'editbooks';
+          $ediWsJsSts = 'chngbooksSts';
+          require __DIR__ . '/partials/edi_worksheet_list_card.php';
+          ?>
         </div>
       </div>
       <?php echo $adminHeader->printAdminFooter(); ?>
     </div>
   </main>
-  <div id="chngbooksSts"></div>
   <?php echo $adminHeader->printAdminFooterJS(); ?>
-  <script>
-    function editbooks(booksID) {
-      location.href = "./add-books?id="+booksID;
-    }
-    function chngbooksSts(booksID) {
-      var arr = {
-        booksID: booksID,
-        booksStatus: ($("input[name='booksStatus"+booksID+"']").is(":checked")) ? 1 : 0
-      };
-      $.ajax({
-        type: "POST",
-        url: "ajax.php",
-        data: {
-          chngbooksSts: arr
-        },
-        success: function(html) {
-          $("#chngbooksSts").html(html).show();
-        }
-      }); 
-    }
-  </script>
 </body>
 
 </html>

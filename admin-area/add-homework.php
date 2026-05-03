@@ -240,11 +240,24 @@ if (isset($_POST['updatehomeworkSubmit'])) {
 // ================= DELETE =================
 if (isset($_POST['confirmDeletehomeworkSubmit'])) {
 
-    $id = (int)$_POST['deletehomeworkID'];
+    $id = (int) ($_POST['deletehomeworkID'] ?? 0);
+    if ($id > 0 && $user->CountRows("homework_details", array("id" => $id))) {
+        $dr = $user->fetchAll(array("image", "pdfupload"), array("homework_details"), array("id" => $id));
+        if (!empty($dr[0])) {
+            $img = (string) ($dr[0]['image'] ?? '');
+            $pdfF = (string) ($dr[0]['pdfupload'] ?? '');
+            $uploadDir = "../img/homework/";
+            if ($img !== '' && is_file($uploadDir . $img)) {
+                @unlink($uploadDir . $img);
+            }
+            if ($pdfF !== '' && is_file($uploadDir . $pdfF)) {
+                @unlink($uploadDir . $pdfF);
+            }
+        }
+        $user->deleteTableRow("homework_details", array("id" => $id));
+    }
 
-    $user->deleteTableRow("homework_details", ["id"=>$id]);
-
-    echo "<script>alert('Deleted successfully');location.href='./createSiteMap?redirect=homework'</script>";
+    echo "<script>alert('Deleted successfully');location.href='./homework'</script>";
     exit;
 }
 ?>
@@ -263,65 +276,57 @@ if (isset($_POST['confirmDeletehomeworkSubmit'])) {
   <?php echo $adminHeader->printAdminNav(); ?>
   <main class="main-content position-relative border-radius-lg">
     <!-- Navbar -->
-    <?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit homework" : $adminHeader->getActivePageName()); ?>
+    <?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit worksheet" : $adminHeader->getActivePageName()); ?>
     <!-- End Navbar -->
     <div class="container-fluid py-4">
 <?php if (!$editMode) { $ediWorksheetAddCurrent = "homework"; require __DIR__ . "/partials/edi_worksheet_type_switch.php"; } ?>
-      <div class="row">
-        <div class="col-12 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <form accept="" method="post" enctype="multipart/form-data">
-                <div class="row">
-                  <?php
-                    echo $widgets->inputGroup("Tags (slash-separated, e.g. Math / Practice)", "inputhomeworkTag", "col-md-6", $currenthomeworkTag);
-                    echo $widgets->inputGroup("homework Title", "inputhomeworkTitle", "col-md-6", $currenthomeworkTitle);
-                  ?>
-                </div>
-                <?php require __DIR__ . "/content_language_grade_fields.php"; ?>
-                <?php require __DIR__ . "/product_taxonomy_content_fields.php"; ?>
-                <div class="row border mx-3 mb-2">
-                  <div class="col-md-6 d-flex align-items-center justify-content-center">
-                    <div class="form-group">
-                      <label for="example-text-input" class="form-control-label">Main Image</label>
-                      <?php
-                        if ( $editMode ) {
-                          $mainImageRequired = "";
-                        } else {
-                          $mainImageRequired = "required";
-                        }
-                        echo "<input class='form-control' type='file' accept='image/*' onchange='loadImageFile(event)' name='inputhomeworkMainImage' $mainImageRequired>";
-                      ?>
+      <div class="card p-4">
+              <form method="post" enctype="multipart/form-data" class="edi-add-worksheet-form">
+                <?php if ($editMode) { ?>
+                <h2 class="text-uppercase text-danger font-weight-bold mb-4">Edit worksheet</h2>
+                <?php } else { ?>
+                <h2 class="text-uppercase text-danger font-weight-bold mb-4">Add worksheet</h2>
+                <?php } ?>
+                <?php
+                $ediWsTagName = "inputhomeworkTag";
+                $ediWsTitleName = "inputhomeworkTitle";
+                $ediWsTagValue = $currenthomeworkTag;
+                $ediWsTitleValue = $currenthomeworkTitle;
+                require __DIR__ . "/partials/edi_worksheet_metadata_form.php";
+                ?>
+                <?php
+                  $mainImageRequired = $editMode ? "" : "required";
+                  $pdfuploadRequired = $editMode ? "" : "required";
+                ?>
+                <div class="row justify-content-center align-items-end mt-4">
+                  <div class="col-md-6 col-lg-5">
+                    <div class="form-group mb-0">
+                      <label class="form-control-label" for="inputhomeworkMainImage">Main Image</label>
+                      <input class="form-control" type="file" accept="image/*" id="inputhomeworkMainImage" name="inputhomeworkMainImage" <?php echo $mainImageRequired; ?> onchange="ediWsPreviewImage(event, 'outputhomeworkMainImage')">
                     </div>
                   </div>
-                  <div class="col-md-6">
-                    <p class="text-center mt-3"><img id='outputhomeworkMainImage' <?php echo $currenthomeworkMainImage; ?> style='max-height: 200px; max-width:100%' /></p>
+                  <div class="col-md-4 col-lg-3 text-center mt-3 mt-md-0">
+                    <img id="outputhomeworkMainImage" <?php echo $currenthomeworkMainImage; ?> alt="Preview" class="rounded border bg-light edi-ws-edit-preview-thumb" style="width:100px;height:140px;object-fit:contain;">
                   </div>
-
-                  <div class="col-md-6 d-flex align-items-center justify-content-center">
-                    <div class="form-group">
-                      <label for="example-text-input" class="form-control-label">Main PDF</label>
-                      <?php
-                        if ( $editMode ) {
-                          $pdfuploadRequired = "";
-                        } else {
-                          $pdfuploadRequired = "required";
-                        }
-                        echo "<input class='form-control' type='file' accept='image/jpeg,image/gif,image/png,application/pdf,image/x-eps' onchange='loadImageFile(event)' name='inputhomeworkpdfupload' $pdfuploadRequired>";
-                      ?>
+                </div>
+                <div class="row justify-content-center align-items-end mt-3">
+                  <div class="col-md-6 col-lg-5">
+                    <div class="form-group mb-0">
+                      <label class="form-control-label" for="inputhomeworkpdfupload">Main PDF</label>
+                      <input class="form-control" type="file" accept="image/jpeg,image/gif,image/png,application/pdf,image/x-eps" id="inputhomeworkpdfupload" name="inputhomeworkpdfupload" <?php echo $pdfuploadRequired; ?>>
                     </div>
                   </div>
-                  <div class="col-md-6">
-                    <p class="text-center mt-3"><img id='outputhomeworkpdfupload' <?php echo $currenthomeworkpdfupload; ?> style='max-height: 200px; max-width:100%' /></p>
+                  <div class="col-md-4 col-lg-3 text-center mt-3 mt-md-0">
+                    <div class="rounded border bg-light d-inline-flex align-items-center justify-content-center text-muted edi-ws-edit-preview-thumb" style="width:100px;height:140px;" title="PDF">
+                      <i class="fas fa-file-pdf text-danger" style="font-size:2rem;" aria-hidden="true"></i>
+                    </div>
                   </div>
-
-
                 </div>
-                <div class="row">
+                <div class="row mt-4">
                   <div class="col-12">
-                    <div class="form-group">
-                      <label for='example-text-input' class='form-control-label'>Main Description</label>
-                      <textarea class='form-control' name='inputhomeworkMainDescription' rows="4" required><?php echo $currenthomeworkMainDescription;?></textarea>
+                    <div class="form-group mb-0">
+                      <label class="form-control-label" for="inputhomeworkMainDescription">Main Description</label>
+                      <textarea class="form-control" name="inputhomeworkMainDescription" id="inputhomeworkMainDescription" rows="5" required><?php echo htmlspecialchars($currenthomeworkMainDescription, ENT_QUOTES, 'UTF-8'); ?></textarea>
                     </div>
                   </div>
                 </div>
@@ -361,26 +366,23 @@ if (isset($_POST['confirmDeletehomeworkSubmit'])) {
                     echo "<div class='col-md-6 float-left'>".$widgets->checkboxSwitch("", "homeworkVideoStatus", $currenthomeworkVideoStatus, "pt-5")."</div>";
                   ?>
                 </div> -->
-                <div class="row">
+                <div class="row mt-4">
                   <div class="col-12">
                     <input type="hidden" name="howManyDescriptions" value="1">
                     <?php
                       if ( $editMode ) {
                         echo "
-                        <input type='submit' class='btn btn-primary' value='Update homework' name='updatehomeworkSubmit'>
-                        <input type='button' class='btn btn-danger' value='Delete homework' onclick='deletehomeworkSubmit()'>
+                        <input type='submit' class='btn btn-success mr-2' value='Update' name='updatehomeworkSubmit'>
+                        <input type='button' class='btn btn-danger mr-2' value='Delete' onclick='deletehomeworkSubmit()'>
                         ";
                       } else {
-                        echo "<input type='submit' class='btn btn-success' value='Add homework' name='addNewhomeworkSubmit'>";
+                        echo "<input type='submit' class='btn btn-success mr-2' value='Add' name='addNewhomeworkSubmit'>";
                       }
                     ?>
-                    <input type="button" class="btn btn-secondary" value="Cancel" onclick="location.href='./add-homework'">
+                    <button type="button" class="btn btn-secondary" onclick="location.href='./homework'">Cancel</button>
                   </div>
                 </div>
               </form>
-            </div>
-          </div>
-        </div>
       </div>
       <?php echo $adminHeader->printAdminFooter(); ?>
     </div>
@@ -389,21 +391,21 @@ if (isset($_POST['confirmDeletehomeworkSubmit'])) {
   <?php 
     echo $adminHeader->printAdminFooterJS(); 
     if ( $editMode ) {
+      $hwDelTitle = htmlspecialchars((string) $currenthomeworkTitle, ENT_QUOTES, 'UTF-8');
+      $hwDelTag = htmlspecialchars((string) $currenthomeworkTag, ENT_QUOTES, 'UTF-8');
       echo "
-      <div class='modal fade' id='confirmDeletehomeworkModal' data-backdrop='static' tabindex='-1' role='dialog' aria-labelledby='staticBackdropLabel' aria-hidden='true' style='margin-top:200px'>
+      <div class='modal fade' id='confirmDeletehomeworkModal' data-backdrop='static' tabindex='-1' role='dialog' aria-hidden='true' style='margin-top:200px'>
         <div class='modal-dialog' role='document'>
           <div class='modal-content'>
             <div class='modal-header'>
-              <h5 class='modal-title' id='staticBackdropLabel'>Confirm Delete a homework</h5>
+              <h5 class='modal-title'>Delete worksheet</h5>
             </div>
             <div class='modal-body'>
-            <form action='' class='text-center' method='post'>
-                homework Title : $currenthomeworkTitle<br>
-                homework Tag : $currenthomeworkTag<br>
-                <input type='hidden' name='deletehomeworkID' value='$currenthomeworkID'>
-              <br>
+            <form class='text-center' method='post'>
+                <p class='mb-2'>Document title: <strong>$hwDelTitle</strong><br>Tag: <strong>$hwDelTag</strong></p>
+                <input type='hidden' name='deletehomeworkID' value='" . (int) $currenthomeworkID . "'>
               <input type='submit' class='btn btn-danger btn-sm' name='confirmDeletehomeworkSubmit' value='Delete'>
-              <button class='btn btn-sm btn-secondary' type='button' onclick='location.reload()'>Cancel</button>
+              <button class='btn btn-sm btn-secondary' type='button' data-dismiss='modal'>Cancel</button>
             </form>
             </div>
           </div>
@@ -413,6 +415,15 @@ if (isset($_POST['confirmDeletehomeworkSubmit'])) {
     }
   ?>
   <script>
+    function ediWsPreviewImage(ev, imgId) {
+      var f = ev.target.files && ev.target.files[0];
+      var el = document.getElementById(imgId);
+      if (!el || !f) return;
+      if (f.type.indexOf('image/') === 0) {
+        el.src = URL.createObjectURL(f);
+        el.classList.add('border');
+      }
+    }
     function loadImageFile(event, sessionTF=0) { 
       var imageDivID = event.target.name.replace("input", "output");
       var imageDivIdNumber = imageDivID.substr(-1);

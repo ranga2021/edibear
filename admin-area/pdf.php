@@ -39,75 +39,21 @@
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">PDF Title</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">PDF Tag</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php
-                      $rowNumber = 0;
-                      foreach ( $user->fetchAll(array("id","tag","title","status"), array("pdf_details"), "", "timestamp DESC") as $rowFetchpdf ) {
-                        $pdfID = $rowFetchpdf['id'];
-                        $pdfTag = $rowFetchpdf['tag'];
-                        $pdfTitle = $rowFetchpdf['title'];
-                        $pdfStatus = ($rowFetchpdf['status']=='1') ? "checked" : "";
-                        echo "
-                        <tr>
-                          <td class='align-middle text-center cursorPointer' onclick='editpdf($pdfID)'>
-                            <span class='text-secondary text-xs font-weight-bold'>$pdfTitle</span>
-                          </td>
-                          <td class='align-middle text-center cursorPointer' onclick='editpdf($pdfID)'>
-                            <span class='text-secondary text-xs font-weight-bold'>$pdfTag</span>
-                          </td>
-                          <td class='align-middle text-center'>
-                            <div class='form-check form-switch justify-content-center'>
-                              <input class='form-check-input' type='checkbox' name='pdfStatus$pdfID' value='1' $pdfStatus onchange='chngpdfSts($pdfID)'>
-                            </div>
-                          </td>
-                        </tr>
-                        ";
-                      }
-                    ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          <?php
+          $ediWsTable = 'pdf_details';
+          $ediWsEditUrl = './add-pdf';
+          $ediWsAjaxKey = 'chngpdfSts';
+          $ediWsPrefix = 'pdf';
+          $ediWsJsEdit = 'editpdf';
+          $ediWsJsSts = 'chngpdfSts';
+          require __DIR__ . '/partials/edi_worksheet_list_card.php';
+          ?>
         </div>
       </div>
       <?php echo $adminHeader->printAdminFooter(); ?>
     </div>
   </main>
-  <div id="chngpdfSts"></div>
   <?php echo $adminHeader->printAdminFooterJS(); ?>
-  <script>
-    function editpdf(pdfID) {
-      location.href = "./add-pdf?id="+pdfID;
-    }
-    function chngpdfSts(pdfID) {
-      var arr = {
-        pdfID: pdfID,
-        pdfStatus: ($("input[name='pdfStatus"+pdfID+"']").is(":checked")) ? 1 : 0
-      };
-      $.ajax({
-        type: "POST",
-        url: "ajax.php",
-        data: {
-          chngpdfSts: arr
-        },
-        success: function(html) {
-          $("#chngpdfSts").html(html).show();
-        }
-      }); 
-    }
-  </script>
 </body>
 
 </html>

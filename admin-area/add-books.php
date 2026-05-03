@@ -97,6 +97,27 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     }
 }
 
+// ================= DELETE =================
+if (isset($_POST['confirmDeletebooksSubmit'])) {
+    $delId = (int) ($_POST['deletebooksID'] ?? 0);
+    if ($delId > 0 && $user->CountRows("books_details", array("id" => $delId))) {
+        $dr = $user->fetchAll(array("image", "pdfupload"), array("books_details"), array("id" => $delId));
+        if (!empty($dr[0])) {
+            $img = (string) ($dr[0]['image'] ?? '');
+            $pdfF = (string) ($dr[0]['pdfupload'] ?? '');
+            if ($img !== '' && is_file("../img/books/" . $img)) {
+                @unlink("../img/books/" . $img);
+            }
+            if ($pdfF !== '' && is_file("../img/books/" . $pdfF)) {
+                @unlink("../img/books/" . $pdfF);
+            }
+        }
+        $user->deleteTableRow("books_details", array("id" => $delId));
+    }
+    echo "<script>alert('Deleted successfully');location.href='./books'</script>";
+    exit;
+}
+
 // ================= FORM SUBMIT =================
 if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
 
@@ -263,56 +284,73 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
 
 <main class="main-content position-relative border-radius-lg">
 
-<?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit books" : $adminHeader->getActivePageName()); ?>
+<?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit worksheet" : $adminHeader->getActivePageName()); ?>
 
 <div class="container-fluid py-4">
 <?php if (!$editMode) { $ediWorksheetAddCurrent = "books"; require __DIR__ . "/partials/edi_worksheet_type_switch.php"; } ?>
-<div class="card p-3">
+<div class="card p-4">
 
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" class="edi-add-worksheet-form">
 
-<div class="row">
+<?php if ($editMode) { ?>
+<h2 class="text-uppercase text-danger font-weight-bold mb-4">Edit worksheet</h2>
+<?php } else { ?>
+<h2 class="text-uppercase text-danger font-weight-bold mb-4">Add worksheet</h2>
+<?php } ?>
+
 <?php
-echo $widgets->inputGroup("Tags (slash-separated, e.g. Fun / Grade 1)", "inputbooksTag", "col-md-6", $currentbooksTag);
-echo $widgets->inputGroup("books Title", "inputbooksTitle", "col-md-6", $currentbooksTitle);
+$ediWsTagName = "inputbooksTag";
+$ediWsTitleName = "inputbooksTitle";
+$ediWsTagValue = $currentbooksTag;
+$ediWsTitleValue = $currentbooksTitle;
+require __DIR__ . "/partials/edi_worksheet_metadata_form.php";
 ?>
-</div>
-<?php require __DIR__ . "/content_language_grade_fields.php"; ?>
-<?php require __DIR__ . "/product_taxonomy_content_fields.php"; ?>
 
-<div class="row mt-3">
-<div class="col-md-6">
-<label>Main Image</label>
-<input type="file" name="inputbooksMainImage" class="form-control" <?php echo !$editMode ? "required" : ""; ?>>
-</div>
-
-<div class="col-md-6">
-<img id="outputbooksMainImage" <?php echo $currentbooksMainImage; ?> style="max-height:200px;">
-</div>
+<div class="row justify-content-center align-items-end mt-4">
+  <div class="col-md-6 col-lg-5">
+    <div class="form-group mb-0">
+      <label class="form-control-label" for="inputbooksMainImage">Main Image</label>
+      <input type="file" name="inputbooksMainImage" id="inputbooksMainImage" class="form-control" accept="image/*" <?php echo !$editMode ? "required" : ""; ?> onchange="ediWsPreviewImage(event, 'outputbooksMainImage')">
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-3 text-center mt-3 mt-md-0">
+    <img id="outputbooksMainImage" <?php echo $currentbooksMainImage; ?> alt="Preview" class="rounded border bg-light edi-ws-edit-preview-thumb" style="width:100px;height:140px;object-fit:contain;">
+  </div>
 </div>
 
-<div class="row mt-3">
-<div class="col-md-6">
-<label>Main PDF</label>
-<input type="file" name="inputbookspdfupload" class="form-control" <?php echo !$editMode ? "required" : ""; ?>>
-</div>
+<div class="row justify-content-center align-items-end mt-3">
+  <div class="col-md-6 col-lg-5">
+    <div class="form-group mb-0">
+      <label class="form-control-label" for="inputbookspdfupload">Main PDF</label>
+      <input type="file" name="inputbookspdfupload" id="inputbookspdfupload" class="form-control" accept=".pdf,application/pdf" <?php echo !$editMode ? "required" : ""; ?>>
+    </div>
+  </div>
+  <div class="col-md-4 col-lg-3 text-center mt-3 mt-md-0">
+    <div class="rounded border bg-light d-inline-flex align-items-center justify-content-center text-muted edi-ws-edit-preview-thumb" style="width:100px;height:140px;" title="PDF">
+      <i class="fas fa-file-pdf text-danger" style="font-size:2rem;" aria-hidden="true"></i>
+    </div>
+  </div>
 </div>
 
-<div class="row mt-3">
-<div class="col-12">
-<label>Description</label>
-<textarea name="inputbooksMainDescription" class="form-control" required><?php echo $currentbooksMainDescription;?></textarea>
-</div>
+<div class="row mt-4">
+  <div class="col-12">
+    <div class="form-group mb-0">
+      <label class="form-control-label" for="inputbooksMainDescription">Main Description</label>
+      <textarea name="inputbooksMainDescription" id="inputbooksMainDescription" class="form-control" rows="5" required><?php echo htmlspecialchars($currentbooksMainDescription, ENT_QUOTES, 'UTF-8'); ?></textarea>
+    </div>
+  </div>
 </div>
 
 <div class="mt-4">
 <?php
 if ($editMode) {
-    echo "<button type='submit' name='updatebooksSubmit' class='btn btn-primary'>Update</button>";
+    echo "<button type='submit' name='updatebooksSubmit' class='btn btn-success mr-2'>Update</button>";
+    echo "<button type='button' class='btn btn-danger mr-2' onclick='deletebooksSubmit()'>Delete</button>";
 } else {
-    echo "<button type='submit' name='addNewbooksSubmit' class='btn btn-success'>Add</button>";
+    echo "<button type='submit' name='addNewbooksSubmit' class='btn btn-success mr-2'>Add</button>";
 }
 ?>
+<button type="button" class="btn btn-secondary" onclick="location.href='./books'">Cancel</button>
 </div>
 
 </form>
@@ -323,6 +361,43 @@ if ($editMode) {
 </main>
 
 <?php echo $adminHeader->printAdminFooterJS(); ?>
-
+<?php
+if ($editMode) {
+    $ediDelTitle = htmlspecialchars((string) $currentbooksTitle, ENT_QUOTES, 'UTF-8');
+    $ediDelTag = htmlspecialchars((string) $currentbooksTag, ENT_QUOTES, 'UTF-8');
+    echo "
+<div class='modal fade' id='confirmDeletebooksModal' data-backdrop='static' tabindex='-1' role='dialog' aria-hidden='true' style='margin-top:200px'>
+  <div class='modal-dialog' role='document'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title'>Delete worksheet</h5>
+      </div>
+      <div class='modal-body'>
+        <form method='post' class='text-center'>
+          <p class='mb-2'>Document title: <strong>$ediDelTitle</strong><br>Tag: <strong>$ediDelTag</strong></p>
+          <input type='hidden' name='deletebooksID' value='" . (int) $currentbooksID . "'>
+          <input type='submit' class='btn btn-danger btn-sm' name='confirmDeletebooksSubmit' value='Delete'>
+          <button class='btn btn-sm btn-secondary' type='button' data-dismiss='modal'>Cancel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>";
+}
+?>
+<script>
+function deletebooksSubmit() {
+  $('#confirmDeletebooksModal').modal('show');
+}
+function ediWsPreviewImage(ev, imgId) {
+  var f = ev.target.files && ev.target.files[0];
+  var el = document.getElementById(imgId);
+  if (!el || !f) return;
+  if (f.type.indexOf('image/') === 0) {
+    el.src = URL.createObjectURL(f);
+    el.classList.add('border');
+  }
+}
+</script>
 </body>
 </html>

@@ -27,75 +27,21 @@
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12 mb-4">
-          <div class="card">
-            <div class="card-body p-3">
-              <div class="table-responsive p-0">
-                <table class="table align-items-center mb-0">
-                  <thead>
-                    <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">homework Title</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">homework Tag</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <?php
-                      $rowNumber = 0;
-                      foreach ( $user->fetchAll(array("id","tag","title","status"), array("homework_details"), "", "timestamp DESC") as $rowFetchhomework ) {
-                        $homeworkID = $rowFetchhomework['id'];
-                        $homeworkTag = $rowFetchhomework['tag'];
-                        $homeworkTitle = $rowFetchhomework['title'];
-                        $homeworkStatus = ($rowFetchhomework['status']=='1') ? "checked" : "";
-                        echo "
-                        <tr>
-                          <td class='align-middle text-center cursorPointer' onclick='edithomework($homeworkID)'>
-                            <span class='text-secondary text-xs font-weight-bold'>$homeworkTitle</span>
-                          </td>
-                          <td class='align-middle text-center cursorPointer' onclick='edithomework($homeworkID)'>
-                            <span class='text-secondary text-xs font-weight-bold'>$homeworkTag</span>
-                          </td>
-                          <td class='align-middle text-center'>
-                            <div class='form-check form-switch justify-content-center'>
-                              <input class='form-check-input' type='checkbox' name='homeworkStatus$homeworkID' value='1' $homeworkStatus onchange='chnghomeworkSts($homeworkID)'>
-                            </div>
-                          </td>
-                        </tr>
-                        ";
-                      }
-                    ?>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
+          <?php
+          $ediWsTable = 'homework_details';
+          $ediWsEditUrl = './add-homework';
+          $ediWsAjaxKey = 'chnghomeworkSts';
+          $ediWsPrefix = 'homework';
+          $ediWsJsEdit = 'edithomework';
+          $ediWsJsSts = 'chnghomeworkSts';
+          require __DIR__ . '/partials/edi_worksheet_list_card.php';
+          ?>
         </div>
       </div>
       <?php echo $adminHeader->printAdminFooter(); ?>
     </div>
   </main>
-  <div id="chnghomeworkSts"></div>
   <?php echo $adminHeader->printAdminFooterJS(); ?>
-  <script>
-    function edithomework(homeworkID) {
-      location.href = "./add-homework?id="+homeworkID;
-    }
-    function chnghomeworkSts(homeworkID) {
-      var arr = {
-        homeworkID: homeworkID,
-        homeworkStatus: ($("input[name='homeworkStatus"+homeworkID+"']").is(":checked")) ? 1 : 0
-      };
-      $.ajax({
-        type: "POST",
-        url: "ajax.php",
-        data: {
-          chnghomeworkSts: arr
-        },
-        success: function(html) {
-          $("#chnghomeworkSts").html(html).show();
-        }
-      }); 
-    }
-  </script>
 </body>
 
 </html>

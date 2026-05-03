@@ -1,0 +1,146 @@
+<?php
+/**
+ * Shared worksheet metadata layout (add-pdf / add-books / add-homework).
+ * Row 1: Language, Grade, Category
+ * Row 2: Sub Category, Tag, Document Title
+ *
+ * Expects: $ediLanguages, $ediGrades, $ediCurLanguageId, $ediCurGradeId,
+ * $ediHasPcat, $ediProductCategories, $ediProductSubcategories, $ediCurPcat, $ediCurPsub,
+ * $ediWsTagName, $ediWsTitleName, $ediWsTagValue, $ediWsTitleValue
+ */
+$ediCurLanguageId = isset($ediCurLanguageId) ? (int) $ediCurLanguageId : 0;
+$ediCurGradeId = isset($ediCurGradeId) ? (int) $ediCurGradeId : 0;
+$ediCurPcat = isset($ediCurPcat) ? (int) $ediCurPcat : 0;
+$ediCurPsub = isset($ediCurPsub) ? (int) $ediCurPsub : 0;
+if (empty($ediLanguages) || !is_array($ediLanguages)) {
+    $ediLanguages = array();
+}
+if (empty($ediGrades) || !is_array($ediGrades)) {
+    $ediGrades = array();
+}
+$ediWsTagValue = isset($ediWsTagValue) ? htmlspecialchars((string) $ediWsTagValue, ENT_QUOTES, 'UTF-8') : '';
+$ediWsTitleValue = isset($ediWsTitleValue) ? htmlspecialchars((string) $ediWsTitleValue, ENT_QUOTES, 'UTF-8') : '';
+$ediWsTagName = isset($ediWsTagName) ? preg_replace('/[^a-zA-Z0-9_\-]/', '', (string) $ediWsTagName) : 'inputpdfTag';
+$ediWsTitleName = isset($ediWsTitleName) ? preg_replace('/[^a-zA-Z0-9_\-]/', '', (string) $ediWsTitleName) : 'inputpdfTitle';
+?>
+<div class="row">
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="form-control-label" for="content_language_id">Language</label>
+      <select class="form-control" name="content_language_id" id="content_language_id" required>
+        <option value="">Select language</option>
+        <?php foreach ($ediLanguages as $lng) : ?>
+        <option value="<?php echo (int) $lng['id']; ?>"<?php if ((int) $lng['id'] === $ediCurLanguageId) {
+            echo ' selected';
+        } ?>>
+          <?php echo htmlspecialchars((string) $lng['title'], ENT_QUOTES, 'UTF-8'); ?>
+        </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="form-control-label" for="content_grade_id">Grade</label>
+      <select class="form-control" name="content_grade_id" id="content_grade_id" required>
+        <option value="">Select grade</option>
+        <?php foreach ($ediGrades as $gr) : ?>
+        <option value="<?php echo (int) $gr['id']; ?>"<?php if ((int) $gr['id'] === $ediCurGradeId) {
+            echo ' selected';
+        } ?>>
+          <?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?>
+        </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <?php if (!empty($ediHasPcat)) : ?>
+    <div class="form-group">
+      <label class="form-control-label" for="edi_content_product_category">Category</label>
+      <select class="form-control" name="edi_content_product_category" id="edi_content_product_category">
+        <option value="0">— Select —</option>
+        <?php foreach ($ediProductCategories as $pc) : ?>
+        <option value="<?php echo (int) $pc['id']; ?>"<?php if ((int) $pc['id'] === $ediCurPcat) {
+            echo ' selected';
+        } ?>><?php echo htmlspecialchars((string) $pc['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <?php else : ?>
+    <div class="form-group d-none d-md-block" aria-hidden="true">&nbsp;</div>
+    <?php endif; ?>
+  </div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-4">
+    <?php if (!empty($ediHasPcat)) : ?>
+    <div class="form-group">
+      <label class="form-control-label" for="edi_content_product_subcategory">Sub Category</label>
+      <select class="form-control" name="edi_content_product_subcategory" id="edi_content_product_subcategory">
+        <option value="" disabled class="edi-admin-sub-need-cat"<?php echo ($ediCurPcat < 1) ? ' selected' : ''; ?>>Select a category first</option>
+        <option value="0"<?php echo ($ediCurPcat >= 1 && (int) $ediCurPsub === 0) ? " selected" : ""; ?>>— None —</option>
+        <?php foreach ($ediProductSubcategories as $s) : ?>
+        <option value="<?php echo (int) $s['id']; ?>" data-product-category-id="<?php echo (int) $s['product_category_id']; ?>"<?php if ((int) $s['id'] === $ediCurPsub) {
+            echo ' selected';
+        } ?>><?php echo htmlspecialchars((string) $s['title'], ENT_QUOTES, 'UTF-8'); ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <?php else : ?>
+    <div class="form-group d-none d-md-block" aria-hidden="true">&nbsp;</div>
+    <?php endif; ?>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="form-control-label" for="edi_ws_tag_field">Tag</label>
+      <input class="form-control" type="text" name="<?php echo htmlspecialchars($ediWsTagName, ENT_QUOTES, 'UTF-8'); ?>" id="edi_ws_tag_field" value="<?php echo $ediWsTagValue; ?>" placeholder="e.g. Cat">
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="form-group">
+      <label class="form-control-label" for="edi_ws_doc_title_field">Document Title</label>
+      <input class="form-control" type="text" name="<?php echo htmlspecialchars($ediWsTitleName, ENT_QUOTES, 'UTF-8'); ?>" id="edi_ws_doc_title_field" value="<?php echo $ediWsTitleValue; ?>" required>
+    </div>
+  </div>
+</div>
+<?php if (!empty($ediHasPcat)) : ?>
+<script>
+(function () {
+  var c = document.getElementById("edi_content_product_category");
+  var s = document.getElementById("edi_content_product_subcategory");
+  if (!c || !s) return;
+  function sync() {
+    var cid = String(c.value || "0");
+    var needCat = s.querySelector("option.edi-admin-sub-need-cat");
+    var realOpts = s.querySelectorAll("option[data-product-category-id]");
+    if (!cid || cid === "0") {
+      if (needCat) {
+        needCat.hidden = false;
+        needCat.disabled = true;
+        needCat.selected = true;
+      }
+      for (var i = 0; i < realOpts.length; i++) {
+        realOpts[i].hidden = true;
+        realOpts[i].disabled = true;
+      }
+      return;
+    }
+    if (needCat) {
+      needCat.hidden = true;
+      needCat.disabled = true;
+      needCat.selected = false;
+    }
+    for (var j = 0; j < realOpts.length; j++) {
+      var o = realOpts[j];
+      var pc = o.getAttribute("data-product-category-id");
+      var show = String(pc) === String(cid);
+      o.hidden = !show;
+      o.disabled = !show;
+    }
+  }
+  c.addEventListener("change", function () { s.value = "0"; sync(); });
+  sync();
+})();
+</script>
+<?php endif; ?>
