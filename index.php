@@ -457,7 +457,10 @@
 
         <?php if ($recentChallenge): ?>
                 <h5 class="text-uppercase mb-3 mt-4" style="font-weight: 700 !important;">
-                    UPCOMING – <?php echo htmlspecialchars($recentChallenge['title']); ?>
+                    UPCOMING – <?php
+                    $bhHomeTitle = html_entity_decode((string) ($recentChallenge['title'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    echo htmlspecialchars($bhHomeTitle, ENT_QUOTES, 'UTF-8');
+                    ?>
                 </h5>
 
                 <div class="challenge-banner-container mb-4">

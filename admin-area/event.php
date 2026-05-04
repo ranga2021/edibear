@@ -180,7 +180,10 @@ $showTo = min($offset + count($events), $totalRows);
                         <span class="text-secondary text-sm"><?php echo htmlspecialchars($row["category_name"] ?? "—", ENT_QUOTES, "UTF-8"); ?></span>
                       </td>
                       <td class="align-middle">
-                        <span class="text-secondary text-sm font-weight-bold"><?php echo htmlspecialchars($row["title"], ENT_QUOTES, "UTF-8"); ?></span>
+                        <span class="text-secondary text-sm font-weight-bold"><?php
+                        $ediEvTitle = html_entity_decode((string) ($row["title"] ?? ""), ENT_QUOTES | ENT_HTML5, "UTF-8");
+                        echo htmlspecialchars($ediEvTitle, ENT_QUOTES, "UTF-8");
+                        ?></span>
                       </td>
                       <td class="align-middle">
                         <?php if ($deadlineStatus !== ""): ?>

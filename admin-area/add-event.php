@@ -15,7 +15,9 @@ if (isset($_POST["addNewEventSubmit"])) {
 
     $selectedCategory = $_POST["event_category"] ?? "";
     $newCategoryText = trim((string) ($_POST["new_category"] ?? ""));
-    $eventTitle = htmlspecialchars((string) ($_POST["event_title"] ?? ""));
+    /* Store plain text; escaping is done on output (double htmlspecialchars caused visible &#039;). */
+    $eventTitle = trim(strip_tags((string) ($_POST["event_title"] ?? "")));
+    $eventTitle = function_exists("mb_substr") ? mb_substr($eventTitle, 0, 200) : substr($eventTitle, 0, 200);
     $description = isset($_POST["event_description"]) ? (string) $_POST["event_description"] : "";
     $deadlineDate = $_POST["deadline_date"] ?? null;
 

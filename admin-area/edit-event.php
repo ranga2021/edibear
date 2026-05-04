@@ -46,7 +46,8 @@
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['updateEventSubmit'])) {
       $selectedCategory = isset($_POST['event_category']) ? $_POST['event_category'] : '';
-      $eventTitle       = htmlspecialchars(isset($_POST['event_title']) ? $_POST['event_title'] : '');
+      $eventTitle = trim(strip_tags((string) (isset($_POST["event_title"]) ? $_POST["event_title"] : "")));
+      $eventTitle = function_exists("mb_substr") ? mb_substr($eventTitle, 0, 200) : substr($eventTitle, 0, 200);
       $description      = isset($_POST['event_description']) ? (string) $_POST['event_description'] : '';
       $deadlineDate     = isset($_POST['deadline_date']) ? $_POST['deadline_date'] : null;
 
@@ -204,7 +205,7 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label class="form-control-label">Event Title</label>
-                      <input type="text" name="event_title" class="form-control" value="<?php echo htmlspecialchars($event['title'], ENT_QUOTES, 'UTF-8'); ?>" required>
+                      <input type="text" name="event_title" class="form-control" value="<?php echo htmlspecialchars(html_entity_decode((string) $event['title'], ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8'); ?>" required>
                     </div>
                   </div>
                 </div>
@@ -264,8 +265,9 @@
                   <?php
                   $index = 0;
                   foreach ($existingWinners as $winner) {
-                      $title = htmlspecialchars($winner['title'], ENT_QUOTES, 'UTF-8');
-                      $image = htmlspecialchars($winner['image'], ENT_QUOTES, 'UTF-8');
+                      $titleRaw = html_entity_decode((string) ($winner["title"] ?? ""), ENT_QUOTES | ENT_HTML5, "UTF-8");
+                      $title = htmlspecialchars($titleRaw, ENT_QUOTES, "UTF-8");
+                      $image = htmlspecialchars($winner["image"], ENT_QUOTES, "UTF-8");
                       echo "
                       <div class='row align-items-start mb-3 flex-wrap' data-index='$index'>
                           <input type='hidden' name='existing_winner_image[$index]' value='$image'>
