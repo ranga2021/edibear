@@ -1,63 +1,57 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// ✅ SESSION FIX (same pattern)
-if (!is_dir('/tmp')) {
-    mkdir('/tmp', 0777, true);
-}
-session_save_path('/tmp');
-session_start();
-
+require_once("../classes/session_config.php");
 require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 
 $adminHeader = new HEADER("add-event");
 $user = new USER();
 
-// ================= FORM SUBMIT =================
-if (isset($_POST['addNewEventSubmit'])) {
+if (!$user->is_loggedin()) {
+    $user->redirect("./index.php");
+}
 
-    $selectedCategory = $_POST['event_category'] ?? '';
-    $newCategoryText  = trim($_POST['new_category'] ?? '');
-    $eventTitle       = htmlspecialchars($_POST['event_title'] ?? '');
-    $description      = strip_tags($_POST['event_description'] ?? '', "<br>");
-    $deadlineDate     = $_POST['deadline_date'] ?? null;
+// ================= FORM SUBMIT =================
+if (isset($_POST["addNewEventSubmit"])) {
+
+    $selectedCategory = $_POST["event_category"] ?? "";
+    $newCategoryText = trim((string) ($_POST["new_category"] ?? ""));
+    $eventTitle = htmlspecialchars((string) ($_POST["event_title"] ?? ""));
+    $description = isset($_POST["event_description"]) ? (string) $_POST["event_description"] : "";
+    $deadlineDate = $_POST["deadline_date"] ?? null;
 
     // ================= CATEGORY =================
     $categoryId = null;
 
-    if ($selectedCategory === 'other' && $newCategoryText !== '') {
+    if ($selectedCategory === "other" && $newCategoryText !== "") {
 
         $existing = $user->fetchAll(
             array("id"),
             array("braveheart_categories"),
-            array("name"=>$newCategoryText)
+            array("name" => $newCategoryText)
         );
 
         if (!empty($existing)) {
-            $categoryId = (int)$existing[0]['id'];
+            $categoryId = (int) $existing[0]["id"];
         } else {
-            $categoryId = $user->insertTable(
+            $categoryId = (int) $user->insertTable(
                 "braveheart_categories",
-                array("name"=>$newCategoryText, "status"=>1),
+                array("name" => $newCategoryText, "status" => 1),
                 true
             );
         }
-
-    } elseif (ctype_digit((string)$selectedCategory)) {
-        $categoryId = (int)$selectedCategory;
+    } elseif (ctype_digit((string) $selectedCategory)) {
+        $categoryId = (int) $selectedCategory;
     }
 
     // ================= INSERT EVENT =================
-    $eventId = $user->insertTable(
+    $eventId = (int) $user->insertTable(
         "braveheart_events",
         array(
-            "category_id"=>$categoryId,
-            "title"=>$eventTitle,
-            "description"=>$description,
-            "deadline_date"=>$deadlineDate,
-            "status"=>1
+            "category_id" => $categoryId,
+            "title" => $eventTitle,
+            "description" => $description,
+            "deadline_date" => $deadlineDate,
+            "status" => 1,
         ),
         true
     );
@@ -69,32 +63,62 @@ if (isset($_POST['addNewEventSubmit'])) {
 
     // ================= MAIN IMAGE =================
     if (!empty($_FILES["main_image"]["name"])) {
-        $ext = pathinfo($_FILES["main_image"]["name"], PATHINFO_EXTENSION);
-        $fileName = $eventId.".".$ext;
+        $ext = pathinfo((string) $_FILES["main_image"]["name"], PATHINFO_EXTENSION);
+        $fileName = $eventId . "." . $ext;
 
-        move_uploaded_file($_FILES["main_image"]["tmp_name"], $uploadDir.$fileName);
+        move_uploaded_file($_FILES["main_image"]["tmp_name"], $uploadDir . $fileName);
 
-        $user->updateTable("braveheart_events", array("main_image"=>$fileName), array("id"=>$eventId));
+        $user->updateTable("braveheart_events", array("main_image" => $fileName), array("id" => $eventId));
     }
 
     // ================= PDF =================
     if (!empty($_FILES["application_file"]["name"])) {
-        $ext = pathinfo($_FILES["application_file"]["name"], PATHINFO_EXTENSION);
-        $fileName = $eventId."-application.".$ext;
+        $ext = pathinfo((string) $_FILES["application_file"]["name"], PATHINFO_EXTENSION);
+        $fileName = $eventId . "-application." . $ext;
 
-        move_uploaded_file($_FILES["application_file"]["tmp_name"], $uploadDir.$fileName);
+        move_uploaded_file($_FILES["application_file"]["tmp_name"], $uploadDir . $fileName);
 
-        $user->updateTable("braveheart_events", array("application_file"=>$fileName), array("id"=>$eventId));
+        $user->updateTable("braveheart_events", array("application_file" => $fileName), array("id" => $eventId));
     }
 
-    echo "<script>alert('Event added successfully');location.href='./add-event'</script>";
+    // ================= WINNERS =================
+    $winnerTitles = isset($_POST["winner_title"]) && is_array($_POST["winner_title"]) ? $_POST["winner_title"] : array();
+    $position = 1;
+    foreach ($winnerTitles as $index => $title) {
+        $title = trim((string) $title);
+        if ($title === "") {
+            continue;
+        }
+        $fileField = "winner_image_" . $index;
+        $imageName = "";
+        if (!empty($_FILES[$fileField]["name"])) {
+            $ext = pathinfo((string) $_FILES[$fileField]["name"], PATHINFO_EXTENSION);
+            $imageName = $eventId . "-winner-" . $position . "." . $ext;
+            move_uploaded_file($_FILES[$fileField]["tmp_name"], $uploadDir . $imageName);
+        }
+        if ($imageName !== "") {
+            $user->insertTable(
+                "braveheart_winners",
+                array(
+                    "event_id" => $eventId,
+                    "title" => $title,
+                    "image" => $imageName,
+                    "position" => $position,
+                    "status" => 1,
+                )
+            );
+            $position++;
+        }
+    }
+
+    echo "<script>alert('Event added successfully');location.href='event.php'</script>";
     exit;
 }
 
 // ================= FETCH CATEGORIES =================
 try {
     $eventCategories = $user->fetchAll(
-        array("id","name"),
+        array("id", "name"),
         array("braveheart_categories"),
         array(),
         "name ASC"
@@ -103,26 +127,37 @@ try {
     $eventCategories = array();
 }
 ?>
+<script>
+    const adminSession = localStorage.getItem("admin_session");
+    const sessionTime = localStorage.getItem("session_time");
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (!adminSession || (currentTime - sessionTime > 1200)) {
+        localStorage.removeItem("admin_session");
+        window.location.href = "index.php?error=session_expired";
+    }
+</script>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <?php echo $adminHeader->printAdminHeader(); ?>
+  <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-  <div class="min-height-300 position-absolute w-100"></div>
+  <div class="min-height-300 bg-primary position-absolute w-100"></div>
   <?php echo $adminHeader->printAdminNav(); ?>
 
   <main class="main-content position-relative border-radius-lg">
-    <?php echo $adminHeader->printAdminNav2("Add Brave Heart Challenge"); ?>
+    <?php echo $adminHeader->printAdminNav2($adminHeader->getActivePageName()); ?>
 
     <div class="container-fluid py-4">
       <div class="row">
         <div class="col-12 mb-4">
           <div class="card">
-            <div class="card-body p-3">
-              <form method="post" enctype="multipart/form-data">
+            <div class="card-body p-4">
+              <h2 class="text-uppercase text-danger font-weight-bold h4 mb-4" style="letter-spacing:0.02em;">Add event</h2>
+              <form method="post" enctype="multipart/form-data" id="edi-add-event-form">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
@@ -130,8 +165,8 @@ try {
                       <select name="event_category" id="eventCategory" class="form-control" required>
                         <option value="">Select Category</option>
                         <?php foreach ($eventCategories as $cat): ?>
-                          <option value="<?php echo $cat['id']; ?>">
-                            <?php echo htmlspecialchars($cat['name'], ENT_QUOTES, 'UTF-8'); ?>
+                          <option value="<?php echo (int) $cat["id"]; ?>">
+                            <?php echo htmlspecialchars($cat["name"], ENT_QUOTES, "UTF-8"); ?>
                           </option>
                         <?php endforeach; ?>
                         <option value="other">Other</option>
@@ -149,8 +184,8 @@ try {
                 <div class="row" id="newCategoryWrapper" style="display: none;">
                   <div class="col-12">
                     <div class="form-group">
-                      <label class="form-control-label">New Category</label>
-                      <textarea name="new_category" class="form-control" rows="2" placeholder="Enter new category name"></textarea>
+                      <label class="form-control-label">New category name</label>
+                      <input type="text" name="new_category" class="form-control" placeholder="e.g. Writing" maxlength="120">
                     </div>
                   </div>
                 </div>
@@ -163,8 +198,8 @@ try {
                     </div>
                   </div>
                   <div class="col-md-6">
-                    <p class="text-center mt-3">
-                      <img id="outputmain_image" style="max-height: 200px; max-width:100%" />
+                    <p class="text-center mt-3 mb-0">
+                      <img id="outputmain_image" alt="" style="max-height: 200px; max-width:100%; display:none;" />
                     </p>
                   </div>
                 </div>
@@ -172,7 +207,7 @@ try {
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="form-control-label">Deadline Date</label>
+                      <label class="form-control-label">Deadline date</label>
                       <input type="date" name="deadline_date" class="form-control" required>
                     </div>
                   </div>
@@ -182,7 +217,7 @@ try {
                   <div class="col-12">
                     <div class="form-group">
                       <label class="form-control-label">Descriptions</label>
-                      <textarea name="event_description" class="form-control" rows="5"></textarea>
+                      <textarea name="event_description" id="event_description" class="form-control" rows="8"></textarea>
                     </div>
                   </div>
                 </div>
@@ -190,15 +225,24 @@ try {
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
-                      <label class="form-control-label">Application Upload</label>
-                      <input class="form-control" type="file" accept="application/pdf" name="application_file">
+                      <label class="form-control-label">Application Upload (PDF)</label>
+                      <input class="form-control" type="file" accept="application/pdf,.pdf" name="application_file">
                     </div>
                   </div>
                 </div>
 
-                <div class="row mt-3">
-                  <div class="col-12">
-                    <input type="submit" class="btn btn-success" name="addNewEventSubmit" value="Add Event">
+                <hr class="my-4">
+                <h6 class="text-uppercase text-muted font-weight-bold mb-3">Winner details</h6>
+                <p class="text-sm text-muted mb-3">Add winner title and JPG image for each winner. Rows without an image are skipped.</p>
+
+                <div id="winnerRows"></div>
+
+                <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="addWinnerRow()">Add winners +</button>
+
+                <div class="row mt-4">
+                  <div class="col-12 edi-admin-form-actions">
+                    <input type="submit" class="btn btn-success" name="addNewEventSubmit" value="Add">
+                    <a href="event.php" class="btn btn-secondary">Cancel</a>
                   </div>
                 </div>
               </form>
@@ -213,23 +257,74 @@ try {
   <?php echo $adminHeader->printAdminFooterJS(); ?>
 
   <script>
-    document.getElementById('eventCategory').addEventListener('change', function () {
-      var wrapper = document.getElementById('newCategoryWrapper');
-      if (this.value === 'other') {
-        wrapper.style.display = 'block';
-      } else {
-        wrapper.style.display = 'none';
-      }
+    document.getElementById("eventCategory").addEventListener("change", function () {
+      var wrapper = document.getElementById("newCategoryWrapper");
+      wrapper.style.display = this.value === "other" ? "block" : "none";
     });
 
     function loadImageFile(event) {
-      var imageDivID = 'output' + event.target.name;
+      var imageDivID = "output" + event.target.name;
       var image = document.getElementById(imageDivID);
       if (image && event.target.files && event.target.files[0]) {
+        image.style.display = "";
         image.src = URL.createObjectURL(event.target.files[0]);
       }
     }
+
+    var winnerIndex = 0;
+    function addWinnerRow() {
+      var container = document.getElementById("winnerRows");
+      var idx = winnerIndex++;
+      var row = document.createElement("div");
+      row.className = "row align-items-start mb-3 flex-wrap";
+      row.setAttribute("data-index", idx);
+      row.innerHTML = ""
+        + '<div class="col-md-4 mb-2 mb-md-0">'
+        + '  <div class="form-group mb-0">'
+        + '    <label class="form-control-label">Title</label>'
+        + '    <input type="text" name="winner_title[' + idx + ']" class="form-control" placeholder="Name — location (age)">'
+        + '  </div>'
+        + '</div>'
+        + '<div class="col-md-4 mb-2 mb-md-0">'
+        + '  <div class="form-group mb-0">'
+        + '    <label class="form-control-label">Image (JPG)</label>'
+        + '    <input type="file" name="winner_image_' + idx + '" class="form-control" accept="image/jpeg,image/jpg,image/png,.jpg,.jpeg,.png">'
+        + '  </div>'
+        + '</div>'
+        + '<div class="col-md-4 text-center">'
+        + '  <small class="text-muted d-block mb-1">Preview</small>'
+        + '  <div class="border rounded bg-light d-inline-block p-2" style="min-height:72px;min-width:72px;" data-preview-wrap="' + idx + '"></div>'
+        + '</div>';
+      container.appendChild(row);
+      var fileInput = row.querySelector('input[type="file"]');
+      var wrap = row.querySelector("[data-preview-wrap]");
+      if (fileInput && wrap) {
+        fileInput.addEventListener("change", function () {
+          wrap.innerHTML = "";
+          if (fileInput.files && fileInput.files[0]) {
+            var img = document.createElement("img");
+            img.alt = "";
+            img.style.maxHeight = "72px";
+            img.style.maxWidth = "100%";
+            img.src = URL.createObjectURL(fileInput.files[0]);
+            wrap.appendChild(img);
+          }
+        });
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      if (typeof CKEDITOR !== "undefined") {
+        CKEDITOR.replace("event_description", { height: 220 });
+      }
+      addWinnerRow();
+    });
+
+    document.getElementById("edi-add-event-form").addEventListener("submit", function () {
+      if (typeof CKEDITOR !== "undefined" && CKEDITOR.instances.event_description) {
+        CKEDITOR.instances.event_description.updateElement();
+      }
+    });
   </script>
 </body>
 </html>
-

@@ -112,7 +112,15 @@
 
             <article class="edi-blog-single-article">
                 <div class="edi-blog-single-prose text-justify edi-challenge-detail-body">
-                    <?php echo nl2br(htmlspecialchars($descPlain, ENT_QUOTES, 'UTF-8')); ?>
+                    <?php
+                    $ediBhAllowed = '<p><br><br/><strong><b><em><i><u><ul><ol><li><a><h2><h3><h4><h5><h6><span><div><blockquote>';
+                    $ediBhHasTags = ($descPlain !== '' && preg_match('/<[a-z][\s\S]*>/i', $descPlain));
+                    if ($ediBhHasTags) {
+                        echo strip_tags($descPlain, $ediBhAllowed);
+                    } else {
+                        echo nl2br(htmlspecialchars($descPlain, ENT_QUOTES, 'UTF-8'));
+                    }
+                    ?>
                 </div>
             </article>
 

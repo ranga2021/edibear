@@ -61,12 +61,12 @@ class HEADER {
             "icon"=>"fas fa-newspaper text-danger"
         ),
         "add-event"=>array(
-            "name"=>"Add Brave Heart Event",
+            "name"=>"Add Brave Heart challenge",
             "redirect"=>"./add-event",
             "icon"=>"fas fa-flag text-warning"
         ),
         "event"=>array(
-            "name"=>"Brave Heart Events",
+            "name"=>"Brave Heart challenges",
             "redirect"=>"./event",
             "icon"=>"fas fa-calendar-alt text-warning"
         ),
