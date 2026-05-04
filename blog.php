@@ -53,7 +53,7 @@
     $waShare = "https://api.whatsapp.com/send?text=" . $shareText . $shareUrl;
 
     $blogExtraMedia = EdiBlogExtraMedia::fetchForBlog($user->getConnection(), $blogID);
-    $blogPostTags = EdiContentTags::splitTags($blogTag);
+    $blogPostTags = EdiContentTags::blogTopicTagsFromCell($blogTag);
     $breadcrumbTopic = !empty($blogPostTags) ? strtoupper((string) $blogPostTags[0]) : "BLOG";
 ?>
 <!DOCTYPE html>

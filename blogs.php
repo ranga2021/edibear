@@ -95,8 +95,6 @@
                 <h2 class="edi-blogs-main-title">EXCITING THINGS</h2>
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>
-            <p class="edi-blogs-categories-lead mb-2">Hand craft, Letter practice, Drawings</p>
-
             <?php
                 $blogTagRows = $user->fetchAll(
                     array("tag"),
@@ -105,7 +103,7 @@
                     "",
                     "1=1"
                 );
-                $blogsAllTags = EdiContentTags::distinctFromRows($blogTagRows);
+                $blogsAllTags = EdiContentTags::distinctBlogTopicTagsFromRows($blogTagRows);
                 echo EdiContentTags::renderBlogTagChipsHtml($blogsAllTags, 20, "hidden-den");
             ?>
 

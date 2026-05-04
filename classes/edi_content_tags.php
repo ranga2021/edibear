@@ -59,6 +59,46 @@ class EdiContentTags
     }
 
     /**
+     * Topic tags for display/filtering on blog pages: excludes Language and Grade from
+     * "Language ||| Grade ||| Category" admin cells; legacy cells use slash-split topics only.
+     *
+     * @return string[]
+     */
+    public static function blogTopicTagsFromCell($cell)
+    {
+        $cell = trim((string) $cell);
+        if ($cell === "") {
+            return array();
+        }
+        if (strpos($cell, " ||| ") !== false) {
+            $parts = self::blogTagTripleParts($cell);
+            $topic = trim((string) ($parts[2] ?? ""));
+            return self::splitTags($topic);
+        }
+        return self::splitTags($cell);
+    }
+
+    /**
+     * Distinct blog topic tags (not language/grade) from rows with a tag column.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     * @return string[]
+     */
+    public static function distinctBlogTopicTagsFromRows(array $rows, $col = "tag")
+    {
+        $all = array();
+        foreach ($rows as $row) {
+            foreach (self::blogTopicTagsFromCell(isset($row[$col]) ? (string) $row[$col] : "") as $t) {
+                if ($t !== "" && !in_array($t, $all, true)) {
+                    $all[] = $t;
+                }
+            }
+        }
+        sort($all, SORT_NATURAL | SORT_FLAG_CASE);
+        return $all;
+    }
+
+    /**
      * Distinct tags from result rows (tag column only).
      *
      * @param array<int, array<string, mixed>> $rows
