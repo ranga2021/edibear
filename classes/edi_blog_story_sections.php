@@ -76,6 +76,8 @@ class EdiBlogStorySections
                 array(
                     'blog_id' => $blogId,
                     'description' => $desc,
+                    'image_01' => '',
+                    'image_02' => '',
                 ),
                 true
             );
