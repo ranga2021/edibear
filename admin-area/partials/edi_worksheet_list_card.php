@@ -69,13 +69,14 @@ $ediWsJsCfg = array(
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sub Category</th>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tag</th>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Document Title</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Downloads</th>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Action</th>
           </tr>
         </thead>
         <tbody>
           <?php
           if (count($ediWsRows) === 0) {
-              echo '<tr><td colspan="6" class="text-center text-secondary text-sm py-4">No worksheets found.</td></tr>';
+              echo '<tr><td colspan="7" class="text-center text-secondary text-sm py-4">No worksheets found.</td></tr>';
           } else {
               foreach ($ediWsRows as $ediR) {
                   $rid = (int) $ediR['id'];
@@ -84,6 +85,7 @@ $ediWsJsCfg = array(
                   $sub = htmlspecialchars((string) $ediR['subcat_title'], ENT_QUOTES, 'UTF-8');
                   $tag = htmlspecialchars((string) $ediR['tag'], ENT_QUOTES, 'UTF-8');
                   $title = htmlspecialchars((string) $ediR['title'], ENT_QUOTES, 'UTF-8');
+                  $dl = (int) ($ediR['download_count'] ?? 0);
                   $chk = ((string) $ediR['status'] === '1') ? ' checked' : '';
                   $pfx = htmlspecialchars($ediWsPrefix, ENT_QUOTES, 'UTF-8');
                   echo '<tr>';
@@ -92,6 +94,7 @@ $ediWsJsCfg = array(
                   echo '<td class="align-middle"><span class="text-secondary text-sm">' . ($sub !== '' ? $sub : '—') . '</span></td>';
                   echo '<td class="align-middle"><span class="text-secondary text-sm">' . $tag . '</span></td>';
                   echo '<td class="align-middle"><span class="text-secondary text-sm font-weight-bold">' . $title . '</span></td>';
+                  echo '<td class="align-middle text-center"><span class="text-secondary text-sm font-weight-bold">' . $dl . '</span></td>';
                   echo '<td class="align-middle text-center edi-ws-action-cell">';
                   echo '<div class="form-check form-switch justify-content-center d-inline-flex">';
                   echo '<input class="form-check-input" type="checkbox" name="' . $pfx . 'Status' . $rid . '" value="1"' . $chk . ' onchange="' . htmlspecialchars($ediWsJsSts, ENT_QUOTES, 'UTF-8') . '(' . $rid . ')">';

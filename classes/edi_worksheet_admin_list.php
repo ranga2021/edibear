@@ -13,7 +13,7 @@ class EdiWorksheetAdminList
     }
 
     /**
-     * @return array<int, array{id:int,tag:string,title:string,status:string,lang_title:string,grade_title:string,subcat_title:string}>
+     * @return array<int, array{id:int,tag:string,title:string,status:string,download_count:int|string,lang_title:string,grade_title:string,subcat_title:string}>
      */
     public static function fetchRows(PDO $conn, $table, $searchTitle = '')
     {
@@ -21,6 +21,8 @@ class EdiWorksheetAdminList
             return array();
         }
         $hasProductSub = EdiExplorerContent::columnExists($conn, $table, 'product_subcategory_id');
+        $hasDl = EdiExplorerContent::columnExists($conn, $table, 'download_count');
+        $dlSelect = $hasDl ? 'COALESCE(d.`download_count`, 0) AS download_count' : '0 AS download_count';
         if ($hasProductSub) {
             $subSelect = 'COALESCE(ps.title, \'\') AS subcat_title';
             $subJoin = 'LEFT JOIN `product_subcategories` ps ON ps.id = d.`product_subcategory_id`';
@@ -29,6 +31,7 @@ class EdiWorksheetAdminList
             $subJoin = 'LEFT JOIN `sub_category` sc ON sc.id = d.`sub_cat_id`';
         }
         $sql = "SELECT d.`id`, d.`tag`, d.`title`, d.`status`, d.`timestamp` AS row_ts,
+            $dlSelect,
             COALESCE(lg.`title`, '') AS lang_title,
             COALESCE(gr.`title`, '') AS grade_title,
             $subSelect
@@ -56,7 +59,7 @@ class EdiWorksheetAdminList
      * All worksheet rows (coloring PDFs, books, homework) in one list, newest first.
      * Each row includes `ws_kind`: pdf | books | homework (for edit + status AJAX).
      *
-     * @return array<int, array{id:int,tag:string,title:string,status:string,lang_title:string,grade_title:string,subcat_title:string,row_ts:string,ws_kind:string}>
+     * @return array<int, array{id:int,tag:string,title:string,status:string,download_count:int|string,lang_title:string,grade_title:string,subcat_title:string,row_ts:string,ws_kind:string}>
      */
     public static function fetchMergedRows(PDO $conn, $searchTitle = '')
     {
