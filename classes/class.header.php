@@ -754,7 +754,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 <hr class='horizontal dark mt-0'>
                 <div class='collapse navbar-collapse w-auto' id='sidenav-collapse-main' style='height:100%;'>
                     <ul class='navbar-nav'>";
+                    $sidebarHiddenTabs = array("add-ad1", "ad1", "add-ad2", "ad2");
                     foreach( $this->adminNavTabArr as $key=>$subArr ) {
+                        if (in_array($key, $sidebarHiddenTabs, true)) {
+                            continue;
+                        }
                         $active = ($this->activePage==$key) ? "active" : "";
                         $html .= "
                             <li class='nav-item'>

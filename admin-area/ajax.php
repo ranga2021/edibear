@@ -191,6 +191,17 @@ $statusMap = [
     "chngbooksSts"    => ["table" => "books_details",     "prefix" => "books"]
 ];
 
+if (isset($_POST['chngAdminUserSts']) && $user->userTableAdminExtrasAvailable()) {
+	$data = $_POST['chngAdminUserSts'];
+	$id = (int) (isset($data['adminUserID']) ? $data['adminUserID'] : 0);
+	$status = (int) (isset($data['adminUserStatus']) ? $data['adminUserStatus'] : 0);
+	if ($id > 0) {
+		$user->updateTable("user_table", array(
+			"admin_status" => $status,
+		), array("id" => $id));
+	}
+}
+
 foreach ($statusMap as $postKey => $config) {
     if (isset($_POST[$postKey])) {
         $data = $_POST[$postKey];

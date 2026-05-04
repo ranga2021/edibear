@@ -155,7 +155,7 @@ $offset = ($page - 1) * $perPage;
 
 $listSql = "SELECT t.id, t.user_id, t.name AS t_name, t.ratings, t.one_word, t.review, t.status, t.timestamp,
     tr.name AS tourist_name, tr.country, tr.email AS tourist_email,
-    (SELECT ti.image FROM testimonials_images ti WHERE ti.testimonial_id = t.id ORDER BY ti.id ASC LIMIT 1) AS photo
+    (SELECT ti.image FROM testimonials_images ti WHERE ti.testimonial_id = t.id LIMIT 1) AS photo
     FROM testimonials t
     INNER JOIN tourists tr ON tr.id = t.user_id"
     . $where

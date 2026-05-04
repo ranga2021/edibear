@@ -6,6 +6,8 @@ class USER{
 	private $conn;
 	private $inactive = 1200; 
 	private $bindParamArr = array();
+	/** @var bool|null */
+	private $userTableAdminExtrasCache = null;
 	
 	public function getConnection() {
         return $this->conn;
@@ -30,35 +32,120 @@ class USER{
 		return array("0"=>$datewithtime,"1"=>$dateonly,"2"=>$textdate);
 	}
 
-	public function adminRegister($uFirstName,$uLastName,$uMail,$uPass,$uMobile,$uID=0){
-		try{
-			$uPass = "pass".password_hash($uPass, PASSWORD_DEFAULT);
-			if ( $uID == 0 ) {
-				$stmt = $this->conn->prepare("INSERT INTO user_table (first_name,last_name,login_email,`password`,mobile_number) 
-					VALUES(:uFirstName, :uLastName, :uMail, :uPass, :uMobile)");
+	public function userTableAdminExtrasAvailable() {
+		if ($this->userTableAdminExtrasCache !== null) {
+			return $this->userTableAdminExtrasCache;
+		}
+		try {
+			$st = $this->conn->query("SHOW COLUMNS FROM `user_table` LIKE 'admin_role'");
+			$this->userTableAdminExtrasCache = ($st && $st->rowCount() > 0);
+		} catch (PDOException $e) {
+			$this->userTableAdminExtrasCache = false;
+		}
+		return $this->userTableAdminExtrasCache;
+	}
+
+	/**
+	 * @param array $opts Optional keys: role (administrator|editor), city_country, admin_status (0|1), mobile (overrides $uMobile when extras exist)
+	 */
+	public function adminRegister($uFirstName, $uLastName, $uMail, $uPass, $uMobile, $uID = 0, array $opts = array()) {
+		try {
+			$extras = $this->userTableAdminExtrasAvailable();
+			$role = strtolower(trim((string) (isset($opts['role']) ? $opts['role'] : 'administrator')));
+			if ($role !== 'editor') {
+				$role = 'administrator';
+			}
+			$city = substr(trim((string) (isset($opts['city_country']) ? $opts['city_country'] : '')), 0, 100);
+			$adminStatus = array_key_exists('admin_status', $opts) ? ((int) (bool) $opts['admin_status']) : 1;
+			$profilePic = substr(trim((string) (isset($opts['profile_pic']) ? $opts['profile_pic'] : 'default.jpg')), 0, 255);
+			if ($profilePic === '') {
+				$profilePic = 'default.jpg';
+			}
+			$mob = substr(trim((string) (isset($opts['mobile']) ? $opts['mobile'] : $uMobile)), 0, 20);
+
+			$uPass = (string) $uPass;
+			$hashPass = null;
+			if ($uPass !== '') {
+				$hashPass = "pass" . password_hash($uPass, PASSWORD_DEFAULT);
+			}
+
+			if ($uID == 0 && $hashPass === null) {
+				return "Password is required for a new admin.";
+			}
+
+			if (!$extras) {
+				if ($uID == 0) {
+					$stmt = $this->conn->prepare("INSERT INTO user_table (first_name,last_name,login_email,`password`,mobile_number) 
+						VALUES(:uFirstName, :uLastName, :uMail, :uPass, :uMobile)");
+					$returnString = "Successfully Added a new Admin";
+				} else {
+					if ($uPass === '') {
+						$stmt = $this->conn->prepare("UPDATE user_table SET first_name=:uFirstName, last_name=:uLastName, login_email=:uMail, mobile_number=:uMobile 
+							WHERE `id`=:uID");
+						$stmt->bindparam(":uID", $uID);
+						$stmt->bindparam(":uFirstName", $uFirstName);
+						$stmt->bindparam(":uLastName", $uLastName);
+						$stmt->bindparam(":uMail", $uMail);
+						$stmt->bindparam(":uMobile", $mob);
+						$stmt->execute();
+						return "Successfully Edited Admin";
+					}
+					$stmt = $this->conn->prepare("UPDATE user_table SET first_name=:uFirstName, last_name=:uLastName, login_email=:uMail, `password`=:uPass, mobile_number=:uMobile 
+						WHERE `id`=:uID");
+					$stmt->bindparam(":uID", $uID);
+					$returnString = "Successfully Edited Admin";
+				}
+				if ($uID == 0 || $uPass !== '') {
+					$stmt->bindparam(":uFirstName", $uFirstName);
+					$stmt->bindparam(":uLastName", $uLastName);
+					$stmt->bindparam(":uMail", $uMail);
+					$stmt->bindparam(":uPass", $hashPass);
+					$stmt->bindparam(":uMobile", $mob);
+					$stmt->execute();
+				}
+				return isset($returnString) ? $returnString : "Successfully Edited Admin";
+			}
+
+			if ($uID == 0) {
+				$stmt = $this->conn->prepare("INSERT INTO user_table (first_name,last_name,login_email,`password`,mobile_number,admin_role,city_country,admin_status,profile_pic) 
+					VALUES(:uFirstName, :uLastName, :uMail, :uPass, :uMobile, :role, :city, :ast, :pic)");
+				$stmt->bindparam(":role", $role);
+				$stmt->bindparam(":city", $city);
+				$stmt->bindparam(":ast", $adminStatus, PDO::PARAM_INT);
+				$stmt->bindparam(":pic", $profilePic);
 				$returnString = "Successfully Added a new Admin";
 			} else {
-				$stmt = $this->conn->prepare("UPDATE user_table SET first_name=:uFirstName, last_name=:uLastName, login_email=:uMail, `password`=:uPass, mobile_number=:uMobile 
-					WHERE `id`=:uID");
+				if ($hashPass !== null) {
+					$stmt = $this->conn->prepare("UPDATE user_table SET first_name=:uFirstName, last_name=:uLastName, login_email=:uMail, `password`=:uPass, mobile_number=:uMobile, admin_role=:role, city_country=:city, admin_status=:ast WHERE `id`=:uID");
+					$stmt->bindparam(":uPass", $hashPass);
+				} else {
+					$stmt = $this->conn->prepare("UPDATE user_table SET first_name=:uFirstName, last_name=:uLastName, login_email=:uMail, mobile_number=:uMobile, admin_role=:role, city_country=:city, admin_status=:ast WHERE `id`=:uID");
+				}
 				$stmt->bindparam(":uID", $uID);
-				$returnString = "Successfully Edited a new Admin";
+				$stmt->bindparam(":role", $role);
+				$stmt->bindparam(":city", $city);
+				$stmt->bindparam(":ast", $adminStatus, PDO::PARAM_INT);
+				$returnString = "Successfully Edited Admin";
 			}
 			$stmt->bindparam(":uFirstName", $uFirstName);
 			$stmt->bindparam(":uLastName", $uLastName);
 			$stmt->bindparam(":uMail", $uMail);
-			$stmt->bindparam(":uPass", $uPass);
-			$stmt->bindparam(":uMobile", $uMobile);
-			$stmt->execute();				
-			return $returnString;	
-		}catch(PDOException $e){
-			echo $e->getMessage();
-		}				
+			$stmt->bindparam(":uMobile", $mob);
+			$stmt->execute();
+			return $returnString;
+		} catch (PDOException $e) {
+			return "Database error: " . $e->getMessage();
+		}
 	}
 
 	public function doLogin($umail,$upass){
 	    
 		try{
-			$stmt = $this->conn->prepare("SELECT `id`,`password` FROM `user_table` WHERE `delete_status` = '0' AND `login_email`=:umail ");
+			$sql = "SELECT `id`,`password` FROM `user_table` WHERE `delete_status` = '0' AND `login_email`=:umail ";
+			if ($this->userTableAdminExtrasAvailable()) {
+				$sql .= " AND `admin_status` = 1 ";
+			}
+			$stmt = $this->conn->prepare($sql);
 			$stmt->execute(array(':umail'=>$umail));
 			$userRow=$stmt->fetch(PDO::FETCH_ASSOC);
 			if($stmt->rowCount() == 1){
