@@ -113,6 +113,28 @@ if (isset($_POST["adminEditTestimonialSubmit"])) {
     exit;
 }
 
+if (isset($_POST["adminDeleteTestimonialSubmit"])) {
+    $postId = (int) ($_POST["testimonial_id"] ?? 0);
+    if ($postId !== $id) {
+        echo "<script>alert('Invalid testimonial.');location.href='./testimonials';</script>";
+        exit;
+    }
+    $imgDir = __DIR__ . "/../img/testimonials/";
+    foreach ($user->fetchAll(array("image"), array("testimonials_images"), array("testimonial_id" => $id)) as $oldRow) {
+        $fn = basename(str_replace("\\", "/", (string) ($oldRow["image"] ?? "")));
+        if ($fn !== "") {
+            $p = $imgDir . $fn;
+            if (is_file($p)) {
+                @unlink($p);
+            }
+        }
+    }
+    $user->deleteTableRow("testimonials_images", array("testimonial_id" => $id));
+    $user->deleteTableRow("testimonials", array("id" => $id));
+    echo "<script>alert('Testimonial deleted');location.href='./testimonials';</script>";
+    exit;
+}
+
 $rawStatus = (int) $t["status"];
 $statusLabel = ($rawStatus === 1) ? "Approved" : (($rawStatus === -1) ? "Rejected" : "Pending");
 ?>
@@ -193,6 +215,11 @@ $statusLabel = ($rawStatus === 1) ? "Approved" : (($rawStatus === -1) ? "Rejecte
                   <button type="submit" name="adminEditTestimonialSubmit" value="1" class="btn btn-primary mb-0">Save changes</button>
                   <a href="./testimonials" class="btn btn-outline-secondary mb-0 ms-2">Cancel</a>
                 </div>
+              </form>
+
+              <form method="post" action="" class="mt-3" onsubmit="return confirm('Delete this testimonial and its photo? The reviewer account record is kept. This cannot be undone.');">
+                <input type="hidden" name="testimonial_id" value="<?php echo (int) $id; ?>">
+                <button type="submit" name="adminDeleteTestimonialSubmit" value="1" class="btn btn-danger btn-sm mb-0">Delete testimonial</button>
               </form>
             </div>
           </div>

@@ -65,6 +65,32 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     }
 }
 
+// ================= DELETE =================
+if (isset($_POST['confirmDeleteTourSubmit'])) {
+
+    $deleteTourID = (int) ($_POST['deleteTourID'] ?? 0);
+    if (!$editMode || $deleteTourID < 1 || $deleteTourID !== $currentTourID || !$user->CountRows("tour_details", array("id" => $deleteTourID))) {
+        echo "<script>alert('Invalid request.');location.href='./add-tours'</script>";
+        exit;
+    }
+
+    $trow = $user->fetchAll(array("image_name"), array("tour_details"), array("id" => $deleteTourID));
+    if (!empty($trow[0]['image_name'])) {
+        $img = basename(str_replace("\\", "/", (string) $trow[0]['image_name']));
+        if ($img !== "") {
+            $p = "../img/tours/" . $img;
+            if (is_file($p)) {
+                @unlink($p);
+            }
+        }
+    }
+
+    $user->deleteTableRow("tour_details", array("id" => $deleteTourID));
+
+    echo "<script>alert('Tour deleted successfully');location.href='./createSiteMap?redirect=tours'</script>";
+    exit;
+}
+
 // ================= SUBMIT =================
 if (isset($_POST['addNewTourSubmit']) || isset($_POST['updateTourSubmit'])) {
 
@@ -227,6 +253,7 @@ echo $widgets->inputGroup("Map URL", "inputTourEmbedMap", "col-md-6", $currentTo
 <?php
 if ($editMode) {
     echo "<button type='submit' name='updateTourSubmit' class='btn btn-primary'>Update</button>";
+    echo " <a href='./tours' class='btn btn-secondary'>Cancel</a>";
 } else {
     echo "<button type='submit' name='addNewTourSubmit' class='btn btn-success'>Add</button>";
 }
@@ -234,6 +261,13 @@ if ($editMode) {
 </div>
 
 </form>
+
+<?php if ($editMode) { ?>
+<form method="post" class="mt-2" onsubmit="return confirm('Delete this tour? This cannot be undone.');">
+  <input type="hidden" name="deleteTourID" value="<?php echo (int) $currentTourID; ?>">
+  <button type="submit" name="confirmDeleteTourSubmit" value="1" class="btn btn-danger btn-sm">Delete</button>
+</form>
+<?php } ?>
 
 </div>
 </div>

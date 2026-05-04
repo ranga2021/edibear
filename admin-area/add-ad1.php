@@ -59,6 +59,37 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     }
 }
 
+// ================= DELETE (separate from add/update POST) =================
+if (isset($_POST['confirmDeletead1Submit'])) {
+
+    $deletead1ID = (int) ($_POST['deletead1ID'] ?? 0);
+    if (!$editMode || $deletead1ID < 1 || $deletead1ID !== $currentad1ID || !$user->CountRows("ad1_details", array("id" => $deletead1ID))) {
+        echo "<script>alert('Invalid request.');location.href='./add-ad1'</script>";
+        exit;
+    }
+
+    foreach ($user->fetchAll(array("image_01", "image_02"), array("ad1_descriptions"), array("ad1_id" => $deletead1ID)) as $row) {
+        if (!empty($row['image_01'])) {
+            @unlink("../img/ad1/" . $row['image_01']);
+        }
+        if (!empty($row['image_02'])) {
+            @unlink("../img/ad1/" . $row['image_02']);
+        }
+    }
+
+    $user->deleteTableRow("ad1_descriptions", array("ad1_id" => $deletead1ID));
+
+    $main = $user->fetchAll(array("image"), array("ad1_details"), array("id" => $deletead1ID));
+    if (!empty($main[0]['image'])) {
+        @unlink("../img/ad1/" . $main[0]['image']);
+    }
+
+    $user->deleteTableRow("ad1_details", array("id" => $deletead1ID));
+
+    echo "<script>alert('Ad1 deleted successfully');location.href='./createSiteMap?redirect=ad1'</script>";
+    exit;
+}
+
 // ================= FORM SUBMIT =================
 if (isset($_POST['addNewad1Submit']) || isset($_POST['updatead1Submit'])) {
 
@@ -166,6 +197,7 @@ echo $widgets->inputGroup("Ad Link", "inputad1adlink", "col-md-12", $currentad1a
 <?php
 if ($editMode) {
     echo "<button type='submit' name='updatead1Submit' class='btn btn-primary'>Update</button>";
+    echo " <a href='./ad1' class='btn btn-secondary'>Cancel</a>";
 } else {
     echo "<button type='submit' name='addNewad1Submit' class='btn btn-success'>Add</button>";
 }
@@ -173,6 +205,13 @@ if ($editMode) {
 </div>
 
 </form>
+
+<?php if ($editMode) { ?>
+<form method="post" class="mt-2" onsubmit="return confirm('Delete this ad and its images? This cannot be undone.');">
+  <input type="hidden" name="deletead1ID" value="<?php echo (int) $currentad1ID; ?>">
+  <button type="submit" name="confirmDeletead1Submit" value="1" class="btn btn-danger btn-sm">Delete</button>
+</form>
+<?php } ?>
 
 </div>
 </div>

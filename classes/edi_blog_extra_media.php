@@ -114,4 +114,38 @@ class EdiBlogExtraMedia
             $sort++;
         }
     }
+
+    /**
+     * Remove extra media rows for a blog and delete stored image files (not YouTube URLs).
+     *
+     * @param USER   $user
+     * @param int    $blogId
+     * @param string $absUploadDir Absolute path to img/blogs
+     */
+    public static function deleteAllForBlog($user, $blogId, $absUploadDir)
+    {
+        $blogId = (int) $blogId;
+        if ($blogId < 1) {
+            return;
+        }
+        $conn = $user->getConnection();
+        if (!self::tableExists($conn)) {
+            return;
+        }
+        $absUploadDir = rtrim(str_replace(array("/", "\\"), DIRECTORY_SEPARATOR, (string) $absUploadDir), DIRECTORY_SEPARATOR);
+        foreach (self::fetchForBlog($conn, $blogId) as $row) {
+            $mt = isset($row["media_type"]) ? (string) $row["media_type"] : "";
+            if ($mt !== "image") {
+                continue;
+            }
+            $fn = basename(str_replace("\\", "/", (string) ($row["path"] ?? "")));
+            if ($fn !== "") {
+                $p = $absUploadDir . DIRECTORY_SEPARATOR . $fn;
+                if (is_file($p)) {
+                    @unlink($p);
+                }
+            }
+        }
+        $user->deleteTableRow("blog_extra_media", array("blog_id" => $blogId));
+    }
 }

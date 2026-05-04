@@ -59,6 +59,37 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
     }
 }
 
+// ================= DELETE (separate from add/update POST) =================
+if (isset($_POST['confirmDeletead2Submit'])) {
+
+    $deletead2ID = (int) ($_POST['deletead2ID'] ?? 0);
+    if (!$editMode || $deletead2ID < 1 || $deletead2ID !== $currentad2ID || !$user->CountRows("ad2_details", array("id" => $deletead2ID))) {
+        echo "<script>alert('Invalid request.');location.href='./add-ad2'</script>";
+        exit;
+    }
+
+    foreach ($user->fetchAll(array("image_01", "image_02"), array("ad2_descriptions"), array("ad2_id" => $deletead2ID)) as $row) {
+        if (!empty($row['image_01'])) {
+            @unlink("../img/ad2/" . $row['image_01']);
+        }
+        if (!empty($row['image_02'])) {
+            @unlink("../img/ad2/" . $row['image_02']);
+        }
+    }
+
+    $user->deleteTableRow("ad2_descriptions", array("ad2_id" => $deletead2ID));
+
+    $main = $user->fetchAll(array("image"), array("ad2_details"), array("id" => $deletead2ID));
+    if (!empty($main[0]['image'])) {
+        @unlink("../img/ad2/" . $main[0]['image']);
+    }
+
+    $user->deleteTableRow("ad2_details", array("id" => $deletead2ID));
+
+    echo "<script>alert('Ad2 deleted successfully');location.href='./createSiteMap?redirect=ad2'</script>";
+    exit;
+}
+
 // ================= FORM SUBMIT =================
 if (isset($_POST['addNewad2Submit']) || isset($_POST['updatead2Submit'])) {
 
@@ -119,26 +150,6 @@ if (isset($_POST['addNewad2Submit']) || isset($_POST['updatead2Submit'])) {
         }
 
         echo "<script>alert('Ad2 updated successfully');location.href='./createSiteMap?redirect=ad2'</script>";
-    }
-
-    // ================= DELETE =================
-    if (isset($_POST['confirmDeletead2Submit'])) {
-
-        $deletead2ID = (int)$_POST['deletead2ID'];
-
-        foreach ($user->fetchAll(array("image_01","image_02"), array("ad2_descriptions"), array("ad2_id"=>$deletead2ID)) as $row) {
-            if (!empty($row['image_01'])) unlink("../img/ad2/".$row['image_01']);
-            if (!empty($row['image_02'])) unlink("../img/ad2/".$row['image_02']);
-        }
-
-        $main = $user->fetchAll(array("image"), array("ad2_details"), array("id"=>$deletead2ID));
-        if (!empty($main[0]['image'])) {
-            unlink("../img/ad2/".$main[0]['image']);
-        }
-
-        $user->deleteTableRow("ad2_details", array("id"=>$deletead2ID));
-
-        echo "<script>alert('Ad2 deleted successfully');location.href='./createSiteMap?redirect=ad2'</script>";
     }
 }
 ?>

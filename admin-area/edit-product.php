@@ -51,6 +51,51 @@ $hasPsub = EdiExplorerContent::columnExists($pdo, "products", "product_subcatego
 
 $msg = "";
 
+if (isset($_POST["btn-delete-product"])) {
+    $delId = (int) ($_POST["product_id"] ?? 0);
+    if ($delId !== $id || $delId < 1) {
+        header("Location: ./products");
+        exit;
+    }
+    $imgDirFs = dirname(__DIR__) . DIRECTORY_SEPARATOR . "img" . DIRECTORY_SEPARATOR . "products";
+    $mainImg = basename(str_replace("\\", "/", (string) ($product["image"] ?? "")));
+    if ($mainImg !== "") {
+        $pMain = $imgDirFs . DIRECTORY_SEPARATOR . $mainImg;
+        if (is_file($pMain)) {
+            @unlink($pMain);
+        }
+    }
+    if ($hasGalleryImages) {
+        foreach (EdiProductAdmin::gallerySlotsFromDb((string) ($product["gallery_images"] ?? "")) as $gf) {
+            $gf = basename(str_replace("\\", "/", trim((string) $gf)));
+            if ($gf === "") {
+                continue;
+            }
+            $gp = $imgDirFs . DIRECTORY_SEPARATOR . $gf;
+            if (is_file($gp)) {
+                @unlink($gp);
+            }
+        }
+    }
+    try {
+        $pdoDel = $user->getConnection();
+        $chkOi = $pdoDel->query("SHOW TABLES LIKE " . $pdoDel->quote("order_items"));
+        if ($chkOi && $chkOi->rowCount() > 0) {
+            $stOi = $pdoDel->prepare("DELETE FROM order_items WHERE product_id = :pid");
+            $stOi->execute(array(":pid" => $delId));
+        }
+    } catch (Throwable $e) {
+        // continue; product delete may still succeed
+    }
+    try {
+        $user->deleteTableRow("products", array("id" => $delId));
+        header("Location: ./products");
+        exit;
+    } catch (PDOException $e) {
+        $msg = "<div class='alert alert-danger'>Could not delete product: " . htmlspecialchars($e->getMessage()) . "</div>";
+    }
+}
+
 if (isset($_POST["btn-update-product"])) {
     $product_subcategory_id = isset($_POST["product_subcategory"]) ? trim((string) $_POST["product_subcategory"]) : "";
     $product_subcategory_id = $product_subcategory_id === "" ? null : (int) $product_subcategory_id;
@@ -471,6 +516,11 @@ if ($hasOptionsExtra) {
                   <button type="submit" name="btn-update-product" class="btn btn-success" value="1">Save changes</button>
                   <a href="./products" class="btn btn-secondary">Cancel</a>
                 </div>
+              </form>
+
+              <form method="post" class="mt-2" onsubmit="return confirm('Delete this product and its images from the server? Cart rows are removed automatically. This cannot be undone.');">
+                <input type="hidden" name="product_id" value="<?php echo (int) $id; ?>">
+                <button type="submit" name="btn-delete-product" value="1" class="btn btn-danger btn-sm">Delete product</button>
               </form>
             </div>
           </div>

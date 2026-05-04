@@ -44,7 +44,7 @@ if (!$user->is_loggedin()) {
 
 // Long edit forms: idle timer is not refreshed until the next request. Treat a blog
 // save POST as activity so createSiteMap's checkTimeout does not log the user out.
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['addNewBlogSubmit']) || isset($_POST['updateBlogSubmit']))) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['addNewBlogSubmit']) || isset($_POST['updateBlogSubmit']) || isset($_POST['confirmDeleteBlogSubmit']))) {
     $_SESSION['timeout'] = time();
 } elseif (!$user->checkTimeout()) {
     $user->doLogout();
@@ -150,6 +150,53 @@ if (!empty($editMode) && $editMode && !empty($currentBlogID) && EdiBlogExtraMedi
             $extraSlots[$ix]['existing'] = (string) ($row['path'] ?? '');
         }
     }
+}
+
+// ================= DELETE (edit mode only) =================
+if (isset($_POST['confirmDeleteBlogSubmit'])) {
+
+    $deleteBlogID = (int) ($_POST['deleteBlogID'] ?? 0);
+    if (!$editMode || $deleteBlogID < 1 || $deleteBlogID !== $currentBlogID) {
+        echo "<script>alert('Invalid request.');location.href='./blogs';</script>";
+        exit;
+    }
+    if (!$user->CountRows("blog_details", array("id" => $deleteBlogID))) {
+        echo "<script>alert('Blog not found.');location.href='./blogs';</script>";
+        exit;
+    }
+
+    $uploadDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'blogs';
+
+    foreach ($user->fetchAll(array("image_01", "image_02"), array("blog_descriptions"), array("blog_id" => $deleteBlogID)) as $row) {
+        foreach (array("image_01", "image_02") as $col) {
+            $fn = basename(str_replace("\\", "/", trim((string) ($row[$col] ?? ""))));
+            if ($fn !== "") {
+                $p = $uploadDir . DIRECTORY_SEPARATOR . $fn;
+                if (is_file($p)) {
+                    @unlink($p);
+                }
+            }
+        }
+    }
+    $user->deleteTableRow("blog_descriptions", array("blog_id" => $deleteBlogID));
+
+    EdiBlogExtraMedia::deleteAllForBlog($user, $deleteBlogID, $uploadDir);
+
+    $mainRows = $user->fetchAll(array("image"), array("blog_details"), array("id" => $deleteBlogID));
+    if (!empty($mainRows[0]["image"])) {
+        $im = basename(str_replace("\\", "/", (string) $mainRows[0]["image"]));
+        if ($im !== "") {
+            $p = $uploadDir . DIRECTORY_SEPARATOR . $im;
+            if (is_file($p)) {
+                @unlink($p);
+            }
+        }
+    }
+
+    $user->deleteTableRow("blog_details", array("id" => $deleteBlogID));
+
+    echo "<script>alert('Blog deleted successfully');location.href='./createSiteMap?redirect=blogs'</script>";
+    exit;
 }
 
 // ================= SUBMIT =================
@@ -415,14 +462,22 @@ for ($ei = 0; $ei < 8; $ei++) {
 <?php
 if ($editMode) {
     echo "<button type='submit' name='updateBlogSubmit' class='btn btn-success'>Update</button>";
+    echo "<a href='./blogs' class='btn btn-secondary'>Cancel</a>";
 } else {
     echo "<button type='submit' name='addNewBlogSubmit' class='btn btn-success'>Add</button>";
+    echo "<a href='./blogs' class='btn btn-secondary'>Cancel</a>";
 }
 ?>
-<a href="./blogs" class="btn btn-secondary">Cancel</a>
 </div>
 
 </form>
+
+<?php if ($editMode) { ?>
+<form method="post" class="mb-3" onsubmit="return confirm('Delete this blog post and all section images? This cannot be undone.');">
+  <input type="hidden" name="deleteBlogID" value="<?php echo (int) $currentBlogID; ?>">
+  <button type="submit" name="confirmDeleteBlogSubmit" value="1" class="btn btn-danger">Delete post</button>
+</form>
+<?php } ?>
 
 </div>
 </div>
