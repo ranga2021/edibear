@@ -328,7 +328,7 @@ if ($hasOptionsExtra) {
                   </div>
                   <div class="col-md-4 mb-3">
                     <label>Age group</label>
-                    <select name="age_group" class="form-control" required>
+                    <select name="age_group" class="form-control">
                       <option value="">Select age group</option>
                       <?php
                       $curAge = trim((string) ($product["age_group"] ?? ""));
@@ -408,7 +408,7 @@ if ($hasOptionsExtra) {
                     <div class="row mb-2">
                       <div class="col-5"><label class="form-label mb-0 d-block pt-2">Language</label></div>
                       <div class="col-7">
-                        <select name="language" class="form-control" required>
+                        <select name="language" class="form-control">
                           <option value="">Select language</option>
                           <?php
                           $curLang = trim((string) ($product["language"] ?? ""));
