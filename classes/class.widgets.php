@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . "/edi_content_tags.php";
+
 class WIDGETS{
     private $bootstrapColWidth;
 
@@ -383,7 +385,8 @@ class WIDGETS{
 
         $blogId = (int) $row["id"];
         $imageName = $this->createCachelessImage("./img/blogs/" . $row["image"]);
-        $tag = htmlspecialchars((string) $row["tag"], ENT_QUOTES, "UTF-8");
+        $tagPlain = EdiContentTags::blogCategoryDisplayLabel((string) ($row["tag"] ?? ""));
+        $tag = htmlspecialchars($tagPlain, ENT_QUOTES, "UTF-8");
         $title = htmlspecialchars((string) $row["title"], ENT_QUOTES, "UTF-8");
 
         $plain = strip_tags((string) $row["description"]);
@@ -404,6 +407,11 @@ class WIDGETS{
         $blogUrl = "./blog?id=" . $blogId;
         $mbClass = ($layout === "grid" || $layout === "featured") ? "mb-0" : "mb-3";
 
+        $tagRow = "";
+        if ($tagPlain !== "") {
+            $tagRow = "<div class='edi-blog-tag'><i class='fa fa-tag' aria-hidden='true'></i><span>" . $tag . "</span></div>";
+        }
+
         $html = "
             <div class='" . $col . " edi-blog-col " . $mbClass . "'>
                 <article class='edi-blog-card edi-blog-card--" . $layout . "'>
@@ -413,7 +421,7 @@ class WIDGETS{
                         </div>
                     </a>
                     <div class='edi-blog-body'>
-                        <div class='edi-blog-tag'><i class='fa fa-tag' aria-hidden='true'></i><span>" . $tag . "</span></div>
+                        " . $tagRow . "
                         <h3 class='edi-blog-title'><a href='" . $blogUrl . "'>" . $title . "</a></h3>
                         <div class='edi-blog-title-rule' role='presentation'></div>
                         <p class='edi-blog-excerpt'>" . htmlspecialchars($plain, ENT_QUOTES, "UTF-8") . "</p>

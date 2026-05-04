@@ -59,6 +59,19 @@ class EdiContentTags
     }
 
     /**
+     * One-line label for blog cards / hero: category or topic only (third segment of
+     * Language ||| Grade ||| Category). Legacy posts use the full tag cell.
+     * Plain text — escape when outputting HTML.
+     *
+     * @return string
+     */
+    public static function blogCategoryDisplayLabel($cell)
+    {
+        $parts = self::blogTagTripleParts($cell);
+        return trim((string) ($parts[2] ?? ""));
+    }
+
+    /**
      * Topic tags for display/filtering on blog pages: excludes Language and Grade from
      * "Language ||| Grade ||| Category" admin cells; legacy cells use slash-split topics only.
      *

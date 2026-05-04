@@ -23,7 +23,21 @@ try {
 }
 
 // --- 1. Fetch Filter Options from DB ---
-$categories = $user->fetchAll(array("id", "name"), array("product_categories"), array());
+$categories = array();
+try {
+    $catStmt = $conn->query(
+        "SELECT DISTINCT c.id, c.name
+         FROM product_categories c
+         INNER JOIN products p ON p.category_id = c.id
+         WHERE p.status = 1
+         ORDER BY c.name ASC"
+    );
+    if ($catStmt) {
+        $categories = $catStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+} catch (Throwable $e) {
+    $categories = array();
+}
 $ageGroups = $user->fetchAll(array("DISTINCT age_group"), array("products"), array("status" => 1));
 $brands = $user->fetchAll(array("DISTINCT brand"), array("products"), array("status" => 1));
 $shopGrades = EdiTaxonomy::loadGrades($conn);
