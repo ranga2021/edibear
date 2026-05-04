@@ -2,6 +2,7 @@
   session_start();
   require_once("../classes/class.user.php");
   require_once("../classes/class.header.php");
+  require_once("../classes/edi_order_line_items.php");
 
   $adminHeader = new HEADER("orders");
   $user = new USER();
@@ -113,6 +114,9 @@
           }
         }
       }
+    }
+    if (!empty($itemsByOrder)) {
+      EdiOrderLineItems::enrichItemsByOrder($pdo, $itemsByOrder);
     }
   } catch (Exception $e) {
     $orders = array();
@@ -232,7 +236,28 @@
     .view-btn:hover { color: #f97316 !important; text-decoration: underline; }
     .modal-detail-label { font-weight: bold; color: #9ca3af; text-transform: uppercase; font-size: 0.75rem; margin-bottom: 2px; }
     .modal-detail-value { color: #111827; margin-bottom: 1rem; font-size: 0.9rem; }
-    
+
+    .edi-order-line-thumb {
+      width: 56px;
+      height: 56px;
+      object-fit: cover;
+      border-radius: 8px;
+      flex-shrink: 0;
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+    }
+    .edi-order-line-meta {
+      font-size: 0.72rem;
+      color: #64748b;
+      line-height: 1.35;
+      max-width: 320px;
+    }
+    .edi-order-line-name {
+      font-weight: 600;
+      color: #111827;
+      font-size: 0.88rem;
+    }
+
   </style>
 </head>
 
@@ -411,6 +436,15 @@
         return d.innerHTML;
     }
 
+    function ediOrderLineMetaParts(it) {
+        const parts = [];
+        if (it.edi_product_language) parts.push(String(it.edi_product_language));
+        if (it.edi_product_grade) parts.push(String(it.edi_product_grade));
+        if (it.edi_product_category) parts.push(String(it.edi_product_category));
+        if (it.edi_product_subcategory) parts.push(String(it.edi_product_subcategory));
+        return parts;
+    }
+
     function renderOrderLineItems(data) {
         const wrap = document.getElementById("modal_line_items");
         if (!wrap) return;
@@ -423,9 +457,19 @@
         items.forEach(function (it) {
             const unit = parseFloat(it.unit_price);
             const line = parseFloat(it.line_total);
-            html += "<tr><td>" + ediEscapeHtml(it.product_name) + "</td><td class=\"text-center\">" + ediEscapeHtml(it.quantity) + "</td>";
-            html += "<td class=\"text-right\">LKR " + unit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "</td>";
-            html += "<td class=\"text-right\">LKR " + line.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "</td></tr>";
+            const imgFn = (it.edi_product_image != null && String(it.edi_product_image).trim() !== "") ? String(it.edi_product_image).trim() : "";
+            const imgSrc = imgFn ? ("../img/products/" + encodeURIComponent(imgFn)) : "";
+            const metaParts = ediOrderLineMetaParts(it);
+            const metaHtml = metaParts.length
+                ? "<div class=\"edi-order-line-meta mt-1\">" + metaParts.map(function (p) { return ediEscapeHtml(p); }).join(" <span class=\"text-muted\">·</span> ") + "</div>"
+                : "<div class=\"edi-order-line-meta mt-1 text-muted\">—</div>";
+            const thumb = imgSrc
+                ? "<img class=\"edi-order-line-thumb\" src=\"" + imgSrc + "\" alt=\"\" onerror=\"this.style.visibility='hidden';\">"
+                : "<div class=\"edi-order-line-thumb d-flex align-items-center justify-content-center text-muted small\">—</div>";
+            html += "<tr><td><div class=\"d-flex align-items-start\" style=\"gap:10px;\">" + thumb + "<div><div class=\"edi-order-line-name\">" + ediEscapeHtml(it.product_name) + "</div>" + metaHtml + "</div></div></td>";
+            html += "<td class=\"text-center align-middle\">" + ediEscapeHtml(it.quantity) + "</td>";
+            html += "<td class=\"text-right align-middle\">LKR " + unit.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "</td>";
+            html += "<td class=\"text-right align-middle\">LKR " + line.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + "</td></tr>";
         });
         html += "</tbody></table>";
         wrap.innerHTML = html;

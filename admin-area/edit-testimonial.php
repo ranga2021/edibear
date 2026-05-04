@@ -6,6 +6,10 @@ require_once("../classes/class.header.php");
 $adminHeader = new HEADER("testimonials");
 $user = new USER();
 
+if (!$user->is_loggedin()) {
+    $user->redirect("./index.php");
+}
+
 $id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
 if ($id < 1) {
     header("Location: ./testimonials");
@@ -23,7 +27,7 @@ if (empty($rows)) {
 }
 $t = $rows[0];
 
-$touristRows = $user->fetchAll(array("id", "name", "country"), array("tourists"), array("id" => $t["user_id"]));
+$touristRows = $user->fetchAll(array("id", "name", "country", "email"), array("tourists"), array("id" => $t["user_id"]));
 if (empty($touristRows)) {
     header("Location: ./testimonials");
     exit;
@@ -42,31 +46,43 @@ if (isset($_POST["adminEditTestimonialSubmit"])) {
 
     $reviewerName = trim((string) ($_POST["reviewerName"] ?? ""));
     $reviewerCountry = trim((string) ($_POST["reviewerCountry"] ?? ""));
+    $reviewerEmail = trim((string) ($_POST["reviewerEmail"] ?? ""));
     $oneWord = trim((string) ($_POST["oneWord"] ?? ""));
     $review = trim((string) ($_POST["reviewBody"] ?? ""));
     $ratings = (int) ($_POST["ratings"] ?? 5);
     $ratings = max(1, min(5, $ratings));
+
+    $status = isset($_POST["testimonial_status"]) ? (int) $_POST["testimonial_status"] : (int) $t["status"];
+    if (!in_array($status, array(-1, 0, 1), true)) {
+        $status = (int) $t["status"];
+    }
 
     $reviewerName = substr(strip_tags($reviewerName), 0, 100);
     $reviewerCountry = substr(strip_tags($reviewerCountry), 0, 20);
     $oneWord = substr(strip_tags($oneWord), 0, 50);
     $review = substr(strip_tags($review), 0, 500);
 
+    if ($reviewerEmail !== "" && !filter_var($reviewerEmail, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>alert('Please enter a valid email address.');history.back();</script>";
+        exit;
+    }
+
     if ($reviewerName === "" || $reviewerCountry === "" || $oneWord === "" || $review === "") {
-        echo "<script>alert('Please fill in reviewer name, country, headline, and review.');history.back();</script>";
+        echo "<script>alert('Please fill in name, city\\/country, headline, and review.');history.back();</script>";
         exit;
     }
 
     $touristId = (int) $t["user_id"];
 
-    $user->updateTable(
-        "tourists",
-        array(
-            "name" => $reviewerName,
-            "country" => $reviewerCountry,
-        ),
-        array("id" => $touristId)
+    $touristUpdate = array(
+        "name" => $reviewerName,
+        "country" => $reviewerCountry,
     );
+    if ($reviewerEmail !== "") {
+        $touristUpdate["email"] = substr($reviewerEmail, 0, 50);
+    }
+
+    $user->updateTable("tourists", $touristUpdate, array("id" => $touristId));
 
     $user->updateTable(
         "testimonials",
@@ -75,6 +91,7 @@ if (isset($_POST["adminEditTestimonialSubmit"])) {
             "ratings" => $ratings,
             "one_word" => $oneWord,
             "review" => $review,
+            "status" => $status,
         ),
         array("id" => $id)
     );
@@ -136,15 +153,15 @@ if (isset($_POST["adminDeleteTestimonialSubmit"])) {
 }
 
 $rawStatus = (int) $t["status"];
-$statusLabel = ($rawStatus === 1) ? "Approved" : (($rawStatus === -1) ? "Rejected" : "Pending");
+$curEmail = (string) ($tr["email"] ?? "");
 ?>
 <script>
-    const adminSession = localStorage.getItem('admin_session');
-    const sessionTime = localStorage.getItem('session_time');
+    const adminSession = localStorage.getItem("admin_session");
+    const sessionTime = localStorage.getItem("session_time");
     const currentTime = Math.floor(Date.now() / 1000);
     if (!adminSession || (currentTime - sessionTime > 1200)) {
-        localStorage.removeItem('admin_session');
-        window.location.href = 'index.php?error=session_expired';
+        localStorage.removeItem("admin_session");
+        window.location.href = "index.php?error=session_expired";
     }
 </script>
 <!DOCTYPE html>
@@ -153,73 +170,119 @@ $statusLabel = ($rawStatus === 1) ? "Approved" : (($rawStatus === -1) ? "Rejecte
   <?php echo $adminHeader->printAdminHeader(); ?>
   <meta property="og:title" content="Edit testimonial"/>
   <meta name="description" content="Admin — edit testimonial"/>
+  <style>
+    .edi-tm-edit-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    .edi-tm-photo-ring {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 3px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #f8fafc;
+    }
+    .edi-tm-photo-ring img { width: 100%; height: 100%; object-fit: cover; }
+    .edi-star-bar .edi-star-btn {
+      border: none;
+      background: none;
+      padding: 0 2px;
+      font-size: 1.75rem;
+      line-height: 1;
+      color: #e2e8f0;
+      cursor: pointer;
+    }
+    .edi-star-bar .edi-star-btn.edi-star-on { color: #fbbf24; }
+    .edi-star-bar .edi-star-btn:focus { outline: none; }
+  </style>
 </head>
 <body class="g-sidenav-show bg-gray-100">
   <div class="min-height-300 bg-primary position-absolute w-100"></div>
   <?php echo $adminHeader->printAdminNav(); ?>
   <main class="main-content position-relative border-radius-lg">
-    <?php echo $adminHeader->printAdminNav2($adminHeader->getActivePageName()); ?>
+    <?php echo $adminHeader->printAdminNav2("Edit testimonial"); ?>
     <div class="container-fluid py-4">
-      <div class="row">
-        <div class="col-lg-8 col-md-10">
+      <div class="row justify-content-center">
+        <div class="col-xl-9 col-lg-10">
           <div class="card mb-4">
-            <div class="card-header pb-0 d-flex justify-content-between align-items-center flex-wrap gap-2">
-              <div>
-                <h4 class="mb-0">Edit testimonial</h4>
-                <p class="text-sm text-muted mb-0">Update name, country, rating, headline, review, or photo. Status stays <?php echo htmlspecialchars($statusLabel, ENT_QUOTES, "UTF-8"); ?> — change it from the testimonials list.</p>
-              </div>
-              <a href="./testimonials" class="btn btn-sm btn-outline-secondary mb-0">Back to list</a>
-            </div>
-            <div class="card-body p-3">
-              <form method="post" action="" enctype="multipart/form-data" class="row g-3">
+            <div class="card-body p-4">
+              <h2 class="edi-tm-edit-title text-uppercase text-danger mb-4">Edit testimonial</h2>
+
+              <form method="post" action="" enctype="multipart/form-data" id="edi-edit-tm-form">
                 <input type="hidden" name="testimonial_id" value="<?php echo (int) $id; ?>">
-                <div class="col-md-4">
-                  <label class="form-label">Reviewer name</label>
-                  <input type="text" name="reviewerName" class="form-control" maxlength="100" required value="<?php echo htmlspecialchars($tr["name"], ENT_QUOTES, "UTF-8"); ?>">
+
+                <div class="d-flex flex-wrap gap-4 mb-4">
+                  <div class="edi-tm-photo-ring" id="ediTmEditPreview">
+                    <?php if ($currentImage !== ""): ?>
+                      <img src="../img/testimonials/<?php echo htmlspecialchars($currentImage, ENT_QUOTES, "UTF-8"); ?>" alt="">
+                    <?php else: ?>
+                      <span class="text-muted small text-center px-2">No photo</span>
+                    <?php endif; ?>
+                  </div>
+                  <div class="flex-grow-1" style="min-width:240px;">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label font-weight-bold">Name</label>
+                        <input type="text" name="reviewerName" class="form-control" maxlength="100" required value="<?php echo htmlspecialchars($tr["name"], ENT_QUOTES, "UTF-8"); ?>">
+                      </div>
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label font-weight-bold">City / Country</label>
+                        <input type="text" name="reviewerCountry" class="form-control" maxlength="20" required value="<?php echo htmlspecialchars($tr["country"], ENT_QUOTES, "UTF-8"); ?>">
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label font-weight-bold">E-mail</label>
+                      <input type="email" name="reviewerEmail" class="form-control" maxlength="50" value="<?php echo htmlspecialchars($curEmail, ENT_QUOTES, "UTF-8"); ?>">
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label font-weight-bold d-block">Rate your experience <span class="text-danger">*</span></label>
+                      <input type="hidden" name="ratings" id="ediTmEditRatings" value="<?php echo (int) $t["ratings"]; ?>">
+                      <div class="edi-star-bar" data-target="ediTmEditRatings" role="group" aria-label="Rating">
+                        <?php for ($s = 1; $s <= 5; $s++): ?>
+                        <button type="button" class="edi-star-btn" data-value="<?php echo $s; ?>" aria-label="<?php echo $s; ?> stars">★</button>
+                        <?php endfor; ?>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-md-4">
-                  <label class="form-label">Country</label>
-                  <input type="text" name="reviewerCountry" class="form-control" maxlength="20" required value="<?php echo htmlspecialchars($tr["country"], ENT_QUOTES, "UTF-8"); ?>">
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Rating</label>
-                  <select name="ratings" class="form-control">
-                    <?php
-                    $curR = (int) $t["ratings"];
-                    for ($r = 5; $r >= 1; $r--) {
-                        $sel = ($r === $curR) ? " selected" : "";
-                        echo "<option value=\"$r\"$sel>$r stars</option>";
-                    }
-                    ?>
-                  </select>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Headline (short)</label>
+
+                <div class="mb-3">
+                  <label class="form-label font-weight-bold">Say your review in one word <span class="text-danger">*</span></label>
                   <input type="text" name="oneWord" class="form-control" maxlength="50" required value="<?php echo htmlspecialchars($t["one_word"], ENT_QUOTES, "UTF-8"); ?>">
                 </div>
-                <div class="col-md-6">
-                  <label class="form-label">Photo (optional)</label>
-                  <?php if ($currentImage !== "") { ?>
-                    <div class="mb-2">
-                      <img src="../img/testimonials/<?php echo htmlspecialchars($currentImage, ENT_QUOTES, "UTF-8"); ?>" alt="" class="rounded" style="max-height:80px;width:auto;">
-                      <span class="text-xs text-muted d-block">Upload a new file to replace.</span>
-                    </div>
-                  <?php } ?>
-                  <input type="file" name="adminTestimonialImage" class="form-control" accept=".jpg,.jpeg,.png,.webp">
+                <div class="mb-3">
+                  <label class="form-label font-weight-bold">Leave a review <span class="text-danger">*</span></label>
+                  <textarea name="reviewBody" id="ediTmEditReview" class="form-control" rows="6" maxlength="500" required><?php echo htmlspecialchars($t["review"], ENT_QUOTES, "UTF-8"); ?></textarea>
+                  <div class="d-flex justify-content-end"><small class="text-muted">Character limit: <span id="ediTmEditCount">0</span> / 500</small></div>
                 </div>
-                <div class="col-12">
-                  <label class="form-label">Review</label>
-                  <textarea name="reviewBody" class="form-control" rows="5" maxlength="500" required><?php echo htmlspecialchars($t["review"], ENT_QUOTES, "UTF-8"); ?></textarea>
+                <div class="mb-4">
+                  <label class="form-label font-weight-bold">Replace photo (optional)</label>
+                  <input type="file" name="adminTestimonialImage" id="ediTmEditFile" class="form-control" accept=".jpg,.jpeg,.png,.webp">
                 </div>
-                <div class="col-12">
-                  <button type="submit" name="adminEditTestimonialSubmit" value="1" class="btn btn-primary mb-0">Save changes</button>
-                  <a href="./testimonials" class="btn btn-outline-secondary mb-0 ms-2">Cancel</a>
+                <div class="mb-4">
+                  <label class="form-label font-weight-bold">Status</label>
+                  <select name="testimonial_status" class="form-control" style="max-width:280px;">
+                    <option value="1"<?php echo $rawStatus === 1 ? " selected" : ""; ?>>Approved</option>
+                    <option value="0"<?php echo $rawStatus === 0 ? " selected" : ""; ?>>Pending</option>
+                    <option value="-1"<?php echo $rawStatus === -1 ? " selected" : ""; ?>>Rejected</option>
+                  </select>
+                </div>
+
+                <div class="edi-admin-form-actions">
+                  <button type="submit" name="adminEditTestimonialSubmit" value="1" class="btn btn-success mb-0">Update</button>
+                  <a href="./testimonials" class="btn btn-secondary mb-0">Cancel</a>
                 </div>
               </form>
 
-              <form method="post" action="" class="mt-3" onsubmit="return confirm('Delete this testimonial and its photo? The reviewer account record is kept. This cannot be undone.');">
+              <form method="post" action="" class="mt-3 d-inline-block" onsubmit="return confirm('Delete this testimonial and its photo? The reviewer account record is kept. This cannot be undone.');">
                 <input type="hidden" name="testimonial_id" value="<?php echo (int) $id; ?>">
-                <button type="submit" name="adminDeleteTestimonialSubmit" value="1" class="btn btn-danger btn-sm mb-0">Delete testimonial</button>
+                <button type="submit" name="adminDeleteTestimonialSubmit" value="1" class="btn btn-danger mb-0">Delete</button>
               </form>
             </div>
           </div>
@@ -229,5 +292,50 @@ $statusLabel = ($rawStatus === 1) ? "Approved" : (($rawStatus === -1) ? "Rejecte
     </div>
   </main>
   <?php echo $adminHeader->printAdminFooterJS(); ?>
+  <script>
+  (function () {
+    function bindStarBar(container) {
+      if (!container) return;
+      var hid = document.getElementById(container.getAttribute("data-target"));
+      if (!hid) return;
+      var btns = container.querySelectorAll(".edi-star-btn");
+      function paint(val) {
+        var v = Math.max(1, Math.min(5, parseInt(val, 10) || 1));
+        btns.forEach(function (b, idx) {
+          b.classList.toggle("edi-star-on", idx < v);
+        });
+        hid.value = String(v);
+      }
+      btns.forEach(function (b) {
+        b.addEventListener("click", function () {
+          paint(parseInt(b.getAttribute("data-value"), 10) || 1);
+        });
+      });
+      paint(hid.value);
+    }
+    bindStarBar(document.querySelector(".edi-star-bar"));
+
+    var ta = document.getElementById("ediTmEditReview");
+    var cnt = document.getElementById("ediTmEditCount");
+    if (ta && cnt) {
+      function upd() { cnt.textContent = String(ta.value.length); }
+      ta.addEventListener("input", upd);
+      upd();
+    }
+    var fin = document.getElementById("ediTmEditFile");
+    var prev = document.getElementById("ediTmEditPreview");
+    if (fin && prev) {
+      fin.addEventListener("change", function () {
+        var f = fin.files && fin.files[0];
+        if (!f) return;
+        var r = new FileReader();
+        r.onload = function (ev) {
+          prev.innerHTML = "<img src=\"" + ev.target.result + "\" alt=\"\">";
+        };
+        r.readAsDataURL(f);
+      });
+    }
+  })();
+  </script>
 </body>
 </html>

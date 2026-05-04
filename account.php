@@ -2,6 +2,7 @@
 require_once("./classes/class.user.php");
 require_once("./classes/class.header.php");
 require_once("./classes/class.widgets.php");
+require_once("./classes/edi_order_line_items.php");
 
 $userHeader = new HEADER();
 $user = new USER();
@@ -74,6 +75,9 @@ if ($touristID > 0 && $user->CountRows("tourists", array("id"=>$touristID)) == 1
                         }
                     }
                 }
+            }
+            if (!empty($accountOrderItems)) {
+                EdiOrderLineItems::enrichItemsByOrder($conn, $accountOrderItems);
             }
         } catch (Throwable $e) {
             $accountOrderItems = array();
@@ -343,14 +347,35 @@ if (userSession && !uid) {
                                                 $lines = ($oidAcc > 0 && !empty($accountOrderItems[$oidAcc])) ? $accountOrderItems[$oidAcc] : array();
                                                 ?>
                                                 <?php if (!empty($lines)): ?>
-                                                <p class="mb-1 font-weight-bold text-dark">Items</p>
-                                                <ul class="mb-0 pl-3">
-                                                    <?php foreach ($lines as $li): ?>
-                                                    <li><?php echo htmlspecialchars((string) ($li['product_name'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>
-                                                        × <?php echo (int) ($li['quantity'] ?? 0); ?>
-                                                        — Rs. <?php echo number_format((float) ($li['line_total'] ?? 0), 2); ?></li>
+                                                <p class="mb-2 font-weight-bold text-dark">Items</p>
+                                                <div class="edi-account-order-lines small">
+                                                    <?php foreach ($lines as $li):
+                                                        $pn = htmlspecialchars((string) ($li["product_name"] ?? ""), ENT_QUOTES, "UTF-8");
+                                                        $qty = (int) ($li["quantity"] ?? 0);
+                                                        $lineTot = number_format((float) ($li["line_total"] ?? 0), 2);
+                                                        $img = trim((string) ($li["edi_product_image"] ?? ""));
+                                                        $imgUrl = $img !== "" ? ("./img/products/" . rawurlencode($img)) : "";
+                                                        $lang = htmlspecialchars(trim((string) ($li["edi_product_language"] ?? "")), ENT_QUOTES, "UTF-8");
+                                                        $grade = htmlspecialchars(trim((string) ($li["edi_product_grade"] ?? "")), ENT_QUOTES, "UTF-8");
+                                                        $cat = htmlspecialchars(trim((string) ($li["edi_product_category"] ?? "")), ENT_QUOTES, "UTF-8");
+                                                        $sub = htmlspecialchars(trim((string) ($li["edi_product_subcategory"] ?? "")), ENT_QUOTES, "UTF-8");
+                                                        $metaBits = array_filter(array($lang, $grade, $cat, $sub));
+                                                        $metaStr = $metaBits !== array() ? implode(" · ", $metaBits) : "—";
+                                                        ?>
+                                                    <div class="d-flex align-items-start border-bottom py-2" style="gap:10px;">
+                                                        <?php if ($imgUrl !== ""): ?>
+                                                        <img src="<?php echo htmlspecialchars($imgUrl, ENT_QUOTES, "UTF-8"); ?>" alt="" width="48" height="48" class="rounded" style="object-fit:cover;background:#f1f5f9;flex-shrink:0;" onerror="this.style.visibility='hidden';">
+                                                        <?php else: ?>
+                                                        <div class="rounded d-flex align-items-center justify-content-center text-muted bg-light" style="width:48px;height:48px;flex-shrink:0;font-size:0.7rem;">—</div>
+                                                        <?php endif; ?>
+                                                        <div class="flex-grow-1 min-w-0">
+                                                            <div class="font-weight-bold text-dark"><?php echo $pn; ?></div>
+                                                            <div class="text-muted" style="font-size:0.72rem;"><?php echo $metaStr; ?></div>
+                                                            <div class="mt-1">× <?php echo $qty; ?> — Rs. <?php echo $lineTot; ?></div>
+                                                        </div>
+                                                    </div>
                                                     <?php endforeach; ?>
-                                                </ul>
+                                                </div>
                                                 <?php else: ?>
                                                 <p class="mb-0 text-muted">Item list appears here for orders placed after <code>migration_order_items.sql</code> is applied.</p>
                                                 <?php endif; ?>
