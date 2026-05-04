@@ -34,14 +34,8 @@ $ediWsJsCfg = array(
   letter-spacing: 0.02em;
   margin: 0;
 }
-.edi-worksheets-search-form {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-}
-.edi-worksheets-search-form .form-control {
-  min-width: 200px;
+.edi-worksheets-search-form.edi-admin-search-inline .form-control {
+  max-width: 24rem;
 }
 .edi-ws-action-cell {
   white-space: nowrap;
@@ -61,7 +55,7 @@ $ediWsJsCfg = array(
   <div class="card-body p-4">
     <div class="edi-worksheets-toolbar">
       <h2 class="edi-worksheets-title text-uppercase text-danger">Worksheets</h2>
-      <form class="edi-worksheets-search-form" method="get" action="">
+      <form class="edi-worksheets-search-form edi-admin-search-inline" method="get" action="">
         <input type="search" name="q" class="form-control" placeholder="Document Title" value="<?php echo htmlspecialchars($ediWsQ, ENT_QUOTES, 'UTF-8'); ?>" autocomplete="off">
         <button type="submit" class="btn btn-success mb-0">Search</button>
       </form>

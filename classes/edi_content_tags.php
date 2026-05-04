@@ -16,6 +16,16 @@ class EdiContentTags
         if ($cell === "") {
             return array();
         }
+        if (strpos($cell, " ||| ") !== false) {
+            $out = array();
+            foreach (explode(" ||| ", $cell, 3) as $p) {
+                $p = trim((string) $p);
+                if ($p !== "" && !in_array($p, $out, true)) {
+                    $out[] = $p;
+                }
+            }
+            return $out;
+        }
         $out = array();
         foreach (explode("/", $cell) as $p) {
             $p = trim($p);
@@ -24,6 +34,28 @@ class EdiContentTags
             }
         }
         return $out;
+    }
+
+    /**
+     * Blog admin tag cell: Language ||| Grade ||| Category, or legacy single string (→ category only).
+     *
+     * @return array{0:string,1:string,2:string}
+     */
+    public static function blogTagTripleParts($cell)
+    {
+        $cell = trim((string) $cell);
+        if ($cell === "") {
+            return array("", "", "");
+        }
+        if (strpos($cell, " ||| ") !== false) {
+            $p = explode(" ||| ", $cell, 3);
+            return array(
+                trim((string) ($p[0] ?? "")),
+                trim((string) ($p[1] ?? "")),
+                trim((string) ($p[2] ?? "")),
+            );
+        }
+        return array("", "", $cell);
     }
 
     /**

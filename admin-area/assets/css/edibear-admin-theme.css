@@ -196,15 +196,31 @@ main.main-content .edi-products-title {
   color: #e53e3e;
   margin: 0;
 }
-main.main-content .edi-products-search {
+/* Inline search field + button (same row on all admin list pages) */
+main.main-content .edi-admin-search-inline {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: stretch;
   gap: 0.5rem;
+  max-width: 100%;
 }
-main.main-content .edi-products-search .form-control {
-  min-width: 12rem;
+main.main-content .edi-admin-search-inline .form-control {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: 22rem;
   border-radius: 0.375rem;
+}
+main.main-content .edi-admin-search-inline .btn {
+  flex-shrink: 0;
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+@media (max-width: 400px) {
+  main.main-content .edi-admin-search-inline {
+    flex-wrap: wrap;
+  }
 }
 main.main-content .edi-products-filters {
   border: 1px solid #dee2e6;
@@ -301,4 +317,27 @@ main.main-content .edi-product-status-switch input:checked + .edi-slider {
 }
 main.main-content .edi-product-status-switch input:checked + .edi-slider:before {
   transform: translateX(23px);
+}
+
+/* Add / edit blog (mock layout) */
+main.main-content .edi-blog-form .edi-blog-form-title {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #e53e3e;
+  margin: 0;
+}
+main.main-content .edi-blog-form label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #344767;
+}
+main.main-content .edi-blog-form .form-control {
+  border-radius: 0.375rem;
+}
+main.main-content .edi-blog-desc-block {
+  border-color: #dee2e6 !important;
+}
+main.main-content .edi-blog-thumb {
+  overflow: hidden;
 }

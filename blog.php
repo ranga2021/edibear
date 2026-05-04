@@ -52,14 +52,9 @@
     $pinShare = "https://pinterest.com/pin/create/button/?url=" . $shareUrl . "&description=" . $shareTitle;
     $waShare = "https://api.whatsapp.com/send?text=" . $shareText . $shareUrl;
 
-    $tagTrim = trim((string) $blogTag);
-    $tagParts = array_values(array_filter(array_map("trim", explode("/", $tagTrim)), function ($s) {
-        return $s !== "";
-    }));
-    $breadcrumbTopic = !empty($tagParts) ? strtoupper($tagParts[0]) : "BLOG";
-
     $blogExtraMedia = EdiBlogExtraMedia::fetchForBlog($user->getConnection(), $blogID);
     $blogPostTags = EdiContentTags::splitTags($blogTag);
+    $breadcrumbTopic = !empty($blogPostTags) ? strtoupper((string) $blogPostTags[0]) : "BLOG";
 ?>
 <!DOCTYPE html>
 <html lang="en">

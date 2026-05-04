@@ -41,11 +41,10 @@
       display: flex;
       justify-content: flex-end;
       margin-bottom: 1rem;
-      gap: 0.5rem;
     }
 
     .events-search-input {
-      max-width: 260px;
+      max-width: 280px;
     }
 
     .status-pill-upcoming {
@@ -126,7 +125,7 @@
       <div class="card">
         <div class="card-body">
           <form method="get" action="event.php">
-            <div class="events-search-wrapper">
+            <div class="events-search-wrapper edi-admin-search-inline">
               <input
                 type="text"
                 name="search"
@@ -134,7 +133,7 @@
                 placeholder="Document Title"
                 value="<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>"
               >
-              <button type="submit" class="btn btn-success">Search</button>
+              <button type="submit" class="btn btn-success mb-0">Search</button>
             </div>
           </form>
 

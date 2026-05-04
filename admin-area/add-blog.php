@@ -9,6 +9,33 @@ require_once("../classes/class.widgets.php");
 require_once("../classes/edi_blog_extra_media.php");
 require_once("../classes/edi_blog_story_sections.php");
 
+if (!function_exists("edi_blog_tag_split")) {
+    /**
+     * @return array{0:string,1:string,2:string}
+     */
+    function edi_blog_tag_split($tag)
+    {
+        $tag = trim((string) $tag);
+        if ($tag === "") {
+            return array("", "", "");
+        }
+        if (strpos($tag, " ||| ") !== false) {
+            $p = explode(" ||| ", $tag, 3);
+            return array(
+                trim((string) ($p[0] ?? "")),
+                trim((string) ($p[1] ?? "")),
+                trim((string) ($p[2] ?? "")),
+            );
+        }
+        return array("", "", $tag);
+    }
+}
+
+function edi_blog_tag_merge($lang, $grade, $category)
+{
+    return trim((string) $lang) . " ||| " . trim((string) $grade) . " ||| " . trim((string) $category);
+}
+
 $user = new USER();
 
 if (!$user->is_loggedin()) {
@@ -30,6 +57,9 @@ $editMode = false;
 $currentBlogID = 0;
 
 $currentBlogTag = "";
+$currentBlogLanguage = "";
+$currentBlogGrade = "";
+$currentBlogCategory = "";
 $currentBlogTitle = "";
 $currentBlogMainDescription = "";
 $currentBlogVideoUrl = "";
@@ -52,6 +82,10 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
         )[0];
 
         $currentBlogTag = $blogDetailsArr['tag'];
+        $tri = edi_blog_tag_split($currentBlogTag);
+        $currentBlogLanguage = $tri[0];
+        $currentBlogGrade = $tri[1];
+        $currentBlogCategory = $tri[2];
         $currentBlogTitle = $blogDetailsArr['title'];
         $currentBlogMainDescription = $blogDetailsArr['description'];
         $currentBlogVideoUrl = $blogDetailsArr['video'];
@@ -84,11 +118,23 @@ if (!empty($editMode) && $editMode && !empty($currentBlogID)) {
         }
     }
 }
-while (count($descSlots) < 4) {
+while (count($descSlots) < 1) {
     $descSlots[] = array('id' => 0, 'description' => '', 'image_01' => '', 'image_02' => '');
 }
 $descSlots = array_slice($descSlots, 0, 12);
-$descSlotCount = count($descSlots);
+while (count($descSlots) < 12) {
+    $descSlots[] = array('id' => 0, 'description' => '', 'image_01' => '', 'image_02' => '');
+}
+$descSlotCount = 1;
+for ($ediSi = 1; $ediSi <= 12; $ediSi++) {
+    $ediSlot = $descSlots[$ediSi - 1];
+    $ediD = trim((string) ($ediSlot['description'] ?? ''));
+    $ediI1 = trim((string) ($ediSlot['image_01'] ?? ''));
+    $ediI2 = trim((string) ($ediSlot['image_02'] ?? ''));
+    if ($ediD !== '' || $ediI1 !== '' || $ediI2 !== '') {
+        $descSlotCount = $ediSi;
+    }
+}
 
 if (!empty($editMode) && $editMode && !empty($currentBlogID) && EdiBlogExtraMedia::tableExists($user->getConnection())) {
     $loaded = EdiBlogExtraMedia::fetchForBlog($user->getConnection(), (int) $currentBlogID);
@@ -109,7 +155,11 @@ if (!empty($editMode) && $editMode && !empty($currentBlogID) && EdiBlogExtraMedi
 // ================= SUBMIT =================
 if (isset($_POST['addNewBlogSubmit']) || isset($_POST['updateBlogSubmit'])) {
 
-    $inputBlogTag = htmlspecialchars($_POST['inputBlogTag'] ?? "");
+    $inputBlogTag = substr(edi_blog_tag_merge(
+        $_POST['inputBlogLanguage'] ?? "",
+        $_POST['inputBlogGrade'] ?? "",
+        $_POST['inputBlogCategory'] ?? ""
+    ), 0, 255);
     $inputBlogTitle = htmlspecialchars($_POST['inputBlogTitle'] ?? "");
     $inputBlogMainDescription = strip_tags($_POST['inputBlogMainDescription'] ?? "", "<br>");
     $inputBlogVideoUrl = htmlspecialchars($_POST['inputBlogVideoUrl'] ?? "", ENT_QUOTES, 'UTF-8');
@@ -202,101 +252,124 @@ if (isset($_POST['addNewBlogSubmit']) || isset($_POST['updateBlogSubmit'])) {
 <?php echo $adminHeader->printAdminNav2(($editMode) ? "Edit Blog" : "Add Blog"); ?>
 
 <div class="container-fluid py-4">
-<div class="card p-3">
+<div class="card shadow-sm border-0">
+<div class="card-body px-4 py-4 edi-blog-form">
 
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" id="edi-add-blog-form">
+
+<h1 class="edi-blog-form-title text-uppercase mb-4"><?php echo $editMode ? "Edit blog" : "Add blog"; ?></h1>
 
 <div class="row">
-<?php
-echo $widgets->inputGroup("Tags (use / between topics)", "inputBlogTag", "col-md-6", $currentBlogTag);
-echo $widgets->inputGroup("Blog Title", "inputBlogTitle", "col-md-6", $currentBlogTitle);
-?>
+  <div class="col-md-4 mb-3">
+    <label for="inputBlogLanguage">Language</label>
+    <input type="text" name="inputBlogLanguage" id="inputBlogLanguage" class="form-control" value="<?php echo htmlspecialchars($currentBlogLanguage, ENT_QUOTES, 'UTF-8'); ?>" placeholder="English">
+  </div>
+  <div class="col-md-4 mb-3">
+    <label for="inputBlogGrade">Grade</label>
+    <input type="text" name="inputBlogGrade" id="inputBlogGrade" class="form-control" value="<?php echo htmlspecialchars($currentBlogGrade, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Grade 1">
+  </div>
+  <div class="col-md-4 mb-3">
+    <label for="inputBlogCategory">Category</label>
+    <input type="text" name="inputBlogCategory" id="inputBlogCategory" class="form-control" value="<?php echo htmlspecialchars($currentBlogCategory, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Writing">
+  </div>
 </div>
+<p class="text-muted small mb-3">These three fields are saved together as the blog tag (shown on the post). Older posts used a single tag — edit to split into language / grade / category if you like.</p>
+
 <div class="row">
-    <div class="col-12">
-        <small class="form-text text-muted">Example: <kbd>Hand craft</kbd> / <kbd>Animals</kbd> / <kbd>Fun</kbd> — each segment appears as its own tag at the top of The Hidden Den and on the post page (same style as free download topics).</small>
+  <div class="col-12 mb-3">
+    <label for="inputBlogTitle">Document title</label>
+    <input type="text" name="inputBlogTitle" id="inputBlogTitle" class="form-control" required value="<?php echo htmlspecialchars($currentBlogTitle, ENT_QUOTES, 'UTF-8'); ?>" placeholder="Letter A writing">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12 mb-3">
+    <label for="inputBlogMainImage">Main image</label>
+    <div class="d-flex flex-wrap align-items-start" style="gap:12px;">
+      <div style="flex:1;min-width:220px;max-width:360px;">
+        <input type="file" name="inputBlogMainImage" id="inputBlogMainImage" class="form-control" accept="image/*" <?php echo !$editMode ? "required" : ""; ?>>
+      </div>
+      <div id="edi_blog_main_preview" class="edi-blog-thumb border rounded bg-light d-flex align-items-center justify-content-center text-muted small" style="width:120px;height:120px;flex-shrink:0;">Preview</div>
     </div>
+    <?php if ($editMode && $currentBlogMainImage !== ""): ?>
+    <p class="mt-2 mb-0"><img <?php echo $currentBlogMainImage; ?> alt="" class="rounded" style="max-height:160px;"></p>
+    <?php endif; ?>
+  </div>
 </div>
 
-<div class="row mt-3">
-<div class="col-md-6">
-<label>Main Image</label>
-<input type="file" name="inputBlogMainImage" class="form-control" <?php echo !$editMode ? "required" : ""; ?>>
+<div class="row">
+  <div class="col-12 mb-3">
+    <label for="inputBlogMainDescription">Main description</label>
+    <textarea name="inputBlogMainDescription" id="inputBlogMainDescription" class="form-control" rows="8" required placeholder="Intro text for the post"><?php echo str_replace('</textarea', '<\/textarea', (string) $currentBlogMainDescription); ?></textarea>
+  </div>
 </div>
 
-<div class="col-md-6">
-<img id="outputBlogMainImage" <?php echo $currentBlogMainImage; ?> style="max-height:200px;">
-</div>
-</div>
-
-<div class="row mt-3">
-<div class="col-12">
-<label>Description</label>
-<textarea name="inputBlogMainDescription" class="form-control" required><?php echo $currentBlogMainDescription;?></textarea>
-</div>
-</div>
-
-<div class="row mt-3">
-    <div class="col-md-8">
-        <label for="inputBlogVideoUrl">Main YouTube URL (optional)</label>
-        <input type="url" name="inputBlogVideoUrl" id="inputBlogVideoUrl" class="form-control" value="<?php echo htmlspecialchars($currentBlogVideoUrl, ENT_QUOTES, 'UTF-8'); ?>" placeholder="https://www.youtube.com/watch?v=…">
-    </div>
-    <div class="col-md-4 d-flex align-items-end">
-        <div class="form-check mb-2">
-            <input type="checkbox" class="form-check-input" id="blogVideoStatus" name="blogVideoStatus" value="1" <?php echo $currentBlogVideoStatus; ?>>
-            <label class="form-check-label" for="blogVideoStatus">Show this video on the blog page</label>
-        </div>
-    </div>
-</div>
-
-<h5 class="mt-4 mb-2">Story sections (optional)</h5>
-<p class="text-muted text-sm mb-3">Up to twelve blocks (at least four empty slots on new posts). Each can include a description (HTML allowed) and up to two images. On <strong>Update</strong>, all sections are replaced by what you save here — images you keep must stay listed with their previews (or re-upload).</p>
-<input type="hidden" name="desc_slot_count" value="<?php echo (int) $descSlotCount; ?>">
+<h2 class="h6 font-weight-bold mb-3">Description</h2>
+<p class="text-muted small mb-2">Optional blocks (up to 12). Each block: text plus up to two images. HTML <code>&lt;br&gt;</code> is allowed.</p>
+<input type="hidden" name="desc_slot_count" id="desc_slot_count" value="<?php echo (int) $descSlotCount; ?>">
 <?php
-foreach ($descSlots as $idx => $slot) {
-    $s = (int) $idx + 1;
+for ($s = 1; $s <= 12; $s++) {
+    $slot = $descSlots[$s - 1];
     $im1 = basename(str_replace('\\', '/', (string) ($slot['image_01'] ?? '')));
     $im2 = basename(str_replace('\\', '/', (string) ($slot['image_02'] ?? '')));
+    $hiddenBlock = ($s > $descSlotCount) ? ' style="display:none;"' : '';
     ?>
-<div class="card mb-3 border-light">
-    <div class="card-body">
-        <h6 class="text-primary">Section <?php echo $s; ?></h6>
-        <div class="form-group">
-            <label>Description</label>
-            <textarea name="inputBlogDescription<?php echo $s; ?>" class="form-control" rows="4"><?php echo str_replace('</textarea', '<\/textarea', (string) ($slot['description'] ?? '')); ?></textarea>
-        </div>
-        <div class="row">
-            <div class="col-md-6">
-                <label>Image 1</label>
-                <input type="file" name="inputBlogImageOne<?php echo $s; ?>" class="form-control-file" accept="image/*">
-                <?php
-                if ($im1 !== '') {
-                    $him1 = htmlspecialchars($im1, ENT_QUOTES, 'UTF-8');
-                    echo '<input type="hidden" name="desc_image_01_existing_' . $s . '" value="' . $him1 . '">';
-                    echo '<div class="mt-1"><small class="text-muted">Current: ' . $him1 . '</small><br><img src="../img/blogs/' . $him1 . '" alt="" style="max-height:80px;border-radius:4px;"></div>';
-                }
-                ?>
-            </div>
-            <div class="col-md-6">
-                <label>Image 2</label>
-                <input type="file" name="inputBlogImageTwo<?php echo $s; ?>" class="form-control-file" accept="image/*">
-                <?php
-                if ($im2 !== '') {
-                    $him2 = htmlspecialchars($im2, ENT_QUOTES, 'UTF-8');
-                    echo '<input type="hidden" name="desc_image_02_existing_' . $s . '" value="' . $him2 . '">';
-                    echo '<div class="mt-1"><small class="text-muted">Current: ' . $him2 . '</small><br><img src="../img/blogs/' . $him2 . '" alt="" style="max-height:80px;border-radius:4px;"></div>';
-                }
-                ?>
-            </div>
-        </div>
+<div id="edi-desc-block-<?php echo $s; ?>" class="edi-blog-desc-block mb-3 p-3 rounded border bg-white"<?php echo $hiddenBlock; ?>>
+  <div class="d-flex justify-content-between align-items-center mb-2">
+    <span class="font-weight-bold text-secondary"><?php echo str_pad((string) $s, 2, "0", STR_PAD_LEFT); ?>.</span>
+  </div>
+  <div class="form-group mb-3">
+    <label class="sr-only">Description <?php echo $s; ?></label>
+    <textarea name="inputBlogDescription<?php echo $s; ?>" class="form-control" rows="5" placeholder="Section text"><?php echo str_replace('</textarea', '<\/textarea', (string) ($slot['description'] ?? '')); ?></textarea>
+  </div>
+  <div class="row">
+    <div class="col-md-6 mb-2">
+      <label>Image 1</label>
+      <input type="file" name="inputBlogImageOne<?php echo $s; ?>" class="form-control" accept="image/*">
+      <?php
+      if ($im1 !== '') {
+          $him1 = htmlspecialchars($im1, ENT_QUOTES, 'UTF-8');
+          echo '<input type="hidden" name="desc_image_01_existing_' . $s . '" id="desc_image_01_existing_' . $s . '" value="' . $him1 . '">';
+          echo '<div class="mt-1"><small class="text-muted">Current: ' . $him1 . '</small><br><img src="../img/blogs/' . $him1 . '" alt="" class="rounded" style="max-height:72px;"></div>';
+          echo '<button type="button" class="btn btn-link text-danger btn-sm p-0 mt-1 edi-clear-desc-img" data-target="desc_image_01_existing_' . $s . '">Remove</button>';
+      }
+      ?>
     </div>
+    <div class="col-md-6 mb-2">
+      <label>Image 2</label>
+      <input type="file" name="inputBlogImageTwo<?php echo $s; ?>" class="form-control" accept="image/*">
+      <?php
+      if ($im2 !== '') {
+          $him2 = htmlspecialchars($im2, ENT_QUOTES, 'UTF-8');
+          echo '<input type="hidden" name="desc_image_02_existing_' . $s . '" id="desc_image_02_existing_' . $s . '" value="' . $him2 . '">';
+          echo '<div class="mt-1"><small class="text-muted">Current: ' . $him2 . '</small><br><img src="../img/blogs/' . $him2 . '" alt="" class="rounded" style="max-height:72px;"></div>';
+          echo '<button type="button" class="btn btn-link text-danger btn-sm p-0 mt-1 edi-clear-desc-img" data-target="desc_image_02_existing_' . $s . '">Remove</button>';
+      }
+      ?>
+    </div>
+  </div>
 </div>
-    <?php
-}
-?>
+<?php } ?>
 
-<h5 class="mt-4 mb-2">Extra gallery images &amp; videos (optional)</h5>
-<p class="text-muted text-sm mb-3">Up to eight items shown in order after story sections. Use YouTube watch or share links for videos. Re-saving replaces this list — leave a row empty to skip it. Run <code>sql/migration_blog_extra_media.sql</code> once if the table does not exist.</p>
+<p class="mb-4"><button type="button" class="btn btn-link text-success font-weight-bold p-0" id="edi_blog_add_desc">Add more Descriptions +</button></p>
+
+<div class="row align-items-center mb-4">
+  <div class="col-md-8 mb-3 mb-md-0">
+    <label for="inputBlogVideoUrl">Activity video</label>
+    <input type="url" name="inputBlogVideoUrl" id="inputBlogVideoUrl" class="form-control" value="<?php echo htmlspecialchars($currentBlogVideoUrl, ENT_QUOTES, 'UTF-8'); ?>" placeholder="https://www.youtube.com/watch?v=…">
+    <small class="text-muted">Paste a YouTube (or embeddable) link. Shown on the blog page when the toggle is on.</small>
+  </div>
+  <div class="col-md-4 d-flex align-items-center justify-content-md-end">
+    <span class="small font-weight-bold text-muted mr-3 mb-0">Show on page</span>
+    <label class="edi-product-status-switch mb-0">
+      <input type="checkbox" id="blogVideoStatus" name="blogVideoStatus" value="1" <?php echo $currentBlogVideoStatus; ?>>
+      <span class="edi-slider"></span>
+    </label>
+  </div>
+</div>
+
+<h2 class="h6 font-weight-bold mb-2">Extra gallery (optional)</h2>
+<p class="text-muted small mb-3">Up to eight items after story sections. Run <code>sql/migration_blog_extra_media.sql</code> if needed.</p>
 <?php
 for ($ei = 0; $ei < 8; $ei++) {
     $slot = $extraSlots[$ei];
@@ -338,22 +411,64 @@ for ($ei = 0; $ei < 8; $ei++) {
 }
 ?>
 
-<div class="mt-4 edi-admin-form-actions">
+<div class="mt-4 mb-2 edi-admin-form-actions">
 <?php
 if ($editMode) {
-    echo "<button type='submit' name='updateBlogSubmit' class='btn btn-primary'>Update</button>";
+    echo "<button type='submit' name='updateBlogSubmit' class='btn btn-success'>Update</button>";
 } else {
     echo "<button type='submit' name='addNewBlogSubmit' class='btn btn-success'>Add</button>";
 }
 ?>
+<a href="./blogs" class="btn btn-secondary">Cancel</a>
 </div>
 
 </form>
 
 </div>
 </div>
+</div>
 
 </main>
+
+<script>
+(function () {
+    var inp = document.getElementById("inputBlogMainImage");
+    var prev = document.getElementById("edi_blog_main_preview");
+    if (inp && prev) {
+        inp.addEventListener("change", function () {
+            var f = inp.files && inp.files[0];
+            if (!f) return;
+            var r = new FileReader();
+            r.onload = function (ev) {
+                prev.innerHTML = "<img src=\"" + ev.target.result + "\" class=\"rounded\" style=\"width:100%;height:100%;object-fit:cover;\" alt=\"\">";
+            };
+            r.readAsDataURL(f);
+        });
+    }
+    var addBtn = document.getElementById("edi_blog_add_desc");
+    var countEl = document.getElementById("desc_slot_count");
+    if (addBtn && countEl) {
+        addBtn.addEventListener("click", function () {
+            var vis = parseInt(countEl.value, 10) || 1;
+            if (vis >= 12) return;
+            vis++;
+            countEl.value = String(vis);
+            var blk = document.getElementById("edi-desc-block-" + vis);
+            if (blk) blk.style.display = "";
+        });
+    }
+    document.querySelectorAll(".edi-clear-desc-img").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+            var id = btn.getAttribute("data-target");
+            var h = id ? document.getElementById(id) : null;
+            if (h) h.value = "";
+            var wrap = btn.previousElementSibling;
+            if (wrap && wrap.tagName === "DIV") wrap.style.display = "none";
+            btn.style.display = "none";
+        });
+    });
+})();
+</script>
 
 <?php echo $adminHeader->printAdminFooterJS(); ?>
 

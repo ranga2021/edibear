@@ -277,9 +277,10 @@
         <div class="card-body">
           <form method="GET" action="order.php">
             <div class="orders-filter-row">
-              <div>
-                <span class="orders-search-label">Search</span>
-                <input type="text" name="search" class="form-control d-inline-block orders-search-input" placeholder="Order Number / Date / Name" value="<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>">
+              <div class="edi-admin-search-inline align-items-center">
+                <span class="orders-search-label mb-0">Search</span>
+                <input type="text" name="search" class="form-control orders-search-input" placeholder="Order Number / Date / Name" value="<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>">
+                <button type="submit" class="btn btn-success mb-0">Search</button>
               </div>
               <div class="d-flex align-items-center gap-2">
                 <span class="orders-search-label me-2">Export</span>

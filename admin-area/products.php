@@ -82,7 +82,7 @@
       <form method="get" action="products.php" class="mb-0">
         <div class="edi-products-toolbar">
           <h1 class="edi-products-title text-uppercase">Products</h1>
-          <div class="edi-products-search">
+          <div class="edi-products-search edi-admin-search-inline">
             <input type="search" name="search" class="form-control" placeholder="Product Name" value="<?php echo htmlspecialchars($search, ENT_QUOTES, "UTF-8"); ?>">
             <button type="submit" class="btn btn-success mb-0">Search</button>
           </div>
