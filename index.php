@@ -31,10 +31,13 @@
 
     $explorerLanguages = EdiTaxonomy::loadLanguages($conn);
     $explorerGrades = EdiTaxonomy::loadGrades($conn);
-    // EXPLORE dropdowns should reflect backend shop taxonomy (product categories/subcategories),
-    // while the results page maps these to free-content category ids.
-    $exploreProductCategories = EdiExplorerContent::loadProductCategoryOptions($conn);
-    $exploreProductSubcategories = EdiExplorerContent::loadProductSubcategoryOptions($conn);
+    // EXPLORE: shop taxonomy, but only categories that have published worksheets (exclude shop-only / treasures-only).
+    $exploreWorksheetCategoryIds = EdiExplorerContent::worksheetExplorerProductCategoryIds($conn);
+    $exploreProductCategories = EdiExplorerContent::loadProductCategoryOptionsForWorksheetsExplorer($conn);
+    $exploreProductSubcategories = EdiExplorerContent::loadProductSubcategoryOptionsForWorksheetsExplorer(
+        $conn,
+        $exploreWorksheetCategoryIds
+    );
 
     $productQuery = "SELECT * FROM products WHERE status = 1 ORDER BY id DESC LIMIT 4";
     $stmt = $conn->prepare($productQuery);

@@ -471,4 +471,150 @@ class EdiExplorerContent
         );
         return isset($map[$lowerName]) ? $map[$lowerName] : null;
     }
+
+    /**
+     * True if any published worksheet row exists for this legacy main_category id.
+     */
+    private static function mainCategoryHasPublishedWorksheet(PDO $conn, $mainCatId)
+    {
+        $mid = (int) $mainCatId;
+        if ($mid <= 0) {
+            return false;
+        }
+        foreach (array('pdf_details', 'books_details', 'homework_details') as $table) {
+            try {
+                $st = $conn->prepare(
+                    "SELECT 1 FROM `" . str_replace('`', '``', $table) . "` WHERE `status` = 1 AND `main_cat_id` = ? LIMIT 1"
+                );
+                $st->execute(array($mid));
+                if ($st->fetchColumn()) {
+                    return true;
+                }
+            } catch (Throwable $e) {
+                continue;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Distinct product_categories.id values referenced by published worksheets (Honey Market link).
+     *
+     * @return array<int, int>
+     */
+    private static function distinctProductCategoryIdsFromPublishedWorksheets(PDO $conn)
+    {
+        $out = array();
+        foreach (array('pdf_details', 'books_details', 'homework_details') as $table) {
+            if (!self::columnExists($conn, $table, 'product_category_id')) {
+                continue;
+            }
+            try {
+                $sql = "SELECT DISTINCT `product_category_id` AS pcid FROM `" . str_replace('`', '``', $table)
+                    . "` WHERE `status` = 1 AND `product_category_id` IS NOT NULL AND `product_category_id` > 0";
+                $s = $conn->query($sql);
+                if ($s) {
+                    foreach ($s->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                        $id = (int) ($row['pcid'] ?? 0);
+                        if ($id > 0) {
+                            $out[$id] = $id;
+                        }
+                    }
+                }
+            } catch (Throwable $e) {
+                continue;
+            }
+        }
+        return array_values($out);
+    }
+
+    /**
+     * When worksheets are not yet linked via product_category_id, infer shop categories from name → main_category mapping.
+     *
+     * @return array<int, int>
+     */
+    private static function fallbackProductCategoryIdsByMappedMainCategory(PDO $conn)
+    {
+        $out = array();
+        foreach (self::loadProductCategoryOptions($conn) as $c) {
+            $cid = (int) ($c['id'] ?? 0);
+            if ($cid <= 0) {
+                continue;
+            }
+            $mapped = self::mapProductSelectionsToContentCategoryIds($conn, $cid, 0);
+            $mid = (int) ($mapped['main_cat_id'] ?? 0);
+            if ($mid > 0 && self::mainCategoryHasPublishedWorksheet($conn, $mid)) {
+                $out[$cid] = $cid;
+            }
+        }
+        return array_values($out);
+    }
+
+    /**
+     * Product category ids that have at least one published worksheet (not shop-only).
+     * Returns null when we cannot determine links (caller should show full category list).
+     *
+     * @return array<int, int>|null
+     */
+    public static function worksheetExplorerProductCategoryIds(PDO $conn)
+    {
+        $strict = self::distinctProductCategoryIdsFromPublishedWorksheets($conn);
+        if (!empty($strict)) {
+            return $strict;
+        }
+        $fb = self::fallbackProductCategoryIdsByMappedMainCategory($conn);
+        if (!empty($fb)) {
+            return $fb;
+        }
+        return null;
+    }
+
+    /**
+     * Shop categories for the homepage EXPLORE form: only categories that have worksheets.
+     *
+     * @return array<int, array{id:int, name:string}>
+     */
+    public static function loadProductCategoryOptionsForWorksheetsExplorer(PDO $conn)
+    {
+        $all = self::loadProductCategoryOptions($conn);
+        $ids = self::worksheetExplorerProductCategoryIds($conn);
+        if ($ids === null) {
+            return $all;
+        }
+        $flip = array_flip($ids);
+        $out = array();
+        foreach ($all as $c) {
+            if (isset($flip[(int) ($c['id'] ?? 0)])) {
+                $out[] = $c;
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * Subcategories for EXPLORE: only under allowed parent category ids.
+     * Pass null to skip filtering (same as loadProductSubcategoryOptions).
+     *
+     * @param array<int, int>|null $allowedParentCategoryIds
+     * @return array<int, array{id:int, product_category_id:int, title:string}>
+     */
+    public static function loadProductSubcategoryOptionsForWorksheetsExplorer(PDO $conn, $allowedParentCategoryIds = null)
+    {
+        $subs = self::loadProductSubcategoryOptions($conn);
+        if ($allowedParentCategoryIds === null) {
+            return $subs;
+        }
+        if ($allowedParentCategoryIds === array()) {
+            return array();
+        }
+        $flip = array_flip($allowedParentCategoryIds);
+        $out = array();
+        foreach ($subs as $s) {
+            $pid = (int) ($s['product_category_id'] ?? 0);
+            if (isset($flip[$pid])) {
+                $out[] = $s;
+            }
+        }
+        return $out;
+    }
 }
