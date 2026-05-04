@@ -129,6 +129,28 @@ class EdiExplorerContent
     }
 
     /**
+     * Ensure a nullable TEXT column exists. Returns true when column exists/created.
+     */
+    public static function ensureNullableTextColumn(PDO $conn, $table, $col)
+    {
+        if (self::columnExists($conn, $table, $col)) {
+            return true;
+        }
+        $tbl = str_replace(array('`', '.'), array('``', ''), (string) $table);
+        $column = preg_replace('/[^a-zA-Z0-9_]/', '', (string) $col);
+        if ($column === '') {
+            return false;
+        }
+        try {
+            $conn->exec("ALTER TABLE `" . $tbl . "` ADD COLUMN `" . $column . "` TEXT NULL DEFAULT NULL");
+        } catch (Throwable $e) {
+            return self::columnExists($conn, $table, $col);
+        }
+        self::$colCache[$table . '|' . $col] = true;
+        return true;
+    }
+
+    /**
      * Distinct main categories (main_category table) tied to published free content only.
      * Does not use product_categories / Honey Market shop taxonomy.
      */

@@ -30,6 +30,9 @@
   $pdo = $user->getConnection();
   $hasMoreDetails = EdiExplorerContent::columnExists($pdo, "products", "more_details");
   $hasGalleryImages = EdiExplorerContent::columnExists($pdo, "products", "gallery_images");
+  if (!$hasGalleryImages) {
+      $hasGalleryImages = EdiExplorerContent::ensureNullableTextColumn($pdo, "products", "gallery_images");
+  }
   $hasOptionsExtra = EdiExplorerContent::columnExists($pdo, "products", "options_extra");
 
   // Handle Form Submission

@@ -341,3 +341,41 @@ main.main-content .edi-blog-desc-block {
 main.main-content .edi-blog-thumb {
   overflow: hidden;
 }
+
+/* DataTables pagination readability (Previous 1 Next) */
+main.main-content .dataTables_wrapper .dataTables_paginate {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+main.main-content .dataTables_wrapper .dataTables_paginate .paginate_button {
+  min-width: 2.5rem;
+  padding: 0.35rem 0.85rem !important;
+  margin: 0 !important;
+  border: 1px solid #d7deee !important;
+  border-radius: 999px !important;
+  color: #5e72a8 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+}
+main.main-content .dataTables_wrapper .dataTables_paginate .paginate_button.current,
+main.main-content .dataTables_wrapper .dataTables_paginate .paginate_button.current:hover {
+  background: #5e72e4 !important;
+  border-color: #5e72e4 !important;
+  color: #fff !important;
+}
+main.main-content .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background: #eef2ff !important;
+  border-color: #cbd5f7 !important;
+  color: #4458c9 !important;
+}
+main.main-content .dataTables_wrapper .dataTables_paginate .paginate_button.disabled,
+main.main-content .dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  background: #f8f9fa !important;
+  color: #95a2c2 !important;
+}

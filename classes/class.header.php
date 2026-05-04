@@ -111,11 +111,6 @@ class HEADER {
             "redirect"=>"./manage-admins",
             "icon"=>"fas fa-user text-secondary"
         ),
-        "signup-admin"=>array(
-            "name"=>"Sign up admin",
-            "redirect"=>"./signup-admin",
-            "icon"=>"fas fa-user-plus text-success"
-        ),
         "log-out"=>array(
             "name"=>"Log Out",
             "redirect"=>"./logout",
