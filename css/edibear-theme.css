@@ -953,7 +953,7 @@ h6.text-primary:not(.text-white),
   .footer {
     background-position: center bottom !important;
     background-size: 100% auto !important;
-    padding-bottom: 220px !important;
+    padding-bottom: 120px !important;
   }
 
   .footer .row.footercontentwidth {
@@ -1020,6 +1020,7 @@ h6.text-primary:not(.text-white),
     width: min(96%, 380px);
     margin: 0.2rem auto 0;
     line-height: 1.25;
+    text-align: center;
   }
 }
 
@@ -1618,6 +1619,20 @@ h6.text-primary:not(.text-white),
 }
 
 @media (max-width: 767.98px) {
+  /* Mobile global type scale requested */
+  h1,
+  .h1 {
+    font-size: 25px !important;
+    line-height: 1.25;
+  }
+
+  p,
+  .edi-home-lead,
+  .edi-paragraph {
+    font-size: 15px !important;
+    line-height: 1.5;
+  }
+
   .footerEmailCustom {
     padding-left: 0.75rem !important;
     padding-right: 0.75rem !important;
@@ -1628,7 +1643,10 @@ h6.text-primary:not(.text-white),
   }
 
   .footerEmailCustom .edi-home-lead {
-    text-align: left !important;
+    text-align: justify !important;
+    text-justify: inter-word;
+    hyphens: auto;
+    -webkit-hyphens: auto;
     line-height: 1.5;
     margin-bottom: 0.35rem;
   }
@@ -1637,16 +1655,28 @@ h6.text-primary:not(.text-white),
     width: 100%;
     max-width: 100%;
     margin-top: 0.85rem !important;
+    display: flex;
+    align-items: stretch;
   }
 
-  .footerEmailCustom #newsletterEmail {
+  .footerEmailCustom .edi-footer-newsletter-form #newsletterEmail {
     font-size: 0.95rem;
+    height: 48px;
+    min-height: 48px;
+    border-right: none !important;
   }
 
   .footerEmailCustom .edi-footer-newsletter-form .input-group-append .newsl-subscribe-btn {
     font-size: 1rem;
     min-width: 110px;
+    height: 48px;
+    min-height: 48px;
     padding: 0.7rem 0.95rem !important;
+    margin-left: 0 !important;
+  }
+
+  .footerEmailCustom .edi-footer-newsletter-form .input-group-append {
+    display: flex;
   }
 }
 
