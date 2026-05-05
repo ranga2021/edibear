@@ -432,6 +432,15 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   body.index #header-carousel .carousel-caption .carouselText2 {
     color: var(--edi-heading) !important;
   }
+
+  /* Homepage mobile: keep nav background solid white */
+  body.index .edibear-header-wrapper {
+    background: #fff !important;
+  }
+
+  body.index .edibear-navbar {
+    background: #fff !important;
+  }
 }
 
 /* ----- Nav / chrome ----- */
