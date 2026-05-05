@@ -438,7 +438,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row justify-content-center mt-5">
+            <div class="row justify-content-center edi-home-cta-band">
                 <div class="col-12 text-center">
                     <button type="button" class="btn newgreen1-btn edi-home-section-cta" onclick="location.href='./blogs'">COME IN</button>
                 </div>
@@ -473,7 +473,7 @@
                          style="max-width: 100%; height: auto;">
                 </div>
 
-                <div class="mt-3 text-center">
+                <div class="text-center edi-home-cta-band">
                     <a href="./challenges.php" class="btn newgreen1-btn edi-home-section-cta">
                         ACCEPT
                     </a>
