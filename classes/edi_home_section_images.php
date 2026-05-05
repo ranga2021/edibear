@@ -10,14 +10,18 @@ class EdiHomeSectionImages
     public const TYPE_EXPLORE = 'explore_bg';
     public const TYPE_EXPLORE_MOBILE = 'explore_bg_mobile';
     public const TYPE_TESTIMONIAL = 'testimonial_bg';
+    public const TYPE_TESTIMONIAL_MOBILE = 'testimonial_bg_mobile';
     public const TYPE_FOOTER = 'footer_bg';
+    public const TYPE_FOOTER_MOBILE = 'footer_bg_mobile';
 
     private const DEFAULT_PATH = array(
         self::TYPE_HERO_MOBILE => './img/Web pic/homebg.png',
         self::TYPE_EXPLORE => './img/Web pic/Search image.webp',
         self::TYPE_EXPLORE_MOBILE => './img/Web pic/Search image.webp',
         self::TYPE_TESTIMONIAL => './img/Web pic/Trails of tales.webp',
+        self::TYPE_TESTIMONIAL_MOBILE => './img/Web pic/Trails of tales.webp',
         self::TYPE_FOOTER => './img/Web pic/footer.jpg',
+        self::TYPE_FOOTER_MOBILE => './img/Web pic/footer.jpg',
     );
 
     public static function homeDirFs()

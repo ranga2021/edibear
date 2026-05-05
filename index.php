@@ -16,10 +16,10 @@
     $userHeader = new HEADER("home");
     $user = new USER();
     $widgets = new WIDGETS();
-    $ediHomeHeroMobile = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_HERO_MOBILE));
     $ediHomeExploreBg = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE));
     $ediHomeExploreBgMobile = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE_MOBILE));
     $ediHomeTestimonialBg = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_TESTIMONIAL));
+    $ediHomeTestimonialBgMobile = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_TESTIMONIAL_MOBILE));
     
 ?>
 <?php
@@ -83,7 +83,7 @@
             }
 
             .testimonial-bg{
-                background: url("<?php echo $ediHomeTestimonialBg; ?>") no-repeat center;
+                background: url("<?php echo $ediHomeTestimonialBgMobile; ?>") no-repeat center;
                 background-size: cover;
                 padding: 0.75rem 0;
             }
@@ -146,10 +146,7 @@
             </div>
 
             <div class="col-lg-7 col-md-6 text-center edi-intro-image">
-                <picture>
-                    <source media="(max-width: 768px)" srcset="<?php echo htmlspecialchars($ediHomeHeroMobile, ENT_QUOTES, 'UTF-8'); ?>">
-                    <img src="./img/Web pic/homebg.png" class="img-fluid" alt="Edi hero image">
-                </picture>
+                <img src="./img/Web pic/homebg.png" class="img-fluid" alt="Edi hero image">
             </div>
 
         </div>

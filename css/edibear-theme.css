@@ -1564,6 +1564,32 @@ h6.text-primary:not(.text-white),
   .testimonial-sec .card.blog-item .card-body {
     padding: 0.95rem 0.9rem 1.35rem !important;
   }
+
+  /* Keep testimonial footer details from overlapping text/stars on mobile */
+  .testimonial-sec .card.blog-item .card-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .testimonial-sec .d-flex.justify-content-left {
+    padding-top: 0 !important;
+    margin-bottom: 0.35rem;
+  }
+
+  .testimonial-sec .testimonial-name-tag {
+    position: static !important;
+    width: auto !important;
+    margin-top: 0.2rem;
+  }
+
+  .testimonial-sec .testimonial-name-tag h6 {
+    margin-top: 0.25rem !important;
+    margin-bottom: 0.1rem !important;
+  }
+
+  .testimonial-sec .testimonial-name-tag center {
+    margin-top: 0 !important;
+  }
 }
 
 #challenge-section {

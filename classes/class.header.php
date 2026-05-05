@@ -189,9 +189,15 @@ class HEADER {
         require_once __DIR__ . '/edi_home_section_images.php';
         $ediHomeFooterUser = new USER();
         $ediFooterBg = EdiHomeSectionImages::assetUrl($ediHomeFooterUser, EdiHomeSectionImages::TYPE_FOOTER);
+        $ediFooterBgMobile = EdiHomeSectionImages::assetUrl($ediHomeFooterUser, EdiHomeSectionImages::TYPE_FOOTER_MOBILE);
         if ($ediFooterBg !== '') {
             $ediFooterEsc = EdiHomeSectionImages::cssUrlString($ediFooterBg);
-            $html .= "<style>.footer{background-image:url(\"$ediFooterEsc\") !important;}</style>\n        ";
+            $html .= "<style>.footer{background-image:url(\"$ediFooterEsc\") !important;}";
+            if ($ediFooterBgMobile !== '') {
+                $ediFooterMobileEsc = EdiHomeSectionImages::cssUrlString($ediFooterBgMobile);
+                $html .= "@media (max-width: 767.98px){.footer{background-image:url(\"$ediFooterMobileEsc\") !important;}}";
+            }
+            $html .= "</style>\n        ";
         }
         return $html;
     }
@@ -523,6 +529,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     public function printHomeCarousel($carouselDataArr) {
         $active = "active";
+        require_once __DIR__ . '/class.user.php';
+        require_once __DIR__ . '/edi_home_section_images.php';
+        $ediCarouselUser = new USER();
+        $ediHeroMobile = EdiHomeSectionImages::assetUrl($ediCarouselUser, EdiHomeSectionImages::TYPE_HERO_MOBILE);
+        $ediHeroMobileEsc = EdiHomeSectionImages::cssUrlString($ediHeroMobile);
         $html = "
             <div class='container-fluid p-0 HomeCarousel'>
                 <div id='header-carousel' class='carousel slide' data-ride='carousel'>
@@ -534,7 +545,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     $carouselSrc = $carouselSrc . "?" . filemtime("$carouselSrc");
                     $html .= "
                         <div class='carousel-item $active'>
-                            <img class='w-100' src='$carouselSrc' alt='Image'>
+                            <picture>
+                                <source media='(max-width: 768px)' srcset='$ediHeroMobileEsc'>
+                                <img class='w-100' src='$carouselSrc' alt='Image'>
+                            </picture>
                             <div class='carousel-caption carouselboxeka d-flex flex-column justify-content-end pb-3' style='height: 100%;'>
                                 <div class='p-2 p-md-3 d-flex align-items-center flex-column align-items-center' style='max-width: 900px; margin: 0 auto;'>
                                     <span class='text-white mt-2 mt-md-3 mb-1 mb-md-2 carouselText1'>$carouselText1</span>

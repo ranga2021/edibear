@@ -66,12 +66,26 @@
         } else {
           echo "<script>alert('Testimonial area background image updated.');location.href='./home-page'</script>";
         }
+      } else if ( isset($_POST['homeTestimonialBgMobileSubmit']) ) {
+        $err = EdiHomeSectionImages::saveUploaded($user, EdiHomeSectionImages::TYPE_TESTIMONIAL_MOBILE, "homeTestimonialBgMobileFile");
+        if ($err !== null) {
+          echo "<script>alert(" . json_encode($err) . ");location.href='./home-page'</script>";
+        } else {
+          echo "<script>alert('Testimonial area mobile background image updated.');location.href='./home-page'</script>";
+        }
       } else if ( isset($_POST['homeFooterBgSubmit']) ) {
         $err = EdiHomeSectionImages::saveUploaded($user, EdiHomeSectionImages::TYPE_FOOTER, "homeFooterBgFile");
         if ($err !== null) {
           echo "<script>alert(" . json_encode($err) . ");location.href='./home-page'</script>";
         } else {
           echo "<script>alert('Footer area image updated.');location.href='./home-page'</script>";
+        }
+      } else if ( isset($_POST['homeFooterBgMobileSubmit']) ) {
+        $err = EdiHomeSectionImages::saveUploaded($user, EdiHomeSectionImages::TYPE_FOOTER_MOBILE, "homeFooterBgMobileFile");
+        if ($err !== null) {
+          echo "<script>alert(" . json_encode($err) . ");location.href='./home-page'</script>";
+        } else {
+          echo "<script>alert('Footer area mobile image updated.');location.href='./home-page'</script>";
         }
       }
       $homeMainVideoURL = "";
@@ -93,12 +107,16 @@
       $homeExplorePreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE));
       $homeExploreMobilePreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE_MOBILE));
       $homeTestimonialPreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_TESTIMONIAL));
+      $homeTestimonialMobilePreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_TESTIMONIAL_MOBILE));
       $homeFooterPreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_FOOTER));
+      $homeFooterMobilePreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_FOOTER_MOBILE));
       $homeHeroMobilePreview .= (strpos($homeHeroMobilePreview, "?") === false ? "?" : "&") . "v=" . (string) time();
       $homeExplorePreview .= (strpos($homeExplorePreview, "?") === false ? "?" : "&") . "v=" . (string) time();
       $homeExploreMobilePreview .= (strpos($homeExploreMobilePreview, "?") === false ? "?" : "&") . "v=" . (string) time();
       $homeTestimonialPreview .= (strpos($homeTestimonialPreview, "?") === false ? "?" : "&") . "v=" . (string) time();
+      $homeTestimonialMobilePreview .= (strpos($homeTestimonialMobilePreview, "?") === false ? "?" : "&") . "v=" . (string) time();
       $homeFooterPreview .= (strpos($homeFooterPreview, "?") === false ? "?" : "&") . "v=" . (string) time();
+      $homeFooterMobilePreview .= (strpos($homeFooterMobilePreview, "?") === false ? "?" : "&") . "v=" . (string) time();
     
 ?>
 <script>
@@ -249,7 +267,7 @@
               <div class="row">
                 <div class="col-lg-4 col-md-12 mb-4">
                   <h6 class="mb-3">Main hero image (mobile)</h6>
-                  <p class="text-xs text-muted mb-2">Shown on the home intro image area for screens up to 768px.</p>
+                  <p class="text-xs text-muted mb-2">Shown on the home carousel hero for screens up to 768px.</p>
                   <div class="text-center mb-3 p-2 border border-radius-lg" style="min-height:120px;background:#f6f6f6;">
                     <img src="<?php echo htmlspecialchars($homeHeroMobilePreview, ENT_QUOTES, 'UTF-8'); ?>" alt="Hero mobile preview" style="max-width:100%;max-height:140px;object-fit:contain;">
                   </div>
@@ -304,6 +322,20 @@
                   </form>
                 </div>
                 <div class="col-lg-4 col-md-12 mb-4">
+                  <h6 class="mb-3">Testimonial area background (mobile)</h6>
+                  <p class="text-xs text-muted mb-2">Shown behind home page testimonial cards for screens up to 768px.</p>
+                  <div class="text-center mb-3 p-2 border border-radius-lg" style="min-height:120px;background:#f6f6f6;">
+                    <img src="<?php echo htmlspecialchars($homeTestimonialMobilePreview, ENT_QUOTES, 'UTF-8'); ?>" alt="Testimonial mobile preview" style="max-width:100%;max-height:140px;object-fit:contain;">
+                  </div>
+                  <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label class="form-control-label">Image</label>
+                      <input type="file" class="form-control" accept="image/*" name="homeTestimonialBgMobileFile" required>
+                    </div>
+                    <input type="submit" class="btn btn-success btn-sm" name="homeTestimonialBgMobileSubmit" value="Update image">
+                  </form>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4">
                   <h6 class="mb-3">Footer area image</h6>
                   <p class="text-xs text-muted mb-2">Illustration along the bottom of the footer site-wide.</p>
                   <div class="text-center mb-3 p-2 border border-radius-lg" style="min-height:120px;background:#f6f6f6;">
@@ -315,6 +347,20 @@
                       <input type="file" class="form-control" accept="image/*" name="homeFooterBgFile" required>
                     </div>
                     <input type="submit" class="btn btn-success btn-sm" name="homeFooterBgSubmit" value="Update image">
+                  </form>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4">
+                  <h6 class="mb-3">Footer area image (mobile)</h6>
+                  <p class="text-xs text-muted mb-2">Shown at the bottom of the footer for screens up to 768px.</p>
+                  <div class="text-center mb-3 p-2 border border-radius-lg" style="min-height:120px;background:#f6f6f6;">
+                    <img src="<?php echo htmlspecialchars($homeFooterMobilePreview, ENT_QUOTES, 'UTF-8'); ?>" alt="Footer mobile preview" style="max-width:100%;max-height:140px;object-fit:contain;">
+                  </div>
+                  <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label class="form-control-label">Image</label>
+                      <input type="file" class="form-control" accept="image/*" name="homeFooterBgMobileFile" required>
+                    </div>
+                    <input type="submit" class="btn btn-success btn-sm" name="homeFooterBgMobileSubmit" value="Update image">
                   </form>
                 </div>
               </div>
