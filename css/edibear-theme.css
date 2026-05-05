@@ -869,6 +869,13 @@ h6.text-primary:not(.text-white),
   position: relative;
 }
 
+@media (max-width: 767.98px) {
+  .page-header-bg {
+    height: 100px;
+    margin-top: -50px;
+  }
+}
+
 .page-header-content {
   position: relative;
   z-index: 2;
@@ -1938,6 +1945,29 @@ h6.text-primary:not(.text-white),
   .edi-hidden-den-grid .edi-blog-subgrid > .col-6 {
     flex: 0 0 100%;
     max-width: 100%;
+  }
+
+  /* Mobile: keep all blog excerpts at same length */
+  .edi-blog-card--grid .edi-blog-excerpt,
+  .edi-blog-card--featured .edi-blog-excerpt,
+  .edi-hidden-den-featured .edi-blog-card--featured .edi-blog-excerpt,
+  .edi-blog-card--list .edi-blog-excerpt {
+    line-clamp: 5;
+    -webkit-line-clamp: 5;
+  }
+
+  /* Keep equal left/right gutters in home content sections */
+  .edi-trail-tales-wrap > .container,
+  .edi-hidden-den-section > .container,
+  #challenge-section > .container {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  /* Move floating up button away from reading area */
+  .back-to-top {
+    right: 12px !important;
+    bottom: 12px !important;
   }
 }
 

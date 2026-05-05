@@ -333,6 +333,15 @@ class HEADER {
             gap: 2px;
             margin-left: 6px;
         }
+
+        @media (max-width: 991.98px) {
+            .edibear-header-wrapper {
+                background: transparent;
+            }
+            .edibear-navbar {
+                background: rgb(255 255 255 / 25%);
+            }
+        }
     </style>
 
    <div class='edibear-header-wrapper'>
