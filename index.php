@@ -305,7 +305,7 @@
 
 </div>
 
-<div class="text-center edi-home-cta-band">
+<div class="text-center edi-home-cta-band edi-home-cta-band--products">
 <a href="./product_page.php" class="btn newgreen1-btn edi-home-section-cta">MORE</a>
 </div>
 

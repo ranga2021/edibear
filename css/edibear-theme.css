@@ -227,6 +227,12 @@ body.index .edi-home-cta-band {
   padding-bottom: 0;
 }
 
+/* Products -> Trail CTA: keep button closer to cards, farther from next section title */
+body.index .edi-home-cta-band--products {
+  margin-top: 1.25rem;
+  margin-bottom: 3.25rem;
+}
+
 @media (max-width: 575.98px) {
   body.index {
     --edi-home-cta-gap: 2rem;
