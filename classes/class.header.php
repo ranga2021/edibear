@@ -339,7 +339,7 @@ class HEADER {
                 background: transparent;
             }
             .edibear-navbar {
-                background: rgb(255 255 255 / 25%);
+                background: rgb(255 255 255 / 35%);
             }
         }
     </style>

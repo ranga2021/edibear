@@ -286,6 +286,7 @@ button.edi-home-section-cta.explore-btn {
 body.index {
   --edi-home-carousel-lift: 85px;
   --edi-home-cta-gap: 2.5rem;
+  background-color: #fff;
 }
 
 /* Home learn section spacing (desktop baseline from prior inline values) */
@@ -413,6 +414,29 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   z-index: 2;
   padding-bottom: 7% !important;
   justify-content: flex-end !important;
+}
+
+/* Homepage mobile: solid white behind header + hero (carousel art hidden; caption recolored) */
+@media (max-width: 767.98px) {
+  body.index .HomeCarousel,
+  body.index .HomeCarousel #header-carousel,
+  body.index .HomeCarousel #header-carousel .carousel-inner,
+  body.index .HomeCarousel #header-carousel .carousel-item {
+    background-color: #fff !important;
+  }
+
+  body.index .HomeCarousel #header-carousel .carousel-item > picture,
+  body.index .HomeCarousel #header-carousel .carousel-item > picture > img.w-100 {
+    opacity: 0 !important;
+  }
+
+  body.index #header-carousel .carousel-caption .carouselText1 {
+    color: var(--edi-body) !important;
+  }
+
+  body.index #header-carousel .carousel-caption .carouselText2 {
+    color: var(--edi-heading) !important;
+  }
 }
 
 /* ----- Nav / chrome ----- */
@@ -1990,6 +2014,18 @@ h6.text-primary:not(.text-white),
   p.text-justify,
   .text-justify {
     text-align: left !important;
+  }
+
+  /* Ensure equal mobile gutters on Treasure Details header */
+  .edi-treasure-detail-outer {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  .edi-treasure-detail-outer > .container.edi-treasure-detail {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    max-width: 100% !important;
   }
 
   .page-header-content {
