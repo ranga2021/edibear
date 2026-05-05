@@ -45,6 +45,20 @@
         } else {
           echo "<script>alert('Explore area background image updated.');location.href='./home-page'</script>";
         }
+      } else if ( isset($_POST['homeExploreBgMobileSubmit']) ) {
+        $err = EdiHomeSectionImages::saveUploaded($user, EdiHomeSectionImages::TYPE_EXPLORE_MOBILE, "homeExploreBgMobileFile");
+        if ($err !== null) {
+          echo "<script>alert(" . json_encode($err) . ");location.href='./home-page'</script>";
+        } else {
+          echo "<script>alert('Explore area mobile background image updated.');location.href='./home-page'</script>";
+        }
+      } else if ( isset($_POST['homeHeroMobileSubmit']) ) {
+        $err = EdiHomeSectionImages::saveUploaded($user, EdiHomeSectionImages::TYPE_HERO_MOBILE, "homeHeroMobileFile");
+        if ($err !== null) {
+          echo "<script>alert(" . json_encode($err) . ");location.href='./home-page'</script>";
+        } else {
+          echo "<script>alert('Main hero mobile image updated.');location.href='./home-page'</script>";
+        }
       } else if ( isset($_POST['homeTestimonialBgSubmit']) ) {
         $err = EdiHomeSectionImages::saveUploaded($user, EdiHomeSectionImages::TYPE_TESTIMONIAL, "homeTestimonialBgFile");
         if ($err !== null) {
@@ -75,10 +89,14 @@
         }
         return $webPath;
       };
+      $homeHeroMobilePreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_HERO_MOBILE));
       $homeExplorePreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE));
+      $homeExploreMobilePreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE_MOBILE));
       $homeTestimonialPreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_TESTIMONIAL));
       $homeFooterPreview = $ediAdminRel(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_FOOTER));
+      $homeHeroMobilePreview .= (strpos($homeHeroMobilePreview, "?") === false ? "?" : "&") . "v=" . (string) time();
       $homeExplorePreview .= (strpos($homeExplorePreview, "?") === false ? "?" : "&") . "v=" . (string) time();
+      $homeExploreMobilePreview .= (strpos($homeExploreMobilePreview, "?") === false ? "?" : "&") . "v=" . (string) time();
       $homeTestimonialPreview .= (strpos($homeTestimonialPreview, "?") === false ? "?" : "&") . "v=" . (string) time();
       $homeFooterPreview .= (strpos($homeFooterPreview, "?") === false ? "?" : "&") . "v=" . (string) time();
     
@@ -225,10 +243,24 @@
           <div class="card">
             <div class="card-header p-2">
               <h5>Home section images</h5>
-              <p class="text-xs text-secondary mb-0">Update the Explorer search strip background, Testimonials strip background, and site footer illustration. Run <code>sql/migration_home_section_backgrounds.sql</code> once if uploads fail (column <code>carousel.type</code> must allow longer values).</p>
+              <p class="text-xs text-secondary mb-0">Update desktop/mobile hero and section backgrounds. Run <code>sql/migration_home_section_backgrounds.sql</code> once if uploads fail (column <code>carousel.type</code> must allow longer values).</p>
             </div>
             <div class="card-body p-3">
               <div class="row">
+                <div class="col-lg-4 col-md-12 mb-4">
+                  <h6 class="mb-3">Main hero image (mobile)</h6>
+                  <p class="text-xs text-muted mb-2">Shown on the home intro image area for screens up to 768px.</p>
+                  <div class="text-center mb-3 p-2 border border-radius-lg" style="min-height:120px;background:#f6f6f6;">
+                    <img src="<?php echo htmlspecialchars($homeHeroMobilePreview, ENT_QUOTES, 'UTF-8'); ?>" alt="Hero mobile preview" style="max-width:100%;max-height:140px;object-fit:contain;">
+                  </div>
+                  <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label class="form-control-label">Image</label>
+                      <input type="file" class="form-control" accept="image/*" name="homeHeroMobileFile" required>
+                    </div>
+                    <input type="submit" class="btn btn-success btn-sm" name="homeHeroMobileSubmit" value="Update image">
+                  </form>
+                </div>
                 <div class="col-lg-4 col-md-12 mb-4">
                   <h6 class="mb-3">Explore area background</h6>
                   <p class="text-xs text-muted mb-2">Behind the language / grade / category search on the home page.</p>
@@ -241,6 +273,20 @@
                       <input type="file" class="form-control" accept="image/*" name="homeExploreBgFile" required>
                     </div>
                     <input type="submit" class="btn btn-success btn-sm" name="homeExploreBgSubmit" value="Update image">
+                  </form>
+                </div>
+                <div class="col-lg-4 col-md-12 mb-4">
+                  <h6 class="mb-3">Explore area background (mobile)</h6>
+                  <p class="text-xs text-muted mb-2">Shown on home page explore strip for screens up to 768px.</p>
+                  <div class="text-center mb-3 p-2 border border-radius-lg" style="min-height:120px;background:#f6f6f6;">
+                    <img src="<?php echo htmlspecialchars($homeExploreMobilePreview, ENT_QUOTES, 'UTF-8'); ?>" alt="Explore mobile preview" style="max-width:100%;max-height:140px;object-fit:contain;">
+                  </div>
+                  <form action="" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                      <label class="form-control-label">Image</label>
+                      <input type="file" class="form-control" accept="image/*" name="homeExploreBgMobileFile" required>
+                    </div>
+                    <input type="submit" class="btn btn-success btn-sm" name="homeExploreBgMobileSubmit" value="Update image">
                   </form>
                 </div>
                 <div class="col-lg-4 col-md-12 mb-4">

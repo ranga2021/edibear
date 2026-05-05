@@ -16,7 +16,9 @@
     $userHeader = new HEADER("home");
     $user = new USER();
     $widgets = new WIDGETS();
+    $ediHomeHeroMobile = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_HERO_MOBILE));
     $ediHomeExploreBg = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE));
+    $ediHomeExploreBgMobile = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_EXPLORE_MOBILE));
     $ediHomeTestimonialBg = EdiHomeSectionImages::cssUrlString(EdiHomeSectionImages::assetUrl($user, EdiHomeSectionImages::TYPE_TESTIMONIAL));
     
 ?>
@@ -76,8 +78,14 @@
         box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
         @media (max-width:768px) {
+            .explorer-search-area {
+                background-image: url("<?php echo $ediHomeExploreBgMobile; ?>");
+            }
+
             .testimonial-bg{
-                background: none;
+                background: url("<?php echo $ediHomeTestimonialBg; ?>") no-repeat center;
+                background-size: cover;
+                padding: 0.75rem 0;
             }
         }
         @media (max-width:650px) {
@@ -138,7 +146,10 @@
             </div>
 
             <div class="col-lg-7 col-md-6 text-center edi-intro-image">
-                <img src="./img/Web pic/homebg.png" class="img-fluid">
+                <picture>
+                    <source media="(max-width: 768px)" srcset="<?php echo htmlspecialchars($ediHomeHeroMobile, ENT_QUOTES, 'UTF-8'); ?>">
+                    <img src="./img/Web pic/homebg.png" class="img-fluid" alt="Edi hero image">
+                </picture>
             </div>
 
         </div>
@@ -153,13 +164,13 @@
     ?>
 
     <!--How it works-->
-    <div class="container-fluid py-4" style='margin-top:-100px;' id="learn-section">
+    <div class="container-fluid py-4 edi-learn-section" id="learn-section">
         <div class="container py-5">
             <div class="text-center">
                 <h1 class="text-danger">EXPLORER TRAINING CAMP</h1>
             </div>
 
-            <div class='row mt-3 justify-content-center' style='margin-bottom:-50px; margin-top:-50px;'>
+            <div class='row mt-3 justify-content-center edi-learn-intro-row'>
                 <div class="col-lg-10 col-md-12">
                 <p class="edi-home-lead mb-0">
                 Congratulations, Explorer! You’ve reached your first destination. 
@@ -169,7 +180,7 @@
                 </div>
             </div>
 
-            <div class='row mt-5 justify-content-center' style='margin-top:-200px'>
+            <div class='row mt-5 justify-content-center edi-learn-cards-row'>
                 <div class="col-lg-10 col-md-12 row">
                     <?php
                     echo $widgets->displayHowItWorksBlock3("WORKSHEETS", "Find kids' school<br>homework-related items", "3.png");
