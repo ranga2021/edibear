@@ -416,18 +416,13 @@ body.index .HomeCarousel #header-carousel .carousel-item {
   justify-content: flex-end !important;
 }
 
-/* Homepage mobile: solid white behind header + hero (carousel art hidden; caption recolored) */
+/* Homepage mobile: keep white base behind hero while preserving carousel artwork */
 @media (max-width: 767.98px) {
   body.index .HomeCarousel,
   body.index .HomeCarousel #header-carousel,
   body.index .HomeCarousel #header-carousel .carousel-inner,
   body.index .HomeCarousel #header-carousel .carousel-item {
     background-color: #fff !important;
-  }
-
-  body.index .HomeCarousel #header-carousel .carousel-item > picture,
-  body.index .HomeCarousel #header-carousel .carousel-item > picture > img.w-100 {
-    opacity: 0 !important;
   }
 
   body.index #header-carousel .carousel-caption .carouselText1 {
