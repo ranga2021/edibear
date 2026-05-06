@@ -940,7 +940,7 @@ h6.text-primary:not(.text-white),
   margin-bottom: -100px;
 }
 @media (max-width: 600px) {
-  .footer-overlap-row .col-md-6 {
+  .footer-overlap-row .col-md-6, .footer-overlap-row .col-sm-6 {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }
