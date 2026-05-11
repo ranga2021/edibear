@@ -177,12 +177,12 @@
                 </div>
             </div>
 
-            <div class='row mt-5 justify-content-center edi-learn-cards-row'>
+            <div class='row justify-content-center edi-learn-cards-row'>
                 <div class="col-lg-10 col-md-12 row">
                     <?php
-                    echo $widgets->displayHowItWorksBlock3("WORKSHEETS", "Find kids' school<br>homework-related items", "3.png");
-                        echo $widgets->displayHowItWorksBlock("FUN ACTIVITIES", "Find a variety of beautiful<br>coloring pages", "1.png");
-                        echo $widgets->displayHowItWorksBlock2("BRAIN BOOSTERS", "Find kids' workbooks &<br>relevant model papers", "2.png");
+                    echo $widgets->displayHowItWorksBlock3("WORKSHEETS", "Discover a variety of <br>worksheets for learning.", "3.png");
+                        echo $widgets->displayHowItWorksBlock("FUN ACTIVITIES", "Explore fun activities for <br>your leisure time.", "1.png");
+                        echo $widgets->displayHowItWorksBlock2("BRAIN BOOSTERS", "Secrets to grow your <br>memory and thinking skills.", "2.png");
                         
                     ?>
                 </div>

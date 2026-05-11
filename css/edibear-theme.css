@@ -294,13 +294,13 @@ body.index #learn-section.edi-learn-section {
   margin-top: -100px;
 }
 
-body.index #learn-section .edi-learn-intro-row {
+body.index #learn-section {
   margin-top: -50px;
   margin-bottom: -50px;
 }
 
 body.index #learn-section .edi-learn-cards-row {
-  margin-top: -200px;
+  margin-top: 30px;
 }
 
 /* Mobile: avoid overlap with intro image / heading area */
