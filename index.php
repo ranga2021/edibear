@@ -161,8 +161,8 @@
     ?>
 
     <!--How it works-->
-    <div class="container-fluid pt-4 pb-0 edi-learn-section" id="learn-section">
-        <div class="container pt-5 pb-0">
+    <div class="container-fluid pb-0 edi-learn-section" id="learn-section">
+        <div class="container pb-0">
             <div class="text-center">
                 <h1 class="text-danger">EXPLORER TRAINING CAMP</h1>
             </div>
@@ -243,7 +243,7 @@
     </div>
 </div>
 
-    <div class="container-fluid pt-5 pb-0" id="honey-market-section">
+    <div class="container-fluid pb-0" id="honey-market-section">
       <div class="container">
 
        <div class="text-center">

@@ -595,7 +595,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $html = "
             <div class='container-fluid footer pl-3 pr-3 d-flex flex-column align-items-center'>
                 <div class='container align-self-stretch'>
-                <div class='row mb-4 py-5 justify-content-center'>
+                <div class='row mb-4 justify-content-center'>
                     <div class='col-12 col-lg-10 col-md-12 text-center footerEmailCustom px-3'>
                         <h1 class='text-danger'>JOIN MY FAMILY</h1>
                         <p class='edi-home-lead' style='color:#666;'>

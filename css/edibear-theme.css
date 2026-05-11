@@ -395,8 +395,9 @@ body.index #honey-market-section,
 body.index .edi-home-ad-slot,
 body.index .edi-trail-tales-wrap,
 body.index #play-section.edi-hidden-den-section,
-body.index #challenge-section {
-  margin-top: var(--edi-home-section-gap);
+body.index #challenge-section,
+.footer {
+  margin-top: var(--edi-home-section-gap) !important;
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 }
@@ -1741,7 +1742,6 @@ h6.text-primary:not(.text-white),
   position: relative;
   z-index: 1;
   clear: both;
-  margin-top: 0;
   background-color: #fff;
 }
 
