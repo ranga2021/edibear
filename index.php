@@ -67,7 +67,7 @@
         .testimonial-bg {
         background: url("<?php echo $ediHomeTestimonialBg; ?>") no-repeat center;
          background-size: 100% 80%;
-         padding: 0px 0;
+         padding: 30px 0 0;
     }
 
     .testimonial-sec .product-card, 
@@ -457,7 +457,7 @@
 
     <section id="challenge-section" class="bg-white w-100 clearfix">
     <div class="container">
-        <div class="text-center mb-4">
+        <div class="text-center">
             <h1 class="text-danger">BRAVE HEART CHALLENGE</h1>
         </div>
 

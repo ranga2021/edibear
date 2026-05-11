@@ -14,6 +14,7 @@ require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
 require_once("../classes/edi_explorer_content.php");
 require_once("../classes/edi_taxonomy.php");
+require_once("../classes/edi_sitemap.php");
 
 $adminHeader = new HEADER("add-worksheet");
 $user = new USER();
@@ -197,7 +198,9 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
         }
         $pdfID = $user->insertTable("pdf_details", $insertRow, true);
 
-        echo "<script>alert('PDF added successfully');location.href='./createSiteMap?redirect=pdf'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('PDF added successfully.');
+        $user->redirect('./pdf');
     }
 
     // ================= UPDATE =================
@@ -267,7 +270,9 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
             $user->updateTable("pdf_details", array("pdfupload"=>$pdfName), array("id"=>$currentpdfID));
         }
 
-        echo "<script>alert('PDF updated successfully');location.href='./createSiteMap?redirect=pdf'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('PDF updated successfully.');
+        $user->redirect('./pdf');
     }
 }
 ?>

@@ -14,6 +14,7 @@ require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
 require_once("../classes/edi_explorer_content.php");
 require_once("../classes/edi_taxonomy.php");
+require_once("../classes/edi_sitemap.php");
 
 $adminHeader = new HEADER("add-worksheet");
 $user = new USER();
@@ -169,7 +170,9 @@ if (isset($_POST['addNewhomeworkSubmit'])) {
         $user->updateTable("homework_details", ["pdfupload"=>$file], ["id"=>$homeworkID]);
     }
 
-    echo "<script>alert('Homework added successfully');location.href='./createSiteMap?redirect=homework'</script>";
+    edi_regenerate_public_sitemap($user);
+    edi_admin_flash_success('Homework added successfully.');
+    $user->redirect('./homework');
     exit;
 }
 
@@ -233,7 +236,9 @@ if (isset($_POST['updatehomeworkSubmit'])) {
         $user->updateTable("homework_details", ["pdfupload"=>$file], ["id"=>$currenthomeworkID]);
     }
 
-    echo "<script>alert('Updated successfully');location.href='./createSiteMap?redirect=homework'</script>";
+    edi_regenerate_public_sitemap($user);
+    edi_admin_flash_success('Updated successfully.');
+    $user->redirect('./homework');
     exit;
 }
 

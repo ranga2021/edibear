@@ -14,6 +14,7 @@ require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
 require_once("../classes/edi_explorer_content.php");
 require_once("../classes/edi_taxonomy.php");
+require_once("../classes/edi_sitemap.php");
 
 $adminHeader = new HEADER("add-worksheet");
 $user = new USER();
@@ -197,7 +198,9 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
         }
         $booksID = $user->insertTable("books_details", $insertRowB, true);
 
-        echo "<script>alert('Book added successfully');location.href='./createSiteMap?redirect=books'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('Book added successfully.');
+        $user->redirect('./books');
     }
 
     // ================= UPDATE =================
@@ -267,7 +270,9 @@ if (isset($_POST['addNewbooksSubmit']) || isset($_POST['updatebooksSubmit'])) {
             $user->updateTable("books_details", array("pdfupload"=>$pdfName), array("id"=>$currentbooksID));
         }
 
-        echo "<script>alert('Book updated successfully');location.href='./createSiteMap?redirect=books'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('Book updated successfully.');
+        $user->redirect('./books');
     }
 }
 ?>

@@ -8,6 +8,7 @@ require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
 require_once("../classes/edi_blog_extra_media.php");
 require_once("../classes/edi_blog_story_sections.php");
+require_once("../classes/edi_sitemap.php");
 
 if (!function_exists("edi_blog_tag_split")) {
     /**
@@ -43,7 +44,7 @@ if (!$user->is_loggedin()) {
 }
 
 // Long edit forms: idle timer is not refreshed until the next request. Treat a blog
-// save POST as activity so createSiteMap's checkTimeout does not log the user out.
+// save POST as activity so the session timeout check does not log the user out mid-edit.
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && (isset($_POST['addNewBlogSubmit']) || isset($_POST['updateBlogSubmit']) || isset($_POST['confirmDeleteBlogSubmit']))) {
     $_SESSION['timeout'] = time();
 } elseif (!$user->checkTimeout()) {
@@ -195,8 +196,9 @@ if (isset($_POST['confirmDeleteBlogSubmit'])) {
 
     $user->deleteTableRow("blog_details", array("id" => $deleteBlogID));
 
-    echo "<script>alert('Blog deleted successfully');location.href='./createSiteMap?redirect=blogs'</script>";
-    exit;
+    edi_regenerate_public_sitemap($user);
+    edi_admin_flash_success('Blog deleted successfully.');
+    $user->redirect('./blogs');
 }
 
 // ================= SUBMIT =================
@@ -244,7 +246,9 @@ if (isset($_POST['addNewBlogSubmit']) || isset($_POST['updateBlogSubmit'])) {
 
         EdiBlogExtraMedia::syncFromAdminPost($user, (int) $blogID, $uploadDir);
 
-        echo "<script>alert('Blog added successfully');location.href='./createSiteMap?redirect=blogs'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('Blog added successfully.');
+        $user->redirect('./blogs');
     }
 
     // ================= UPDATE =================
@@ -279,7 +283,9 @@ if (isset($_POST['addNewBlogSubmit']) || isset($_POST['updateBlogSubmit'])) {
 
         EdiBlogExtraMedia::syncFromAdminPost($user, $currentBlogID, $uploadDir);
 
-        echo "<script>alert('Blog updated successfully');location.href='./createSiteMap?redirect=blogs'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('Blog updated successfully.');
+        $user->redirect('./blogs');
     }
 }
 ?>

@@ -798,7 +798,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     public function printAdminNav2($pageName) {
-        $html = "
+        $flashBanner = '';
+        if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['edi_admin_flash_success'])) {
+            $flashMsg = trim((string) $_SESSION['edi_admin_flash_success']);
+            unset($_SESSION['edi_admin_flash_success']);
+            if ($flashMsg !== '') {
+                $flashEsc = htmlspecialchars($flashMsg, ENT_QUOTES, 'UTF-8');
+                $flashBanner = "<div class='container-fluid py-2 px-4'><div class='alert alert-success text-white mb-0' role='alert' style='background-color:#33a675;border:none;'>{$flashEsc}</div></div>";
+            }
+        }
+
+        $html = $flashBanner . "
             <nav class='navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl' id='navbarBlur' data-scroll='false'>
                 <div class='container-fluid py-1 px-3'>
                     <nav aria-label='breadcrumb'>

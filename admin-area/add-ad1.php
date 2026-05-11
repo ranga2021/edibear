@@ -12,6 +12,7 @@ session_start();
 require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
+require_once("../classes/edi_sitemap.php");
 
 $adminHeader = new HEADER("add-ad1");
 $user = new USER();
@@ -86,7 +87,9 @@ if (isset($_POST['confirmDeletead1Submit'])) {
 
     $user->deleteTableRow("ad1_details", array("id" => $deletead1ID));
 
-    echo "<script>alert('Ad1 deleted successfully');location.href='./createSiteMap?redirect=ad1'</script>";
+    edi_regenerate_public_sitemap($user);
+    edi_admin_flash_success('Ad1 deleted successfully.');
+    $user->redirect('./ad1');
     exit;
 }
 
@@ -122,7 +125,9 @@ if (isset($_POST['addNewad1Submit']) || isset($_POST['updatead1Submit'])) {
             "adlink"=>$inputad1adlink
         ), true);
 
-        echo "<script>alert('Ad added successfully');location.href='./createSiteMap?redirect=ad1'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('Ad added successfully.');
+        $user->redirect('./ad1');
     }
 
     // ================= UPDATE =================
@@ -152,7 +157,9 @@ if (isset($_POST['addNewad1Submit']) || isset($_POST['updatead1Submit'])) {
             $user->updateTable("ad1_details", array("image"=>$imageName), array("id"=>$currentad1ID));
         }
 
-        echo "<script>alert('Ad updated successfully');location.href='./createSiteMap?redirect=ad1'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('Ad updated successfully.');
+        $user->redirect('./ad1');
     }
 }
 ?>

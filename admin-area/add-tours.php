@@ -12,6 +12,7 @@ session_start();
 require_once("../classes/class.user.php");
 require_once("../classes/class.header.php");
 require_once("../classes/class.widgets.php");
+require_once("../classes/edi_sitemap.php");
 
 $adminHeader = new HEADER("add-tours");
 $user = new USER();
@@ -87,7 +88,9 @@ if (isset($_POST['confirmDeleteTourSubmit'])) {
 
     $user->deleteTableRow("tour_details", array("id" => $deleteTourID));
 
-    echo "<script>alert('Tour deleted successfully');location.href='./createSiteMap?redirect=tours'</script>";
+    edi_regenerate_public_sitemap($user);
+    edi_admin_flash_success('Tour deleted successfully.');
+    $user->redirect('./tours');
     exit;
 }
 
@@ -129,7 +132,9 @@ if (isset($_POST['addNewTourSubmit']) || isset($_POST['updateTourSubmit'])) {
             $user->updateTable("tour_details", ["image_name"=>$imageName], ["id"=>$tourID]);
         }
 
-        echo "<script>alert('Tour added successfully');location.href='./createSiteMap?redirect=tours'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('Tour added successfully.');
+        $user->redirect('./tours');
     }
 
     // ================= UPDATE =================
@@ -151,7 +156,9 @@ if (isset($_POST['addNewTourSubmit']) || isset($_POST['updateTourSubmit'])) {
             $user->updateTable("tour_details", ["image_name"=>$imageName], ["id"=>$currentTourID]);
         }
 
-        echo "<script>alert('Tour updated successfully');location.href='./createSiteMap?redirect=tours'</script>";
+        edi_regenerate_public_sitemap($user);
+        edi_admin_flash_success('Tour updated successfully.');
+        $user->redirect('./tours');
     }
 }
 ?>
