@@ -78,7 +78,7 @@
 
 /* SIGN IN */
 .edibear-signin{
-    font-weight:600;
+    font-weight:500;
     color:#33a675;
     text-decoration:none;
 }
@@ -350,7 +350,7 @@ text-align: left; /* column may use .text-center; keep title, price, Collect ali
 }
 
 .old-price{
-color:#f65247;
+color:green;
 text-decoration:line-through;
 margin-right:8px;
 }

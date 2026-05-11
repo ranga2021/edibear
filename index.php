@@ -161,8 +161,8 @@
     ?>
 
     <!--How it works-->
-    <div class="container-fluid py-4 edi-learn-section" id="learn-section">
-        <div class="container py-5">
+    <div class="container-fluid pt-4 pb-0 edi-learn-section" id="learn-section">
+        <div class="container pt-5 pb-0">
             <div class="text-center">
                 <h1 class="text-danger">EXPLORER TRAINING CAMP</h1>
             </div>
@@ -332,7 +332,7 @@
         $row = $ad1Rows[0];
         $lastad1ID = "id<" . $row['id'];
         ?>
-        <div style="display:flex; justify-content:center; overflow:hidden;" class="mt-5 mb-5">
+        <div style="display:flex; justify-content:center; overflow:hidden;" class="edi-home-ad-slot">
             <div style="background-color: #fff; height: auto; width:80%; display:flex; align-items:center; justify-content:center;">
                 <h1 class="text-center d-none"> ADD SPACE </h1>
                 <div class="row">
@@ -359,7 +359,7 @@
     <!-- Tour Packages (section removed; keep PHP from running broken tour block) -->
 
     <div class="container-fluid pt-0 px-0 edi-trail-tales-wrap">
-        <div class="container pt-0 pb-3">
+        <div class="container pt-0 pb-0">
         <div class="text-center">
             <h1 class="text-danger">TRAIL OF TALES</h1>
         </div>
@@ -455,7 +455,7 @@
     </div>
     <!-- Blog End -->
 
-    <section id="challenge-section" class="bg-white w-100 clearfix" style="margin-top:0;">
+    <section id="challenge-section" class="bg-white w-100 clearfix">
     <div class="container">
         <div class="text-center mb-4">
             <h1 class="text-danger">BRAVE HEART CHALLENGE</h1>

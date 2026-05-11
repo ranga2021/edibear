@@ -326,11 +326,11 @@ class HEADER {
         .edibear-signin {
             text-decoration: none !important;
             color: #33a675 !important;
-            font-weight: 700;
+            font-weight: 500;
             font-size: 15px;
             display: flex;
             align-items: center;
-            gap: 2px;
+            gap: 5px;
             margin-left: 6px;
         }
 
@@ -604,9 +604,9 @@ document.addEventListener('DOMContentLoaded', function() {
     Come on in — there’s always a seat for you at our table!
 </p>
                         <div class='input-group mt-4 edi-footer-newsletter-form'>
-                            <input type='email' class='form-control newsl-border' id='newsletterEmail' style='padding: 25px;' placeholder='Your Email Here'>
+                            <input type='email' class='form-control newsl-border' id='newsletterEmail' placeholder='Your Email Here'>
                             <div class='input-group-append'>
-                                <button class='btn newsl-subscribe-btn px-4' onclick='subscribeNewsletter()' style='background-color:#33a675;'>JOIN NOW</button>
+                                <button type='button' class='btn newsl-subscribe-btn px-4' onclick='subscribeNewsletter()'>JOIN NOW</button>
                             </div>
                         </div>
                     </div>

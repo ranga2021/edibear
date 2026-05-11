@@ -155,6 +155,68 @@ h4.text-danger {
   color: #1f5c40;
 }
 
+/* Open list: row highlight (Firefox and similar; classic Chromium popups ignore most option CSS) */
+.explorer-search-area select.explorer-select option:hover,
+.explorer-search-area select.explorer-select option:focus {
+  background-color: var(--edi-green);
+  color: #fff;
+}
+
+/*
+ * Chrome 135+ customizable select: picker is styleable HTML, so hover/focus row is green
+ * instead of the OS blue. Older browsers skip this block and keep the native picker.
+ */
+@supports (appearance: base-select) {
+  .explorer-search-area select.explorer-select,
+  .explorer-search-area select.explorer-select::picker(select) {
+    appearance: base-select;
+  }
+
+  .explorer-search-area select.explorer-select::picker(select) {
+    border: 1px solid rgba(51, 166, 117, 0.42);
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+  }
+
+  .explorer-search-area select.explorer-select option {
+    padding: 0.65rem 1rem;
+  }
+
+  .explorer-search-area select.explorer-select option:hover,
+  .explorer-search-area select.explorer-select option:focus,
+  .explorer-search-area select.explorer-select option:focus-visible {
+    background-color: var(--edi-green);
+    color: #fff;
+  }
+
+  .explorer-search-area select.explorer-select option:checked {
+    background-color: #e8f5ef;
+    color: #1f5c40;
+  }
+
+  .explorer-search-area select.explorer-select option:checked:hover,
+  .explorer-search-area select.explorer-select option:checked:focus,
+  .explorer-search-area select.explorer-select option:checked:focus-visible {
+    background-color: var(--edi-green);
+    color: #fff;
+  }
+
+  /* Default arrow replaces SVG background so we do not draw two carets */
+  .explorer-search-area select.explorer-select {
+    background-image: none;
+  }
+
+  .explorer-search-area select.explorer-select::picker-icon {
+    color: var(--edi-green);
+  }
+
+  .explorer-search-area select.explorer-select:disabled::picker-icon {
+    color: #9a9b9c;
+  }
+}
+
 /* ----- Links: hover gold ----- */
 a.text-primary:hover,
 a.text-primary:focus,
@@ -219,18 +281,18 @@ input[type="submit"].btn,
   color: #fff !important;
 }
 
-/* Homepage (index): equal vertical space above & below MORE / READ MORE CTAs */
+/* Homepage (index): CTA bands — vertical rhythm inside a section; no margin-bottom (section gaps use margin-top only) */
 body.index .edi-home-cta-band {
   margin-top: var(--edi-home-cta-gap);
-  margin-bottom: var(--edi-home-cta-gap);
+  margin-bottom: 0;
   padding-top: 0;
   padding-bottom: 0;
 }
 
-/* Products -> Trail CTA: keep button closer to cards, farther from next section title */
+/* Products -> Trail CTA: keep button closer to cards */
 body.index .edi-home-cta-band--products {
   margin-top: 1.25rem;
-  margin-bottom: 3.25rem;
+  margin-bottom: 0;
 }
 
 @media (max-width: 575.98px) {
@@ -286,30 +348,37 @@ button.edi-home-section-cta.explore-btn {
 body.index {
   --edi-home-carousel-lift: 85px;
   --edi-home-cta-gap: 2.5rem;
+  --edi-home-section-gap: 75px;
   background-color: #fff;
 }
 
-/* Home learn section spacing (desktop baseline from prior inline values) */
-body.index #learn-section.edi-learn-section {
-  margin-top: -100px;
+/*
+ * Homepage only: 75px between major sections. Spacing comes only from the
+ * lower section’s margin-top; strip bottom margin/padding on section wrappers.
+ */
+body.index .HomeCarousel {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
-body.index #learn-section {
-  margin-top: -50px;
-  margin-bottom: -50px;
+body.index #ayubowan.edi-intro-section,
+body.index #learn-section.edi-learn-section,
+body.index .explorer-search-area,
+body.index #honey-market-section,
+body.index .edi-home-ad-slot,
+body.index .edi-trail-tales-wrap,
+body.index #play-section.edi-hidden-den-section,
+body.index #challenge-section {
+  margin-top: var(--edi-home-section-gap);
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
 }
 
 body.index #learn-section .edi-learn-cards-row {
   margin-top: 30px;
 }
 
-/* Mobile: avoid overlap with intro image / heading area */
 @media (max-width: 767.98px) {
-  body.index #learn-section.edi-learn-section {
-    margin-top: 0 !important;
-    padding-top: 1.25rem !important;
-  }
-
   body.index #learn-section .edi-learn-intro-row {
     margin-top: 0 !important;
     margin-bottom: 0.75rem !important;
@@ -776,7 +845,7 @@ body.index .HomeCarousel #header-carousel .carousel-item {
 
 /* ----- Prices / success accents ----- */
 .old-price {
-  color: #f65247;
+  color: green;
 }
 .new-price,
 .text-success {
@@ -1664,31 +1733,51 @@ h6.text-primary:not(.text-white),
   line-height: 1.65;
 }
 
-/* Newsletter form: 60% of column, centered */
+/* Newsletter form: 60% of column, centered; flex row so input + button share one height */
 .footerEmailCustom .edi-footer-newsletter-form {
   width: 60%;
   max-width: 60%;
   margin-left: auto;
   margin-right: auto;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
 }
 
-/* Footer newsletter control shape + spacing */
-.footerEmailCustom #newsletterEmail {
-  padding: 0.75rem 0.95rem !important;
-  min-height: 46px;
+.footerEmailCustom .edi-footer-newsletter-form .input-group-append {
+  display: flex;
+  margin: 0;
+}
+
+/* Footer newsletter: one shared row height (border-box), aligned tops/bottoms */
+.footerEmailCustom .edi-footer-newsletter-form #newsletterEmail {
+  flex: 1 1 auto;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 0.95rem !important;
   border-width: 2px !important;
+  border-right: none !important;
   border-radius: 0 !important;
   font-size: 0.95rem;
+  line-height: 1.2;
 }
 
 .footerEmailCustom .edi-footer-newsletter-form .input-group-append .newsl-subscribe-btn {
-  min-height: 46px;
-  padding: 0.7rem 1.35rem !important;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  min-height: 48px;
+  padding: 0 1.25rem !important;
   border-radius: 0 !important;
   border: 2px solid var(--edi-green) !important;
   background-color: var(--edi-green-darker) !important;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
+  line-height: 1.2;
   letter-spacing: 0.02em;
   text-transform: uppercase;
 }
@@ -1730,28 +1819,17 @@ h6.text-primary:not(.text-white),
     width: 100%;
     max-width: 100%;
     margin-top: 0.85rem !important;
-    display: flex;
-    align-items: stretch;
   }
 
   .footerEmailCustom .edi-footer-newsletter-form #newsletterEmail {
     font-size: 0.95rem;
-    height: 48px;
-    min-height: 48px;
     border-right: none !important;
   }
 
   .footerEmailCustom .edi-footer-newsletter-form .input-group-append .newsl-subscribe-btn {
-    font-size: 1rem;
     min-width: 110px;
-    height: 48px;
-    min-height: 48px;
-    padding: 0.7rem 0.95rem !important;
+    font-size: 0.95rem;
     margin-left: 0 !important;
-  }
-
-  .footerEmailCustom .edi-footer-newsletter-form .input-group-append {
-    display: flex;
   }
 }
 

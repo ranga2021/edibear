@@ -10688,7 +10688,7 @@ h6,
 }
 
 .blog-item:hover {
-  box-shadow: 0 0 15px var(--warning);
+  box-shadow: 0 0 15px #e6b820;
 }
 
 .blog-date {
@@ -12269,7 +12269,7 @@ h6,
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 2px solid #33a675 !important; /* Bold green border */
+    border: 1px solid #33a675 !important; /* Bold green border */
     border-radius: 6px !important;       /* Rounded corners as per image */
     margin: 0 2px;                        /* Spacing between boxes */
     transition: 0.3s;
