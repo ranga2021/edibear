@@ -223,8 +223,8 @@
             </div>
 
             <div class="col-md-3 mb-2">
-                    <select class="explorer-select" name="product_subcategory_id" id="explorer_exp_sub" disabled>
-                     <option value="" disabled selected class="edi-exp-sub-need-cat">Please select a category first to see subcategories.</option>
+                    <select class="explorer-select" name="product_subcategory_id" id="explorer_exp_sub" disabled title="Please select a category first to see subcategories.">
+                     <option value="" disabled selected class="edi-exp-sub-need-cat">Subcategory (pick category first)</option>
                      <option value="" class="edi-exp-sub-none">Subcategory (optional)</option>
                     <?php foreach ($exploreProductSubcategories as $sub): ?>
                       <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>">

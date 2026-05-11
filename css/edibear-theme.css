@@ -140,6 +140,29 @@ h4.text-danger {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%239a9b9c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
 }
 
+/* Subcategory: match other explorer selects (same height/width column; long label no longer wraps) */
+.explorer-search-area select#explorer_exp_sub.explorer-select {
+  height: 3rem;
+  min-height: 3rem;
+  max-height: 3rem;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Disabled subcategory: same outer look as Language/Grade/Category (white field, green frame) */
+.explorer-search-area select#explorer_exp_sub.explorer-select:disabled {
+  opacity: 1;
+  background-color: #fff;
+  color: #8f8d8c;
+  border-color: rgba(51, 166, 117, 0.42);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.92) inset,
+    0 2px 10px rgba(0, 0, 0, 0.06);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2333a675' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}
+
 /* Native option list: limited browser support, improves Firefox & some builds */
 .explorer-search-area select.explorer-select option {
   font-family: var(--edi-font-sans);
@@ -214,6 +237,10 @@ h4.text-danger {
 
   .explorer-search-area select.explorer-select:disabled::picker-icon {
     color: #9a9b9c;
+  }
+
+  .explorer-search-area select#explorer_exp_sub.explorer-select:disabled::picker-icon {
+    color: var(--edi-green);
   }
 }
 
@@ -1715,7 +1742,6 @@ h6.text-primary:not(.text-white),
   z-index: 1;
   clear: both;
   margin-top: 0;
-  padding-top: 2.5rem;
   background-color: #fff;
 }
 
