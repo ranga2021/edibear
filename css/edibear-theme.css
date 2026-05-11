@@ -395,13 +395,14 @@ body.index #honey-market-section,
 body.index .edi-home-ad-slot,
 body.index .edi-trail-tales-wrap,
 body.index #play-section.edi-hidden-den-section,
-body.index #challenge-section,
-.footer {
+body.index #challenge-section{
   margin-top: var(--edi-home-section-gap) !important;
   margin-bottom: 0 !important;
   padding-bottom: 0 !important;
 }
-
+.footer {
+  margin-top: var(--edi-home-section-gap) !important;
+}
 body.index #learn-section .edi-learn-cards-row {
   margin-top: 30px;
 }
