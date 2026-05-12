@@ -225,7 +225,7 @@
             <div class="col-md-3 mb-2">
                     <select class="explorer-select" name="product_subcategory_id" id="explorer_exp_sub" disabled title="Please select a category first to see subcategories.">
                      <option value="" disabled selected hidden class="edi-exp-sub-need-cat">Subcategory (pick category first)</option>
-                     <option value="" class="edi-exp-sub-none">Subcategory (optional)</option>
+                     <option value="" hidden class="edi-exp-sub-none">Subcategory (optional)</option>
                     <?php foreach ($exploreProductSubcategories as $sub): ?>
                       <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>">
                      <?php echo htmlspecialchars((string) $sub['title'], ENT_QUOTES, 'UTF-8'); ?>
@@ -744,7 +744,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             needCat.selected = false;
         }
         if (noneOpt) {
-            noneOpt.hidden = false;
+            noneOpt.hidden = true;
             noneOpt.disabled = false;
         }
         var current = String(subSel.value || "");

@@ -205,6 +205,15 @@ if ($forceExplorer && $exploreProductCatId > 0) {
         }
     }
     if ($exploreCategoryName === "") {
+        try {
+            $pcNameStmt = $conn->prepare("SELECT `name` FROM `product_categories` WHERE `id` = ? LIMIT 1");
+            $pcNameStmt->execute(array($exploreProductCatId));
+            $exploreCategoryName = trim((string) $pcNameStmt->fetchColumn());
+        } catch (Throwable $e) {
+            $exploreCategoryName = "";
+        }
+    }
+    if ($exploreCategoryName === "") {
         $exploreCategoryName = "Category";
     }
 }
@@ -218,6 +227,15 @@ if ($forceExplorer && $exploreProductSubId > 0) {
         }
     }
     if ($exploreSubcategoryTitle === "") {
+        try {
+            $psTitleStmt = $conn->prepare("SELECT `title` FROM `product_subcategories` WHERE `id` = ? LIMIT 1");
+            $psTitleStmt->execute(array($exploreProductSubId));
+            $exploreSubcategoryTitle = trim((string) $psTitleStmt->fetchColumn());
+        } catch (Throwable $e) {
+            $exploreSubcategoryTitle = "";
+        }
+    }
+    if ($exploreSubcategoryTitle === "") {
         $exploreSubcategoryTitle = "Subcategory";
     }
 }
@@ -228,6 +246,17 @@ if ($catF !== "") {
         if ((string) $cRow["id"] === (string) $catF) {
             $categoryNameForCrumb = (string) $cRow["name"];
             break;
+        }
+    }
+    if ($categoryNameForCrumb === "") {
+        if (ctype_digit((string) $catF)) {
+            try {
+                $pcCrumbStmt = $conn->prepare("SELECT `name` FROM `product_categories` WHERE `id` = ? LIMIT 1");
+                $pcCrumbStmt->execute(array((int) $catF));
+                $categoryNameForCrumb = trim((string) $pcCrumbStmt->fetchColumn());
+            } catch (Throwable $e) {
+                $categoryNameForCrumb = "";
+            }
         }
     }
     if ($categoryNameForCrumb === "") {
