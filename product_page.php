@@ -467,6 +467,33 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
 <head>
     <?php echo $userHeader->printUserHeader() ?>
     <link rel="stylesheet" href="css/product_style.css">
+    <style>
+      /* Treasures worksheet pager: force readable text (global rules were washing out outline buttons) */
+      .edi-explorer-pager a.btn,
+      .edi-explorer-pager a.btn-outline-secondary {
+        color: #0f172a !important;
+        border-color: #475569 !important;
+        background-color: #ffffff !important;
+        font-weight: 600;
+      }
+      .edi-explorer-pager a.btn:hover,
+      .edi-explorer-pager a.btn:focus {
+        color: #ffffff !important;
+        background-color: #33a675 !important;
+        border-color: #2d8a54 !important;
+      }
+      .edi-explorer-pager .btn-success,
+      .edi-explorer-pager span.btn-success {
+        color: #ffffff !important;
+        background-color: #33a675 !important;
+        border-color: #2d8a54 !important;
+        font-weight: 700;
+        cursor: default;
+      }
+      .edi-explorer-pager + p.text-muted {
+        color: #334155 !important;
+      }
+    </style>
 </head>
 <body>
     <?php echo $userHeader->printUserNav(); ?>
