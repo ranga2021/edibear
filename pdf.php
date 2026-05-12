@@ -47,7 +47,7 @@ if ($main_cat_id !== '') {
 // If using Honey Market taxonomy params (from homepage EXPLORE), filter by those columns when present.
 if ($main_cat_id === '' && $product_category_id !== '' && EdiExplorerContent::columnExists($conn, "pdf_details", "product_category_id")) {
     $conditions["product_category_id"] = (int) $product_category_id;
-    if ($product_subcategory_id !== '' && EdiExplorerContent::columnExists($conn, "pdf_details", "product_subcategory_id")) {
+    if ((int) $product_subcategory_id > 0 && EdiExplorerContent::columnExists($conn, "pdf_details", "product_subcategory_id")) {
         $conditions["product_subcategory_id"] = (int) $product_subcategory_id;
     }
 }
@@ -81,7 +81,7 @@ if($sub_cat_id != ""){
     if(!empty($subCat)){
         $subCatTitle = $subCat[0]['title'];
     }
-} elseif ($product_subcategory_id !== "") {
+} elseif ((int) $product_subcategory_id > 0) {
     $ps = $user->fetchAll(array("title"), array("product_subcategories"), array("id" => (int) $product_subcategory_id));
     if (!empty($ps) && isset($ps[0]["title"])) {
         $subCatTitle = (string) $ps[0]["title"];
@@ -150,6 +150,12 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
     if (isset($_GET['sub_cat_id']) && (int) $_GET['sub_cat_id'] > 0) {
         $pagingUrlParm .= "&sub_cat_id=" . (int) $_GET['sub_cat_id'];
     }
+    if ($main_cat_id === '' && isset($_GET['product_category_id']) && (int) $_GET['product_category_id'] > 0) {
+        $pagingUrlParm .= "&product_category_id=" . (int) $_GET['product_category_id'];
+    }
+    if ($main_cat_id === '' && isset($_GET['product_subcategory_id']) && (int) $_GET['product_subcategory_id'] > 0) {
+        $pagingUrlParm .= "&product_subcategory_id=" . (int) $_GET['product_subcategory_id'];
+    }
     if ($language !== "") {
         $pagingUrlParm .= "&language=" . rawurlencode($language);
     }
@@ -166,16 +172,21 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
 
     $pdfPreserveParams = EdiContentTags::preserveListParams($language, $grade, $main_cat_id, $sub_cat_id);
 
-    if ($main_cat_id != "" && $mainCatTitle !== "" && $mainCatTitle !== "Category") {
+    $ediBcSubRaw = isset($subCatTitle) ? trim((string) $subCatTitle) : '';
+    $ediBcShowSub = ($ediBcSubRaw !== '' && $ediBcSubRaw !== 'Sub Category' && strtolower($ediBcSubRaw) !== 'subcategory');
+    $ediBcShowMain = ($mainCatTitle !== '' && $mainCatTitle !== 'Category');
+
+    $pageHeroTitleForPdf = "COLORING PAGES";
+    if ($ediBcShowSub) {
+        $pageHeroTitleForPdf = $ediBcSubRaw;
+    } elseif ($main_cat_id != "" && $ediBcShowMain) {
         $pageHeroTitleForPdf = strtoupper($mainCatTitle);
-    } elseif (isset($subCatTitle) && $subCatTitle !== "" && $subCatTitle !== "Sub Category") {
-        $pageHeroTitleForPdf = strtoupper(trim($subCatTitle));
+    } elseif ($main_cat_id === '' && $product_category_id !== '' && $ediBcShowMain) {
+        $pageHeroTitleForPdf = strtoupper($mainCatTitle);
     } elseif (isset($titleTag) && $titleTag !== "") {
-        $pageHeroTitleForPdf = strtoupper(strip_tags($titleTag));
+        $pageHeroTitleForPdf = strtoupper(strip_tags((string) $titleTag));
     } elseif ($searchTag !== "") {
         $pageHeroTitleForPdf = strtoupper(trim($searchTag));
-    } else {
-        $pageHeroTitleForPdf = "COLORING PAGES";
     }
 
     $ediPdfListParams = array();
@@ -193,6 +204,12 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
     }
     if ($main_cat_id !== "") {
         $ediPdfListParams["main_cat_id"] = (string) (int) $main_cat_id;
+    }
+    if ($main_cat_id === '' && $product_category_id !== '' && (int) $product_category_id > 0) {
+        $ediPdfListParams["product_category_id"] = (string) (int) $product_category_id;
+    }
+    if ($main_cat_id === '' && (int) $product_subcategory_id > 0) {
+        $ediPdfListParams["product_subcategory_id"] = (string) (int) $product_subcategory_id;
     }
     if (isset($searchKey) && $searchKey !== "") {
         $ediPdfListParams["search"] = $searchKey;
@@ -251,19 +268,22 @@ if ( isset($_POST['search']) && !empty($_POST['search'])) {
                     <?php if ($grade !== ""): ?>
                         <li class="breadcrumb-item"><?php echo htmlspecialchars($grade, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
-                    <?php if ($mainCatTitle !== "" && $mainCatTitle !== "Category"): ?>
+                    <?php if ($ediBcShowMain): ?>
                         <li class="breadcrumb-item"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
-                    <?php if ($subCatTitle !== "" && $subCatTitle !== "Sub Category" && $subCatTitle !== "Subcategory"): ?>
-                        <li class="breadcrumb-item"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php endif; ?>
                     <?php if (!empty($searchTag)): ?>
+                        <?php if ($ediBcShowSub): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($ediBcSubRaw, ENT_QUOTES, 'UTF-8'); ?></li>
+                        <?php endif; ?>
                         <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($searchTag, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php elseif ((string) $titleTag !== ""): ?>
+                        <?php if ($ediBcShowSub): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($ediBcSubRaw, ENT_QUOTES, 'UTF-8'); ?></li>
+                        <?php endif; ?>
                         <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars((string) $titleTag, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php elseif ($subCatTitle !== "" && $subCatTitle !== "Sub Category" && $subCatTitle !== "Subcategory"): ?>
-                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php elseif ($mainCatTitle !== "" && $mainCatTitle !== "Category"): ?>
+                    <?php elseif ($ediBcShowSub): ?>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($ediBcSubRaw, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($ediBcShowMain): ?>
                         <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php else: ?>
                         <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars("All", ENT_QUOTES, 'UTF-8'); ?></li>

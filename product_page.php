@@ -358,7 +358,9 @@ if (count($explorerSegments) === 0) {
     }
 }
 $treasuresPageHeading = "TREASURES";
-if ($forceExplorer && $exploreCategoryName !== "") {
+if ($forceExplorer && $exploreProductSubId > 0 && $exploreSubcategoryTitle !== "") {
+    $treasuresPageHeading = $exploreSubcategoryTitle;
+} elseif ($forceExplorer && $exploreCategoryName !== "") {
     $treasuresPageHeading = strtoupper($exploreCategoryName);
 } elseif ($mcatF > 0 && $contentMainTitle !== "") {
     $treasuresPageHeading = strtoupper($contentMainTitle);

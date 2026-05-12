@@ -50,7 +50,7 @@ if($sub_cat_id != ""){
 
 if ($main_cat_id === '' && $product_category_id !== '' && EdiExplorerContent::columnExists($conn, "homework_details", "product_category_id")) {
     $conditions["product_category_id"] = (int) $product_category_id;
-    if ($product_subcategory_id !== '' && EdiExplorerContent::columnExists($conn, "homework_details", "product_subcategory_id")) {
+    if ((int) $product_subcategory_id > 0 && EdiExplorerContent::columnExists($conn, "homework_details", "product_subcategory_id")) {
         $conditions["product_subcategory_id"] = (int) $product_subcategory_id;
     }
 }
@@ -76,7 +76,7 @@ if($sub_cat_id != ""){
     if(!empty($subCat)){
         $subCatTitle = $subCat[0]['title'];
     }
-} elseif ($product_subcategory_id !== "") {
+} elseif ((int) $product_subcategory_id > 0) {
     $ps = $user->fetchAll(array("title"), array("product_subcategories"), array("id" => (int) $product_subcategory_id));
     if (!empty($ps) && isset($ps[0]["title"])) {
         $subCatTitle = (string) $ps[0]["title"];
@@ -153,6 +153,12 @@ if($sub_cat_id != ""){
     if (isset($_GET['sub_cat_id']) && (int) $_GET['sub_cat_id'] > 0) {
         $pagingUrlParm .= "&sub_cat_id=" . (int) $_GET['sub_cat_id'];
     }
+    if ($main_cat_id === '' && isset($_GET['product_category_id']) && (int) $_GET['product_category_id'] > 0) {
+        $pagingUrlParm .= "&product_category_id=" . (int) $_GET['product_category_id'];
+    }
+    if ($main_cat_id === '' && isset($_GET['product_subcategory_id']) && (int) $_GET['product_subcategory_id'] > 0) {
+        $pagingUrlParm .= "&product_subcategory_id=" . (int) $_GET['product_subcategory_id'];
+    }
     if ($language !== "") {
         $pagingUrlParm .= "&language=" . rawurlencode($language);
     }
@@ -164,6 +170,22 @@ if($sub_cat_id != ""){
     $listComboForTagCloud = $searchKeyLike;
 
     $homeworkPreserveParams = EdiContentTags::preserveListParams($language, $grade, $main_cat_id, $sub_cat_id);
+    if ($main_cat_id === '' && $product_category_id !== '' && (int) $product_category_id > 0) {
+        $homeworkPreserveParams["product_category_id"] = (string) (int) $product_category_id;
+    }
+    if ($main_cat_id === '' && (int) $product_subcategory_id > 0) {
+        $homeworkPreserveParams["product_subcategory_id"] = (string) (int) $product_subcategory_id;
+    }
+
+    $ediBcSubRaw = isset($subCatTitle) ? trim((string) $subCatTitle) : '';
+    $ediBcShowSub = ($ediBcSubRaw !== '' && $ediBcSubRaw !== 'Sub Category' && strtolower($ediBcSubRaw) !== 'subcategory');
+    $ediBcShowMain = ($mainCatTitle !== "" && $mainCatTitle !== "Category");
+    $homeworkPageHeroTitle = "STUDY PACKS";
+    if ($ediBcShowSub) {
+        $homeworkPageHeroTitle = $ediBcSubRaw;
+    } elseif ($ediBcShowMain) {
+        $homeworkPageHeroTitle = $mainCatTitle;
+    }
 
     $totalhomeworkPages = ceil( count($user->fetchAll(array("id"), array("homework_details"), $conditions, "", $listComboOtherH)) / 16);
     if ( isset($_GET['page']) ) {
@@ -207,17 +229,17 @@ if($sub_cat_id != ""){
                     <?php if ($grade !== ""): ?>
                         <li class="breadcrumb-item"><?php echo htmlspecialchars($grade, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
-                    <?php if ($mainCatTitle !== "" && $mainCatTitle !== "Category"): ?>
+                    <?php if ($ediBcShowMain): ?>
                         <li class="breadcrumb-item"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php endif; ?>
-                    <?php if ($subCatTitle !== "" && $subCatTitle !== "Sub Category" && $subCatTitle !== "Subcategory"): ?>
-                        <li class="breadcrumb-item"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php endif; ?>
                     <?php if (!empty($searchTag)): ?>
+                        <?php if ($ediBcShowSub): ?>
+                        <li class="breadcrumb-item"><?php echo htmlspecialchars($ediBcSubRaw, ENT_QUOTES, 'UTF-8'); ?></li>
+                        <?php endif; ?>
                         <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($searchTag, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php elseif ($subCatTitle !== "" && $subCatTitle !== "Sub Category" && $subCatTitle !== "Subcategory"): ?>
-                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($subCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
-                    <?php elseif ($mainCatTitle !== "" && $mainCatTitle !== "Category"): ?>
+                    <?php elseif ($ediBcShowSub): ?>
+                        <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($ediBcSubRaw, ENT_QUOTES, 'UTF-8'); ?></li>
+                    <?php elseif ($ediBcShowMain): ?>
                         <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($mainCatTitle, ENT_QUOTES, 'UTF-8'); ?></li>
                     <?php else: ?>
                         <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars("All", ENT_QUOTES, 'UTF-8'); ?></li>
@@ -227,7 +249,7 @@ if($sub_cat_id != ""){
 
                 
             <div class="edi-page-title-row mt-2">
-                        <h1><?php echo htmlspecialchars($mainCatTitle !== "Category" ? $mainCatTitle : "STUDY PACKS", ENT_QUOTES, 'UTF-8'); ?></h1>
+                        <h1><?php echo htmlspecialchars($homeworkPageHeroTitle, ENT_QUOTES, 'UTF-8'); ?></h1>
                         <div class="edi-page-title-rule" role="presentation"></div>
             </div>
             
