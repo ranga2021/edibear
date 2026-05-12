@@ -629,4 +629,432 @@ class EdiExplorerContent
         }
         return $out;
     }
+
+    /** @var int Worksheets (all free-content types) per page on Treasures explorer */
+    public static function explorerWorksPerPage()
+    {
+        return 16;
+    }
+
+    /**
+     * @return string|null table name or null
+     */
+    private static function explorerTableForKind($kind)
+    {
+        $k = (string) $kind;
+        if ($k === 'pdf') {
+            return 'pdf_details';
+        }
+        if ($k === 'books') {
+            return 'books_details';
+        }
+        if ($k === 'homework') {
+            return 'homework_details';
+        }
+        return null;
+    }
+
+    /**
+     * WHERE fragment after `WHERE t.status = 1` for main_cat / sub_cat explorer filters.
+     *
+     * @param array<string, mixed> $params
+     * @return string
+     */
+    private static function sqlFragmentContentExplorerFilters($langF, $ageF, $mainCatId, $subCatId, array &$params, $paramPrefix)
+    {
+        $pfx = preg_replace('/[^a-zA-Z0-9_]/', '', (string) $paramPrefix);
+        if ($pfx === '') {
+            $pfx = 'p';
+        }
+        $sql = '';
+        $sql .= ' AND t.main_cat_id = :' . $pfx . '_mcid';
+        $params[':' . $pfx . '_mcid'] = (int) $mainCatId;
+        if ((int) $subCatId > 0) {
+            $sql .= ' AND t.sub_cat_id = :' . $pfx . '_scid';
+            $params[':' . $pfx . '_scid'] = (int) $subCatId;
+        }
+        if ($langF !== '') {
+            $sql .= ' AND EXISTS (SELECT 1 FROM `languages` l WHERE l.id = t.language_id AND LOWER(TRIM(l.title)) = LOWER(:' . $pfx . '_lang))';
+            $params[':' . $pfx . '_lang'] = $langF;
+        }
+        if ($ageF !== '') {
+            $sql .= ' AND EXISTS (SELECT 1 FROM `grades` g WHERE g.id = t.grade_id AND TRIM(g.title) = :' . $pfx . '_age)';
+            $params[':' . $pfx . '_age'] = $ageF;
+        }
+        return $sql;
+    }
+
+    /**
+     * WHERE fragment after `WHERE t.status = 1` for Honey Market product category explorer.
+     *
+     * @param array<string, mixed> $params
+     * @return string|null null if table has no product_category_id column
+     */
+    private static function sqlFragmentProductExplorerFilters(PDO $conn, $table, $langF, $ageF, $productCatId, $productSubId, array &$params, $paramPrefix)
+    {
+        if (!self::columnExists($conn, $table, 'product_category_id')) {
+            return null;
+        }
+        $pfx = preg_replace('/[^a-zA-Z0-9_]/', '', (string) $paramPrefix);
+        if ($pfx === '') {
+            $pfx = 'p';
+        }
+        $sql = '';
+        $sql .= ' AND t.product_category_id = :' . $pfx . '_pcid';
+        $params[':' . $pfx . '_pcid'] = (int) $productCatId;
+        $hasSub = self::columnExists($conn, $table, 'product_subcategory_id');
+        if ((int) $productSubId > 0 && $hasSub) {
+            $sql .= ' AND t.product_subcategory_id = :' . $pfx . '_psid';
+            $params[':' . $pfx . '_psid'] = (int) $productSubId;
+        }
+        if ($langF !== '') {
+            $sql .= ' AND EXISTS (SELECT 1 FROM `languages` l WHERE l.id = t.language_id AND LOWER(TRIM(l.title)) = LOWER(:' . $pfx . '_lang))';
+            $params[':' . $pfx . '_lang'] = $langF;
+        }
+        if ($ageF !== '') {
+            $sql .= ' AND EXISTS (SELECT 1 FROM `grades` g WHERE g.id = t.grade_id AND TRIM(g.title) = :' . $pfx . '_age)';
+            $params[':' . $pfx . '_age'] = $ageF;
+        }
+        return $sql;
+    }
+
+    /**
+     * @return array<int, array{ws_kind:string, row:array<string, mixed>}>
+     */
+    private static function hydrateMergedExplorerRows(PDO $conn, array $unionRows)
+    {
+        $buckets = array('pdf' => array(), 'books' => array(), 'homework' => array());
+        $order = array();
+        foreach ($unionRows as $r) {
+            if (!is_array($r)) {
+                continue;
+            }
+            $kind = (string) ($r['ws_kind'] ?? '');
+            $id = (int) ($r['id'] ?? 0);
+            if ($id <= 0 || !isset($buckets[$kind])) {
+                continue;
+            }
+            $buckets[$kind][$id] = true;
+            $order[] = array($kind, $id);
+        }
+        $loaded = array('pdf' => array(), 'books' => array(), 'homework' => array());
+        foreach ($buckets as $kind => $idSet) {
+            if (!$idSet) {
+                continue;
+            }
+            $table = self::explorerTableForKind($kind);
+            if ($table === null) {
+                continue;
+            }
+            $ids = array_values(array_filter(array_map('intval', array_keys($idSet))));
+            if ($ids === array()) {
+                continue;
+            }
+            $in = implode(',', $ids);
+            $tblEsc = str_replace('`', '``', $table);
+            try {
+                $st = $conn->query("SELECT * FROM `" . $tblEsc . "` WHERE `id` IN (" . $in . ") AND `status` = 1");
+                if (!$st) {
+                    continue;
+                }
+                foreach ($st->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                    $loaded[$kind][(int) $row['id']] = $row;
+                }
+            } catch (Throwable $e) {
+            }
+        }
+        $out = array();
+        foreach ($order as $pair) {
+            $kind = $pair[0];
+            $id = $pair[1];
+            if (!empty($loaded[$kind][$id])) {
+                $out[] = array('ws_kind' => $kind, 'row' => $loaded[$kind][$id]);
+            }
+        }
+        return $out;
+    }
+
+    /**
+     * Total published worksheets (pdf + books + homework) for content-category explorer.
+     */
+    public static function countMergedExplorerByContentTaxonomy(PDO $conn, $langF, $ageF, $mainCatId, $subCatId)
+    {
+        if ((int) $mainCatId <= 0) {
+            return 0;
+        }
+        $total = 0;
+        foreach (array('pdf_details', 'books_details', 'homework_details') as $table) {
+            $params = array();
+            $sql = 'SELECT COUNT(*) FROM `' . str_replace('`', '``', $table) . '` t WHERE t.status = 1';
+            $sql .= self::sqlFragmentContentExplorerFilters($langF, $ageF, $mainCatId, $subCatId, $params, 'cnt_' . $table);
+            try {
+                $st = $conn->prepare($sql);
+                $st->execute($params);
+                $total += (int) $st->fetchColumn();
+            } catch (Throwable $e) {
+            }
+        }
+        return $total;
+    }
+
+    /**
+     * One page of merged worksheets for content-category explorer (newest first by `timestamp`).
+     *
+     * @return array<int, array{ws_kind:string, row:array<string, mixed>}>
+     */
+    public static function fetchMergedExplorerPageByContentTaxonomy(PDO $conn, $langF, $ageF, $mainCatId, $subCatId, $page, $perPage = null)
+    {
+        if ((int) $mainCatId <= 0) {
+            return array();
+        }
+        $pp = $perPage === null ? self::explorerWorksPerPage() : max(1, (int) $perPage);
+        $pg = max(1, (int) $page);
+        $offset = ($pg - 1) * $pp;
+        $params = array();
+        $parts = array();
+        foreach (array(
+            array('pdf_details', 'pdf', 'u_pdf'),
+            array('books_details', 'books', 'u_books'),
+            array('homework_details', 'homework', 'u_hw'),
+        ) as $trip) {
+            $tbl = $trip[0];
+            $kind = $trip[1];
+            $pfx = $trip[2];
+            $frag = self::sqlFragmentContentExplorerFilters($langF, $ageF, $mainCatId, $subCatId, $params, $pfx);
+            $tblEsc = str_replace('`', '``', $tbl);
+            $parts[] = "(SELECT '" . $kind . "' AS ws_kind, t.id, t.`timestamp` AS row_ts FROM `" . $tblEsc . "` t WHERE t.status = 1" . $frag . ')';
+        }
+        $union = implode(' UNION ALL ', $parts) . ' ORDER BY row_ts DESC, id DESC, ws_kind ASC LIMIT ' . (int) $pp . ' OFFSET ' . (int) $offset;
+        try {
+            $st = $conn->prepare($union);
+            $st->execute($params);
+            $unionRows = $st->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            return array();
+        }
+        return self::hydrateMergedExplorerRows($conn, $unionRows);
+    }
+
+    /**
+     * Total for Honey Market product category explorer.
+     */
+    public static function countMergedExplorerByProductTaxonomy(PDO $conn, $langF, $ageF, $productCatId, $productSubId)
+    {
+        if ((int) $productCatId <= 0) {
+            return 0;
+        }
+        $total = 0;
+        foreach (array('pdf_details', 'books_details', 'homework_details') as $table) {
+            if (!self::columnExists($conn, $table, 'product_category_id')) {
+                continue;
+            }
+            $params = array();
+            $frag = self::sqlFragmentProductExplorerFilters($conn, $table, $langF, $ageF, $productCatId, $productSubId, $params, 'pcnt_' . $table);
+            if ($frag === null) {
+                continue;
+            }
+            $sql = 'SELECT COUNT(*) FROM `' . str_replace('`', '``', $table) . '` t WHERE t.status = 1' . $frag;
+            try {
+                $st = $conn->prepare($sql);
+                $st->execute($params);
+                $total += (int) $st->fetchColumn();
+            } catch (Throwable $e) {
+            }
+        }
+        return $total;
+    }
+
+    /**
+     * One page of merged worksheets for product-category explorer.
+     *
+     * @return array<int, array{ws_kind:string, row:array<string, mixed>}>
+     */
+    public static function fetchMergedExplorerPageByProductTaxonomy(PDO $conn, $langF, $ageF, $productCatId, $productSubId, $page, $perPage = null)
+    {
+        if ((int) $productCatId <= 0) {
+            return array();
+        }
+        $pp = $perPage === null ? self::explorerWorksPerPage() : max(1, (int) $perPage);
+        $pg = max(1, (int) $page);
+        $offset = ($pg - 1) * $pp;
+        $params = array();
+        $parts = array();
+        foreach (array(
+            array('pdf_details', 'pdf', 'up_pdf'),
+            array('books_details', 'books', 'up_books'),
+            array('homework_details', 'homework', 'up_hw'),
+        ) as $trip) {
+            $tbl = $trip[0];
+            $kind = $trip[1];
+            $pfx = $trip[2];
+            $frag = self::sqlFragmentProductExplorerFilters($conn, $tbl, $langF, $ageF, $productCatId, $productSubId, $params, $pfx);
+            if ($frag === null) {
+                continue;
+            }
+            $tblEsc = str_replace('`', '``', $tbl);
+            $parts[] = "(SELECT '" . $kind . "' AS ws_kind, t.id, t.`timestamp` AS row_ts FROM `" . $tblEsc . "` t WHERE t.status = 1" . $frag . ')';
+        }
+        if ($parts === array()) {
+            return array();
+        }
+        $union = implode(' UNION ALL ', $parts) . ' ORDER BY row_ts DESC, id DESC, ws_kind ASC LIMIT ' . (int) $pp . ' OFFSET ' . (int) $offset;
+        try {
+            $st = $conn->prepare($union);
+            $st->execute($params);
+            $unionRows = $st->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            return array();
+        }
+        return self::hydrateMergedExplorerRows($conn, $unionRows);
+    }
+
+    /**
+     * True when ws_* tables exist and pdf/books/homework rows can store ws_category_id (homepage explore uses this).
+     */
+    public static function worksheetWsExplorerReady(PDO $conn)
+    {
+        require_once __DIR__ . '/edi_ws_taxonomy.php';
+        if (!EdiWsTaxonomy::tableExists($conn, 'ws_categories') || !EdiWsTaxonomy::tableExists($conn, 'ws_subcategories')) {
+            return false;
+        }
+        foreach (array('pdf_details', 'books_details', 'homework_details') as $t) {
+            if (!self::columnExists($conn, $t, 'ws_category_id')) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * WHERE fragment after `WHERE t.status = 1` for worksheet ws_* explorer filters.
+     *
+     * @param array<string, mixed> $params
+     * @return string|null
+     */
+    private static function sqlFragmentWsExplorerFilters(PDO $conn, $table, $langF, $ageF, $wsCatId, $wsSubId, array &$params, $paramPrefix)
+    {
+        if (!self::columnExists($conn, $table, 'ws_category_id')) {
+            return null;
+        }
+        $pfx = preg_replace('/[^a-zA-Z0-9_]/', '', (string) $paramPrefix);
+        if ($pfx === '') {
+            $pfx = 'w';
+        }
+        $sql = '';
+        $sql .= ' AND t.ws_category_id = :' . $pfx . '_wcid';
+        $params[':' . $pfx . '_wcid'] = (int) $wsCatId;
+        if ((int) $wsSubId > 0 && self::columnExists($conn, $table, 'ws_subcategory_id')) {
+            $sql .= ' AND t.ws_subcategory_id = :' . $pfx . '_wsid';
+            $params[':' . $pfx . '_wsid'] = (int) $wsSubId;
+        }
+        if ($langF !== '') {
+            $sql .= ' AND EXISTS (SELECT 1 FROM `languages` l WHERE l.id = t.language_id AND LOWER(TRIM(l.title)) = LOWER(:' . $pfx . '_lang))';
+            $params[':' . $pfx . '_lang'] = $langF;
+        }
+        if ($ageF !== '') {
+            $sql .= ' AND EXISTS (SELECT 1 FROM `grades` g WHERE g.id = t.grade_id AND TRIM(g.title) = :' . $pfx . '_age)';
+            $params[':' . $pfx . '_age'] = $ageF;
+        }
+        return $sql;
+    }
+
+    /**
+     * Tag rows for explorer when filtering by ws_* taxonomy ($limit <= 0 = all matches).
+     *
+     * @return array<int, array{tag?: string}>
+     */
+    public static function fetchMatchingTagRowsByWsTaxonomy(PDO $conn, $table, $langF, $ageF, $wsCatId, $wsSubId, $limit = 500)
+    {
+        $wcid = (int) $wsCatId;
+        if ($wcid <= 0) {
+            return array();
+        }
+        $params = array();
+        $frag = self::sqlFragmentWsExplorerFilters($conn, $table, $langF, $ageF, $wcid, $wsSubId, $params, 'tagws');
+        if ($frag === null) {
+            return array();
+        }
+        $sql = 'SELECT t.tag FROM `' . str_replace('`', '``', $table) . '` t WHERE t.status = 1' . $frag;
+        $lim = (int) $limit;
+        if ($lim > 0) {
+            $sql .= ' ORDER BY t.id DESC LIMIT ' . $lim;
+        }
+        try {
+            $st = $conn->prepare($sql);
+            $st->execute($params);
+            return $st->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            return array();
+        }
+    }
+
+    /**
+     * Total published worksheets for ws_* explorer filters.
+     */
+    public static function countMergedExplorerByWsTaxonomy(PDO $conn, $langF, $ageF, $wsCatId, $wsSubId)
+    {
+        if ((int) $wsCatId <= 0) {
+            return 0;
+        }
+        $total = 0;
+        foreach (array('pdf_details', 'books_details', 'homework_details') as $table) {
+            $params = array();
+            $frag = self::sqlFragmentWsExplorerFilters($conn, $table, $langF, $ageF, (int) $wsCatId, (int) $wsSubId, $params, 'wcnt_' . $table);
+            if ($frag === null) {
+                continue;
+            }
+            $sql = 'SELECT COUNT(*) FROM `' . str_replace('`', '``', $table) . '` t WHERE t.status = 1' . $frag;
+            try {
+                $st = $conn->prepare($sql);
+                $st->execute($params);
+                $total += (int) $st->fetchColumn();
+            } catch (Throwable $e) {
+            }
+        }
+        return $total;
+    }
+
+    /**
+     * One page of merged worksheets for ws_* explorer (newest first by `timestamp`).
+     *
+     * @return array<int, array{ws_kind:string, row:array<string, mixed>}>
+     */
+    public static function fetchMergedExplorerPageByWsTaxonomy(PDO $conn, $langF, $ageF, $wsCatId, $wsSubId, $page, $perPage = null)
+    {
+        if ((int) $wsCatId <= 0) {
+            return array();
+        }
+        $pp = $perPage === null ? self::explorerWorksPerPage() : max(1, (int) $perPage);
+        $pg = max(1, (int) $page);
+        $offset = ($pg - 1) * $pp;
+        $params = array();
+        $parts = array();
+        foreach (array(
+            array('pdf_details', 'pdf', 'uw_pdf'),
+            array('books_details', 'books', 'uw_books'),
+            array('homework_details', 'homework', 'uw_hw'),
+        ) as $trip) {
+            $tbl = $trip[0];
+            $kind = $trip[1];
+            $pfx = $trip[2];
+            $frag = self::sqlFragmentWsExplorerFilters($conn, $tbl, $langF, $ageF, (int) $wsCatId, (int) $wsSubId, $params, $pfx);
+            if ($frag === null) {
+                continue;
+            }
+            $tblEsc = str_replace('`', '``', $tbl);
+            $parts[] = "(SELECT '" . $kind . "' AS ws_kind, t.id, t.`timestamp` AS row_ts FROM `" . $tblEsc . "` t WHERE t.status = 1" . $frag . ')';
+        }
+        if ($parts === array()) {
+            return array();
+        }
+        $union = implode(' UNION ALL ', $parts) . ' ORDER BY row_ts DESC, id DESC, ws_kind ASC LIMIT ' . (int) $pp . ' OFFSET ' . (int) $offset;
+        try {
+            $st = $conn->prepare($union);
+            $st->execute($params);
+            $unionRows = $st->fetchAll(PDO::FETCH_ASSOC);
+        } catch (Throwable $e) {
+            return array();
+        }
+        return self::hydrateMergedExplorerRows($conn, $unionRows);
+    }
 }

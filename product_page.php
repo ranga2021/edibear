@@ -84,11 +84,16 @@ $subF = isset($_GET["sub"]) ? (int) $_GET["sub"] : 0;
 $mcatF = isset($_GET["main_cat_id"]) ? (int) $_GET["main_cat_id"] : 0;
 $scatF = isset($_GET["sub_cat_id"]) ? (int) $_GET["sub_cat_id"] : 0;
 
-// Homepage EXPLORE now sends Honey Market taxonomy ids; map them to free-content ids here.
+// Homepage EXPLORE: worksheet ws_* taxonomy (preferred when enabled) or Honey Market product_category ids.
 $exploreProductCatId = isset($_GET["product_category_id"]) ? (int) $_GET["product_category_id"] : 0;
 $exploreProductSubId = isset($_GET["product_subcategory_id"]) ? (int) $_GET["product_subcategory_id"] : 0;
+$exploreWsCatId = isset($_GET["ws_category_id"]) ? (int) $_GET["ws_category_id"] : 0;
+$exploreWsSubId = isset($_GET["ws_subcategory_id"]) ? (int) $_GET["ws_subcategory_id"] : 0;
+$forceExplorerWs = EdiExplorerContent::worksheetWsExplorerReady($conn) && $exploreWsCatId > 0;
 $forceExplorer = false;
-if ($exploreProductCatId > 0) {
+if ($forceExplorerWs) {
+    $forceExplorer = true;
+} elseif ($exploreProductCatId > 0) {
     $forceExplorer = true;
     $mapped = EdiExplorerContent::mapProductSelectionsToContentCategoryIds($conn, $exploreProductCatId, $exploreProductSubId);
     $mcatF = isset($mapped["main_cat_id"]) && $mapped["main_cat_id"] ? (int) $mapped["main_cat_id"] : 0;
@@ -139,25 +144,66 @@ if ($mcatF === 0 && !$forceExplorer) {
     $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$explorerPdfs = array();
-$explorerBooks = array();
-$explorerHomeworks = array();
-// Explorer Treasures: load enough rows for client-side tag filtering; tag list scans all matching rows (limit 0).
-$ediExplorerCardLimit = 400;
-if ($forceExplorer) {
-    $explorerPdfs = EdiExplorerContent::fetchMatchingByProductTaxonomy($conn, "pdf_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, $ediExplorerCardLimit);
-    $explorerBooks = EdiExplorerContent::fetchMatchingByProductTaxonomy($conn, "books_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, $ediExplorerCardLimit);
-    $explorerHomeworks = EdiExplorerContent::fetchMatchingByProductTaxonomy($conn, "homework_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, $ediExplorerCardLimit);
+$explorerMergedItems = array();
+$explorerMergedTotal = 0;
+$ediExplorerPerPage = EdiExplorerContent::explorerWorksPerPage();
+$ediExplorerPageNum = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+if ($forceExplorerWs) {
+    $explorerMergedTotal = EdiExplorerContent::countMergedExplorerByWsTaxonomy($conn, $langF, $ageF, $exploreWsCatId, $exploreWsSubId);
+    $ediExplorerMaxPage = max(1, (int) ceil($explorerMergedTotal / $ediExplorerPerPage));
+    if ($ediExplorerPageNum > $ediExplorerMaxPage) {
+        $ediExplorerPageNum = $ediExplorerMaxPage;
+    }
+    $explorerMergedItems = EdiExplorerContent::fetchMergedExplorerPageByWsTaxonomy(
+        $conn,
+        $langF,
+        $ageF,
+        $exploreWsCatId,
+        $exploreWsSubId,
+        $ediExplorerPageNum,
+        $ediExplorerPerPage
+    );
+} elseif ($forceExplorer && $exploreProductCatId > 0) {
+    $explorerMergedTotal = EdiExplorerContent::countMergedExplorerByProductTaxonomy($conn, $langF, $ageF, $exploreProductCatId, $exploreProductSubId);
+    $ediExplorerMaxPage = max(1, (int) ceil($explorerMergedTotal / $ediExplorerPerPage));
+    if ($ediExplorerPageNum > $ediExplorerMaxPage) {
+        $ediExplorerPageNum = $ediExplorerMaxPage;
+    }
+    $explorerMergedItems = EdiExplorerContent::fetchMergedExplorerPageByProductTaxonomy(
+        $conn,
+        $langF,
+        $ageF,
+        $exploreProductCatId,
+        $exploreProductSubId,
+        $ediExplorerPageNum,
+        $ediExplorerPerPage
+    );
 } elseif ($mcatF > 0) {
-    $explorerPdfs = EdiExplorerContent::fetchMatching($conn, "pdf_details", $langF, $ageF, $mcatF, $scatF, 6);
-    $explorerBooks = EdiExplorerContent::fetchMatching($conn, "books_details", $langF, $ageF, $mcatF, $scatF, 6);
-    $explorerHomeworks = EdiExplorerContent::fetchMatching($conn, "homework_details", $langF, $ageF, $mcatF, $scatF, 6);
+    $explorerMergedTotal = EdiExplorerContent::countMergedExplorerByContentTaxonomy($conn, $langF, $ageF, $mcatF, $scatF);
+    $ediExplorerMaxPage = max(1, (int) ceil($explorerMergedTotal / $ediExplorerPerPage));
+    if ($ediExplorerPageNum > $ediExplorerMaxPage) {
+        $ediExplorerPageNum = $ediExplorerMaxPage;
+    }
+    $explorerMergedItems = EdiExplorerContent::fetchMergedExplorerPageByContentTaxonomy(
+        $conn,
+        $langF,
+        $ageF,
+        $mcatF,
+        $scatF,
+        $ediExplorerPageNum,
+        $ediExplorerPerPage
+    );
 }
+$noExplorerMerged = ($explorerMergedTotal === 0);
 
 $explorerPdfTags = array();
 $explorerBookTags = array();
 $explorerHomeworkTags = array();
-if ($forceExplorer) {
+if ($forceExplorerWs) {
+    $explorerPdfTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRowsByWsTaxonomy($conn, "pdf_details", $langF, $ageF, $exploreWsCatId, $exploreWsSubId, 0));
+    $explorerBookTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRowsByWsTaxonomy($conn, "books_details", $langF, $ageF, $exploreWsCatId, $exploreWsSubId, 0));
+    $explorerHomeworkTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRowsByWsTaxonomy($conn, "homework_details", $langF, $ageF, $exploreWsCatId, $exploreWsSubId, 0));
+} elseif ($forceExplorer) {
     $explorerPdfTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRowsByProductTaxonomy($conn, "pdf_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, 0));
     $explorerBookTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRowsByProductTaxonomy($conn, "books_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, 0));
     $explorerHomeworkTags = EdiContentTags::distinctFromRows(EdiExplorerContent::fetchMatchingTagRowsByProductTaxonomy($conn, "homework_details", $langF, $ageF, $exploreProductCatId, $exploreProductSubId, 0));
@@ -174,7 +220,12 @@ if ($langF !== "") {
 if ($ageF !== "") {
     $explorerListQuery["grade"] = $ageF;
 }
-if ($forceExplorer && $exploreProductCatId > 0) {
+if ($forceExplorerWs && $exploreWsCatId > 0) {
+    $explorerListQuery["ws_category_id"] = (string) $exploreWsCatId;
+    if ($exploreWsSubId > 0) {
+        $explorerListQuery["ws_subcategory_id"] = (string) $exploreWsSubId;
+    }
+} elseif ($forceExplorer && $exploreProductCatId > 0) {
     $explorerListQuery["product_category_id"] = (string) $exploreProductCatId;
     if ($exploreProductSubId > 0) {
         $explorerListQuery["product_subcategory_id"] = (string) $exploreProductSubId;
@@ -239,6 +290,33 @@ if ($forceExplorer && $exploreProductSubId > 0) {
     }
     if ($exploreSubcategoryTitle === "") {
         $exploreSubcategoryTitle = "Subcategory";
+    }
+}
+
+$exploreWsCategoryName = "";
+$exploreWsSubName = "";
+if ($forceExplorerWs && $exploreWsCatId > 0) {
+    try {
+        $wsn = $conn->prepare("SELECT `name` FROM `ws_categories` WHERE `id` = ? LIMIT 1");
+        $wsn->execute(array($exploreWsCatId));
+        $exploreWsCategoryName = trim((string) $wsn->fetchColumn());
+    } catch (Throwable $e) {
+        $exploreWsCategoryName = "";
+    }
+    if ($exploreWsCategoryName === "") {
+        $exploreWsCategoryName = "Category";
+    }
+    if ($exploreWsSubId > 0) {
+        try {
+            $wsn2 = $conn->prepare("SELECT `name` FROM `ws_subcategories` WHERE `id` = ? LIMIT 1");
+            $wsn2->execute(array($exploreWsSubId));
+            $exploreWsSubName = trim((string) $wsn2->fetchColumn());
+        } catch (Throwable $e) {
+            $exploreWsSubName = "";
+        }
+        if ($exploreWsSubName === "") {
+            $exploreWsSubName = "Subcategory";
+        }
     }
 }
 
@@ -307,7 +385,18 @@ if ($scatF > 0) {
 }
 
 $explorerSegments = array();
-if ($forceExplorer) {
+if ($forceExplorerWs) {
+    if ($langF !== "") {
+        $explorerSegments[] = array("key" => "lang", "value" => $langF, "label" => $langF);
+    }
+    if ($ageF !== "") {
+        $explorerSegments[] = array("key" => "age", "value" => $ageF, "label" => $ageF);
+    }
+    $explorerSegments[] = array("key" => "ws_category_id", "value" => (string) $exploreWsCatId, "label" => $exploreWsCategoryName);
+    if ($exploreWsSubId > 0) {
+        $explorerSegments[] = array("key" => "ws_subcategory_id", "value" => (string) $exploreWsSubId, "label" => $exploreWsSubName);
+    }
+} elseif ($forceExplorer) {
     // For homepage EXPLORE: breadcrumb should follow selected search criteria.
     if ($langF !== "") {
         $explorerSegments[] = array("key" => "lang", "value" => $langF, "label" => $langF);
@@ -360,7 +449,11 @@ if (count($explorerSegments) === 0) {
     }
 }
 $treasuresPageHeading = "TREASURES";
-if ($forceExplorer && $exploreProductSubId > 0 && $exploreSubcategoryTitle !== "") {
+if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
+    $treasuresPageHeading = $exploreWsSubName;
+} elseif ($forceExplorerWs && $exploreWsCategoryName !== "") {
+    $treasuresPageHeading = strtoupper($exploreWsCategoryName);
+} elseif ($forceExplorer && $exploreProductSubId > 0 && $exploreSubcategoryTitle !== "") {
     $treasuresPageHeading = $exploreSubcategoryTitle;
 } elseif ($forceExplorer && $exploreCategoryName !== "") {
     $treasuresPageHeading = strtoupper($exploreCategoryName);
@@ -406,17 +499,16 @@ if ($forceExplorer && $exploreProductSubId > 0 && $exploreSubcategoryTitle !== "
             <h1><?php echo htmlspecialchars($treasuresPageHeading, ENT_QUOTES, "UTF-8"); ?></h1>
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
-        <?php if ($forceExplorer): ?>
+        <?php
+        $explorerMergedTagsForBar = array();
+        if ($forceExplorer) {
+            $explorerMergedTagsForBar = array_values(array_unique(array_merge($explorerPdfTags, $explorerBookTags, $explorerHomeworkTags)));
+            sort($explorerMergedTagsForBar, SORT_NATURAL | SORT_FLAG_CASE);
+        }
+        ?>
+        <?php if ($forceExplorer && $explorerMergedTagsForBar !== array()): ?>
         <div class="mt-2 mb-3">
-            <?php if (!empty($explorerPdfTags)): ?>
-                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerPdfTags, "pdf.php", $explorerListQuery, 10, "pdf", "#edi-explorer-region-pdf"); ?>
-            <?php endif; ?>
-            <?php if (!empty($explorerBookTags)): ?>
-                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerBookTags, "books.php", $explorerListQuery, 10, "books", "#edi-explorer-region-books"); ?>
-            <?php endif; ?>
-            <?php if (!empty($explorerHomeworkTags)): ?>
-                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerHomeworkTags, "homework.php", $explorerListQuery, 10, "hw", "#edi-explorer-region-homework"); ?>
-            <?php endif; ?>
+            <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerMergedTagsForBar, "product_page.php", $explorerListQuery, 12, "all", "#edi-explorer-region-unified"); ?>
         </div>
         <?php endif; ?>
 
@@ -483,7 +575,7 @@ if ($forceExplorer && $exploreProductSubId > 0 && $exploreSubcategoryTitle !== "
 
         <div class="row treasures-product-grid mt-2">
             <?php
-            $noExplorer = empty($explorerPdfs) && empty($explorerBooks) && empty($explorerHomeworks);
+            $noExplorer = $noExplorerMerged;
             $noProducts = empty($products);
             $filteredNoResult = $noProducts && ( ($mcatF > 0 && $noExplorer) || ($mcatF === 0 && $catF !== "") );
             ?>
@@ -533,56 +625,92 @@ if ($forceExplorer && $exploreProductSubId > 0 && $exploreSubcategoryTitle !== "
         <?php endif; ?>
 
         <?php
-        $noExplorer = empty($explorerPdfs) && empty($explorerBooks) && empty($explorerHomeworks);
-        if ($forceExplorer && $noExplorer):
+        if ($forceExplorer && $noExplorerMerged):
         ?>
             <div class="col-12 text-center py-5"><h4>No resources found for these filters.</h4></div>
         <?php
         endif;
-        if (($forceExplorer || $mcatF > 0) && !$noExplorer):
-            $freeQ = $explorerListQuery;
+        if (($forceExplorer || $mcatF > 0) && !$noExplorerMerged):
+            $ediExplorerPagBase = array();
+            foreach (array('lang', 'age', 'ws_category_id', 'ws_subcategory_id', 'product_category_id', 'product_subcategory_id', 'main_cat_id', 'sub_cat_id', 'category', 'sub', 'brand', 'price', 'offers') as $ediPagKey) {
+                if (!isset($_GET[$ediPagKey])) {
+                    continue;
+                }
+                $ediPagVal = $_GET[$ediPagKey];
+                if ($ediPagVal === '' || $ediPagVal === null) {
+                    continue;
+                }
+                $ediExplorerPagBase[$ediPagKey] = is_scalar($ediPagVal) ? (string) $ediPagVal : '';
+            }
+            $ediExplorerTotalPages = max(1, (int) ceil($explorerMergedTotal / $ediExplorerPerPage));
         ?>
         <div class="mt-3">
-            <?php if (!empty($explorerPdfs)) : ?>
-            <div class="mb-5">
-                <div id="edi-explorer-region-pdf" class="edi-explorer-filter-region">
-                <div class="row">
-                    <?php
-                    foreach ($explorerPdfs as $row) {
-                        echo $widgets->displaypdfBrief($row, false, "col-md-3", 200, true);
-                    }
-                    ?>
-                </div>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <?php if (!empty($explorerBooks)) : ?>
-            <div class="mb-5">
-                <div id="edi-explorer-region-books" class="edi-explorer-filter-region">
-                <div class="row">
-                    <?php
-                    foreach ($explorerBooks as $row) {
-                        echo $widgets->displaybooksBrief(false, $row, "col-md-3", 200, true);
-                    }
-                    ?>
-                </div>
-                </div>
-            </div>
-            <?php endif; ?>
-
-            <?php if (!empty($explorerHomeworks)) : ?>
             <div class="mb-2">
-                <div id="edi-explorer-region-homework" class="edi-explorer-filter-region">
+                <div id="edi-explorer-region-unified" class="edi-explorer-filter-region">
                 <div class="row">
                     <?php
-                    foreach ($explorerHomeworks as $row) {
-                        echo $widgets->displayhomeworkBrief($row, false, "col-md-3", 200, true);
+                    foreach ($explorerMergedItems as $ediExItem) {
+                        $ediK = (string) ($ediExItem['ws_kind'] ?? '');
+                        $ediRow = isset($ediExItem['row']) && is_array($ediExItem['row']) ? $ediExItem['row'] : array();
+                        if ($ediK === 'pdf') {
+                            echo $widgets->displaypdfBrief($ediRow, false, "col-md-3", 200, $forceExplorer);
+                        } elseif ($ediK === 'books') {
+                            echo $widgets->displaybooksBrief(false, $ediRow, "col-md-3", 200, $forceExplorer);
+                        } elseif ($ediK === 'homework') {
+                            echo $widgets->displayhomeworkBrief($ediRow, false, "col-md-3", 200, $forceExplorer);
+                        }
                     }
                     ?>
                 </div>
                 </div>
             </div>
+            <?php if ($ediExplorerTotalPages > 1): ?>
+            <nav class="edi-explorer-pager mt-4 d-flex flex-wrap justify-content-center align-items-center gap-2" aria-label="Worksheet pages">
+                <?php
+                if ($ediExplorerPageNum > 1) {
+                    $ediPq = $ediExplorerPagBase;
+                    $ediPrev = $ediExplorerPageNum - 1;
+                    if ($ediPrev <= 1) {
+                        unset($ediPq['page']);
+                    } else {
+                        $ediPq['page'] = (string) $ediPrev;
+                    }
+                    $ediPrevHref = 'product_page.php?' . http_build_query($ediPq, '', '&', PHP_QUERY_RFC3986);
+                    echo '<a class="btn btn-sm btn-outline-secondary" href="' . htmlspecialchars($ediPrevHref, ENT_QUOTES, 'UTF-8') . '">Previous</a>';
+                }
+                $ediWindow = 5;
+                $ediStart = max(1, $ediExplorerPageNum - (int) floor($ediWindow / 2));
+                $ediEnd = min($ediExplorerTotalPages, $ediStart + $ediWindow - 1);
+                if ($ediEnd - $ediStart + 1 < $ediWindow) {
+                    $ediStart = max(1, $ediEnd - $ediWindow + 1);
+                }
+                for ($ediPi = $ediStart; $ediPi <= $ediEnd; $ediPi++) {
+                    $ediPq = $ediExplorerPagBase;
+                    if ($ediPi <= 1) {
+                        unset($ediPq['page']);
+                    } else {
+                        $ediPq['page'] = (string) $ediPi;
+                    }
+                    $ediPHref = 'product_page.php?' . http_build_query($ediPq, '', '&', PHP_QUERY_RFC3986);
+                    $ediIsCur = ($ediPi === $ediExplorerPageNum);
+                    if ($ediIsCur) {
+                        echo '<span class="btn btn-sm btn-success" aria-current="page">' . (int) $ediPi . '</span>';
+                    } else {
+                        echo '<a class="btn btn-sm btn-outline-secondary" href="' . htmlspecialchars($ediPHref, ENT_QUOTES, 'UTF-8') . '">' . (int) $ediPi . '</a>';
+                    }
+                }
+                if ($ediExplorerPageNum < $ediExplorerTotalPages) {
+                    $ediPq = $ediExplorerPagBase;
+                    $ediPq['page'] = (string) ($ediExplorerPageNum + 1);
+                    $ediNextHref = 'product_page.php?' . http_build_query($ediPq, '', '&', PHP_QUERY_RFC3986);
+                    echo '<a class="btn btn-sm btn-outline-secondary" href="' . htmlspecialchars($ediNextHref, ENT_QUOTES, 'UTF-8') . '">Next</a>';
+                }
+                ?>
+            </nav>
+            <p class="text-center text-muted small mt-2 mb-0">
+                Page <?php echo (int) $ediExplorerPageNum; ?> of <?php echo (int) $ediExplorerTotalPages; ?>
+                (<?php echo (int) $explorerMergedTotal; ?> worksheets)
+            </p>
             <?php endif; ?>
         </div>
         <?php endif; ?>

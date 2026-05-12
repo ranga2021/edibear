@@ -8,6 +8,7 @@
     
     require_once("./classes/class.user.php");
     require_once("./classes/edi_taxonomy.php");
+    require_once("./classes/edi_ws_taxonomy.php");
     require_once("./classes/edi_explorer_content.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
@@ -30,16 +31,30 @@
     $explorerGrades = array();
     $exploreProductCategories = array();
     $exploreProductSubcategories = array();
+    $exploreWsCategories = array();
+    $exploreWsSubcategories = array();
+
+    if (EdiWsTaxonomy::tableExists($conn, "ws_categories") && EdiWsTaxonomy::tableExists($conn, "ws_subcategories")) {
+        EdiWsTaxonomy::ensureWorksheetWsColumns($conn, "pdf_details");
+        EdiWsTaxonomy::ensureWorksheetWsColumns($conn, "books_details");
+        EdiWsTaxonomy::ensureWorksheetWsColumns($conn, "homework_details");
+    }
+    $ediHomeExploreUsesWs = EdiExplorerContent::worksheetWsExplorerReady($conn);
 
     $explorerLanguages = EdiTaxonomy::loadLanguages($conn);
     $explorerGrades = EdiTaxonomy::loadGrades($conn);
-    // EXPLORE: shop taxonomy, but only categories that have published worksheets (exclude shop-only / treasures-only).
-    $exploreWorksheetCategoryIds = EdiExplorerContent::worksheetExplorerProductCategoryIds($conn);
-    $exploreProductCategories = EdiExplorerContent::loadProductCategoryOptionsForWorksheetsExplorer($conn);
-    $exploreProductSubcategories = EdiExplorerContent::loadProductSubcategoryOptionsForWorksheetsExplorer(
-        $conn,
-        $exploreWorksheetCategoryIds
-    );
+    if ($ediHomeExploreUsesWs) {
+        $exploreWsCategories = EdiWsTaxonomy::loadCategories($conn);
+        $exploreWsSubcategories = EdiWsTaxonomy::loadSubcategories($conn);
+    } else {
+        // EXPLORE: shop taxonomy, but only categories that have published worksheets (exclude shop-only / treasures-only).
+        $exploreWorksheetCategoryIds = EdiExplorerContent::worksheetExplorerProductCategoryIds($conn);
+        $exploreProductCategories = EdiExplorerContent::loadProductCategoryOptionsForWorksheetsExplorer($conn);
+        $exploreProductSubcategories = EdiExplorerContent::loadProductSubcategoryOptionsForWorksheetsExplorer(
+            $conn,
+            $exploreWorksheetCategoryIds
+        );
+    }
 
     $productQuery = "SELECT * FROM products WHERE status = 1 ORDER BY id DESC LIMIT 4";
     $stmt = $conn->prepare($productQuery);
@@ -193,7 +208,7 @@
 
     <div class="explorer-search-area">
     <div class="container">
-        <form method="GET" action="product_page.php" id="searchForm">
+        <form method="GET" action="product_page.php" id="searchForm" data-edi-explore-taxonomy="<?php echo $ediHomeExploreUsesWs ? 'ws' : 'product'; ?>">
         <div class="row justify-content-center align-items-end">
             <div class="col-md-3 mb-2">
                     <select class="explorer-select" name="lang" id="explorer_exp_lang" required>
@@ -214,15 +229,35 @@
             </div>
 
             <div class="col-md-3 mb-2">
+                <?php if ($ediHomeExploreUsesWs) : ?>
+                <select class="explorer-select" name="ws_category_id" id="explorer_exp_cat" required>
+                    <option value="" disabled selected hidden>Category (Required)</option>
+                    <?php foreach ($exploreWsCategories as $mc): ?>
+                    <option value="<?php echo (int) $mc['id']; ?>"><?php echo htmlspecialchars((string) $mc['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <?php else : ?>
                 <select class="explorer-select" name="product_category_id" id="explorer_exp_cat" required>
                     <option value="" disabled selected hidden>Category (Required)</option>
                     <?php foreach ($exploreProductCategories as $mc): ?>
                     <option value="<?php echo (int) $mc['id']; ?>"><?php echo htmlspecialchars((string) $mc['name'], ENT_QUOTES, 'UTF-8'); ?></option>
                     <?php endforeach; ?>
                 </select>
+                <?php endif; ?>
             </div>
 
             <div class="col-md-3 mb-2">
+                    <?php if ($ediHomeExploreUsesWs) : ?>
+                    <select class="explorer-select" name="ws_subcategory_id" id="explorer_exp_sub" disabled title="Please select a category first to see subcategories.">
+                     <option value="" disabled selected hidden class="edi-exp-sub-need-cat">Subcategory (pick category first)</option>
+                     <option value="" hidden class="edi-exp-sub-none">Subcategory (optional)</option>
+                    <?php foreach ($exploreWsSubcategories as $sub): ?>
+                      <option value="<?php echo (int) $sub['id']; ?>" data-ws-category-id="<?php echo (int) $sub['category_id']; ?>">
+                     <?php echo htmlspecialchars((string) $sub['name'], ENT_QUOTES, 'UTF-8'); ?>
+                      </option>
+                    <?php endforeach; ?>
+                  </select>
+                    <?php else : ?>
                     <select class="explorer-select" name="product_subcategory_id" id="explorer_exp_sub" disabled title="Please select a category first to see subcategories.">
                      <option value="" disabled selected hidden class="edi-exp-sub-need-cat">Subcategory (pick category first)</option>
                      <option value="" hidden class="edi-exp-sub-none">Subcategory (optional)</option>
@@ -232,6 +267,7 @@
                       </option>
                     <?php endforeach; ?>
                   </select>
+                    <?php endif; ?>
                 </div>
 
         </div>
@@ -709,6 +745,10 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 </script>
 <script>
 (function () {
+    var searchForm = document.getElementById("searchForm");
+    var tax = searchForm && searchForm.getAttribute("data-edi-explore-taxonomy");
+    tax = tax || "product";
+    var subAttr = tax === "ws" ? "data-ws-category-id" : "data-product-category-id";
     var catSel = document.getElementById("explorer_exp_cat");
     var subSel = document.getElementById("explorer_exp_sub");
     if (!catSel || !subSel) return;
@@ -718,7 +758,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
 
     function filterSubcategories() {
         var cid = String(catSel.value || "");
-        var realOpts = subSel.querySelectorAll("option[data-product-category-id]");
+        var realOpts = subSel.querySelectorAll("option[" + subAttr + "]");
         if (!cid) {
             subSel.disabled = true;
             if (needCat) {
@@ -751,7 +791,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         var stillOk = false;
         for (var j = 0; j < realOpts.length; j++) {
             var o = realOpts[j];
-            var pc = o.getAttribute("data-product-category-id");
+            var pc = o.getAttribute(subAttr);
             var show = String(pc) === String(cid);
             o.hidden = !show;
             o.disabled = !show;
