@@ -340,6 +340,7 @@ class EdiExplorerContent
 
     /**
      * Tag rows by Honey Market product category/subcategory.
+     * Pass $limit <= 0 to scan all matching rows (needed so tag chips are complete; slash-separated tags cannot use SQL DISTINCT).
      *
      * @return array<int, array{tag?: string}>
      */
@@ -369,8 +370,10 @@ class EdiExplorerContent
             $sql .= " AND EXISTS (SELECT 1 FROM `grades` g WHERE g.id = t.grade_id AND TRIM(g.title) = :agef)";
             $params[':agef'] = $ageF;
         }
-        $lim = max(1, (int) $limit);
-        $sql .= " ORDER BY t.id DESC LIMIT " . $lim;
+        $lim = (int) $limit;
+        if ($lim > 0) {
+            $sql .= " ORDER BY t.id DESC LIMIT " . $lim;
+        }
         $st = $conn->prepare($sql);
         $st->execute($params);
         return $st->fetchAll(PDO::FETCH_ASSOC);
