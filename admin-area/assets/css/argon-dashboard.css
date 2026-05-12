@@ -552,7 +552,7 @@ progress {
 .display-1 {
   font-size: calc(1.625rem + 4.5vw);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1.5;
 }
 
 @media (min-width: 1200px) {
@@ -2721,7 +2721,7 @@ progress {
   margin-bottom: 0;
   font-size: inherit;
   font-weight: 700;
-  line-height: 1.4rem;
+  line-height: 1.5;
   color: #344767;
 }
 

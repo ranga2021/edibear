@@ -390,7 +390,6 @@ body.index .HomeCarousel {
 
 body.index #ayubowan.edi-intro-section,
 body.index #learn-section.edi-learn-section,
-body.index .explorer-search-area,
 body.index #honey-market-section,
 body.index .edi-home-ad-slot,
 body.index .edi-trail-tales-wrap,
@@ -1403,7 +1402,6 @@ h6.text-primary:not(.text-white),
 
 .edi-blog-single-prose {
   font-size: 0.9375rem;
-  line-height: 1.65;
   color: var(--edi-body);
 }
 
@@ -1757,7 +1755,6 @@ h6.text-primary:not(.text-white),
   hyphens: auto;
   -webkit-hyphens: auto;
   color: var(--edi-body);
-  line-height: 1.65;
 }
 
 /* Newsletter form: 60% of column, centered; flex row so input + button share one height */
@@ -2177,9 +2174,6 @@ h6.text-primary:not(.text-white),
 }
 
 /* Long-form copy: comfortable line height inside main content shells */
-.page-header-content p {
-  line-height: 1.65;
-}
 
 /* ----- Cart: login required modal (injected from class.header.php) ----- */
 .edi-cart-login-popup {

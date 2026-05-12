@@ -263,7 +263,7 @@ function edi_testimonial_status_label($raw)
       background: none;
       padding: 0 2px;
       font-size: 1.75rem;
-      line-height: 1;
+      line-height: 1.5;
       color: #e2e8f0;
       cursor: pointer;
     }

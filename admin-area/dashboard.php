@@ -255,7 +255,7 @@ $chartPayload = array(
       font-size: 0.8rem;
       color: #64748b;
       margin-top: 0.35rem;
-      line-height: 1.35;
+      line-height: 1.5;
     }
 
     .stats-card-hint {

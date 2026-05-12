@@ -598,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class='row mb-4 justify-content-center'>
                     <div class='col-12 col-lg-10 col-md-12 text-center footerEmailCustom px-3'>
                         <h1 class='text-danger'>JOIN MY FAMILY</h1>
-                        <p class='edi-home-lead' style='color:#666;'>
+                        <p class='edi-home-lead mt-3' style='color:#666;'>
     Don’t miss a single adventure! Sign up for Edi’s newsletter to get new worksheets,
     ‘Brave Heart’ challenge alerts, and special surprises delivered straight to your inbox.
     Come on in — there’s always a seat for you at our table!

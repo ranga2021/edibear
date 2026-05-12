@@ -264,7 +264,7 @@
 /* search background */
 
 .explorer-search-area {
-    margin-top: -50px;
+    margin-top: 32px;
     /* Reduce the top/bottom padding to shrink the overall height */
     padding: 60px 0; 
     /* Change 'cover' to '100% 100%' to squish the full image into the area */

@@ -249,7 +249,7 @@
     .edi-order-line-meta {
       font-size: 0.72rem;
       color: #64748b;
-      line-height: 1.35;
+      line-height: 1.5;
       max-width: 320px;
     }
     .edi-order-line-name {
