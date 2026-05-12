@@ -105,12 +105,12 @@
 .edi-explorer-tag-bar--filter {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
+    gap: 0;
     align-items: baseline;
 }
 .edi-explorer-tag-bar--filter .edi-explorer-tag-btn {
     color: #0b0b0b;
-    font-weight: 700;
+    font-weight: 400;
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
@@ -142,6 +142,7 @@
 .edi-explorer-tag-sep {
     color: #6c757d;
     font-weight: 400;
+    margin-right: 6px;
 }
 .edi-explorer-tag-seemore {
     margin-left: 0.25rem;

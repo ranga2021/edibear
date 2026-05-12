@@ -183,8 +183,13 @@ class EdiContentTags
         $html = '<div class="' . htmlspecialchars($barClass, ENT_QUOTES, "UTF-8") . '" role="navigation" aria-label="Tags"' . $dataTarget . ">";
         $n = count($tags);
         $show = min($n, $visibleFirst);
+        $printed = 0;
+        if ($useInlineFilter) {
+            $html .= '<button type="button" class="edi-explorer-tag-btn is-selected" data-edi-tag="" aria-pressed="true">All</button>';
+            $printed = 1;
+        }
         for ($i = 0; $i < $show; $i++) {
-            if (!$useInlineFilter && $i > 0) {
+            if ($printed > 0) {
                 $html .= '<span class="edi-explorer-tag-sep">, </span>';
             }
             $label = htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8");
@@ -195,11 +200,12 @@ class EdiContentTags
                 $href = $listPhp . "?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
                 $html .= '<a class="edi-explorer-tag-link" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . $label . "</a>";
             }
+            $printed++;
         }
         if ($n > $show) {
             $html .= '<span id="' . htmlspecialchars($moreId, ENT_QUOTES, "UTF-8") . '" class="edi-explorer-tag-more" hidden>';
             for ($i = $show; $i < $n; $i++) {
-                if (!$useInlineFilter) {
+                if ($printed > 0) {
                     $html .= '<span class="edi-explorer-tag-sep">, </span>';
                 }
                 $label = htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8");
@@ -210,6 +216,7 @@ class EdiContentTags
                     $href = $listPhp . "?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
                     $html .= '<a class="edi-explorer-tag-link" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . $label . "</a>";
                 }
+                $printed++;
             }
             $html .= "</span>";
             $html .= ' <button type="button" class="edi-explorer-tag-seemore btn btn-link p-0 align-baseline text-warning font-weight-bold" id="' . htmlspecialchars($btnId, ENT_QUOTES, "UTF-8") . '">See more</button>';
