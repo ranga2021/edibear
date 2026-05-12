@@ -571,7 +571,7 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200, 
     else{
         $cardTag = htmlspecialchars($this->getTitleTag($row['title']) ?: trim($row['tag'] ?? ''), ENT_QUOTES, 'UTF-8');
         $safeTitle = htmlspecialchars($row['title'] ?? '', ENT_QUOTES, 'UTF-8');
-        $dlA = $this->buildContentDownloadAnchor("./img/pdf", $uploadpdf, $countId, $pdfId, "pdf");
+        $dlA = $this->buildContentDownloadAnchor("./img/pdf", $uploadpdf, $countId, $pdfId, "pdf", "btn newgreen1-btn btn-sm", (string) ($row['pdf_original_name'] ?? ""));
         $colClass = $col . " mb-4 pb-2";
         $explorerAttr = "";
         if ($ediExplorerTagFilter) {
@@ -613,7 +613,7 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200, 
  * Direct file download; bumps server count via update_download_count.php.
  * $path like "./img/pdf/filename.pdf"; $type: pdf|book|homework
  */
-private function buildContentDownloadAnchor($pathRel, $uploadName, $countId, $contentId, $type, $classBtn = "btn newgreen1-btn btn-sm")
+private function buildContentDownloadAnchor($pathRel, $uploadName, $countId, $contentId, $type, $classBtn = "btn newgreen1-btn btn-sm", $downloadName = "")
     {
         $id = (int) $contentId;
         $uploadName = trim((string) $uploadName);
@@ -631,11 +631,28 @@ private function buildContentDownloadAnchor($pathRel, $uploadName, $countId, $co
         $href = rtrim($pathRel, "/") . "/" . $fileBase;
         $on = "fetch('update_download_count.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'downloadButton=1&pdfId=" . $id . "&type=" . $t . "'}).then(function(r){return r.text()}).then(function(c){var n=document.getElementById('" . $countId . "');if(n){n.textContent='('+c+')';}});return true;";
         $escH = htmlspecialchars($href, ENT_QUOTES, "UTF-8");
-        $escD = htmlspecialchars($fileBase, ENT_QUOTES, "UTF-8");
+        $downloadBase = $this->sanitizeDownloadFileName($downloadName);
+        if ($downloadBase === "") {
+            $downloadBase = $fileBase;
+        }
+        $escD = htmlspecialchars($downloadBase, ENT_QUOTES, "UTF-8");
         $escC = htmlspecialchars($classBtn, ENT_QUOTES, "UTF-8");
         $escOn = htmlspecialchars($on, ENT_COMPAT, "UTF-8");
         return "<a href=\"" . $escH . "\" class=\"" . $escC . "\" download=\"" . $escD . "\" onclick=\"" . $escOn . "\">Download</a>";
     }
+
+private function sanitizeDownloadFileName($name)
+{
+    $name = trim((string) $name);
+    if ($name === "") {
+        return "";
+    }
+    $name = preg_replace('/[\x00-\x1F\x7F]/', '', $name);
+    $name = str_replace(array("\\", "/"), "-", $name);
+    $name = basename($name);
+    $name = trim($name, ". \t\n\r\0\x0B");
+    return $name;
+}
 
 private function getTitleTag($title) {
     $words = preg_split('/[\s,]+/', $title);
@@ -696,7 +713,7 @@ public function displayhomeworkBrief($row, $isHome, $col="col-md-6", $wordCount=
     ";
     }
     else{
-        $dlA = $this->buildContentDownloadAnchor("./img/homework", $uploadpdf, $countId, $pdfId, "homework");
+        $dlA = $this->buildContentDownloadAnchor("./img/homework", $uploadpdf, $countId, $pdfId, "homework", "btn newgreen1-btn btn-sm", (string) ($row['pdf_original_name'] ?? ""));
         $colClass = $col . " mb-4 pb-2";
         $explorerAttr = "";
         if ($ediExplorerTagFilter) {
@@ -778,7 +795,7 @@ public function displaybooksBrief($isHome, $row, $col="col-md-6", $wordCount=200
     ";
     }
     else{
-        $dlA = $this->buildContentDownloadAnchor("./img/books", $uploadpdf, $countId, $pdfId, "book");
+        $dlA = $this->buildContentDownloadAnchor("./img/books", $uploadpdf, $countId, $pdfId, "book", "btn newgreen1-btn btn-sm", (string) ($row['pdf_original_name'] ?? ""));
         $colClass = $col . " mb-4 pb-2";
         $explorerAttr = "";
         if ($ediExplorerTagFilter) {

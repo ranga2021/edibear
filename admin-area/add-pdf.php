@@ -20,6 +20,7 @@ $adminHeader = new HEADER("add-worksheet");
 $user = new USER();
 $widgets = new WIDGETS();
 $ediConn = $user->getConnection();
+$ediHasPdfOriginalName = EdiExplorerContent::ensureNullableTextColumn($ediConn, "pdf_details", "pdf_original_name");
 $ediLanguages = EdiTaxonomy::loadLanguages($ediConn);
 $ediGrades = EdiTaxonomy::loadGrades($ediConn);
 $ediCurLanguageId = 0;
@@ -143,7 +144,9 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
 
         // PDF FILE
         $pdfName = "";
+        $pdfOriginalName = "";
         if (!empty($_FILES["inputpdfpdfupload"]["name"])) {
+            $pdfOriginalName = trim((string) $_FILES["inputpdfpdfupload"]["name"]);
 
             $ext = pathinfo($_FILES["inputpdfpdfupload"]["name"], PATHINFO_EXTENSION);
             $pdfName = time()."_pdf.".$ext;
@@ -195,6 +198,9 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
         if ($ediHasPcat) {
             $insertRow["product_category_id"] = $epc > 0 ? $epc : null;
             $insertRow["product_subcategory_id"] = $eps > 0 ? $eps : null;
+        }
+        if ($ediHasPdfOriginalName) {
+            $insertRow["pdf_original_name"] = $pdfOriginalName;
         }
         $pdfID = $user->insertTable("pdf_details", $insertRow, true);
 
@@ -267,7 +273,11 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
 
             move_uploaded_file($_FILES["inputpdfpdfupload"]["tmp_name"], "../img/pdf/".$pdfName);
 
-            $user->updateTable("pdf_details", array("pdfupload"=>$pdfName), array("id"=>$currentpdfID));
+            $upPdf = array("pdfupload" => $pdfName);
+            if ($ediHasPdfOriginalName) {
+                $upPdf["pdf_original_name"] = trim((string) $_FILES["inputpdfpdfupload"]["name"]);
+            }
+            $user->updateTable("pdf_details", $upPdf, array("id"=>$currentpdfID));
         }
 
         edi_regenerate_public_sitemap($user);

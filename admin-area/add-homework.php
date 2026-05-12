@@ -20,6 +20,7 @@ $adminHeader = new HEADER("add-worksheet");
 $user = new USER();
 $widgets = new WIDGETS();
 $ediConn = $user->getConnection();
+$ediHasPdfOriginalName = EdiExplorerContent::ensureNullableTextColumn($ediConn, "homework_details", "pdf_original_name");
 $ediLanguages = EdiTaxonomy::loadLanguages($ediConn);
 $ediGrades = EdiTaxonomy::loadGrades($ediConn);
 $ediCurLanguageId = 0;
@@ -164,10 +165,14 @@ if (isset($_POST['addNewhomeworkSubmit'])) {
     // PDF
     if (!empty($_FILES["inputhomeworkpdfupload"]["name"])) {
         $file = $homeworkID.".pdf"; // ✅ FIXED SHORT NAME
+        $pdfOriginalName = trim((string) $_FILES["inputhomeworkpdfupload"]["name"]);
 
         move_uploaded_file($_FILES["inputhomeworkpdfupload"]["tmp_name"], $uploadDir.$file);
-
-        $user->updateTable("homework_details", ["pdfupload"=>$file], ["id"=>$homeworkID]);
+        $upPdf = ["pdfupload" => $file];
+        if ($ediHasPdfOriginalName) {
+            $upPdf["pdf_original_name"] = $pdfOriginalName;
+        }
+        $user->updateTable("homework_details", $upPdf, ["id"=>$homeworkID]);
     }
 
     edi_regenerate_public_sitemap($user);
@@ -230,10 +235,14 @@ if (isset($_POST['updatehomeworkSubmit'])) {
     // PDF UPDATE
     if (!empty($_FILES["inputhomeworkpdfupload"]["name"])) {
         $file = $currenthomeworkID.".pdf";
+        $pdfOriginalName = trim((string) $_FILES["inputhomeworkpdfupload"]["name"]);
 
         move_uploaded_file($_FILES["inputhomeworkpdfupload"]["tmp_name"], $uploadDir.$file);
-
-        $user->updateTable("homework_details", ["pdfupload"=>$file], ["id"=>$currenthomeworkID]);
+        $upPdf = ["pdfupload" => $file];
+        if ($ediHasPdfOriginalName) {
+            $upPdf["pdf_original_name"] = $pdfOriginalName;
+        }
+        $user->updateTable("homework_details", $upPdf, ["id"=>$currenthomeworkID]);
     }
 
     edi_regenerate_public_sitemap($user);
