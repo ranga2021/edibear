@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/edi_explorer_content.php';
+require_once __DIR__ . '/edi_ws_taxonomy.php';
 
 /**
  * Admin worksheet list rows (pdf / books / homework) with taxonomy labels.
@@ -13,22 +14,48 @@ class EdiWorksheetAdminList
     }
 
     /**
-     * @return array<int, array{id:int,tag:string,title:string,status:string,download_count:int|string,lang_title:string,grade_title:string,subcat_title:string}>
+     * Worksheet hub list uses ws_* labels when tables and per-row columns exist.
+     */
+    public static function listUsesWorksheetTaxonomy(PDO $conn)
+    {
+        if (!EdiWsTaxonomy::tableExists($conn, 'ws_categories')
+            || !EdiWsTaxonomy::tableExists($conn, 'ws_subcategories')) {
+            return false;
+        }
+        foreach (array('pdf_details', 'books_details', 'homework_details') as $t) {
+            if (!EdiExplorerContent::columnExists($conn, $t, 'ws_category_id')) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * @return array<int, array{id:int,tag:string,title:string,status:string,download_count:int|string,lang_title:string,grade_title:string,subcat_title:string,ws_cat_title:string,ws_subcat_title:string}>
      */
     public static function fetchRows(PDO $conn, $table, $searchTitle = '')
     {
         if (!self::allowedTable($table)) {
             return array();
         }
-        $hasProductSub = EdiExplorerContent::columnExists($conn, $table, 'product_subcategory_id');
         $hasDl = EdiExplorerContent::columnExists($conn, $table, 'download_count');
         $dlSelect = $hasDl ? 'COALESCE(d.`download_count`, 0) AS download_count' : '0 AS download_count';
-        if ($hasProductSub) {
-            $subSelect = 'COALESCE(ps.title, \'\') AS subcat_title';
-            $subJoin = 'LEFT JOIN `product_subcategories` ps ON ps.id = d.`product_subcategory_id`';
+        $useWs = EdiWsTaxonomy::tableExists($conn, 'ws_categories')
+            && EdiWsTaxonomy::tableExists($conn, 'ws_subcategories')
+            && EdiExplorerContent::columnExists($conn, $table, 'ws_category_id');
+        if ($useWs) {
+            $subSelect = 'COALESCE(wscat.`name`, \'\') AS ws_cat_title, COALESCE(wssub.`name`, \'\') AS ws_subcat_title, \'\' AS subcat_title';
+            $subJoin = 'LEFT JOIN `ws_categories` wscat ON wscat.`id` = d.`ws_category_id`'
+                . ' LEFT JOIN `ws_subcategories` wssub ON wssub.`id` = d.`ws_subcategory_id`';
         } else {
-            $subSelect = 'COALESCE(sc.title, \'\') AS subcat_title';
-            $subJoin = 'LEFT JOIN `sub_category` sc ON sc.id = d.`sub_cat_id`';
+            $hasProductSub = EdiExplorerContent::columnExists($conn, $table, 'product_subcategory_id');
+            if ($hasProductSub) {
+                $subSelect = '\'\' AS ws_cat_title, \'\' AS ws_subcat_title, COALESCE(ps.title, \'\') AS subcat_title';
+                $subJoin = 'LEFT JOIN `product_subcategories` ps ON ps.id = d.`product_subcategory_id`';
+            } else {
+                $subSelect = '\'\' AS ws_cat_title, \'\' AS ws_subcat_title, COALESCE(sc.title, \'\') AS subcat_title';
+                $subJoin = 'LEFT JOIN `sub_category` sc ON sc.id = d.`sub_cat_id`';
+            }
         }
         $sql = "SELECT d.`id`, d.`tag`, d.`title`, d.`status`, d.`timestamp` AS row_ts,
             $dlSelect,
@@ -59,7 +86,7 @@ class EdiWorksheetAdminList
      * All worksheet rows (coloring PDFs, books, homework) in one list, newest first.
      * Each row includes `ws_kind`: pdf | books | homework (for edit + status AJAX).
      *
-     * @return array<int, array{id:int,tag:string,title:string,status:string,download_count:int|string,lang_title:string,grade_title:string,subcat_title:string,row_ts:string,ws_kind:string}>
+     * @return array<int, array{id:int,tag:string,title:string,status:string,download_count:int|string,lang_title:string,grade_title:string,subcat_title:string,ws_cat_title:string,ws_subcat_title:string,row_ts:string,ws_kind:string}>
      */
     public static function fetchMergedRows(PDO $conn, $searchTitle = '')
     {

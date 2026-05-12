@@ -1,12 +1,14 @@
 <?php
 /**
  * Shared worksheet metadata layout (add-pdf / add-books / add-homework).
- * Row 1: Language, Grade, Category
- * Row 2: Sub Category, Tag, Document Title
+ *
+ * When worksheet taxonomy tables exist (ws_categories / ws_subcategories), only those
+ * categories appear — shop product Category / Sub Category are hidden (preserved via
+ * hidden inputs on edit when product columns exist).
  *
  * Expects: $ediLanguages, $ediGrades, $ediCurLanguageId, $ediCurGradeId,
  * $ediHasPcat, $ediProductCategories, $ediProductSubcategories, $ediCurPcat, $ediCurPsub,
- * Optional worksheet taxonomy: $ediHasWsTaxonomy, $ediWsCategories, $ediWsSubcategories, $ediCurWsCat, $ediCurWsSub
+ * Optional: $ediHasWsTaxonomy, $ediWsCategories, $ediWsSubcategories, $ediCurWsCat, $ediCurWsSub
  * $ediWsTagName, $ediWsTitleName, $ediWsTagValue, $ediWsTitleValue
  */
 $ediCurLanguageId = isset($ediCurLanguageId) ? (int) $ediCurLanguageId : 0;
@@ -14,6 +16,7 @@ $ediCurGradeId = isset($ediCurGradeId) ? (int) $ediCurGradeId : 0;
 $ediCurPcat = isset($ediCurPcat) ? (int) $ediCurPcat : 0;
 $ediCurPsub = isset($ediCurPsub) ? (int) $ediCurPsub : 0;
 $ediHasWsTaxonomy = !empty($ediHasWsTaxonomy);
+$ediHasPcat = !empty($ediHasPcat);
 $ediCurWsCat = isset($ediCurWsCat) ? (int) $ediCurWsCat : 0;
 $ediCurWsSub = isset($ediCurWsSub) ? (int) $ediCurWsSub : 0;
 $ediWsCategories = isset($ediWsCategories) && is_array($ediWsCategories) ? $ediWsCategories : array();
@@ -28,7 +31,13 @@ $ediWsTagValue = isset($ediWsTagValue) ? htmlspecialchars((string) $ediWsTagValu
 $ediWsTitleValue = isset($ediWsTitleValue) ? htmlspecialchars((string) $ediWsTitleValue, ENT_QUOTES, 'UTF-8') : '';
 $ediWsTagName = isset($ediWsTagName) ? preg_replace('/[^a-zA-Z0-9_\-]/', '', (string) $ediWsTagName) : 'inputpdfTag';
 $ediWsTitleName = isset($ediWsTitleName) ? preg_replace('/[^a-zA-Z0-9_\-]/', '', (string) $ediWsTitleName) : 'inputpdfTitle';
+
+$ediShowShopProductCategory = $ediHasPcat && !$ediHasWsTaxonomy;
 ?>
+<?php if ($ediHasWsTaxonomy && $ediHasPcat) : ?>
+<input type="hidden" name="edi_content_product_category" value="<?php echo (int) $ediCurPcat; ?>">
+<input type="hidden" name="edi_content_product_subcategory" value="<?php echo (int) $ediCurPsub; ?>">
+<?php endif; ?>
 <div class="row">
   <div class="col-md-4">
     <div class="form-group">
@@ -61,7 +70,20 @@ $ediWsTitleName = isset($ediWsTitleName) ? preg_replace('/[^a-zA-Z0-9_\-]/', '',
     </div>
   </div>
   <div class="col-md-4">
-    <?php if (!empty($ediHasPcat)) : ?>
+    <?php if ($ediHasWsTaxonomy) : ?>
+    <div class="form-group">
+      <label class="form-control-label" for="edi_ws_category_id">Category</label>
+      <select class="form-control" name="edi_ws_category_id" id="edi_ws_category_id">
+        <option value="0">— Select —</option>
+        <?php foreach ($ediWsCategories as $wcat) : ?>
+        <option value="<?php echo (int) $wcat['id']; ?>"<?php if ((int) $wcat['id'] === $ediCurWsCat) {
+            echo ' selected';
+        } ?>><?php echo htmlspecialchars((string) $wcat['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+        <?php endforeach; ?>
+      </select>
+      <small class="form-text text-muted">From <a href="./manage-ws-categories" target="_blank" rel="noopener">Worksheet categories</a>.</small>
+    </div>
+    <?php elseif ($ediHasPcat) : ?>
     <div class="form-group">
       <label class="form-control-label" for="edi_content_product_category">Category</label>
       <select class="form-control" name="edi_content_product_category" id="edi_content_product_category">
@@ -80,7 +102,21 @@ $ediWsTitleName = isset($ediWsTitleName) ? preg_replace('/[^a-zA-Z0-9_\-]/', '',
 </div>
 <div class="row mt-2">
   <div class="col-md-4">
-    <?php if (!empty($ediHasPcat)) : ?>
+    <?php if ($ediHasWsTaxonomy) : ?>
+    <div class="form-group">
+      <label class="form-control-label" for="edi_ws_subcategory_id">Subcategory</label>
+      <select class="form-control" name="edi_ws_subcategory_id" id="edi_ws_subcategory_id">
+        <option value="" disabled class="edi-ws-sub-need-cat"<?php echo ($ediCurWsCat < 1) ? ' selected' : ''; ?>>Select a category first</option>
+        <option value="0"<?php echo ($ediCurWsCat >= 1 && (int) $ediCurWsSub === 0) ? ' selected' : ''; ?>>— None —</option>
+        <?php foreach ($ediWsSubcategories as $ws) : ?>
+        <option value="<?php echo (int) $ws['id']; ?>" data-ws-category-id="<?php echo (int) $ws['category_id']; ?>"<?php if ((int) $ws['id'] === $ediCurWsSub) {
+            echo ' selected';
+        } ?>><?php echo htmlspecialchars((string) $ws['name'], ENT_QUOTES, 'UTF-8'); ?></option>
+        <?php endforeach; ?>
+      </select>
+      <small class="form-text text-muted">From <a href="./manage-ws-subcategories" target="_blank" rel="noopener">Worksheet subcategories</a>.</small>
+    </div>
+    <?php elseif ($ediHasPcat) : ?>
     <div class="form-group">
       <label class="form-control-label" for="edi_content_product_subcategory">Sub Category</label>
       <select class="form-control" name="edi_content_product_subcategory" id="edi_content_product_subcategory">
@@ -111,38 +147,6 @@ $ediWsTitleName = isset($ediWsTitleName) ? preg_replace('/[^a-zA-Z0-9_\-]/', '',
   </div>
 </div>
 <?php if ($ediHasWsTaxonomy) : ?>
-<div class="row mt-2">
-  <div class="col-md-4">
-    <div class="form-group">
-      <label class="form-control-label" for="edi_ws_category_id">Worksheet category</label>
-      <select class="form-control" name="edi_ws_category_id" id="edi_ws_category_id">
-        <option value="0">— None —</option>
-        <?php foreach ($ediWsCategories as $wcat) : ?>
-        <option value="<?php echo (int) $wcat['id']; ?>"<?php if ((int) $wcat['id'] === $ediCurWsCat) {
-            echo ' selected';
-        } ?>><?php echo htmlspecialchars((string) $wcat['name'], ENT_QUOTES, 'UTF-8'); ?></option>
-        <?php endforeach; ?>
-      </select>
-    </div>
-  </div>
-  <div class="col-md-4">
-    <div class="form-group">
-      <label class="form-control-label" for="edi_ws_subcategory_id">Worksheet subcategory</label>
-      <select class="form-control" name="edi_ws_subcategory_id" id="edi_ws_subcategory_id">
-        <option value="" disabled class="edi-ws-sub-need-cat"<?php echo ($ediCurWsCat < 1) ? ' selected' : ''; ?>>Select a worksheet category first</option>
-        <option value="0"<?php echo ($ediCurWsCat >= 1 && (int) $ediCurWsSub === 0) ? ' selected' : ''; ?>>— None —</option>
-        <?php foreach ($ediWsSubcategories as $ws) : ?>
-        <option value="<?php echo (int) $ws['id']; ?>" data-ws-category-id="<?php echo (int) $ws['category_id']; ?>"<?php if ((int) $ws['id'] === $ediCurWsSub) {
-            echo ' selected';
-        } ?>><?php echo htmlspecialchars((string) $ws['name'], ENT_QUOTES, 'UTF-8'); ?></option>
-        <?php endforeach; ?>
-      </select>
-    </div>
-  </div>
-  <div class="col-md-4 d-flex align-items-end">
-    <p class="text-muted small mb-2">Separate from shop product categories. Manage in <strong>Worksheet categories</strong> / <strong>Worksheet subcategories</strong>.</p>
-  </div>
-</div>
 <script>
 (function () {
   var c = document.getElementById("edi_ws_category_id");
@@ -190,7 +194,7 @@ $ediWsTitleName = isset($ediWsTitleName) ? preg_replace('/[^a-zA-Z0-9_\-]/', '',
 })();
 </script>
 <?php endif; ?>
-<?php if (!empty($ediHasPcat)) : ?>
+<?php if ($ediShowShopProductCategory) : ?>
 <script>
 (function () {
   var c = document.getElementById("edi_content_product_category");

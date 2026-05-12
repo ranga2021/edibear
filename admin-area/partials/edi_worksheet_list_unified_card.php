@@ -10,6 +10,8 @@ require_once __DIR__ . '/../../classes/edi_worksheet_admin_list.php';
 $conn = $user->getConnection();
 $ediWsQ = isset($_GET['q']) ? trim((string) $_GET['q']) : '';
 $ediWsRows = EdiWorksheetAdminList::fetchMergedRows($conn, $ediWsQ);
+$ediWsListUsesWsTax = EdiWorksheetAdminList::listUsesWorksheetTaxonomy($conn);
+$ediWsListColspan = $ediWsListUsesWsTax ? 8 : 7;
 ?>
 <style>
 .edi-worksheets-toolbar {
@@ -84,7 +86,12 @@ $ediWsRows = EdiWorksheetAdminList::fetchMergedRows($conn, $ediWsQ);
           <tr>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Language</th>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Grade</th>
+            <?php if ($ediWsListUsesWsTax) { ?>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Category</th>
+            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Subcategory</th>
+            <?php } else { ?>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Sub Category</th>
+            <?php } ?>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Tag</th>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Document Title</th>
             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 text-center">Downloads</th>
@@ -94,7 +101,7 @@ $ediWsRows = EdiWorksheetAdminList::fetchMergedRows($conn, $ediWsQ);
         <tbody>
           <?php
           if (count($ediWsRows) === 0) {
-              echo '<tr><td colspan="7" class="text-center text-secondary text-sm py-4">No worksheets found.</td></tr>';
+              echo '<tr><td colspan="' . (int) $ediWsListColspan . '" class="text-center text-secondary text-sm py-4">No worksheets found.</td></tr>';
           } else {
               foreach ($ediWsRows as $ediR) {
                   $kind = (string) ($ediR['ws_kind'] ?? 'pdf');
@@ -104,6 +111,8 @@ $ediWsRows = EdiWorksheetAdminList::fetchMergedRows($conn, $ediWsQ);
                   $rid = (int) $ediR['id'];
                   $lang = htmlspecialchars((string) $ediR['lang_title'], ENT_QUOTES, 'UTF-8');
                   $grade = htmlspecialchars((string) $ediR['grade_title'], ENT_QUOTES, 'UTF-8');
+                  $wsCat = htmlspecialchars((string) ($ediR['ws_cat_title'] ?? ''), ENT_QUOTES, 'UTF-8');
+                  $wsSub = htmlspecialchars((string) ($ediR['ws_subcat_title'] ?? ''), ENT_QUOTES, 'UTF-8');
                   $sub = htmlspecialchars((string) $ediR['subcat_title'], ENT_QUOTES, 'UTF-8');
                   $tag = htmlspecialchars((string) $ediR['tag'], ENT_QUOTES, 'UTF-8');
                   $title = htmlspecialchars((string) $ediR['title'], ENT_QUOTES, 'UTF-8');
@@ -113,7 +122,12 @@ $ediWsRows = EdiWorksheetAdminList::fetchMergedRows($conn, $ediWsQ);
                   echo '<tr>';
                   echo '<td class="align-middle"><span class="text-secondary text-sm">' . ($lang !== '' ? $lang : '—') . '</span></td>';
                   echo '<td class="align-middle"><span class="text-secondary text-sm">' . ($grade !== '' ? $grade : '—') . '</span></td>';
-                  echo '<td class="align-middle"><span class="text-secondary text-sm">' . ($sub !== '' ? $sub : '—') . '</span></td>';
+                  if ($ediWsListUsesWsTax) {
+                      echo '<td class="align-middle"><span class="text-secondary text-sm">' . ($wsCat !== '' ? $wsCat : '—') . '</span></td>';
+                      echo '<td class="align-middle"><span class="text-secondary text-sm">' . ($wsSub !== '' ? $wsSub : '—') . '</span></td>';
+                  } else {
+                      echo '<td class="align-middle"><span class="text-secondary text-sm">' . ($sub !== '' ? $sub : '—') . '</span></td>';
+                  }
                   echo '<td class="align-middle"><span class="text-secondary text-sm">' . $tag . '</span></td>';
                   echo '<td class="align-middle"><span class="text-secondary text-sm font-weight-bold">' . $title . '</span></td>';
                   echo '<td class="align-middle text-center"><span class="text-secondary text-sm font-weight-bold">' . $dl . '</span></td>';
