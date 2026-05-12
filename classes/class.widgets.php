@@ -527,7 +527,7 @@ public function displayad2Brief($row, $col="col-md-12", $wordCount=200) {
 
     
     
-public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200) {
+public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200, $ediExplorerTagFilter = false) {
 
     $imageName = $this->createCachelessImage("./img/pdf/".$row['image']);
     $pdfDate = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
@@ -572,8 +572,15 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200) 
         $cardTag = htmlspecialchars($this->getTitleTag($row['title']) ?: trim($row['tag'] ?? ''), ENT_QUOTES, 'UTF-8');
         $safeTitle = htmlspecialchars($row['title'] ?? '', ENT_QUOTES, 'UTF-8');
         $dlA = $this->buildContentDownloadAnchor("./img/pdf", $uploadpdf, $countId, $pdfId, "pdf");
+        $colClass = $col . " mb-4 pb-2";
+        $explorerAttr = "";
+        if ($ediExplorerTagFilter) {
+            $toks = EdiContentTags::splitTags(isset($row['tag']) ? (string) $row['tag'] : "");
+            $colClass .= " edi-explorer-filter-card";
+            $explorerAttr = ' data-edi-tags="' . htmlspecialchars(json_encode($toks, JSON_UNESCAPED_UNICODE), ENT_QUOTES, "UTF-8") . '"';
+        }
         $html = "
-        <div class='$col mb-4 pb-2'>
+        <div class='$colClass'$explorerAttr>
             <div class='blog-item edi-pdf-result-card' style='border-radius:6px; overflow:hidden; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.04);'>
                 <div class='imageframe position-relative' style='border:2px solid #2d8a54; border-radius:4px; margin:8px;'>
                     <img class='img-fluid w-100' src='$imageName' alt='' style='display:block;'>
@@ -644,7 +651,7 @@ private function getTitleTag($title) {
     return '';
 }
 
-public function displayhomeworkBrief($row, $isHome, $col="col-md-6", $wordCount=200) {
+public function displayhomeworkBrief($row, $isHome, $col="col-md-6", $wordCount=200, $ediExplorerTagFilter = false) {
     $imageName = $this->createCachelessImage("./img/homework/".$row['image']);
     // $pdfupload = $this->createCachelessImage("./img/pdf/".$row['pdfupload']);
     $homeworkDate = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
@@ -690,8 +697,15 @@ public function displayhomeworkBrief($row, $isHome, $col="col-md-6", $wordCount=
     }
     else{
         $dlA = $this->buildContentDownloadAnchor("./img/homework", $uploadpdf, $countId, $pdfId, "homework");
+        $colClass = $col . " mb-4 pb-2";
+        $explorerAttr = "";
+        if ($ediExplorerTagFilter) {
+            $toks = EdiContentTags::splitTags(isset($row['tag']) ? (string) $row['tag'] : "");
+            $colClass .= " edi-explorer-filter-card";
+            $explorerAttr = ' data-edi-tags="' . htmlspecialchars(json_encode($toks, JSON_UNESCAPED_UNICODE), ENT_QUOTES, "UTF-8") . '"';
+        }
         $html = "
-        <div class='$col mb-4 pb-2'>
+        <div class='$colClass'$explorerAttr>
             <div class='blog-item'>
                 <div class='imageframe position-relative'>
                     <img class='img-fluid w-100' src='$imageName' alt=''>
@@ -719,7 +733,7 @@ public function displayhomeworkBrief($row, $isHome, $col="col-md-6", $wordCount=
 }
 
 
-public function displaybooksBrief($isHome, $row, $col="col-md-6", $wordCount=200) {
+public function displaybooksBrief($isHome, $row, $col="col-md-6", $wordCount=200, $ediExplorerTagFilter = false) {
     $imageName = $this->createCachelessImage("./img/books/".$row['image']);
     // $pdfupload = $this->createCachelessImage("./img/pdf/".$row['pdfupload']);
     $booksDate = date("d M y", strtotime(substr($row['timestamp'], 0, 10)));
@@ -765,8 +779,15 @@ public function displaybooksBrief($isHome, $row, $col="col-md-6", $wordCount=200
     }
     else{
         $dlA = $this->buildContentDownloadAnchor("./img/books", $uploadpdf, $countId, $pdfId, "book");
+        $colClass = $col . " mb-4 pb-2";
+        $explorerAttr = "";
+        if ($ediExplorerTagFilter) {
+            $toks = EdiContentTags::splitTags(isset($row['tag']) ? (string) $row['tag'] : "");
+            $colClass .= " edi-explorer-filter-card";
+            $explorerAttr = ' data-edi-tags="' . htmlspecialchars(json_encode($toks, JSON_UNESCAPED_UNICODE), ENT_QUOTES, "UTF-8") . '"';
+        }
         $html = "
-        <div class='$col mb-4 pb-2'>
+        <div class='$colClass'$explorerAttr>
             <div class='blog-item'>
                 <div class='imageframe position-relative'>
                     <img class='img-fluid w-100' src='$imageName' alt=''>

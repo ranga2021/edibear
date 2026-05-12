@@ -160,8 +160,9 @@ class EdiContentTags
      * @param string[] $tags
      * @param string   $listPhp e.g. "pdf.php"
      * @param array<string, string> $preserveQuery language, grade, main_cat_id, sub_cat_id
+     * @param string|null $inlineFilterTargetSelector when set (e.g. "#edi-explorer-region-pdf"), render buttons that filter cards in-page instead of linking out
      */
-    public static function renderExplorerCommaTagBarHtml(array $tags, $listPhp, array $preserveQuery, $visibleFirst = 12, $uidSuffix = "x")
+    public static function renderExplorerCommaTagBarHtml(array $tags, $listPhp, array $preserveQuery, $visibleFirst = 12, $uidSuffix = "x", $inlineFilterTargetSelector = null)
     {
         if (count($tags) === 0) {
             return "";
@@ -169,25 +170,46 @@ class EdiContentTags
         $visibleFirst = max(1, (int) $visibleFirst);
         $moreId = "edi-explorer-tags-more-" . $uidSuffix;
         $btnId = "edi-explorer-tags-btn-" . $uidSuffix;
+        $useInlineFilter = is_string($inlineFilterTargetSelector) && trim($inlineFilterTargetSelector) !== "";
+        $barClass = "edi-explorer-tag-bar mb-3";
+        if ($useInlineFilter) {
+            $barClass .= " edi-explorer-tag-bar--filter";
+        }
+        $dataTarget = "";
+        if ($useInlineFilter) {
+            $dataTarget = ' data-edi-filter-target="' . htmlspecialchars(trim($inlineFilterTargetSelector), ENT_QUOTES, "UTF-8") . '"';
+        }
 
-        $html = '<div class="edi-explorer-tag-bar mb-3" role="navigation" aria-label="Tags">';
+        $html = '<div class="' . htmlspecialchars($barClass, ENT_QUOTES, "UTF-8") . '" role="navigation" aria-label="Tags"' . $dataTarget . ">";
         $n = count($tags);
         $show = min($n, $visibleFirst);
         for ($i = 0; $i < $show; $i++) {
-            if ($i > 0) {
+            if (!$useInlineFilter && $i > 0) {
                 $html .= '<span class="edi-explorer-tag-sep">, </span>';
             }
-            $q = array_merge($preserveQuery, array("tag" => $tags[$i]));
-            $href = $listPhp . "?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
-            $html .= '<a class="edi-explorer-tag-link" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8") . "</a>";
+            $label = htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8");
+            if ($useInlineFilter) {
+                $html .= '<button type="button" class="edi-explorer-tag-btn" data-edi-tag="' . $label . '" aria-pressed="false">' . $label . "</button>";
+            } else {
+                $q = array_merge($preserveQuery, array("tag" => $tags[$i]));
+                $href = $listPhp . "?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
+                $html .= '<a class="edi-explorer-tag-link" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . $label . "</a>";
+            }
         }
         if ($n > $show) {
             $html .= '<span id="' . htmlspecialchars($moreId, ENT_QUOTES, "UTF-8") . '" class="edi-explorer-tag-more" hidden>';
             for ($i = $show; $i < $n; $i++) {
-                $html .= '<span class="edi-explorer-tag-sep">, </span>';
-                $q = array_merge($preserveQuery, array("tag" => $tags[$i]));
-                $href = $listPhp . "?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
-                $html .= '<a class="edi-explorer-tag-link" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8") . "</a>";
+                if (!$useInlineFilter) {
+                    $html .= '<span class="edi-explorer-tag-sep">, </span>';
+                }
+                $label = htmlspecialchars($tags[$i], ENT_QUOTES, "UTF-8");
+                if ($useInlineFilter) {
+                    $html .= '<button type="button" class="edi-explorer-tag-btn" data-edi-tag="' . $label . '" aria-pressed="false">' . $label . "</button>";
+                } else {
+                    $q = array_merge($preserveQuery, array("tag" => $tags[$i]));
+                    $href = $listPhp . "?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
+                    $html .= '<a class="edi-explorer-tag-link" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . $label . "</a>";
+                }
             }
             $html .= "</span>";
             $html .= ' <button type="button" class="edi-explorer-tag-seemore btn btn-link p-0 align-baseline text-warning font-weight-bold" id="' . htmlspecialchars($btnId, ENT_QUOTES, "UTF-8") . '">See more</button>';

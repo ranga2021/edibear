@@ -407,13 +407,13 @@ if ($forceExplorer && $exploreProductSubId > 0 && $exploreSubcategoryTitle !== "
         <?php if ($forceExplorer): ?>
         <div class="mt-2 mb-3">
             <?php if (!empty($explorerPdfTags)): ?>
-                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerPdfTags, "pdf.php", $explorerListQuery, 10, "pdf"); ?>
+                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerPdfTags, "pdf.php", $explorerListQuery, 10, "pdf", "#edi-explorer-region-pdf"); ?>
             <?php endif; ?>
             <?php if (!empty($explorerBookTags)): ?>
-                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerBookTags, "books.php", $explorerListQuery, 10, "books"); ?>
+                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerBookTags, "books.php", $explorerListQuery, 10, "books", "#edi-explorer-region-books"); ?>
             <?php endif; ?>
             <?php if (!empty($explorerHomeworkTags)): ?>
-                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerHomeworkTags, "homework.php", $explorerListQuery, 10, "hw"); ?>
+                <?php echo EdiContentTags::renderExplorerCommaTagBarHtml($explorerHomeworkTags, "homework.php", $explorerListQuery, 10, "hw", "#edi-explorer-region-homework"); ?>
             <?php endif; ?>
         </div>
         <?php endif; ?>
@@ -543,36 +543,42 @@ if ($forceExplorer && $exploreProductSubId > 0 && $exploreSubcategoryTitle !== "
         <div class="mt-3">
             <?php if (!empty($explorerPdfs)) : ?>
             <div class="mb-5">
+                <div id="edi-explorer-region-pdf" class="edi-explorer-filter-region">
                 <div class="row">
                     <?php
                     foreach ($explorerPdfs as $row) {
-                        echo $widgets->displaypdfBrief($row, false, "col-md-3", 200);
+                        echo $widgets->displaypdfBrief($row, false, "col-md-3", 200, true);
                     }
                     ?>
+                </div>
                 </div>
             </div>
             <?php endif; ?>
 
             <?php if (!empty($explorerBooks)) : ?>
             <div class="mb-5">
+                <div id="edi-explorer-region-books" class="edi-explorer-filter-region">
                 <div class="row">
                     <?php
                     foreach ($explorerBooks as $row) {
-                        echo $widgets->displaybooksBrief(false, $row, "col-md-3", 200);
+                        echo $widgets->displaybooksBrief(false, $row, "col-md-3", 200, true);
                     }
                     ?>
+                </div>
                 </div>
             </div>
             <?php endif; ?>
 
             <?php if (!empty($explorerHomeworks)) : ?>
             <div class="mb-2">
+                <div id="edi-explorer-region-homework" class="edi-explorer-filter-region">
                 <div class="row">
                     <?php
                     foreach ($explorerHomeworks as $row) {
-                        echo $widgets->displayhomeworkBrief($row, false, "col-md-3", 200);
+                        echo $widgets->displayhomeworkBrief($row, false, "col-md-3", 200, true);
                     }
                     ?>
+                </div>
                 </div>
             </div>
             <?php endif; ?>
@@ -663,6 +669,59 @@ if (typeof window.edibearSyncCartBadge === 'function') {
             });
         });
     </script>
+    <?php if ($forceExplorer): ?>
+    <script>
+    (function () {
+        function norm(s) {
+            return String(s || "").trim().toLowerCase();
+        }
+        function applyFilter(bar) {
+            var targetSel = bar.getAttribute("data-edi-filter-target");
+            if (!targetSel) return;
+            var region = document.querySelector(targetSel);
+            if (!region) return;
+            var active = bar.querySelector(".edi-explorer-tag-btn.is-selected");
+            var filterTag = active ? (active.getAttribute("data-edi-tag") || "") : "";
+            var ft = norm(filterTag);
+            region.querySelectorAll(".edi-explorer-filter-card").forEach(function (card) {
+                var ok = !ft;
+                if (ft) {
+                    ok = false;
+                    var raw = card.getAttribute("data-edi-tags");
+                    if (raw) {
+                        try {
+                            var tags = JSON.parse(raw);
+                            if (Array.isArray(tags)) {
+                                ok = tags.some(function (t) { return norm(t) === ft; });
+                            }
+                        } catch (e) { ok = false; }
+                    }
+                }
+                card.classList.toggle("d-none", !ok);
+            });
+        }
+        document.addEventListener("click", function (ev) {
+            var btn = ev.target.closest && ev.target.closest(".edi-explorer-tag-bar--filter .edi-explorer-tag-btn");
+            if (!btn) return;
+            ev.preventDefault();
+            var bar = btn.closest(".edi-explorer-tag-bar--filter");
+            if (!bar) return;
+            if (btn.classList.contains("is-selected")) {
+                btn.classList.remove("is-selected");
+                btn.setAttribute("aria-pressed", "false");
+            } else {
+                bar.querySelectorAll(".edi-explorer-tag-btn.is-selected").forEach(function (b) {
+                    b.classList.remove("is-selected");
+                    b.setAttribute("aria-pressed", "false");
+                });
+                btn.classList.add("is-selected");
+                btn.setAttribute("aria-pressed", "true");
+            }
+            applyFilter(bar);
+        });
+    })();
+    </script>
+    <?php endif; ?>
     <script>
     (function () {
         function fKey() { return "edibear_fav_pdf"; }
