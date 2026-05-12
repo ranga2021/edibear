@@ -197,7 +197,7 @@
         <div class="row justify-content-center align-items-end">
             <div class="col-md-3 mb-2">
                     <select class="explorer-select" name="lang" id="explorer_exp_lang" required>
-                        <option value="">Language (Required)</option>
+                        <option value="" disabled selected hidden>Language (Required)</option>
                         <?php foreach ($explorerLanguages as $lr): ?>
                         <option value="<?php echo htmlspecialchars((string) $lr['title'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) $lr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
                         <?php endforeach; ?>
@@ -206,7 +206,7 @@
 
             <div class="col-md-3 mb-2">
                 <select class="explorer-select" name="age" id="explorer_exp_grade" required>
-                    <option value="">Grade (Required)</option>
+                    <option value="" disabled selected hidden>Grade (Required)</option>
                     <?php foreach ($explorerGrades as $gr): ?>
                     <option value="<?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
                     <?php endforeach; ?>
@@ -215,7 +215,7 @@
 
             <div class="col-md-3 mb-2">
                 <select class="explorer-select" name="product_category_id" id="explorer_exp_cat" required>
-                    <option value="">Category (Required)</option>
+                    <option value="" disabled selected hidden>Category (Required)</option>
                     <?php foreach ($exploreProductCategories as $mc): ?>
                     <option value="<?php echo (int) $mc['id']; ?>"><?php echo htmlspecialchars((string) $mc['name'], ENT_QUOTES, 'UTF-8'); ?></option>
                     <?php endforeach; ?>
@@ -224,7 +224,7 @@
 
             <div class="col-md-3 mb-2">
                     <select class="explorer-select" name="product_subcategory_id" id="explorer_exp_sub" disabled title="Please select a category first to see subcategories.">
-                     <option value="" disabled selected class="edi-exp-sub-need-cat">Subcategory (pick category first)</option>
+                     <option value="" disabled selected hidden class="edi-exp-sub-need-cat">Subcategory (pick category first)</option>
                      <option value="" class="edi-exp-sub-none">Subcategory (optional)</option>
                     <?php foreach ($exploreProductSubcategories as $sub): ?>
                       <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>">

@@ -77,6 +77,16 @@ class WIDGETS{
     }
 
     /**
+     * Home "How it works" card body: HTML from index.php; only <br> is kept (safe for static strings).
+     */
+    private function formatHowItWorksSummaryHtml($txt)
+    {
+        $decoded = html_entity_decode((string) $txt, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $clean = strip_tags($decoded, '<br>');
+        return str_ireplace(array('<br />', '<br/>'), '<br>', $clean);
+    }
+
+    /**
      * Safe filename for testimonial / profile image paths (basename only).
      */
     private function isSafeImageFilename($name) {
@@ -123,13 +133,14 @@ class WIDGETS{
 
     public function displayHowItWorksBlock($topic, $txt, $img) {
         $img = $this->createCachelessImage("./img/Web pic/$img");
+        $topicEsc = htmlspecialchars((string) $topic, ENT_QUOTES, 'UTF-8');
+        $summaryHtml = $this->formatHowItWorksSummaryHtml($txt);
         $html = "
             <div class='col-md-4 mb-2 px-xl- text-center'>
                 <div class='pt-5 pb-3 border blog-item'>
-                    <img class='img-fluid' src='$img' alt='$topic' style='height: 180px;'><br>
-                    <h5 class='font-weight-bold coloring-pages text-uppercase pt-4 mb-2'>$topic</h5>
-                    <span>Explore fun activities for your <br>
-                    leisure time.</span>
+                    <img class='img-fluid' src='$img' alt='$topicEsc' style='height: 180px;'><br>
+                    <h5 class='font-weight-bold coloring-pages text-uppercase pt-4 mb-2'>$topicEsc</h5>
+                    <div class='edi-howitworks-card-desc'>$summaryHtml</div>
                     <div class='pt-md-3 pt-sm-1'>
                    
                     </div>
@@ -141,12 +152,14 @@ class WIDGETS{
 
     public function displayHowItWorksBlock2($topic, $txt, $img) {
         $img = $this->createCachelessImage("./img/Web pic/$img");
+        $topicEsc = htmlspecialchars((string) $topic, ENT_QUOTES, 'UTF-8');
+        $summaryHtml = $this->formatHowItWorksSummaryHtml($txt);
         $html = "
             <div class='col-md-4 mb-2 px-xl- text-center'>
                 <div class='pt-5 pb-3 border blog-item'>
-                    <img class='img-fluid' src='$img' alt='$topic' style='height: 180px;'><br>
-                    <h5 class='font-weight-bold books-paper text-uppercase pt-4 mb-2'>$topic</h5>
-                    <span>Secrets to grow your <br>memory and thinking skills.</span>
+                    <img class='img-fluid' src='$img' alt='$topicEsc' style='height: 180px;'><br>
+                    <h5 class='font-weight-bold books-paper text-uppercase pt-4 mb-2'>$topicEsc</h5>
+                    <div class='edi-howitworks-card-desc'>$summaryHtml</div>
                     <div class='pt-md-3 pt-sm-1'>
                     
                     </div>
@@ -158,12 +171,14 @@ class WIDGETS{
 
     public function displayHowItWorksBlock3($topic, $txt, $img) {
         $img = $this->createCachelessImage("./img/Web pic/$img");
+        $topicEsc = htmlspecialchars((string) $topic, ENT_QUOTES, 'UTF-8');
+        $summaryHtml = $this->formatHowItWorksSummaryHtml($txt);
         $html = "
             <div class='col-md-4 mb-2 px-xl- text-center'>
                 <div class='pt-5 pb-3 border blog-item'>
-                    <img class='img-fluid' src='$img' alt='$topic' style='height: 180px;'><br>
-                    <h5 class='font-weight-bold homeworks text-uppercase pt-4 mb-2'>$topic</h5>
-                    <span>Discover a variety of worksheets <br>for learning.</span>
+                    <img class='img-fluid' src='$img' alt='$topicEsc' style='height: 180px;'><br>
+                    <h5 class='font-weight-bold homeworks text-uppercase pt-4 mb-2'>$topicEsc</h5>
+                    <div class='edi-howitworks-card-desc'>$summaryHtml</div>
                     <div class='pt-md-3 pt-sm-1'>
                     
                     </div>

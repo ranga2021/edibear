@@ -207,6 +207,11 @@ h4.text-danger {
     padding: 0.65rem 1rem;
   }
 
+  /* Label-only placeholders must not repeat in the open picker (HTML `hidden` + fallback) */
+  .explorer-search-area select.explorer-select option[hidden] {
+    display: none !important;
+  }
+
   .explorer-search-area select.explorer-select option:hover,
   .explorer-search-area select.explorer-select option:focus,
   .explorer-search-area select.explorer-select option:focus-visible {
@@ -893,6 +898,19 @@ body.index .HomeCarousel #header-carousel .carousel-item {
 .explorer-card,
 .border-warning1 {
   border-color: rgba(51, 166, 117, 0.35) !important;
+}
+
+/* Home "Explorer training camp" cards: description from index.php; <br> must render */
+body.index #learn-section .edi-howitworks-card-desc {
+  display: block;
+  max-width: 22rem;
+  margin-left: auto;
+  margin-right: auto;
+  white-space: normal;
+  line-height: 1.55;
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--edi-body);
 }
 
 /* ----- Bootstrap utility overrides ----- */
