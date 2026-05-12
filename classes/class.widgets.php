@@ -588,7 +588,7 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200, 
                 <div class='bg-white px-2 pb-3 pt-0'>
                     <div class='d-flex align-items-center mb-1' style='font-size:12px;'>
                         <i class='fa fa-tag fa-sm p-1' style='color:#0b0b0b;' aria-hidden='true'></i>
-                        <span class='text-uppercase' style='color:#0b0b0b; font-weight:600; letter-spacing:.02em;'>$cardTag</span>
+                        <span class='text-uppercase' style='color:#0b0b0b; font-weight:500; letter-spacing:.02em;'>$cardTag</span>
                     </div>
                     <h5 class='text-danger text-uppercase font-weight-bold mb-1' style='font-size:1rem; line-height:1.2;'>$safeTitle</h5>
                     <p class='mb-2 text-muted' style='font-size: 13px; line-height:1.35;'>$pdfDescription</p>
