@@ -1481,3 +1481,55 @@ ALTER TABLE `products`
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- Worksheets taxonomy + products (MySQL 5.7+ / MariaDB 10.2+)
+-- Create database if needed: CREATE DATABASE nursing_exam_support CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ws_categories (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(191) NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ws_subcategories (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    category_id INT UNSIGNED NOT NULL,
+    name VARCHAR(191) NOT NULL,
+    sort_order INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ws_sub_cat FOREIGN KEY (category_id) REFERENCES ws_categories (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS ws_products (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    category_id INT UNSIGNED NOT NULL,
+    subcategory_id INT UNSIGNED NOT NULL,
+    notes TEXT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_ws_prod_cat FOREIGN KEY (category_id) REFERENCES ws_categories (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_ws_prod_sub FOREIGN KEY (subcategory_id) REFERENCES ws_subcategories (id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE INDEX idx_ws_subcategories_category ON ws_subcategories (category_id);
+CREATE INDEX idx_ws_products_category ON ws_products (category_id);
+CREATE INDEX idx_ws_products_subcategory ON ws_products (subcategory_id);

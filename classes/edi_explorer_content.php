@@ -129,6 +129,15 @@ class EdiExplorerContent
     }
 
     /**
+     * Set column-exists cache (e.g. after ALTER TABLE adds a column in another helper).
+     */
+    public static function rememberColumnExists($table, $col, $exists = true)
+    {
+        $k = (string) $table . '|' . (string) $col;
+        self::$colCache[$k] = (bool) $exists;
+    }
+
+    /**
      * Ensure a nullable TEXT column exists. Returns true when column exists/created.
      */
     public static function ensureNullableTextColumn(PDO $conn, $table, $col)

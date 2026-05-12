@@ -44,6 +44,16 @@ class HEADER {
             "redirect"=>"./manage-product-subcategories",
             "icon"=>"fas fa-sitemap text-info"
         ),
+        "manage-ws-categories"=>array(
+            "name"=>"Worksheet categories",
+            "redirect"=>"./manage-ws-categories",
+            "icon"=>"fas fa-folder-open text-info"
+        ),
+        "manage-ws-subcategories"=>array(
+            "name"=>"Worksheet subcategories",
+            "redirect"=>"./manage-ws-subcategories",
+            "icon"=>"fas fa-folder text-info"
+        ),
         "shipping-rates"=>array(
             "name"=>"Shipping rates",
             "redirect"=>"./shipping-rates",

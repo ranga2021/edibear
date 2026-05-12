@@ -15,6 +15,7 @@ require_once("../classes/class.widgets.php");
 require_once("../classes/edi_explorer_content.php");
 require_once("../classes/edi_taxonomy.php");
 require_once("../classes/edi_sitemap.php");
+require_once("../classes/edi_ws_taxonomy.php");
 
 $adminHeader = new HEADER("add-worksheet");
 $user = new USER();
@@ -30,6 +31,16 @@ $ediProductCategories = array();
 $ediProductSubcategories = array();
 $ediCurPcat = 0;
 $ediCurPsub = 0;
+$ediHasWsTaxonomy = EdiWsTaxonomy::tableExists($ediConn, "ws_categories")
+    && EdiWsTaxonomy::tableExists($ediConn, "ws_subcategories");
+$ediWsCategories = EdiWsTaxonomy::loadCategories($ediConn);
+$ediWsSubcategories = EdiWsTaxonomy::loadSubcategories($ediConn);
+$ediCurWsCat = 0;
+$ediCurWsSub = 0;
+$ediPdfWsColsOk = false;
+if ($ediHasWsTaxonomy) {
+    $ediPdfWsColsOk = EdiWsTaxonomy::ensureWorksheetWsColumns($ediConn, "pdf_details");
+}
 if ($ediHasPcat) {
     try {
         $ediProductCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array("status" => 1));
@@ -90,6 +101,18 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 if ($ediRow) {
                     $ediCurPcat = (int)($ediRow["product_category_id"] ?? 0);
                     $ediCurPsub = (int)($ediRow["product_subcategory_id"] ?? 0);
+                }
+            }
+        }
+        if ($ediHasWsTaxonomy && $ediPdfWsColsOk && EdiExplorerContent::columnExists($ediConn, "pdf_details", "ws_category_id")) {
+            $r2 = $ediConn->query(
+                "SELECT `ws_category_id`, `ws_subcategory_id` FROM `pdf_details` WHERE `id` = " . (int) $currentpdfID
+            );
+            if ($r2) {
+                $wrow = $r2->fetch(PDO::FETCH_ASSOC);
+                if ($wrow) {
+                    $ediCurWsCat = (int) ($wrow["ws_category_id"] ?? 0);
+                    $ediCurWsSub = (int) ($wrow["ws_subcategory_id"] ?? 0);
                 }
             }
         }
@@ -202,6 +225,15 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
         if ($ediHasPdfOriginalName) {
             $insertRow["pdf_original_name"] = $pdfOriginalName;
         }
+        if ($ediHasWsTaxonomy && $ediPdfWsColsOk) {
+            $wsPair = EdiWsTaxonomy::normalizeWorksheetWsIds(
+                $ediConn,
+                isset($_POST["edi_ws_category_id"]) ? (int) $_POST["edi_ws_category_id"] : 0,
+                isset($_POST["edi_ws_subcategory_id"]) ? (int) $_POST["edi_ws_subcategory_id"] : 0
+            );
+            $insertRow["ws_category_id"] = $wsPair[0];
+            $insertRow["ws_subcategory_id"] = $wsPair[1];
+        }
         $pdfID = $user->insertTable("pdf_details", $insertRow, true);
 
         edi_regenerate_public_sitemap($user);
@@ -243,6 +275,15 @@ if (isset($_POST['addNewpdfSubmit']) || isset($_POST['updatepdfSubmit'])) {
             $mappedContent = EdiExplorerContent::mapProductSelectionsToContentCategoryIds($ediConn, $epc, $eps);
             $upRow["main_cat_id"] = $mappedContent["main_cat_id"];
             $upRow["sub_cat_id"] = $mappedContent["sub_cat_id"];
+        }
+        if ($ediHasWsTaxonomy && EdiWsTaxonomy::ensureWorksheetWsColumns($ediConn, "pdf_details")) {
+            $wsPair = EdiWsTaxonomy::normalizeWorksheetWsIds(
+                $ediConn,
+                isset($_POST["edi_ws_category_id"]) ? (int) $_POST["edi_ws_category_id"] : 0,
+                isset($_POST["edi_ws_subcategory_id"]) ? (int) $_POST["edi_ws_subcategory_id"] : 0
+            );
+            $upRow["ws_category_id"] = $wsPair[0];
+            $upRow["ws_subcategory_id"] = $wsPair[1];
         }
         $user->updateTable("pdf_details", $upRow, array("id"=>$currentpdfID));
 

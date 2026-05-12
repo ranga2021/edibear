@@ -15,6 +15,7 @@ require_once("../classes/class.widgets.php");
 require_once("../classes/edi_explorer_content.php");
 require_once("../classes/edi_taxonomy.php");
 require_once("../classes/edi_sitemap.php");
+require_once("../classes/edi_ws_taxonomy.php");
 
 $adminHeader = new HEADER("add-worksheet");
 $user = new USER();
@@ -30,6 +31,16 @@ $ediProductCategories = array();
 $ediProductSubcategories = array();
 $ediCurPcat = 0;
 $ediCurPsub = 0;
+$ediHasWsTaxonomy = EdiWsTaxonomy::tableExists($ediConn, "ws_categories")
+    && EdiWsTaxonomy::tableExists($ediConn, "ws_subcategories");
+$ediWsCategories = EdiWsTaxonomy::loadCategories($ediConn);
+$ediWsSubcategories = EdiWsTaxonomy::loadSubcategories($ediConn);
+$ediCurWsCat = 0;
+$ediCurWsSub = 0;
+$ediHomeworkWsColsOk = false;
+if ($ediHasWsTaxonomy) {
+    $ediHomeworkWsColsOk = EdiWsTaxonomy::ensureWorksheetWsColumns($ediConn, "homework_details");
+}
 if ($ediHasPcat) {
     try {
         $ediProductCategories = $user->fetchAll(array("id", "name"), array("product_categories"), array("status" => 1));
@@ -93,6 +104,18 @@ if (isset($_GET['id']) && $_GET['id'] > 0) {
                 }
             }
         }
+        if ($ediHasWsTaxonomy && $ediHomeworkWsColsOk && EdiExplorerContent::columnExists($ediConn, "homework_details", "ws_category_id")) {
+            $r2 = $ediConn->query(
+                "SELECT `ws_category_id`, `ws_subcategory_id` FROM `homework_details` WHERE `id` = " . (int) $currenthomeworkID
+            );
+            if ($r2) {
+                $wrow = $r2->fetch(PDO::FETCH_ASSOC);
+                if ($wrow) {
+                    $ediCurWsCat = (int) ($wrow["ws_category_id"] ?? 0);
+                    $ediCurWsSub = (int) ($wrow["ws_subcategory_id"] ?? 0);
+                }
+            }
+        }
 
     } else {
         header("Location: ./add-homework");
@@ -146,6 +169,15 @@ if (isset($_POST['addNewhomeworkSubmit'])) {
     if ($ediHasPcat) {
         $insH["product_category_id"] = $epc > 0 ? $epc : null;
         $insH["product_subcategory_id"] = $eps > 0 ? $eps : null;
+    }
+    if ($ediHasWsTaxonomy && $ediHomeworkWsColsOk) {
+        $wsPair = EdiWsTaxonomy::normalizeWorksheetWsIds(
+            $ediConn,
+            isset($_POST["edi_ws_category_id"]) ? (int) $_POST["edi_ws_category_id"] : 0,
+            isset($_POST["edi_ws_subcategory_id"]) ? (int) $_POST["edi_ws_subcategory_id"] : 0
+        );
+        $insH["ws_category_id"] = $wsPair[0];
+        $insH["ws_subcategory_id"] = $wsPair[1];
     }
     $homeworkID = $user->insertTable("homework_details", $insH, true);
 
@@ -217,6 +249,15 @@ if (isset($_POST['updatehomeworkSubmit'])) {
         $mappedH = EdiExplorerContent::mapProductSelectionsToContentCategoryIds($ediConn, $epc, $eps);
         $upH["main_cat_id"] = $mappedH["main_cat_id"];
         $upH["sub_cat_id"] = $mappedH["sub_cat_id"];
+    }
+    if ($ediHasWsTaxonomy && EdiWsTaxonomy::ensureWorksheetWsColumns($ediConn, "homework_details")) {
+        $wsPair = EdiWsTaxonomy::normalizeWorksheetWsIds(
+            $ediConn,
+            isset($_POST["edi_ws_category_id"]) ? (int) $_POST["edi_ws_category_id"] : 0,
+            isset($_POST["edi_ws_subcategory_id"]) ? (int) $_POST["edi_ws_subcategory_id"] : 0
+        );
+        $upH["ws_category_id"] = $wsPair[0];
+        $upH["ws_subcategory_id"] = $wsPair[1];
     }
     $user->updateTable("homework_details", $upH, ["id"=>$currenthomeworkID]);
 
