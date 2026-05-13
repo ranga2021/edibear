@@ -4,6 +4,7 @@
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
     require_once("./classes/edi_blog_extra_media.php");
+require_once("./classes/edi_blog_story_sections.php");
     require_once("./classes/edi_content_tags.php");
 
     $userHeader = new HEADER("blogs");
@@ -53,8 +54,7 @@
     $waShare = "https://api.whatsapp.com/send?text=" . $shareText . $shareUrl;
 
     $blogExtraMedia = EdiBlogExtraMedia::fetchForBlog($user->getConnection(), $blogID);
-    $blogPostTags = EdiContentTags::blogTopicTagsFromCell($blogTag);
-    $breadcrumbTopic = !empty($blogPostTags) ? strtoupper((string) $blogPostTags[0]) : "BLOG";
+$blogPostTags = EdiContentTags::blogTopicTagsFromCell($blogTag);
 $blogMetaTagText = "";
 if (!empty($blogPostTags)) {
     $blogMetaTagText = implode(", ", $blogPostTags);
@@ -85,7 +85,7 @@ if ($blogMetaTagText === "") {
                 <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
                     <li class="breadcrumb-item"><a href="./blogs">The Hidden Den</a></li>
-                    <li class="breadcrumb-item active" aria-current="page"><?php echo htmlspecialchars($breadcrumbTopic, ENT_QUOTES, "UTF-8"); ?></li>
+                    <li class="breadcrumb-item active" aria-current="page">Exciting Things</li>
                 </ol>
             </nav>
 
@@ -120,9 +120,11 @@ if ($blogMetaTagText === "") {
                 </div>
 
                 <?php
-                foreach ($user->fetchAll(array("description", "image_01", "image_02"), array("blog_descriptions"), array("blog_id" => $blogID)) as $blogSubArr) {
+                foreach (EdiBlogStorySections::fetchForBlog($user->getConnection(), $blogID) as $blogSubArr) {
                     $img01 = trim((string) ($blogSubArr['image_01'] ?? ''));
                     $img02 = trim((string) ($blogSubArr['image_02'] ?? ''));
+                    $img01Cap = trim((string) ($blogSubArr['image_01_caption'] ?? ''));
+                    $img02Cap = trim((string) ($blogSubArr['image_02_caption'] ?? ''));
                     $blogImg01 = $img01 !== '' ? $widgets->createCachelessImage("./img/blogs/" . $img01) : '';
                     $blogImg02 = $img02 !== '' ? $widgets->createCachelessImage("./img/blogs/" . $img02) : '';
                     ?>
@@ -133,6 +135,9 @@ if ($blogMetaTagText === "") {
                             <div class="<?php echo $blogImg02 !== '' ? 'col-sm-6' : 'col-12'; ?> mb-2 mb-sm-0">
                                 <figure class="edi-blog-single-figure mb-0">
                                     <img src="<?php echo htmlspecialchars($blogImg01, ENT_QUOTES, 'UTF-8'); ?>" class="img-fluid rounded edi-blog-inline-img" alt="">
+                                    <?php if ($img01Cap !== ''): ?>
+                                    <figcaption class="edi-blog-extra-caption mt-2 text-muted small"><?php echo htmlspecialchars($img01Cap, ENT_QUOTES, 'UTF-8'); ?></figcaption>
+                                    <?php endif; ?>
                                 </figure>
                             </div>
                             <?php endif; ?>
@@ -140,6 +145,9 @@ if ($blogMetaTagText === "") {
                             <div class="<?php echo $blogImg01 !== '' ? 'col-sm-6' : 'col-12'; ?>">
                                 <figure class="edi-blog-single-figure mb-0">
                                     <img src="<?php echo htmlspecialchars($blogImg02, ENT_QUOTES, 'UTF-8'); ?>" class="img-fluid rounded edi-blog-inline-img" alt="">
+                                    <?php if ($img02Cap !== ''): ?>
+                                    <figcaption class="edi-blog-extra-caption mt-2 text-muted small"><?php echo htmlspecialchars($img02Cap, ENT_QUOTES, 'UTF-8'); ?></figcaption>
+                                    <?php endif; ?>
                                 </figure>
                             </div>
                             <?php endif; ?>

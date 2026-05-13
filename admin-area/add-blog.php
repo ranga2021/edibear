@@ -106,13 +106,9 @@ for ($z = 0; $z < 8; $z++) {
     $extraSlots[$z] = array('kind' => 'image', 'caption' => '', 'video' => '', 'existing' => '');
 }
 $descSlots = array();
+EdiBlogStorySections::ensureCaptionColumns($user->getConnection());
 if (!empty($editMode) && $editMode && !empty($currentBlogID)) {
-    $descRows = $user->fetchAll(
-        array('id', 'description', 'image_01', 'image_02'),
-        array('blog_descriptions'),
-        array('blog_id' => $currentBlogID),
-        'id ASC'
-    );
+    $descRows = EdiBlogStorySections::fetchForBlog($user->getConnection(), (int) $currentBlogID);
     if (is_array($descRows)) {
         foreach ($descRows as $dr) {
             $descSlots[] = $dr;
@@ -120,11 +116,11 @@ if (!empty($editMode) && $editMode && !empty($currentBlogID)) {
     }
 }
 while (count($descSlots) < 1) {
-    $descSlots[] = array('id' => 0, 'description' => '', 'image_01' => '', 'image_02' => '');
+    $descSlots[] = array('id' => 0, 'description' => '', 'image_01' => '', 'image_02' => '', 'image_01_caption' => '', 'image_02_caption' => '');
 }
 $descSlots = array_slice($descSlots, 0, 12);
 while (count($descSlots) < 12) {
-    $descSlots[] = array('id' => 0, 'description' => '', 'image_01' => '', 'image_02' => '');
+    $descSlots[] = array('id' => 0, 'description' => '', 'image_01' => '', 'image_02' => '', 'image_01_caption' => '', 'image_02_caption' => '');
 }
 $descSlotCount = 1;
 for ($ediSi = 1; $ediSi <= 12; $ediSi++) {
@@ -379,6 +375,7 @@ for ($s = 1; $s <= 12; $s++) {
     <div class="col-md-6 mb-2">
       <label>Image 1</label>
       <input type="file" name="inputBlogImageOne<?php echo $s; ?>" class="form-control" accept="image/*">
+      <input type="text" name="inputBlogImageOneCaption<?php echo $s; ?>" class="form-control mt-2" maxlength="255" value="<?php echo htmlspecialchars((string) ($slot['image_01_caption'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>" placeholder="Image 1 caption (optional)">
       <?php
       if ($im1 !== '') {
           $him1 = htmlspecialchars($im1, ENT_QUOTES, 'UTF-8');
@@ -391,6 +388,7 @@ for ($s = 1; $s <= 12; $s++) {
     <div class="col-md-6 mb-2">
       <label>Image 2</label>
       <input type="file" name="inputBlogImageTwo<?php echo $s; ?>" class="form-control" accept="image/*">
+      <input type="text" name="inputBlogImageTwoCaption<?php echo $s; ?>" class="form-control mt-2" maxlength="255" value="<?php echo htmlspecialchars((string) ($slot['image_02_caption'] ?? ''), ENT_QUOTES, 'UTF-8'); ?>" placeholder="Image 2 caption (optional)">
       <?php
       if ($im2 !== '') {
           $him2 = htmlspecialchars($im2, ENT_QUOTES, 'UTF-8');

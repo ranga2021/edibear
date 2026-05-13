@@ -7,6 +7,60 @@
  */
 class EdiBlogStorySections
 {
+    private static function columnExists(PDO $conn, $table, $col)
+    {
+        try {
+            $t = str_replace(array('`', '.'), array('``', ''), (string) $table);
+            $c = preg_replace('/[^a-zA-Z0-9_]/', '', (string) $col);
+            if ($t === '' || $c === '') {
+                return false;
+            }
+            $st = $conn->query("SHOW COLUMNS FROM `" . $t . "` LIKE " . $conn->quote($c));
+            return $st && $st->rowCount() > 0;
+        } catch (Throwable $e) {
+            return false;
+        }
+    }
+
+    public static function ensureCaptionColumns(PDO $conn)
+    {
+        if (!self::columnExists($conn, 'blog_descriptions', 'image_01_caption')) {
+            try {
+                $conn->exec("ALTER TABLE `blog_descriptions` ADD COLUMN `image_01_caption` VARCHAR(255) NULL DEFAULT NULL");
+            } catch (Throwable $e) {
+            }
+        }
+        if (!self::columnExists($conn, 'blog_descriptions', 'image_02_caption')) {
+            try {
+                $conn->exec("ALTER TABLE `blog_descriptions` ADD COLUMN `image_02_caption` VARCHAR(255) NULL DEFAULT NULL");
+            } catch (Throwable $e) {
+            }
+        }
+    }
+
+    public static function fetchForBlog(PDO $conn, $blogId)
+    {
+        $blogId = (int) $blogId;
+        if ($blogId < 1) {
+            return array();
+        }
+        self::ensureCaptionColumns($conn);
+        $hasC1 = self::columnExists($conn, 'blog_descriptions', 'image_01_caption');
+        $hasC2 = self::columnExists($conn, 'blog_descriptions', 'image_02_caption');
+        $sql = "SELECT `id`, `description`, `image_01`, `image_02`";
+        $sql .= $hasC1 ? ", `image_01_caption`" : ", '' AS `image_01_caption`";
+        $sql .= $hasC2 ? ", `image_02_caption`" : ", '' AS `image_02_caption`";
+        $sql .= " FROM `blog_descriptions` WHERE `blog_id` = ? ORDER BY `id` ASC";
+        try {
+            $st = $conn->prepare($sql);
+            $st->execute(array($blogId));
+            $rows = $st->fetchAll(PDO::FETCH_ASSOC);
+            return is_array($rows) ? $rows : array();
+        } catch (Throwable $e) {
+            return array();
+        }
+    }
+
     /**
      * @param USER   $user
      * @param int    $blogId
@@ -21,6 +75,8 @@ class EdiBlogStorySections
         if ($blogId < 1) {
             return;
         }
+        $conn = $user->getConnection();
+        self::ensureCaptionColumns($conn);
 
         $absUploadDir = rtrim(str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $absUploadDir), DIRECTORY_SEPARATOR);
 
@@ -60,6 +116,10 @@ class EdiBlogStorySections
 
         for ($i = 1; $i <= $slotCount; $i++) {
             $desc = strip_tags(isset($_POST["inputBlogDescription$i"]) ? (string) $_POST["inputBlogDescription$i"] : '', '<br>');
+            $cap1 = isset($_POST["inputBlogImageOneCaption$i"]) ? trim((string) $_POST["inputBlogImageOneCaption$i"]) : '';
+            $cap2 = isset($_POST["inputBlogImageTwoCaption$i"]) ? trim((string) $_POST["inputBlogImageTwoCaption$i"]) : '';
+            $cap1 = mb_substr($cap1, 0, 255, 'UTF-8');
+            $cap2 = mb_substr($cap2, 0, 255, 'UTF-8');
 
             $has1 = !empty($_FILES["inputBlogImageOne$i"]['name']);
             $has2 = !empty($_FILES["inputBlogImageTwo$i"]['name']);
@@ -118,6 +178,8 @@ class EdiBlogStorySections
                 array(
                     'image_01' => $img1,
                     'image_02' => $img2,
+                    'image_01_caption' => $cap1,
+                    'image_02_caption' => $cap2,
                 ),
                 array('id' => $descID)
             );

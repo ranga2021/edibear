@@ -1647,15 +1647,15 @@ h6.text-primary:not(.text-white),
 }
 
 .edi-blogs-grid .edi-blog-col {
-  padding-left: 12px;
-  padding-right: 12px;
-  margin-bottom: 24px !important; /* keep vertical gap equal to horizontal gutter (12 + 12) */
+  padding-left: 15px;
+  padding-right: 15px;
+  margin-bottom: 30px !important; /* keep vertical gap equal to horizontal gutter (12 + 12) */
 }
 
 @media (min-width: 992px) {
   .edi-blogs-grid .edi-blog-col {
-    padding-left: 12px;
-    padding-right: 12px;
+    padding-left: 15px;
+    padding-right: 15px;
   }
 }
 
