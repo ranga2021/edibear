@@ -1453,7 +1453,9 @@ h6.text-primary:not(.text-white),
 }
 
 .edi-blog-single-video-wrap.blog-video .container {
-  max-width: 42rem;
+  max-width: auto;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .edi-blog-single-video-wrap.blog-video .col-lg-10 {
