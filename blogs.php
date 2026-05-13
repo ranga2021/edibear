@@ -101,17 +101,16 @@
     ?>
     <div class="page-header-bg"></div>
 
-    <!-- Blog Start — full-width 3-column grid (no empty sidebar) -->
-    <div class="container-fluid py-3 page-header-content edi-blogs-page">
-        <div class="container pt-3 px-lg-4">
+    <!-- Blog Start — header + full-width 3-column grid (no empty sidebar) -->
+    <div class="container mt-5 page-header-content edi-blogs-page">
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
                 <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">The Hidden Den</li>
                 </ol>
             </nav>
-            <div class="edi-page-title-row edi-blogs-page-title-row">
-                <h2 class="edi-blogs-main-title">EXCITING THINGS</h2>
+            <div class="edi-page-title-row mt-2 edi-blogs-page-title-row">
+                <h1 class="edi-blogs-main-title">EXCITING THINGS</h1>
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>
             <?php
@@ -258,9 +257,7 @@
                                     </nav>
                                 ";
                             ?>
-                        </div>
             </div>
-        </div>
     </div>
     <!-- Blog End -->
 

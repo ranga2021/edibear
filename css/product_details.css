@@ -487,6 +487,7 @@ img[style*="position: fixed"] {
   gap: 0.2rem;
 }
 .edi-blog-filter-dd__label {
+  display: none;
   margin: 0;
   font-size: 0.8125rem;
   font-weight: 600;
