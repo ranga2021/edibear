@@ -84,7 +84,8 @@ if ($blogMetaTagText === "") {
             <nav class="edi-breadcrumb" aria-label="Breadcrumb">
                 <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
                     <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">The Hidden Den</li>
+                    <li class="breadcrumb-item"><a href="./blogs">The Hidden Den</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Exciting Things</li>
                 </ol>
             </nav>
 
