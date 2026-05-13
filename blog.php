@@ -81,10 +81,29 @@ if ($blogMetaTagText === "") {
 
     <div class="container-fluid mt-5 page-header-content pb-5 edi-blog-single-outer px-0">
         <div class="container edi-blog-single-inner px-lg-4">
-            <div class="edi-blog-single-top-bar mb-3">
-                <div class="edi-blog-single-meta edi-blog-single-top-tag" role="status" aria-label="Post category">
+            <nav class="edi-breadcrumb" aria-label="Breadcrumb">
+                <ol class="breadcrumb bg-transparent p-0 mb-0 flex-wrap">
+                    <li class="breadcrumb-item"><a href="./"><i class="fa fa-home" aria-hidden="true"></i> Home</a></li>
+                    <li class="breadcrumb-item"><a href="./blogs">The Hidden Den</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Exciting Things</li>
+                </ol>
+            </nav>
+
+            <div class="edi-page-title-row edi-blog-single-tag-title-row edi-blogs-page-title-row mt-2 mb-0" role="group" aria-label="Post category">
+                <div class="edi-blog-single-breadcrumb-tag edi-blog-single-meta">
                     <i class="fa fa-tag fa-sm text-warning p-1" aria-hidden="true"></i>
                     <span class="text-warning"><?php echo htmlspecialchars((string) $blogMetaTagText, ENT_QUOTES, "UTF-8"); ?></span>
+                </div>
+                <div class="edi-page-title-rule" role="presentation"></div>
+            </div>
+
+            <div class="edi-blog-single-featured mt-3 mb-3">
+                <img src="<?php echo htmlspecialchars((string) $blogMainImage, ENT_QUOTES, "UTF-8"); ?>" class="edi-blog-single-featured__img img-fluid" alt="<?php echo htmlspecialchars((string) $blogTitle, ENT_QUOTES, "UTF-8"); ?>">
+            </div>
+
+            <div class="edi-blog-single-meta-share mb-3">
+                <div class="edi-blog-single-after-hero-heading">
+                    <h1 class="edi-blog-single-post-title"><?php echo htmlspecialchars(strtoupper((string) $blogTitle), ENT_QUOTES, "UTF-8"); ?></h1>
                 </div>
                 <div class="edi-blog-single-share" aria-label="Share this post">
                     <span class="edi-blog-share-label">SHARE</span>
@@ -97,17 +116,7 @@ if ($blogMetaTagText === "") {
                 </div>
             </div>
 
-            <div class="edi-blog-single-featured mt-2 mb-3">
-                <img src="<?php echo htmlspecialchars((string) $blogMainImage, ENT_QUOTES, "UTF-8"); ?>" class="edi-blog-single-featured__img img-fluid" alt="<?php echo htmlspecialchars((string) $blogTitle, ENT_QUOTES, "UTF-8"); ?>">
-            </div>
-
             <article class="edi-blog-single-article">
-                <header class="edi-blog-single-article-heading mb-3">
-                    <div class="edi-page-title-row edi-blogs-page-title-row mt-0 mb-0">
-                        <h1 class="edi-blogs-main-title"><?php echo htmlspecialchars(strtoupper((string) $blogTitle), ENT_QUOTES, "UTF-8"); ?></h1>
-                        <div class="edi-page-title-rule" role="presentation"></div>
-                    </div>
-                </header>
                 <div class="edi-blog-single-prose text-justify">
                     <?php echo $blogMainDescription; ?>
                 </div>
