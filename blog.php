@@ -92,7 +92,7 @@ if ($blogMetaTagText === "") {
             <div class="edi-page-title-row edi-blog-single-tag-title-row edi-blogs-page-title-row mt-2 mb-0" role="group" aria-label="Post category">
                 <div class="edi-blog-single-breadcrumb-tag edi-blog-single-meta">
                     <i class="fa fa-tag fa-sm text-warning p-1" aria-hidden="true"></i>
-                    <span class="text-warning"><?php echo htmlspecialchars((string) $blogMetaTagText, ENT_QUOTES, "UTF-8"); ?></span>
+                    <span class="text-warning" style="color: #212121 !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.02em !important; font-size: clamp(1.35rem, 2.5vw, 1.75rem) !important;"><?php echo htmlspecialchars((string) $blogMetaTagText, ENT_QUOTES, "UTF-8"); ?></span>
                 </div>
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>
