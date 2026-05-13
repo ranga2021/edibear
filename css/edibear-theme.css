@@ -1388,6 +1388,28 @@ h6.text-primary:not(.text-white),
   margin: 0 !important;
 }
 
+.edi-blog-single-hero-tag-grade {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--edi-body);
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.1rem 0.25rem;
+}
+
+.edi-blog-single-after-hero-heading .edi-blog-single-hero-tag-grade + .edi-blog-single-post-title {
+  margin-top: 0.5rem !important;
+}
+
+.edi-blog-single-post-title-rule {
+  margin: 0.65rem 0 0;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.22);
+}
+
 .edi-blog-single-meta-share {
   display: flex;
   flex-wrap: wrap;
