@@ -1649,13 +1649,13 @@ h6.text-primary:not(.text-white),
 .edi-blogs-grid .edi-blog-col {
   padding-left: 12px;
   padding-right: 12px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px !important; /* keep vertical gap equal to horizontal gutter (12 + 12) */
 }
 
 @media (min-width: 992px) {
   .edi-blogs-grid .edi-blog-col {
-    padding-left: 16px;
-    padding-right: 16px;
+    padding-left: 12px;
+    padding-right: 12px;
   }
 }
 

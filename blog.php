@@ -55,6 +55,13 @@
     $blogExtraMedia = EdiBlogExtraMedia::fetchForBlog($user->getConnection(), $blogID);
     $blogPostTags = EdiContentTags::blogTopicTagsFromCell($blogTag);
     $breadcrumbTopic = !empty($blogPostTags) ? strtoupper((string) $blogPostTags[0]) : "BLOG";
+$blogMetaTagText = "";
+if (!empty($blogPostTags)) {
+    $blogMetaTagText = implode(", ", $blogPostTags);
+}
+if ($blogMetaTagText === "") {
+    $blogMetaTagText = EdiContentTags::blogCategoryDisplayLabel($blogTag);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,20 +94,14 @@
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>
 
-            <?php
-            if (count($blogPostTags) > 0) {
-                echo EdiContentTags::renderBlogsTreasuresStyleTagBar($blogPostTags, "", 40, "post-" . $blogID);
-            }
-            ?>
-
             <div class="edi-blog-single-featured mt-3 mb-3">
                 <img src="<?php echo htmlspecialchars((string) $blogMainImage, ENT_QUOTES, "UTF-8"); ?>" class="edi-blog-single-featured__img img-fluid" alt="<?php echo htmlspecialchars((string) $blogTitle, ENT_QUOTES, "UTF-8"); ?>">
             </div>
 
             <div class="edi-blog-single-meta-share mb-3">
                 <div class="edi-blog-single-meta">
-                    <i class="fa fa-calendar-alt fa-sm text-warning p-1" aria-hidden="true"></i>
-                    <span class="text-warning"><?php echo htmlspecialchars($blogDate, ENT_QUOTES, "UTF-8"); ?></span>
+                    <i class="fa fa-tag fa-sm text-warning p-1" aria-hidden="true"></i>
+                    <span class="text-warning"><?php echo htmlspecialchars((string) $blogMetaTagText, ENT_QUOTES, "UTF-8"); ?></span>
                 </div>
                 <div class="edi-blog-single-share" aria-label="Share this post">
                     <span class="edi-blog-share-label">SHARE</span>
