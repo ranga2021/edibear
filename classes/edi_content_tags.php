@@ -112,6 +112,74 @@ class EdiContentTags
     }
 
     /**
+     * Distinct Language segment (first part of "Lang ||| Grade ||| Category") from blog rows.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     * @return string[]
+     */
+    public static function distinctBlogLanguagesFromRows(array $rows, $col = "tag")
+    {
+        $seen = array();
+        foreach ($rows as $row) {
+            $parts = self::blogTagTripleParts(isset($row[$col]) ? (string) $row[$col] : "");
+            $lang = trim((string) ($parts[0] ?? ""));
+            if ($lang !== "") {
+                $seen[$lang] = true;
+            }
+        }
+        $out = array_keys($seen);
+        sort($out, SORT_NATURAL | SORT_FLAG_CASE);
+        return $out;
+    }
+
+    /**
+     * Distinct Grade segment (second part of triple) from blog rows.
+     *
+     * @param array<int, array<string, mixed>> $rows
+     * @return string[]
+     */
+    public static function distinctBlogGradesFromRows(array $rows, $col = "tag")
+    {
+        $seen = array();
+        foreach ($rows as $row) {
+            $parts = self::blogTagTripleParts(isset($row[$col]) ? (string) $row[$col] : "");
+            $gr = trim((string) ($parts[1] ?? ""));
+            if ($gr !== "") {
+                $seen[$gr] = true;
+            }
+        }
+        $out = array_keys($seen);
+        sort($out, SORT_NATURAL | SORT_FLAG_CASE);
+        return $out;
+    }
+
+    /**
+     * SQL fragment for blog_details listing: topic substring + optional Language/Grade (triple format).
+     *
+     * @return string safe to append after AND (uses PDO::quote)
+     */
+    public static function buildBlogListingFilterSql(PDO $conn, $topicTag, $lang, $grade)
+    {
+        $clauses = array();
+        $topicTag = trim((string) $topicTag);
+        if ($topicTag !== "") {
+            $clauses[] = "tag LIKE " . $conn->quote("%" . $topicTag . "%");
+        }
+        $lang = trim((string) $lang);
+        if ($lang !== "") {
+            $clauses[] = "tag LIKE " . $conn->quote($lang . " |||%");
+        }
+        $grade = trim((string) $grade);
+        if ($grade !== "") {
+            $clauses[] = "tag LIKE " . $conn->quote("% ||| " . $grade . " |||%");
+        }
+        if ($clauses === array()) {
+            return "1=1";
+        }
+        return implode(" AND ", $clauses);
+    }
+
+    /**
      * Distinct tags from result rows (tag column only).
      *
      * @param array<int, array<string, mixed>> $rows
@@ -272,6 +340,81 @@ class EdiContentTags
             }
             $html .= "</div>";
             $html .= "<script>(function(){var b=document.getElementById(" . json_encode($btnId) . ");var h=document.getElementById(" . json_encode($moreId) . ");if(!b||!h)return;b.addEventListener(\"click\",function(){var open=h.style.display===\"block\";h.style.display=open?\"none\":\"block\";b.textContent=open?\"See more\":\"See less\";});})();</script>";
+        }
+        $html .= "</div>";
+        return $html;
+    }
+
+    /**
+     * Same look as Treasures explorer tag row: "All" (underlined when active), comma-separated
+     * topic links, gold "See more". Links use ?tag= for server-side filtering (works with pagination).
+     *
+     * @param string[] $tags Distinct topic strings (e.g. distinctBlogTopicTagsFromRows)
+     * @param string   $currentTag Active filter from request (trimmed); empty = All
+     * @param int      $visibleFirst Tags before "See more"
+     * @param array<string, string> $preserveQuery e.g. blog_lang, blog_grade (kept on tag links)
+     */
+    public static function renderBlogsTreasuresStyleTagBar(array $tags, $currentTag = '', $visibleFirst = 12, $uidSuffix = 'blogs', array $preserveQuery = array())
+    {
+        if (count($tags) === 0) {
+            return "";
+        }
+        $visibleFirst = max(1, (int) $visibleFirst);
+        $uidSuffix = preg_replace("/[^a-zA-Z0-9_-]/", "", (string) $uidSuffix);
+        if ($uidSuffix === "") {
+            $uidSuffix = "blogs";
+        }
+        $currentNorm = strtolower(trim((string) $currentTag));
+        $preserve = array();
+        foreach ($preserveQuery as $k => $v) {
+            $ks = preg_replace("/[^a-zA-Z0-9_]/", "", (string) $k);
+            if ($ks === "") {
+                continue;
+            }
+            $vs = trim((string) $v);
+            if ($vs !== "") {
+                $preserve[$ks] = $vs;
+            }
+        }
+
+        $moreId = "edi-blog-treasures-more-" . $uidSuffix;
+        $btnId = "edi-blog-treasures-btn-" . $uidSuffix;
+
+        $html = '<div class="edi-explorer-tag-bar edi-blog-treasures-tag-bar mb-0" role="navigation" aria-label="Tags">';
+        $allClass = "edi-explorer-tag-link edi-blog-treasures-tag";
+        if ($currentNorm === "") {
+            $allClass .= " is-selected";
+        }
+        $allHref = "./blogs" . ($preserve === array() ? "" : "?" . http_build_query($preserve, "", "&", PHP_QUERY_RFC3986));
+        $html .= '<a class="' . $allClass . '" href="' . htmlspecialchars($allHref, ENT_QUOTES, "UTF-8") . '">All</a>';
+
+        $n = count($tags);
+        $show = min($n, $visibleFirst);
+        for ($i = 0; $i < $show; $i++) {
+            $html .= '<span class="edi-explorer-tag-sep">, </span>';
+            $t = $tags[$i];
+            $safe = htmlspecialchars($t, ENT_QUOTES, "UTF-8");
+            $q = array_merge($preserve, array("tag" => $t));
+            $href = "./blogs?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
+            $isSel = $currentNorm !== "" && strcasecmp(trim($currentTag), trim($t)) === 0;
+            $cls = "edi-explorer-tag-link edi-blog-treasures-tag" . ($isSel ? " is-selected" : "");
+            $html .= '<a class="' . $cls . '" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . $safe . "</a>";
+        }
+        if ($n > $show) {
+            $html .= '<span id="' . htmlspecialchars($moreId, ENT_QUOTES, "UTF-8") . '" class="edi-blog-treasures-more" hidden>';
+            for ($i = $show; $i < $n; $i++) {
+                $html .= '<span class="edi-explorer-tag-sep">, </span>';
+                $t = $tags[$i];
+                $safe = htmlspecialchars($t, ENT_QUOTES, "UTF-8");
+                $q = array_merge($preserve, array("tag" => $t));
+                $href = "./blogs?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986);
+                $isSel = $currentNorm !== "" && strcasecmp(trim($currentTag), trim($t)) === 0;
+                $cls = "edi-explorer-tag-link edi-blog-treasures-tag" . ($isSel ? " is-selected" : "");
+                $html .= '<a class="' . $cls . '" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . $safe . "</a>";
+            }
+            $html .= "</span>";
+            $html .= ' <button type="button" class="edi-explorer-tag-seemore btn btn-link p-0 align-baseline text-warning font-weight-bold" id="' . htmlspecialchars($btnId, ENT_QUOTES, "UTF-8") . '">See more</button>';
+            $html .= "<script>(function(){var b=document.getElementById(" . json_encode($btnId) . ");var m=document.getElementById(" . json_encode($moreId) . ");if(!b||!m)return;b.addEventListener(\"click\",function(){m.hidden=!m.hidden;b.textContent=m.hidden?\"See more\":\"See less\";});})();</script>";
         }
         $html .= "</div>";
         return $html;

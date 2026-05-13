@@ -4,10 +4,12 @@
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
     require_once("./classes/edi_content_tags.php");
+    require_once("./classes/edi_taxonomy.php");
     
     $userHeader = new HEADER("blogs");
     $user = new USER();
     $widgets = new WIDGETS();
+    $ediConn = $user->getConnection();
 
     if ( isset($_POST['quoteSubmit']) ) {
         $quoteName = isset($_POST['quoteName']) ? $_POST['quoteName'] : "";
@@ -45,20 +47,37 @@
         echo "<script>alert('Successfully sent the message.')</script>";
     }
 
-    if ( isset($_GET['tag']) ) {
-        $searchTag = strip_tags($_GET['tag']);
-        $pagingUrlParm = "&tag=$searchTag";
-        $searchTagLike = "tag LIKE '%$searchTag%'";
-    } else {
-        $searchTag = "";
-        $searchTagLike = "tag LIKE '%%'";
-        $pagingUrlParm = "";
+    $searchTag = isset($_GET["tag"]) ? trim(strip_tags((string) $_GET["tag"])) : "";
+    $blogLangFilter = isset($_GET["blog_lang"]) ? trim((string) $_GET["blog_lang"]) : "";
+    $blogGradeFilter = isset($_GET["blog_grade"]) ? trim((string) $_GET["blog_grade"]) : "";
+
+    $blogListSqlOther = EdiContentTags::buildBlogListingFilterSql($ediConn, $searchTag, $blogLangFilter, $blogGradeFilter);
+
+    $blogPagingQuery = array();
+    if ($searchTag !== "") {
+        $blogPagingQuery["tag"] = $searchTag;
     }
-    $totalBlogPages = ceil( count($user->fetchAll(array("id"), array("blog_details"), array("status"=>1), "", $searchTagLike)) / 6);
-    if ( isset($_GET['page']) ) {
-        $blogPageNo = (int)$_GET['page'];
-        if ( $totalBlogPages < $blogPageNo ) {
-            $user->redirect("./blogs?page=$totalBlogPages");
+    if ($blogLangFilter !== "") {
+        $blogPagingQuery["blog_lang"] = $blogLangFilter;
+    }
+    if ($blogGradeFilter !== "") {
+        $blogPagingQuery["blog_grade"] = $blogGradeFilter;
+    }
+    $pagingUrlParm = $blogPagingQuery === array() ? "" : "&" . http_build_query($blogPagingQuery, "", "&", PHP_QUERY_RFC3986);
+
+    $totalBlogPages = (int) ceil(count($user->fetchAll(array("id"), array("blog_details"), array("status" => 1), "", $blogListSqlOther)) / 6);
+    if ($totalBlogPages < 1) {
+        $totalBlogPages = 1;
+    }
+    if (isset($_GET["page"])) {
+        $blogPageNo = (int) $_GET["page"];
+        if ($blogPageNo < 1) {
+            $blogPageNo = 1;
+        }
+        if ($totalBlogPages < $blogPageNo) {
+            $redirQ = $blogPagingQuery;
+            $redirQ["page"] = (string) $totalBlogPages;
+            $user->redirect("./blogs?" . http_build_query($redirQ, "", "&", PHP_QUERY_RFC3986));
         }
     } else {
         $blogPageNo = 1;
@@ -104,25 +123,104 @@
                     "1=1"
                 );
                 $blogsAllTags = EdiContentTags::distinctBlogTopicTagsFromRows($blogTagRows);
-                echo EdiContentTags::renderBlogTagChipsHtml($blogsAllTags, 20, "hidden-den");
+                $blogTagBarPreserve = array();
+                if ($blogLangFilter !== "") {
+                    $blogTagBarPreserve["blog_lang"] = $blogLangFilter;
+                }
+                if ($blogGradeFilter !== "") {
+                    $blogTagBarPreserve["blog_grade"] = $blogGradeFilter;
+                }
+                $langsFromBlogs = EdiContentTags::distinctBlogLanguagesFromRows($blogTagRows);
+                $gradesFromBlogs = EdiContentTags::distinctBlogGradesFromRows($blogTagRows);
+                $langTitles = array();
+                foreach (EdiTaxonomy::loadLanguages($ediConn) as $lr) {
+                    $t = trim((string) ($lr["title"] ?? ""));
+                    if ($t !== "") {
+                        $langTitles[$t] = true;
+                    }
+                }
+                foreach ($langsFromBlogs as $t) {
+                    if ($t !== "") {
+                        $langTitles[$t] = true;
+                    }
+                }
+                $blogLangOptions = array_keys($langTitles);
+                sort($blogLangOptions, SORT_NATURAL | SORT_FLAG_CASE);
+                $gradeTitles = array();
+                foreach (EdiTaxonomy::loadGrades($ediConn) as $gr) {
+                    $t = trim((string) ($gr["title"] ?? ""));
+                    if ($t !== "") {
+                        $gradeTitles[$t] = true;
+                    }
+                }
+                foreach ($gradesFromBlogs as $t) {
+                    if ($t !== "") {
+                        $gradeTitles[$t] = true;
+                    }
+                }
+                $blogGradeOptions = array_keys($gradeTitles);
+                usort($blogGradeOptions, function ($a, $b) {
+                    return EdiTaxonomy::gradeSortKey($a) <=> EdiTaxonomy::gradeSortKey($b) ?: strcasecmp($a, $b);
+                });
             ?>
-
-
+            <div class="edi-blog-filter-toolbar d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3">
+                <div class="edi-blog-filter-toolbar__tags flex-grow-1" style="min-width:min(100%, 220px);">
+                    <?php
+                    if ($blogsAllTags !== array()) {
+                        echo EdiContentTags::renderBlogsTreasuresStyleTagBar($blogsAllTags, $searchTag, 12, "hidden-den", $blogTagBarPreserve);
+                    }
+                    ?>
+                </div>
+                <form class="edi-blog-lang-grade-filters d-flex flex-wrap align-items-end gap-2 mb-0" method="get" action="./blogs">
+                    <?php if ($searchTag !== "") : ?>
+                    <input type="hidden" name="tag" value="<?php echo htmlspecialchars($searchTag, ENT_QUOTES, "UTF-8"); ?>">
+                    <?php endif; ?>
+                    <div class="edi-blog-filter-dd">
+                        <label class="edi-blog-filter-dd__label" for="edi_blog_lang_sel">Language</label>
+                        <div class="edi-blog-filter-dd__control">
+                            <select name="blog_lang" id="edi_blog_lang_sel" class="edi-blog-filter-select" onchange="this.form.submit()" title="Filter by language">
+                                <option value="">All languages</option>
+                                <?php foreach ($blogLangOptions as $opt) : ?>
+                                <option value="<?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?>"<?php echo ($blogLangFilter === $opt) ? " selected" : ""; ?>>
+                                    <?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <span class="edi-blog-filter-dd__chev" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                    <div class="edi-blog-filter-dd">
+                        <label class="edi-blog-filter-dd__label" for="edi_blog_grade_sel">Grade</label>
+                        <div class="edi-blog-filter-dd__control">
+                            <select name="blog_grade" id="edi_blog_grade_sel" class="edi-blog-filter-select" onchange="this.form.submit()" title="Filter by grade">
+                                <option value="">All grades</option>
+                                <?php foreach ($blogGradeOptions as $opt) : ?>
+                                <option value="<?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?>"<?php echo ($blogGradeFilter === $opt) ? " selected" : ""; ?>>
+                                    <?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?>
+                                </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <span class="edi-blog-filter-dd__chev" aria-hidden="true"></span>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
             <div class="row edi-blogs-grid pb-3">
                         <?php
-                            if ( $blogPageNo > 1 ) {
-                                $limit = ( $blogPageNo - 1 ) * 6;
-                                $other = "id<" . $user->fetchAll(array("id"), array("blog_details"), array("status"=>"1"), "id DESC LIMIT $limit", $searchTagLike)[$limit-1]['id'];
+                            if ($blogPageNo > 1) {
+                                $limit = ($blogPageNo - 1) * 6;
+                                $prevSlice = $user->fetchAll(array("id"), array("blog_details"), array("status" => "1"), "id DESC LIMIT $limit", $blogListSqlOther);
+                                if (!empty($prevSlice[$limit - 1]["id"])) {
+                                    $pivotId = (int) $prevSlice[$limit - 1]["id"];
+                                    $other = "id<" . $pivotId . " AND " . $blogListSqlOther;
+                                } else {
+                                    $other = $blogListSqlOther;
+                                }
                             } else {
-                                $other = "";
+                                $other = $blogListSqlOther;
                             }
-                            if ( $other!="" ) {
-                                $other = "$other AND $searchTagLike";
-                            } else {
-                                $other = "$searchTagLike";
-                            }
-                            foreach ( $user->fetchAll(array("id","tag","title","image", "description","timestamp"), array("blog_details"), array("status"=>"1"), "id DESC LIMIT 6", $other) as $row ) {
+                            foreach ($user->fetchAll(array("id", "tag", "title", "image", "description", "timestamp"), array("blog_details"), array("status" => "1"), "id DESC LIMIT 6", $other) as $row) {
                                 echo $widgets->displayBlogBrief($row, "col-sm-6 col-lg-4", 220, "list");
                             }
                         ?>
@@ -187,18 +285,25 @@
         }
 
         function prevNextBtn(btn, blogPage, totalPages) {
-            var searchTag = "";
-            var searchTagParam = new URLSearchParams(window.location.search);
-            if (searchTagParam.has("tag") && searchTagParam.get("tag") !== "") {
-                searchTag = "&tag=" + encodeURIComponent(searchTagParam.get("tag"));
+            var q = new URLSearchParams(window.location.search);
+            var parts = [];
+            if (q.has("tag") && q.get("tag") !== "") {
+                parts.push("tag=" + encodeURIComponent(q.get("tag")));
             }
+            if (q.has("blog_lang") && q.get("blog_lang") !== "") {
+                parts.push("blog_lang=" + encodeURIComponent(q.get("blog_lang")));
+            }
+            if (q.has("blog_grade") && q.get("blog_grade") !== "") {
+                parts.push("blog_grade=" + encodeURIComponent(q.get("blog_grade")));
+            }
+            var extra = parts.length ? "&" + parts.join("&") : "";
             if (btn === 0) {
                 if (blogPage > 1) {
-                    location.href = "./blogs?page=" + (blogPage - 1) + searchTag;
+                    location.href = "./blogs?page=" + (blogPage - 1) + extra;
                 }
             } else if (btn === 1) {
                 if (totalPages > blogPage) {
-                    location.href = "./blogs?page=" + (blogPage + 1) + searchTag;
+                    location.href = "./blogs?page=" + (blogPage + 1) + extra;
                 }
             }
         }

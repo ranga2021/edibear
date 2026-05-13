@@ -89,7 +89,7 @@
 
             <?php
             if (count($blogPostTags) > 0) {
-                echo EdiContentTags::renderBlogTagChipsHtml($blogPostTags, 40, "post-" . $blogID);
+                echo EdiContentTags::renderBlogsTreasuresStyleTagBar($blogPostTags, "", 40, "post-" . $blogID);
             }
             ?>
 

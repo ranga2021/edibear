@@ -439,3 +439,94 @@ img[style*="position: fixed"] {
 .product-details-page .edi-treasure-cart-row .edi-wishlist-btn {
   margin-bottom: 0;
 }
+
+/* Blog listing / single: Treasures-style comma tag row (matches product_page explorer strip) */
+.edi-blog-treasures-tag-bar.edi-explorer-tag-bar {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+.edi-blog-treasures-tag-bar .edi-blog-treasures-tag,
+.edi-blog-treasures-tag-bar .edi-explorer-tag-link {
+  color: #0b0b0b;
+  font-weight: 400;
+  text-decoration: none;
+}
+.edi-blog-treasures-tag-bar .edi-blog-treasures-tag:hover,
+.edi-blog-treasures-tag-bar .edi-explorer-tag-link:hover {
+  color: #e65100;
+}
+.edi-blog-treasures-tag-bar .edi-blog-treasures-tag.is-selected,
+.edi-blog-treasures-tag-bar .edi-explorer-tag-link.is-selected {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+  color: #0b0b0b;
+}
+.edi-blog-treasures-tag-bar .edi-explorer-tag-sep {
+  color: #6c757d;
+  font-weight: 400;
+  user-select: none;
+}
+.edi-blog-treasures-tag-bar .edi-explorer-tag-seemore {
+  margin-left: 0.25rem;
+  font-size: 0.95rem;
+  text-decoration: none !important;
+}
+
+/* Blog listing: language + grade dropdowns (same row as topic tags) */
+.edi-blog-filter-toolbar {
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 0.75rem;
+}
+.edi-blog-filter-dd {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+.edi-blog-filter-dd__label {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #475569;
+  letter-spacing: 0.02em;
+}
+.edi-blog-filter-dd__control {
+  position: relative;
+  display: inline-block;
+}
+.edi-blog-filter-select {
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 9.5rem;
+  padding: 0.4rem 1.75rem 0.4rem 0.55rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #0f172a;
+  background-color: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  cursor: pointer;
+  line-height: 1.35;
+}
+.edi-blog-filter-select:hover,
+.edi-blog-filter-select:focus {
+  border-color: #33a675;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(51, 166, 117, 0.2);
+}
+.edi-blog-filter-dd__chev {
+  position: absolute;
+  right: 0.55rem;
+  top: 50%;
+  width: 0;
+  height: 0;
+  margin-top: 2px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid #64748b;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
