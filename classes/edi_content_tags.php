@@ -123,7 +123,7 @@ class EdiContentTags
         foreach ($rows as $row) {
             $parts = self::blogTagTripleParts(isset($row[$col]) ? (string) $row[$col] : "");
             $lang = trim((string) ($parts[0] ?? ""));
-            if ($lang !== "") {
+            if ($lang !== "" && strpos($lang, "|||") === false) {
                 $seen[$lang] = true;
             }
         }
@@ -144,7 +144,7 @@ class EdiContentTags
         foreach ($rows as $row) {
             $parts = self::blogTagTripleParts(isset($row[$col]) ? (string) $row[$col] : "");
             $gr = trim((string) ($parts[1] ?? ""));
-            if ($gr !== "") {
+            if ($gr !== "" && strpos($gr, "|||") === false) {
                 $seen[$gr] = true;
             }
         }

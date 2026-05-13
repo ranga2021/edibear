@@ -144,6 +144,20 @@
                     }
                 }
                 $blogLangOptions = array_keys($langTitles);
+                $blogLangOptions = array_values(array_filter($blogLangOptions, function ($v) {
+                    $t = trim((string) $v);
+                    if ($t === "") {
+                        return false;
+                    }
+                    $low = strtolower($t);
+                    if ($low === "all languages" || $low === "all") {
+                        return false;
+                    }
+                    if (strpos($t, "|||") !== false) {
+                        return false;
+                    }
+                    return true;
+                }));
                 sort($blogLangOptions, SORT_NATURAL | SORT_FLAG_CASE);
                 $gradeTitles = array();
                 foreach (EdiTaxonomy::loadGrades($ediConn) as $gr) {
@@ -158,6 +172,20 @@
                     }
                 }
                 $blogGradeOptions = array_keys($gradeTitles);
+                $blogGradeOptions = array_values(array_filter($blogGradeOptions, function ($v) {
+                    $t = trim((string) $v);
+                    if ($t === "") {
+                        return false;
+                    }
+                    $low = strtolower($t);
+                    if ($low === "all grades" || $low === "all") {
+                        return false;
+                    }
+                    if (strpos($t, "|||") !== false) {
+                        return false;
+                    }
+                    return true;
+                }));
                 usort($blogGradeOptions, function ($a, $b) {
                     return EdiTaxonomy::gradeSortKey($a) <=> EdiTaxonomy::gradeSortKey($b) ?: strcasecmp($a, $b);
                 });

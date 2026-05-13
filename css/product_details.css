@@ -480,6 +480,9 @@ img[style*="position: fixed"] {
   border-bottom: 1px solid #e2e8f0;
   padding-bottom: 0.75rem;
 }
+.edi-blog-lang-grade-filters{
+  gap: 12px !important; /* visible gap between the two boxes */
+}
 .edi-blog-filter-dd {
   display: flex;
   flex-direction: column;
