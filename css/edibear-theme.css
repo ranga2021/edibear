@@ -1358,6 +1358,24 @@ h6.text-primary:not(.text-white),
   max-width: 1140px;
 }
 
+/* Single blog: tag + share replace breadcrumb row */
+.edi-blog-single-top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 1.25rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.edi-blog-single-top-tag {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.15rem;
+}
+
 .edi-blog-single-meta-share {
   display: flex;
   flex-wrap: wrap;
@@ -1464,7 +1482,8 @@ h6.text-primary:not(.text-white),
 }
 
 @media (max-width: 575.98px) {
-  .edi-blog-single-meta-share {
+  .edi-blog-single-meta-share,
+  .edi-blog-single-top-bar {
     flex-direction: column;
     align-items: flex-start;
   }
