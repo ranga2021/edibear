@@ -461,16 +461,16 @@ img[style*="position: fixed"] {
 .edi-blog-treasures-tag-bar .edi-explorer-tag-link.is-selected {
   text-decoration: underline;
   text-underline-offset: 2px;
-  font-weight: 600;
   color: #0b0b0b;
 }
 .edi-blog-treasures-tag-bar .edi-explorer-tag-sep {
   color: #6c757d;
   font-weight: 400;
   user-select: none;
+  margin-right: 3px;
 }
 .edi-blog-treasures-tag-bar .edi-explorer-tag-seemore {
-  margin-left: 0.25rem;
+  margin-left: 5px;
   font-size: 0.95rem;
   text-decoration: none !important;
 }
