@@ -467,33 +467,6 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
 <head>
     <?php echo $userHeader->printUserHeader() ?>
     <link rel="stylesheet" href="css/product_style.css">
-    <style>
-      /* Treasures worksheet pager: force readable text (global rules were washing out outline buttons) */
-      .edi-explorer-pager a.btn,
-      .edi-explorer-pager a.btn-outline-secondary {
-        color: #0f172a !important;
-        border-color: #475569 !important;
-        background-color: #ffffff !important;
-        font-weight: 600;
-      }
-      .edi-explorer-pager a.btn:hover,
-      .edi-explorer-pager a.btn:focus {
-        color: #ffffff !important;
-        background-color: #33a675 !important;
-        border-color: #2d8a54 !important;
-      }
-      .edi-explorer-pager .btn-success,
-      .edi-explorer-pager span.btn-success {
-        color: #ffffff !important;
-        background-color: #33a675 !important;
-        border-color: #2d8a54 !important;
-        font-weight: 700;
-        cursor: default;
-      }
-      .edi-explorer-pager + p.text-muted {
-        color: #334155 !important;
-      }
-    </style>
 </head>
 <body>
     <?php echo $userHeader->printUserNav(); ?>
@@ -692,47 +665,33 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
                 </div>
             </div>
             <?php if ($ediExplorerTotalPages > 1): ?>
-            <nav class="edi-explorer-pager mt-4 d-flex flex-wrap justify-content-center align-items-center gap-2" aria-label="Worksheet pages">
+            <nav class="edi-explorer-pager edi-explorer-pager--compact mt-4" aria-label="Worksheet pages">
+                <div class="edi-explorer-pager__track">
                 <?php
+                $ediPqPrev = $ediExplorerPagBase;
                 if ($ediExplorerPageNum > 1) {
-                    $ediPq = $ediExplorerPagBase;
                     $ediPrev = $ediExplorerPageNum - 1;
                     if ($ediPrev <= 1) {
-                        unset($ediPq['page']);
+                        unset($ediPqPrev['page']);
                     } else {
-                        $ediPq['page'] = (string) $ediPrev;
+                        $ediPqPrev['page'] = (string) $ediPrev;
                     }
-                    $ediPrevHref = 'product_page.php?' . http_build_query($ediPq, '', '&', PHP_QUERY_RFC3986);
-                    echo '<a class="btn btn-sm btn-outline-secondary" href="' . htmlspecialchars($ediPrevHref, ENT_QUOTES, 'UTF-8') . '">Previous</a>';
+                    $ediPrevHref = 'product_page.php?' . http_build_query($ediPqPrev, '', '&', PHP_QUERY_RFC3986);
+                    echo '<a class="edi-explorer-pager__cell edi-explorer-pager__cell--nav" href="' . htmlspecialchars($ediPrevHref, ENT_QUOTES, 'UTF-8') . '" aria-label="Previous page"><span aria-hidden="true">«</span></a>';
+                } else {
+                    echo '<span role="button" tabindex="-1" class="edi-explorer-pager__cell edi-explorer-pager__cell--nav edi-explorer-pager__cell--disabled" aria-disabled="true" aria-label="Previous page, unavailable">«</span>';
                 }
-                $ediWindow = 5;
-                $ediStart = max(1, $ediExplorerPageNum - (int) floor($ediWindow / 2));
-                $ediEnd = min($ediExplorerTotalPages, $ediStart + $ediWindow - 1);
-                if ($ediEnd - $ediStart + 1 < $ediWindow) {
-                    $ediStart = max(1, $ediEnd - $ediWindow + 1);
-                }
-                for ($ediPi = $ediStart; $ediPi <= $ediEnd; $ediPi++) {
-                    $ediPq = $ediExplorerPagBase;
-                    if ($ediPi <= 1) {
-                        unset($ediPq['page']);
-                    } else {
-                        $ediPq['page'] = (string) $ediPi;
-                    }
-                    $ediPHref = 'product_page.php?' . http_build_query($ediPq, '', '&', PHP_QUERY_RFC3986);
-                    $ediIsCur = ($ediPi === $ediExplorerPageNum);
-                    if ($ediIsCur) {
-                        echo '<span class="btn btn-sm btn-success" aria-current="page">' . (int) $ediPi . '</span>';
-                    } else {
-                        echo '<a class="btn btn-sm btn-outline-secondary" href="' . htmlspecialchars($ediPHref, ENT_QUOTES, 'UTF-8') . '">' . (int) $ediPi . '</a>';
-                    }
-                }
+                echo '<span class="edi-explorer-pager__cell edi-explorer-pager__cell--current" aria-current="page">' . (int) $ediExplorerPageNum . '</span>';
                 if ($ediExplorerPageNum < $ediExplorerTotalPages) {
-                    $ediPq = $ediExplorerPagBase;
-                    $ediPq['page'] = (string) ($ediExplorerPageNum + 1);
-                    $ediNextHref = 'product_page.php?' . http_build_query($ediPq, '', '&', PHP_QUERY_RFC3986);
-                    echo '<a class="btn btn-sm btn-outline-secondary" href="' . htmlspecialchars($ediNextHref, ENT_QUOTES, 'UTF-8') . '">Next</a>';
+                    $ediPqNext = $ediExplorerPagBase;
+                    $ediPqNext['page'] = (string) ($ediExplorerPageNum + 1);
+                    $ediNextHref = 'product_page.php?' . http_build_query($ediPqNext, '', '&', PHP_QUERY_RFC3986);
+                    echo '<a class="edi-explorer-pager__cell edi-explorer-pager__cell--nav" href="' . htmlspecialchars($ediNextHref, ENT_QUOTES, 'UTF-8') . '" aria-label="Next page"><span aria-hidden="true">»</span></a>';
+                } else {
+                    echo '<span role="button" tabindex="-1" class="edi-explorer-pager__cell edi-explorer-pager__cell--nav edi-explorer-pager__cell--disabled" aria-disabled="true" aria-label="Next page, unavailable">»</span>';
                 }
                 ?>
+                </div>
             </nav>
             <p class="text-center text-muted small mt-2 mb-0">
                 Page <?php echo (int) $ediExplorerPageNum; ?> of <?php echo (int) $ediExplorerTotalPages; ?>

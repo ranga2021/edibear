@@ -149,3 +149,65 @@
     font-size: 0.95rem;
     text-decoration: none !important;
 }
+
+/* Explore / worksheet results: minimal square pager (« current ») */
+.edi-explorer-pager--compact {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.edi-explorer-pager__track {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 8px;
+}
+
+.edi-explorer-pager__cell {
+    box-sizing: border-box;
+    min-width: 2.5rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1;
+    text-decoration: none;
+    border: 1px solid #ff5e5e;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.edi-explorer-pager__cell--nav {
+    background-color: #fff;
+    color: #ff5e5e;
+}
+
+a.edi-explorer-pager__cell--nav:hover,
+a.edi-explorer-pager__cell--nav:focus-visible {
+    background-color: #fff5f5;
+    color: #e54545;
+    border-color: #e54545;
+    outline: none;
+}
+
+.edi-explorer-pager__cell--current {
+    background-color: #ff5e5e;
+    color: #fff;
+    border-color: #ff5e5e;
+    cursor: default;
+}
+
+.edi-explorer-pager__cell--disabled {
+    opacity: 0.4;
+    pointer-events: none;
+    background-color: #fff;
+    color: #ff5e5e;
+}
+
+.edi-explorer-pager--compact + p.text-muted {
+    color: #64748b !important;
+}
