@@ -419,4 +419,80 @@ class EdiContentTags
         $html .= "</div>";
         return $html;
     }
+
+    /**
+     * Brave Heart challenges listing: same comma-link strip as blogs (Treasures-style tag bar).
+     *
+     * @param array<int, array<string, mixed>> $categories Rows with id + name from braveheart_categories
+     * @param int                              $currentCatId Active ?cat= id; 0 = All
+     * @param int                              $visibleFirst Tags before "See more"
+     * @param string                           $uidSuffix    Unique DOM id suffix
+     */
+    public static function renderBraveHeartCategoryTagBar(array $categories, $currentCatId = 0, $visibleFirst = 12, $uidSuffix = 'bh-cats')
+    {
+        $rows = array();
+        foreach ($categories as $row) {
+            if (!is_array($row)) {
+                continue;
+            }
+            $id = (int) ($row['id'] ?? 0);
+            if ($id <= 0) {
+                continue;
+            }
+            $name = trim((string) ($row['name'] ?? ''));
+            if ($name === '') {
+                continue;
+            }
+            $rows[] = array('id' => $id, 'name' => $name);
+        }
+        if (count($rows) === 0) {
+            return "";
+        }
+
+        $visibleFirst = max(1, (int) $visibleFirst);
+        $uidSuffix = preg_replace("/[^a-zA-Z0-9_-]/", "", (string) $uidSuffix);
+        if ($uidSuffix === "") {
+            $uidSuffix = "bh-cats";
+        }
+        $currentId = (int) $currentCatId;
+
+        $moreId = "edi-bh-cat-more-" . $uidSuffix;
+        $btnId = "edi-bh-cat-btn-" . $uidSuffix;
+
+        $html = '<div class="edi-explorer-tag-bar edi-blog-treasures-tag-bar mb-0" role="navigation" aria-label="Challenge categories">';
+        $allClass = "edi-explorer-tag-link edi-blog-treasures-tag";
+        if ($currentId <= 0) {
+            $allClass .= " is-selected";
+        }
+        $html .= '<a class="' . $allClass . '" href="./challenges.php">All</a>';
+
+        $n = count($rows);
+        $show = min($n, $visibleFirst);
+        for ($i = 0; $i < $show; $i++) {
+            $html .= '<span class="edi-explorer-tag-sep">, </span>';
+            $id = (int) $rows[$i]['id'];
+            $safe = htmlspecialchars($rows[$i]['name'], ENT_QUOTES, "UTF-8");
+            $href = "./challenges.php?cat=" . $id;
+            $isSel = $currentId === $id;
+            $cls = "edi-explorer-tag-link edi-blog-treasures-tag" . ($isSel ? " is-selected" : "");
+            $html .= '<a class="' . $cls . '" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . $safe . "</a>";
+        }
+        if ($n > $show) {
+            $html .= '<span id="' . htmlspecialchars($moreId, ENT_QUOTES, "UTF-8") . '" class="edi-blog-treasures-more" hidden>';
+            for ($i = $show; $i < $n; $i++) {
+                $html .= '<span class="edi-explorer-tag-sep">, </span>';
+                $id = (int) $rows[$i]['id'];
+                $safe = htmlspecialchars($rows[$i]['name'], ENT_QUOTES, "UTF-8");
+                $href = "./challenges.php?cat=" . $id;
+                $isSel = $currentId === $id;
+                $cls = "edi-explorer-tag-link edi-blog-treasures-tag" . ($isSel ? " is-selected" : "");
+                $html .= '<a class="' . $cls . '" href="' . htmlspecialchars($href, ENT_QUOTES, "UTF-8") . '">' . $safe . "</a>";
+            }
+            $html .= "</span>";
+            $html .= ' <button type="button" class="edi-explorer-tag-seemore btn btn-link p-0 align-baseline text-warning font-weight-bold" id="' . htmlspecialchars($btnId, ENT_QUOTES, "UTF-8") . '">See more</button>';
+            $html .= "<script>(function(){var b=document.getElementById(" . json_encode($btnId) . ");var m=document.getElementById(" . json_encode($moreId) . ");if(!b||!m)return;b.addEventListener(\"click\",function(){m.hidden=!m.hidden;b.textContent=m.hidden?\"See more\":\"See less\";});})();</script>";
+        }
+        $html .= "</div>";
+        return $html;
+    }
 }

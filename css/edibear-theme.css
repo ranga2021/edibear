@@ -1497,6 +1497,7 @@ h6.text-primary:not(.text-white),
 
 .edi-blog-extra-caption {
   font-size: 0.8125rem;
+  text-align: center;
 }
 
 .edi-blog-single-video-wrap.blog-video {

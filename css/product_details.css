@@ -521,6 +521,74 @@ img[style*="position: fixed"] {
   outline: none;
   box-shadow: 0 0 0 2px rgba(51, 166, 117, 0.2);
 }
+
+/* Custom language/grade menus (blogs): green hover + selection — native <select> lists cannot be themed on Windows Chrome */
+.edi-blog-filter-custom {
+  position: relative;
+  display: block;
+}
+.edi-blog-filter-custom__summary {
+  list-style: none;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  box-sizing: border-box;
+}
+.edi-blog-filter-custom__summary::-webkit-details-marker {
+  display: none;
+}
+.edi-blog-filter-custom__summary::marker {
+  content: "";
+  font-size: 0;
+}
+.edi-blog-filter-custom[open] > .edi-blog-filter-custom__summary {
+  border-color: #33a675;
+  box-shadow: 0 0 0 2px rgba(51, 166, 117, 0.2);
+}
+.edi-blog-filter-custom__panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 50;
+  margin: 0;
+  padding: 0.25rem 0;
+  background: #fff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  max-height: 16rem;
+  overflow-y: auto;
+  min-width: 100%;
+}
+.edi-blog-filter-custom__opt {
+  display: block;
+  padding: 0.45rem 0.65rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #0f172a;
+  text-decoration: none !important;
+  line-height: 1.35;
+}
+.edi-blog-filter-custom__opt:hover,
+.edi-blog-filter-custom__opt:focus-visible {
+  background-color: #33a675;
+  color: #fff;
+  outline: none;
+}
+.edi-blog-filter-custom__opt.is-selected {
+  background-color: rgba(51, 166, 117, 0.14);
+  color: #0f172a;
+}
+.edi-blog-filter-custom__opt.is-selected:hover,
+.edi-blog-filter-custom__opt.is-selected:focus-visible {
+  background-color: #33a675;
+  color: #fff;
+}
+.edi-blog-filter-custom[open] + .edi-blog-filter-dd__chev {
+  transform: translateY(-50%) rotate(180deg);
+}
+
 .edi-blog-filter-dd__chev {
   position: absolute;
   right: 0.55rem;

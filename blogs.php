@@ -189,6 +189,22 @@
                 usort($blogGradeOptions, function ($a, $b) {
                     return EdiTaxonomy::gradeSortKey($a) <=> EdiTaxonomy::gradeSortKey($b) ?: strcasecmp($a, $b);
                 });
+
+                $ediBlogFilterHref = function ($langOverride, $gradeOverride) use ($searchTag, $blogLangFilter, $blogGradeFilter) {
+                    $lang = $langOverride === false ? $blogLangFilter : $langOverride;
+                    $grade = $gradeOverride === false ? $blogGradeFilter : $gradeOverride;
+                    $q = array();
+                    if ($searchTag !== "") {
+                        $q["tag"] = $searchTag;
+                    }
+                    if ($lang !== "") {
+                        $q["blog_lang"] = $lang;
+                    }
+                    if ($grade !== "") {
+                        $q["blog_grade"] = $grade;
+                    }
+                    return "./blogs" . ($q === array() ? "" : "?" . http_build_query($q, "", "&", PHP_QUERY_RFC3986));
+                };
             ?>
             <div class="edi-blog-filter-toolbar d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3">
                 <div class="edi-blog-filter-toolbar__tags flex-grow-1" style="min-width:min(100%, 220px);">
@@ -198,39 +214,42 @@
                     }
                     ?>
                 </div>
-                <form class="edi-blog-lang-grade-filters d-flex flex-wrap align-items-end gap-2 mb-0" method="get" action="./blogs">
-                    <?php if ($searchTag !== "") : ?>
-                    <input type="hidden" name="tag" value="<?php echo htmlspecialchars($searchTag, ENT_QUOTES, "UTF-8"); ?>">
-                    <?php endif; ?>
+                <div class="edi-blog-lang-grade-filters d-flex flex-wrap align-items-end gap-2 mb-0">
                     <div class="edi-blog-filter-dd">
-                        <label class="edi-blog-filter-dd__label" for="edi_blog_lang_sel">Language</label>
+                        <span class="sr-only" id="edi-blog-lang-filter-label">Language</span>
                         <div class="edi-blog-filter-dd__control">
-                            <select name="blog_lang" id="edi_blog_lang_sel" class="edi-blog-filter-select" onchange="this.form.submit()" title="Filter by language">
-                                <option value="">All languages</option>
-                                <?php foreach ($blogLangOptions as $opt) : ?>
-                                <option value="<?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?>"<?php echo ($blogLangFilter === $opt) ? " selected" : ""; ?>>
-                                    <?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
+                            <details class="edi-blog-filter-custom" aria-labelledby="edi-blog-lang-filter-label">
+                                <summary class="edi-blog-filter-select edi-blog-filter-custom__summary" title="Filter by language">
+                                    <?php echo htmlspecialchars($blogLangFilter !== "" ? $blogLangFilter : "All languages", ENT_QUOTES, "UTF-8"); ?>
+                                </summary>
+                                <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Languages">
+                                    <a class="edi-blog-filter-custom__opt<?php echo $blogLangFilter === "" ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref("", false), ENT_QUOTES, "UTF-8"); ?>">All languages</a>
+                                    <?php foreach ($blogLangOptions as $opt) : ?>
+                                    <a class="edi-blog-filter-custom__opt<?php echo $blogLangFilter === $opt ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref($opt, false), ENT_QUOTES, "UTF-8"); ?>"><?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?></a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </details>
                             <span class="edi-blog-filter-dd__chev" aria-hidden="true"></span>
                         </div>
                     </div>
                     <div class="edi-blog-filter-dd">
-                        <label class="edi-blog-filter-dd__label" for="edi_blog_grade_sel">Grade</label>
+                        <span class="sr-only" id="edi-blog-grade-filter-label">Grade</span>
                         <div class="edi-blog-filter-dd__control">
-                            <select name="blog_grade" id="edi_blog_grade_sel" class="edi-blog-filter-select" onchange="this.form.submit()" title="Filter by grade">
-                                <option value="">All grades</option>
-                                <?php foreach ($blogGradeOptions as $opt) : ?>
-                                <option value="<?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?>"<?php echo ($blogGradeFilter === $opt) ? " selected" : ""; ?>>
-                                    <?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?>
-                                </option>
-                                <?php endforeach; ?>
-                            </select>
+                            <details class="edi-blog-filter-custom" aria-labelledby="edi-blog-grade-filter-label">
+                                <summary class="edi-blog-filter-select edi-blog-filter-custom__summary" title="Filter by grade">
+                                    <?php echo htmlspecialchars($blogGradeFilter !== "" ? $blogGradeFilter : "All grades", ENT_QUOTES, "UTF-8"); ?>
+                                </summary>
+                                <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Grades">
+                                    <a class="edi-blog-filter-custom__opt<?php echo $blogGradeFilter === "" ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref(false, ""), ENT_QUOTES, "UTF-8"); ?>">All grades</a>
+                                    <?php foreach ($blogGradeOptions as $opt) : ?>
+                                    <a class="edi-blog-filter-custom__opt<?php echo $blogGradeFilter === $opt ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref(false, $opt), ENT_QUOTES, "UTF-8"); ?>"><?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?></a>
+                                    <?php endforeach; ?>
+                                </div>
+                            </details>
                             <span class="edi-blog-filter-dd__chev" aria-hidden="true"></span>
                         </div>
                     </div>
-                </form>
+                </div>
             </div>
 
             <div class="row edi-blogs-grid pb-3">
@@ -332,6 +351,21 @@
                 }
             }
         }
+
+        (function () {
+            document.querySelectorAll(".edi-blog-filter-custom").forEach(function (d) {
+                d.addEventListener("toggle", function () {
+                    if (!d.open) {
+                        return;
+                    }
+                    document.querySelectorAll(".edi-blog-filter-custom").forEach(function (o) {
+                        if (o !== d) {
+                            o.open = false;
+                        }
+                    });
+                });
+            });
+        })();
     </script>
 </body>
 

@@ -118,7 +118,6 @@ if ($blogGradeSeg !== "") {
                     </p>
                     <?php endif; ?>
                     <h1 class="edi-blog-single-post-title"><?php echo htmlspecialchars(strtoupper((string) $blogTitle), ENT_QUOTES, "UTF-8"); ?></h1>
-                    <div class="edi-blog-single-post-title-rule" role="presentation"></div>
                 </div>
                 <div class="edi-blog-single-share" aria-label="Share this post">
                     <span class="edi-blog-share-label">SHARE</span>

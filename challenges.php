@@ -3,10 +3,13 @@
     require_once("./classes/class.user.php");
     require_once("./classes/class.header.php");
     require_once("./classes/class.widgets.php");
+    require_once("./classes/edi_content_tags.php");
 
     $userHeader = new HEADER("challenges");
     $user = new USER();
     $widgets = new WIDGETS();
+
+    $filterCat = isset($_GET['cat']) ? (int) $_GET['cat'] : 0;
 
     // Pagination Logic: Show 2 events per page
     $limit = 2;
@@ -18,7 +21,13 @@
 
     // Fetch Events with Pagination
     $totalEventsQuery = "SELECT COUNT(id) AS total FROM braveheart_events WHERE status = 1";
+    if ($filterCat > 0) {
+        $totalEventsQuery .= " AND category_id = :cat_id";
+    }
     $stmtTotal = $user->getConnection()->prepare($totalEventsQuery);
+    if ($filterCat > 0) {
+        $stmtTotal->bindValue(':cat_id', $filterCat, PDO::PARAM_INT);
+    }
     $stmtTotal->execute();
     $totalEvents = $stmtTotal->fetch()['total'];
     $totalPages = ceil($totalEvents / $limit);
@@ -27,11 +36,17 @@
     $eventQuery = "SELECT e.*, c.name as cat_name 
                    FROM braveheart_events e 
                    LEFT JOIN braveheart_categories c ON e.category_id = c.id 
-                   WHERE e.status = 1 
-                   ORDER BY e.deadline_date DESC 
+                   WHERE e.status = 1 ";
+    if ($filterCat > 0) {
+        $eventQuery .= "AND e.category_id = :cat_id ";
+    }
+    $eventQuery .= "ORDER BY e.deadline_date DESC 
                    LIMIT :limit OFFSET :offset";
     
     $stmt = $user->getConnection()->prepare($eventQuery);
+    if ($filterCat > 0) {
+        $stmt->bindValue(':cat_id', $filterCat, PDO::PARAM_INT);
+    }
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
     $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
     $stmt->execute();
@@ -43,11 +58,10 @@
 <html lang="en">
 <head>
     <?php echo $userHeader->printUserHeader() ?>
+    <link rel="stylesheet" href="css/product_details.css">
     
     <style>
         .challenge-header-title { color: #555; font-weight: 700; border-bottom: 2px solid #f1c40f; display: inline-block; padding-bottom: 5px; }
-        .category-nav a { color: #666; text-decoration: none; margin-right: 15px; font-weight: 500; }
-        .category-nav a:hover { color: #e67e22; }
         
         .event-container { margin-bottom: 50px; }
         .event-banner { 
@@ -91,16 +105,12 @@
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
         
-        <div class="category-nav mt-2 mb-4">
-            <?php foreach($bhCategories as $cat):
-                $catLabel = htmlspecialchars(html_entity_decode((string)($cat['name'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8'), ENT_QUOTES, 'UTF-8');
-            ?>
-                <a href="?cat=<?php echo (int)$cat['id']; ?>"><?php echo $catLabel; ?></a>
-            <?php endforeach; ?>
+        <div class="mt-2 mb-4">
+            <?php echo EdiContentTags::renderBraveHeartCategoryTagBar($bhCategories, $filterCat, 12, 'brave-heart'); ?>
         </div>
 
         <div class="row justify-content-center">
-            <div class="col-lg-10">
+            <div class="col-lg-12">
                 <?php if(empty($events)): ?>
                     <div class="alert alert-info text-center">No challenges found at the moment.</div>
                 <?php else: 
@@ -133,18 +143,25 @@
             </div>
         </div>
 
+        <?php
+        $chPgQ = array();
+        if ($filterCat > 0) {
+            $chPgQ['cat'] = (string) $filterCat;
+        }
+        $chPgPrefix = './challenges.php' . ($chPgQ === array() ? '?' : '?' . http_build_query($chPgQ, '', '&', PHP_QUERY_RFC3986) . '&');
+        ?>
         <nav class="mt-5">
             <ul class="pagination justify-content-center">
                 <li class="page-item <?php if($page <= 1) echo 'disabled'; ?>">
-                    <a class="page-link" href="?page=<?php echo $page-1; ?>">&laquo;</a>
+                    <a class="page-link" href="<?php echo htmlspecialchars($chPgPrefix . 'page=' . ($page - 1), ENT_QUOTES, 'UTF-8'); ?>">&laquo;</a>
                 </li>
                 <?php for($i = 1; $i <= $totalPages; $i++): ?>
                     <li class="page-item <?php if($page == $i) echo 'active'; ?>">
-                        <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                        <a class="page-link" href="<?php echo htmlspecialchars($chPgPrefix . 'page=' . $i, ENT_QUOTES, 'UTF-8'); ?>"><?php echo $i; ?></a>
                     </li>
                 <?php endfor; ?>
                 <li class="page-item <?php if($page >= $totalPages) echo 'disabled'; ?>">
-                    <a class="page-link" href="?page=<?php echo $page+1; ?>">&raquo;</a>
+                    <a class="page-link" href="<?php echo htmlspecialchars($chPgPrefix . 'page=' . ($page + 1), ENT_QUOTES, 'UTF-8'); ?>">&raquo;</a>
                 </li>
             </ul>
         </nav>
