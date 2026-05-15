@@ -467,6 +467,7 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
 <head>
     <?php echo $userHeader->printUserHeader() ?>
     <link rel="stylesheet" href="css/product_style.css">
+    <link rel="stylesheet" href="css/product_details.css">
 </head>
 <body>
     <?php echo $userHeader->printUserNav(); ?>
@@ -520,54 +521,140 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
             <?php if ($langF !== ""): ?><input type="hidden" name="lang" value="<?php echo htmlspecialchars($langF, ENT_QUOTES, "UTF-8"); ?>"><?php endif; ?>
             <?php if ($ageF !== ""): ?><input type="hidden" name="age" value="<?php echo htmlspecialchars($ageF, ENT_QUOTES, "UTF-8"); ?>"><?php endif; ?>
             <?php else: ?>
+            <?php
+                $treasuresFilterHref = function (array $overrides) use ($catF, $ageF, $brandF, $priceF, $offerF, $subF) {
+                    $c = array_key_exists('category', $overrides) ? (string) $overrides['category'] : $catF;
+                    $a = array_key_exists('age', $overrides) ? (string) $overrides['age'] : $ageF;
+                    $b = array_key_exists('brand', $overrides) ? (string) $overrides['brand'] : $brandF;
+                    $p = array_key_exists('price', $overrides) ? (string) $overrides['price'] : $priceF;
+                    $o = array_key_exists('offers', $overrides) ? (string) $overrides['offers'] : $offerF;
+                    $q = array();
+                    if ($c !== '') {
+                        $q['category'] = $c;
+                    }
+                    if ($a !== '') {
+                        $q['age'] = $a;
+                    }
+                    if ($b !== '') {
+                        $q['brand'] = $b;
+                    }
+                    if ($p !== '') {
+                        $q['price'] = $p;
+                    }
+                    if ($o !== '') {
+                        $q['offers'] = $o;
+                    }
+                    if ($subF > 0) {
+                        $q['sub'] = (string) $subF;
+                    }
+                    return 'product_page.php' . ($q === array() ? '' : '?' . http_build_query($q, '', '&', PHP_QUERY_RFC3986));
+                };
+                $treasuresCatSummary = 'Category';
+                if ($catF !== '') {
+                    foreach ($categories as $cRow) {
+                        if ((string) ($cRow['id'] ?? '') === $catF) {
+                            $treasuresCatSummary = (string) ($cRow['name'] ?? 'Category');
+                            break;
+                        }
+                    }
+                }
+                $treasuresAgeSummary = $ageF !== '' ? $ageF : 'Grade';
+                $treasuresBrandSummary = $brandF !== '' ? $brandF : 'Brands';
+                $treasuresPriceSummary = 'Price';
+                if ($priceF === 'low') {
+                    $treasuresPriceSummary = 'Low to High';
+                } elseif ($priceF === 'high') {
+                    $treasuresPriceSummary = 'High to Low';
+                }
+                $treasuresOfferSummary = ($offerF === 'available') ? 'Available' : 'Offers';
+            ?>
             <div class="treasures-filters-row">
                 <div class="treasures-filter-cell">
-                    <label class="sr-only" for="filter-category">Category</label>
-                    <select id="filter-category" name="category" class="form-control treasures-filter-select" onchange="this.form.submit()">
-                        <option value="">Category</option>
-                        <?php foreach ($categories as $c): ?>
-                            <option value="<?= htmlspecialchars((string) $c['id'], ENT_QUOTES, 'UTF-8') ?>" <?= ($catF == (string) $c['id']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($c['name'], ENT_QUOTES, 'UTF-8') ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <span class="sr-only" id="treasures-filter-category-label">Category</span>
+                    <div class="treasures-filter-dd__control">
+                        <details class="edi-blog-filter-custom" aria-labelledby="treasures-filter-category-label">
+                            <summary class="form-control treasures-filter-select edi-blog-filter-custom__summary" title="Filter by category">
+                                <?= htmlspecialchars($treasuresCatSummary, ENT_QUOTES, 'UTF-8') ?>
+                            </summary>
+                            <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Categories">
+                                <a class="edi-blog-filter-custom__opt<?= $catF === '' ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('category' => '')), ENT_QUOTES, 'UTF-8') ?>">Category</a>
+                                <?php foreach ($categories as $c): ?>
+                                    <?php
+                                    $cid = (string) ($c['id'] ?? '');
+                                    $isCatSel = ($catF === $cid);
+                                    ?>
+                                    <a class="edi-blog-filter-custom__opt<?= $isCatSel ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('category' => $cid)), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) ($c['name'] ?? ''), ENT_QUOTES, 'UTF-8') ?></a>
+                                <?php endforeach; ?>
+                            </div>
+                        </details>
+                        <span class="edi-blog-filter-dd__chev" aria-hidden="true"></span>
+                    </div>
                 </div>
                 <div class="treasures-filter-cell">
-                    <label class="sr-only" for="filter-age">Grade</label>
-                    <select id="filter-age" name="age" class="form-control treasures-filter-select" onchange="this.form.submit()">
-                        <option value="">Grade</option>
-                        <?php foreach ($ageOptionList as $ageTitle): ?>
-                            <option value="<?= htmlspecialchars($ageTitle, ENT_QUOTES, 'UTF-8') ?>" <?= ($ageF === $ageTitle) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($ageTitle, ENT_QUOTES, 'UTF-8') ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <span class="sr-only" id="treasures-filter-age-label">Grade</span>
+                    <div class="treasures-filter-dd__control">
+                        <details class="edi-blog-filter-custom" aria-labelledby="treasures-filter-age-label">
+                            <summary class="form-control treasures-filter-select edi-blog-filter-custom__summary" title="Filter by grade">
+                                <?= htmlspecialchars($treasuresAgeSummary, ENT_QUOTES, 'UTF-8') ?>
+                            </summary>
+                            <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Grades">
+                                <a class="edi-blog-filter-custom__opt<?= $ageF === '' ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('age' => '')), ENT_QUOTES, 'UTF-8') ?>">Grade</a>
+                                <?php foreach ($ageOptionList as $ageTitle): ?>
+                                    <a class="edi-blog-filter-custom__opt<?= ($ageF === $ageTitle) ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('age' => $ageTitle)), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($ageTitle, ENT_QUOTES, 'UTF-8') ?></a>
+                                <?php endforeach; ?>
+                            </div>
+                        </details>
+                        <span class="edi-blog-filter-dd__chev" aria-hidden="true"></span>
+                    </div>
                 </div>
                 <div class="treasures-filter-cell">
-                    <label class="sr-only" for="filter-brand">Brands</label>
-                    <select id="filter-brand" name="brand" class="form-control treasures-filter-select" onchange="this.form.submit()">
-                        <option value="">Brands</option>
-                        <?php foreach ($brands as $b): ?>
-                            <option value="<?= htmlspecialchars((string) $b['brand'], ENT_QUOTES, 'UTF-8') ?>" <?= ($brandF === $b['brand']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars((string) $b['brand'], ENT_QUOTES, 'UTF-8') ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <span class="sr-only" id="treasures-filter-brand-label">Brands</span>
+                    <div class="treasures-filter-dd__control">
+                        <details class="edi-blog-filter-custom" aria-labelledby="treasures-filter-brand-label">
+                            <summary class="form-control treasures-filter-select edi-blog-filter-custom__summary" title="Filter by brand">
+                                <?= htmlspecialchars($treasuresBrandSummary, ENT_QUOTES, 'UTF-8') ?>
+                            </summary>
+                            <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Brands">
+                                <a class="edi-blog-filter-custom__opt<?= $brandF === '' ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('brand' => '')), ENT_QUOTES, 'UTF-8') ?>">Brands</a>
+                                <?php foreach ($brands as $b): ?>
+                                    <?php $bn = (string) ($b['brand'] ?? ''); ?>
+                                    <a class="edi-blog-filter-custom__opt<?= ($brandF === $bn) ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('brand' => $bn)), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($bn, ENT_QUOTES, 'UTF-8') ?></a>
+                                <?php endforeach; ?>
+                            </div>
+                        </details>
+                        <span class="edi-blog-filter-dd__chev" aria-hidden="true"></span>
+                    </div>
                 </div>
                 <div class="treasures-filter-cell">
-                    <label class="sr-only" for="filter-price">Price</label>
-                    <select id="filter-price" name="price" class="form-control treasures-filter-select" onchange="this.form.submit()">
-                        <option value="">Price</option>
-                        <option value="low" <?= ($priceF === 'low') ? 'selected' : '' ?>>Low to High</option>
-                        <option value="high" <?= ($priceF === 'high') ? 'selected' : '' ?>>High to Low</option>
-                    </select>
+                    <span class="sr-only" id="treasures-filter-price-label">Price</span>
+                    <div class="treasures-filter-dd__control">
+                        <details class="edi-blog-filter-custom" aria-labelledby="treasures-filter-price-label">
+                            <summary class="form-control treasures-filter-select edi-blog-filter-custom__summary" title="Sort by price">
+                                <?= htmlspecialchars($treasuresPriceSummary, ENT_QUOTES, 'UTF-8') ?>
+                            </summary>
+                            <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Price sort">
+                                <a class="edi-blog-filter-custom__opt<?= $priceF === '' ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('price' => '')), ENT_QUOTES, 'UTF-8') ?>">Price</a>
+                                <a class="edi-blog-filter-custom__opt<?= ($priceF === 'low') ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('price' => 'low')), ENT_QUOTES, 'UTF-8') ?>">Low to High</a>
+                                <a class="edi-blog-filter-custom__opt<?= ($priceF === 'high') ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('price' => 'high')), ENT_QUOTES, 'UTF-8') ?>">High to Low</a>
+                            </div>
+                        </details>
+                        <span class="edi-blog-filter-dd__chev" aria-hidden="true"></span>
+                    </div>
                 </div>
                 <div class="treasures-filter-cell">
-                    <label class="sr-only" for="filter-offers">Offers</label>
-                    <select id="filter-offers" name="offers" class="form-control treasures-filter-select" onchange="this.form.submit()">
-                        <option value="">Offers</option>
-                        <option value="available" <?= ($offerF === 'available') ? 'selected' : '' ?>>Available</option>
-                    </select>
+                    <span class="sr-only" id="treasures-filter-offers-label">Offers</span>
+                    <div class="treasures-filter-dd__control">
+                        <details class="edi-blog-filter-custom" aria-labelledby="treasures-filter-offers-label">
+                            <summary class="form-control treasures-filter-select edi-blog-filter-custom__summary" title="Filter by offers">
+                                <?= htmlspecialchars($treasuresOfferSummary, ENT_QUOTES, 'UTF-8') ?>
+                            </summary>
+                            <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Offers">
+                                <a class="edi-blog-filter-custom__opt<?= $offerF === '' ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('offers' => '')), ENT_QUOTES, 'UTF-8') ?>">Offers</a>
+                                <a class="edi-blog-filter-custom__opt<?= ($offerF === 'available') ? ' is-selected' : '' ?>" role="option" href="<?= htmlspecialchars($treasuresFilterHref(array('offers' => 'available')), ENT_QUOTES, 'UTF-8') ?>">Available</a>
+                            </div>
+                        </details>
+                        <span class="edi-blog-filter-dd__chev" aria-hidden="true"></span>
+                    </div>
                 </div>
             </div>
             <?php endif; ?>
@@ -784,6 +871,21 @@ if (typeof window.edibearSyncCartBadge === 'function') {
                 });
             });
         });
+
+        (function () {
+            document.querySelectorAll(".treasures-filters-row .edi-blog-filter-custom").forEach(function (d) {
+                d.addEventListener("toggle", function () {
+                    if (!d.open) {
+                        return;
+                    }
+                    document.querySelectorAll(".treasures-filters-row .edi-blog-filter-custom").forEach(function (o) {
+                        if (o !== d) {
+                            o.open = false;
+                        }
+                    });
+                });
+            });
+        })();
     </script>
     <?php if ($forceExplorer): ?>
     <script>

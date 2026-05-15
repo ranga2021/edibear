@@ -77,6 +77,20 @@
     box-shadow: 0 0 0 0.15rem rgba(51, 166, 117, 0.2);
 }
 
+/* Custom filter menus: hide native chevron (external triangle) + anchor positioning */
+.treasures-filter-dd__control {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+.treasures-filter-select.edi-blog-filter-custom__summary {
+    background-image: none;
+    padding-right: 2.25rem;
+}
+.treasures-filter-select.edi-blog-filter-custom__summary:hover {
+    border-color: rgba(51, 166, 117, 0.55);
+}
+
 /* Space between filter strip and product cards */
 .treasures-product-grid {
     margin-top: 2.5rem;
