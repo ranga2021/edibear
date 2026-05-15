@@ -1640,17 +1640,18 @@ h6.text-primary:not(.text-white),
   font-size: 1.125rem;
   font-weight: 800;
   color: #212121;
-  border-bottom: 2px solid #eee;
   padding-bottom: 0.5rem;
   max-width: 42rem;
+}
+
+.challenge-details-page .edi-challenge-winners-row {
   margin-left: auto;
   margin-right: auto;
 }
 
-.challenge-details-page .edi-challenge-winners-row {
-  max-width: 42rem;
-  margin-left: auto;
-  margin-right: auto;
+.challenge-details-page .edi-challenge-winners-row .col-md-4{
+  padding-left: 0 !important;
+  padding-right: 20px;
 }
 
 .challenge-details-page .edi-challenge-winner-card {

@@ -75,7 +75,7 @@
         
         .status-badge { font-weight: 800; text-transform: uppercase; font-size: 0.9rem; margin-bottom: 5px; display: block; }
         .status-upcoming { color: #28a745; } 
-        .status-completed { color: #8b0000; } 
+        .status-completed { color: #f65247; } 
         
         .event-title { font-weight: 800; text-transform: uppercase; margin-top: 10px; margin-bottom: 2px; }
         .category-tag { color: #f39c12; font-size: 0.9rem; font-weight: bold; }
