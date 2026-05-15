@@ -35,13 +35,11 @@
 
 .treasures-filters-row {
     display: flex;
-    flex-wrap: nowrap;
-    align-items: stretch;
+    flex-wrap: wrap;
+    align-items: flex-start;
     gap: 8px 10px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow: visible;
     padding-bottom: 2px;
-    scrollbar-width: thin;
 }
 
 .treasures-filter-cell {
@@ -82,6 +80,13 @@
     position: relative;
     display: block;
     width: 100%;
+    z-index: 0;
+}
+.treasures-filter-dd__control:has(.edi-blog-filter-custom[open]) {
+    z-index: 40;
+}
+.treasures-filters-row .edi-blog-filter-custom__panel {
+    z-index: 50;
 }
 .treasures-filter-select.edi-blog-filter-custom__summary {
     background-image: none;

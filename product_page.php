@@ -514,13 +514,15 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
         <?php endif; ?>
 
         <?php if (!$forceExplorer): ?>
-        <form method="GET" action="" class="treasures-filters-form" id="treasures-filters-form" aria-label="Filter treasures">
             <?php if ($mcatF > 0): ?>
+            <form method="GET" action="" class="treasures-filters-form" id="treasures-filters-form" aria-label="Filter treasures">
             <input type="hidden" name="main_cat_id" value="<?php echo (int) $mcatF; ?>">
             <?php if ($scatF > 0): ?><input type="hidden" name="sub_cat_id" value="<?php echo (int) $scatF; ?>"><?php endif; ?>
             <?php if ($langF !== ""): ?><input type="hidden" name="lang" value="<?php echo htmlspecialchars($langF, ENT_QUOTES, "UTF-8"); ?>"><?php endif; ?>
             <?php if ($ageF !== ""): ?><input type="hidden" name="age" value="<?php echo htmlspecialchars($ageF, ENT_QUOTES, "UTF-8"); ?>"><?php endif; ?>
+            </form>
             <?php else: ?>
+            <div class="treasures-filters-form" id="treasures-filters-form" role="search" aria-label="Filter treasures">
             <?php
                 $treasuresFilterHref = function (array $overrides) use ($catF, $ageF, $brandF, $priceF, $offerF, $subF) {
                     $c = array_key_exists('category', $overrides) ? (string) $overrides['category'] : $catF;
@@ -657,8 +659,8 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
                     </div>
                 </div>
             </div>
+            </div>
             <?php endif; ?>
-        </form>
 
         <div class="row treasures-product-grid mt-2">
             <?php
