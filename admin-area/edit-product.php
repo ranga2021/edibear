@@ -287,7 +287,8 @@ if ($hasOptionsExtra) {
 <html lang="en">
 <head>
   <?php echo $adminHeader->printAdminHeader(); ?>
-  <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+  <script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
+  <script>if (typeof CKEDITOR !== "undefined") { CKEDITOR.config.versionCheck = false; }</script>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -468,7 +469,7 @@ if ($hasOptionsExtra) {
                   <div class="col-md-6 mb-3">
                     <h6 class="font-weight-bold mb-3">More details</h6>
                     <textarea name="more_details" id="more_details"><?php echo htmlspecialchars((string) ($product["more_details"] ?? "")); ?></textarea>
-                    <script>CKEDITOR.replace("more_details");</script>
+                    <script>CKEDITOR.replace("more_details", { versionCheck: false });</script>
                   </div>
                   <?php endif; ?>
                 </div>

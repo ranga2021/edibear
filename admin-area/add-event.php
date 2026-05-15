@@ -143,7 +143,8 @@ try {
 
 <head>
   <?php echo $adminHeader->printAdminHeader(); ?>
-  <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
+  <script src="https://cdn.ckeditor.com/4.25.1-lts/standard/ckeditor.js"></script>
+  <script>if (typeof CKEDITOR !== "undefined") { CKEDITOR.config.versionCheck = false; }</script>
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -317,7 +318,7 @@ try {
 
     document.addEventListener("DOMContentLoaded", function () {
       if (typeof CKEDITOR !== "undefined") {
-        CKEDITOR.replace("event_description", { height: 220 });
+        CKEDITOR.replace("event_description", { height: 220, versionCheck: false });
       }
       addWinnerRow();
     });
