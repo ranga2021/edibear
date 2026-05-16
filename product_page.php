@@ -690,8 +690,8 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
                             <img src="./img/products/<?= $pimg ?>" class="product-img cart-product-image" alt="<?= $pname ?>">
                         </a>
                         </div>
-                        <h6 class="mt-3" style="text-align: left; padding-left: 5px;">
-                            <a href="product_details.php?product_id=<?= $pid ?>" style="text-decoration: none; color: inherit;"><?= $pname ?></a>
+                        <h6 class="product-card-title">
+                            <a href="product_details.php?product_id=<?= $pid ?>" title="<?= $pname ?>" style="text-decoration: none; color: inherit;"><?= $pname ?></a>
                         </h6>
                         <div class="price" style="text-align: left; padding-left: 5px;">
                             <?php if ((float) $p['discounted_price'] > 0): ?>

@@ -362,6 +362,7 @@ img[style*="position: fixed"] {
   gap: 10px;
   margin-top: 12px;
   flex-wrap: wrap;
+  justify-content: center;
 }
 
 .edi-treasure-thumb {

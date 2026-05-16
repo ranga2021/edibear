@@ -319,9 +319,10 @@
     </a>
     </div>
 
-    <h6 class="mt-3" style='text-align: left; padding-left:5px;'>
-        <a href="product_details.php?product_id=<?php echo $product['id']; ?>" style="text-decoration:none; color:inherit;">
-            <?php echo $product['product_name']; ?>
+    <?php $pnameDisplay = htmlspecialchars((string) $product['product_name'], ENT_QUOTES, 'UTF-8'); ?>
+    <h6 class="product-card-title">
+        <a href="product_details.php?product_id=<?php echo $product['id']; ?>" title="<?php echo $pnameDisplay; ?>" style="text-decoration:none; color:inherit;">
+            <?php echo $pnameDisplay; ?>
         </a>
     </h6>
                         <div class="price" style='text-align: left; padding-left:5px;'>
