@@ -102,35 +102,60 @@ if ($forceExplorerWs) {
 
 // Homepage EXPLORE (content category): free resources only — no Honey Market products.
 $products = array();
+$shopProductsPerPage = 20;
+$shopProductsPageNum = isset($_GET["page"]) ? max(1, (int) $_GET["page"]) : 1;
+$shopProductsTotal = 0;
+$shopProductsTotalPages = 1;
+$shopProductsPagBase = array();
 if ($mcatF === 0 && !$forceExplorer) {
-    $query = "SELECT * FROM products WHERE status = 1";
+    $where = "FROM products WHERE status = 1";
     $params = array();
 
     if ($catF !== "") {
-        $query .= " AND category_id = :cat";
+        $where .= " AND category_id = :cat";
         $params[":cat"] = $catF;
+        $shopProductsPagBase["category"] = $catF;
     }
     if ($ageF !== "") {
-        $query .= " AND TRIM(COALESCE(age_group, '')) = :age";
+        $where .= " AND TRIM(COALESCE(age_group, '')) = :age";
         $params[":age"] = $ageF;
+        $shopProductsPagBase["age"] = $ageF;
     }
     if ($brandF !== "") {
-        $query .= " AND brand = :brand";
+        $where .= " AND brand = :brand";
         $params[":brand"] = $brandF;
+        $shopProductsPagBase["brand"] = $brandF;
     }
     if ($langF !== "") {
-        $query .= " AND LOWER(TRIM(COALESCE(language, ''))) = LOWER(:lang)";
+        $where .= " AND LOWER(TRIM(COALESCE(language, ''))) = LOWER(:lang)";
         $params[":lang"] = $langF;
+        $shopProductsPagBase["lang"] = $langF;
     }
     if ($subF > 0 && $hasProductSubcategoryColumn) {
-        $query .= " AND product_subcategory_id = :psub";
+        $where .= " AND product_subcategory_id = :psub";
         $params[":psub"] = $subF;
+        $shopProductsPagBase["sub"] = (string) $subF;
     }
 
     if ($offerF === "available") {
-        $query .= " AND discount_percentage > 0";
+        $where .= " AND discount_percentage > 0";
+        $shopProductsPagBase["offers"] = $offerF;
     }
 
+    if ($priceF !== "") {
+        $shopProductsPagBase["price"] = $priceF;
+    }
+
+    $countStmt = $conn->prepare("SELECT COUNT(*) " . $where);
+    $countStmt->execute($params);
+    $shopProductsTotal = (int) $countStmt->fetchColumn();
+    $shopProductsTotalPages = max(1, (int) ceil($shopProductsTotal / $shopProductsPerPage));
+    if ($shopProductsPageNum > $shopProductsTotalPages) {
+        $shopProductsPageNum = $shopProductsTotalPages;
+    }
+    $shopProductsOffset = ($shopProductsPageNum - 1) * $shopProductsPerPage;
+
+    $query = "SELECT * " . $where;
     if ($priceF === "low") {
         $query .= " ORDER BY discounted_price ASC";
     } elseif ($priceF === "high") {
@@ -138,6 +163,7 @@ if ($mcatF === 0 && !$forceExplorer) {
     } else {
         $query .= " ORDER BY id DESC";
     }
+    $query .= " LIMIT " . (int) $shopProductsPerPage . " OFFSET " . (int) $shopProductsOffset;
 
     $stmt = $conn->prepare($query);
     $stmt->execute($params);
@@ -711,6 +737,40 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
                 </div>
             <?php endforeach; endif; ?>
         </div>
+        <?php if ($mcatF === 0 && $shopProductsTotalPages > 1): ?>
+            <nav class="edi-explorer-pager edi-explorer-pager--compact mt-4" aria-label="Product pages">
+                <div class="edi-explorer-pager__track">
+                <?php
+                $shopPqPrev = $shopProductsPagBase;
+                if ($shopProductsPageNum > 1) {
+                    $shopPrev = $shopProductsPageNum - 1;
+                    if ($shopPrev <= 1) {
+                        unset($shopPqPrev["page"]);
+                    } else {
+                        $shopPqPrev["page"] = (string) $shopPrev;
+                    }
+                    $shopPrevHref = "product_page.php?" . http_build_query($shopPqPrev, "", "&", PHP_QUERY_RFC3986);
+                    echo '<a class="edi-explorer-pager__cell edi-explorer-pager__cell--nav" href="' . htmlspecialchars($shopPrevHref, ENT_QUOTES, "UTF-8") . '" aria-label="Previous page"><span aria-hidden="true">«</span></a>';
+                } else {
+                    echo '<span role="button" tabindex="-1" class="edi-explorer-pager__cell edi-explorer-pager__cell--nav edi-explorer-pager__cell--disabled" aria-disabled="true" aria-label="Previous page, unavailable">«</span>';
+                }
+                echo '<span class="edi-explorer-pager__cell edi-explorer-pager__cell--current" aria-current="page">' . (int) $shopProductsPageNum . '</span>';
+                if ($shopProductsPageNum < $shopProductsTotalPages) {
+                    $shopPqNext = $shopProductsPagBase;
+                    $shopPqNext["page"] = (string) ($shopProductsPageNum + 1);
+                    $shopNextHref = "product_page.php?" . http_build_query($shopPqNext, "", "&", PHP_QUERY_RFC3986);
+                    echo '<a class="edi-explorer-pager__cell edi-explorer-pager__cell--nav" href="' . htmlspecialchars($shopNextHref, ENT_QUOTES, "UTF-8") . '" aria-label="Next page"><span aria-hidden="true">»</span></a>';
+                } else {
+                    echo '<span role="button" tabindex="-1" class="edi-explorer-pager__cell edi-explorer-pager__cell--nav edi-explorer-pager__cell--disabled" aria-disabled="true" aria-label="Next page, unavailable">»</span>';
+                }
+                ?>
+                </div>
+            </nav>
+            <p class="text-center text-muted small mt-2 mb-0">
+                Page <?php echo (int) $shopProductsPageNum; ?> of <?php echo (int) $shopProductsTotalPages; ?>
+                (<?php echo (int) $shopProductsTotal; ?> products)
+            </p>
+        <?php endif; ?>
         <?php endif; ?>
 
         <?php

@@ -333,6 +333,7 @@ text-align: left; /* column may use .text-center; keep title, price, Collect ali
     display: inline-block;
     vertical-align: top;
     max-width: 100%;
+    margin: 2px;
 }
 
 .edi-discount-hex {
@@ -361,7 +362,7 @@ text-align: left; /* column may use .text-center; keep title, price, Collect ali
     width:240px;
     aspect-ratio: 1 / 1.414; /* A4 ratio */
     object-fit: cover;
-    margin:2px;
+    /*margin:2px;*/
 }
 
 .old-price{
@@ -384,7 +385,6 @@ font-weight:bold;
 
 .collect-btn {
     margin-top: 10px;
-    padding-left:5px !important;
     width: 120px;
     display: block;      /* Ensures the button behaves like a block for margins */
     margin-left: 0;      /* Forces it to the left */

@@ -39,7 +39,7 @@
     border: 2px solid #33a675; /* Green border */
     border-radius: 8px;
     overflow: hidden;
-    height: 45px;
+    height: 35px;
 }
 
 .qty-btn {
@@ -80,7 +80,7 @@
     color: white;
     border: none;
     border-radius: 8px;
-    height: 45px;
+    height: 35px;
     font-weight: 500;
     font-size: 16px;
     cursor: pointer;
