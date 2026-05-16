@@ -680,7 +680,7 @@ if ($forceExplorerWs && $exploreWsSubId > 0 && $exploreWsSubName !== "") {
                 $pimg = htmlspecialchars((string) $p['image'], ENT_QUOTES, 'UTF-8');
                 $discountPct = edi_discount_badge_pct($p);
                 ?>
-                <div class="col-lg-3 col-md-6 text-center mb-4">
+                <div class="col-lg-3 col-md-6 text-center mb-4 mt-3">
                     <div class="product-card">
                         <div class="product-card-thumb-wrap">
                         <?php if ($discountPct !== null) { ?>
