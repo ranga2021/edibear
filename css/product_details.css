@@ -15,7 +15,7 @@
 
 .product-details-page .product-details-info .price-box .new-price,
 .product-details-page .product-details-info .price-box .old-price {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .product-details-page .product-details-info .new-price {
@@ -76,14 +76,13 @@
 
 /* Collect Button Styling */
 .collect-btn {
-    background-color: #1ba360; /* The specific green from image */
+    background-color: var(--edi-green) !important; /* The specific green from image */
     color: white;
     border: none;
     border-radius: 8px;
-    padding: 0 35px;
     height: 45px;
     font-weight: 500;
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
 }
 
@@ -95,7 +94,7 @@
 .stock-status-text {
     color: #ff6b6b; /* Reddish color from image */
     font-weight: 500;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 /* Tags Styling */
@@ -368,7 +367,7 @@ img[style*="position: fixed"] {
 .edi-treasure-thumb {
   flex: 1 1 22%;
   min-width: 64px;
-  max-width: 120px;
+  max-width: 98px;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   padding: 6px;
@@ -395,7 +394,7 @@ img[style*="position: fixed"] {
 }
 
 .edi-treasure-meta-table th {
-  width: 38%;
+  width: 25%;
   font-weight: 600;
   color: #444;
   background: #f8fafc;
@@ -438,6 +437,10 @@ img[style*="position: fixed"] {
 .product-details-page .edi-treasure-cart-row .stock-status-text,
 .product-details-page .edi-treasure-cart-row .edi-wishlist-btn {
   margin-bottom: 0;
+}
+
+.product-details-page .edi-treasure-cart-row .edi-wishlist-btn{
+  margin-left: -10px !important;
 }
 
 /* Blog listing / single: Treasures-style comma tag row (matches product_page explorer strip) */

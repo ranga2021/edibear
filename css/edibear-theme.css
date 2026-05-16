@@ -6,7 +6,7 @@
  * Charcoal #606062 — body text
  */
 
-:root {
+ :root {
   /* Same stack as Google Fonts Poppins in the header; keeps cards/paragraphs consistent */
   --edi-font-sans: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --edi-green: #33a675;

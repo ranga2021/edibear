@@ -281,7 +281,7 @@ if ($totalReviews > 0) {
             
             <form method="POST" action="submit_review.php" class="review-form">
                 <input type="hidden" name="product_id" value="<?= (int) $product['id'] ?>">
-                <div class="rating-group mb-4">
+                <div class="rating-group mb-2">
                     <label class="form-label d-block mb-1">Rate your experience (required)</label>
                     <div class="star-rating">
                         <input type="radio" id="star5" name="rating" value="5" required /><label for="star5" title="5 stars"></label>
@@ -292,7 +292,7 @@ if ($totalReviews > 0) {
                     </div>
                 </div>
 
-                <div class="form-row mb-4">
+                <div class="form-row mb-2">
                     <div class="col-md-4">
                         <label for="name" class="form-label">Name (required)</label>
                         <input type="text" name="name" id="name" class="form-input" required>
@@ -303,7 +303,7 @@ if ($totalReviews > 0) {
                     </div>
                 </div>
 
-                <div class="form-group mb-4">
+                <div class="form-group mb-2">
                     <label for="review" class="form-label">Leave a review (Optional)</label>
                     <textarea name="review" id="review" rows="4" class="form-input-textarea"></textarea>
                 </div>
