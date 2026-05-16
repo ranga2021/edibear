@@ -292,7 +292,7 @@ if ($totalReviews > 0) {
                     </div>
                 </div>
 
-                <div class="form-row mb-2">
+                <div class="form-row mb-3">
                     <div class="col-md-4">
                         <label for="name" class="form-label">Name (required)</label>
                         <input type="text" name="name" id="name" class="form-input" required>
