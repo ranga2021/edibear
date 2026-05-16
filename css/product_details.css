@@ -39,7 +39,7 @@
     border: 2px solid #33a675; /* Green border */
     border-radius: 8px;
     overflow: hidden;
-    height: 35px;
+    height: 38px;
 }
 
 .qty-btn {
@@ -80,7 +80,7 @@
     color: white;
     border: none;
     border-radius: 8px;
-    height: 35px;
+    height: 38px;
     font-weight: 500;
     font-size: 16px;
     cursor: pointer;
@@ -329,9 +329,6 @@ img[style*="position: fixed"] {
   margin-right: auto;
   /* A4 portrait (210 × 297 mm) */
   aspect-ratio: 210 / 297;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 12px;
   background: #fff;
   display: flex;
   align-items: center;
@@ -368,15 +365,14 @@ img[style*="position: fixed"] {
 .edi-treasure-thumb {
   flex: 1 1 22%;
   max-width: 98px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
+  /*border: 1px solid #e5e7eb;
+  border-radius: 8px;*/
   padding: 6px;
   background: #fafafa;
   cursor: default;
 }
 
 .edi-treasure-thumb img {
-  max-height: 72px;
   object-fit: contain;
 }
 
