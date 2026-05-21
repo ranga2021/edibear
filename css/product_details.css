@@ -308,10 +308,6 @@ img[style*="position: fixed"] {
 }
 
 /* —— Treasure detail (single product) layout —— */
-.edi-treasure-detail-heading h1 {
-  font-size: 2.25rem;
-}
-
 .edi-treasure-product-title {
   font-size: 1.35rem;
   font-weight: 700;

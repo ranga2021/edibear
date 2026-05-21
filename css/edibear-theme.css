@@ -100,10 +100,10 @@ h4.text-danger {
   padding: 0.65rem 2.35rem 0.65rem 1rem;
   font-family: var(--edi-font-sans);
   font-size: 0.9375rem;
-  font-weight: 500;
+  font-weight: 200;
   line-height: 1.45;
   letter-spacing: 0.02em;
-  color: #3a3d40;
+  color: #b5b3b2;
   cursor: pointer;
   border: 1px solid rgba(51, 166, 117, 0.42);
   border-radius: 10px;
@@ -129,7 +129,7 @@ h4.text-danger {
 
 /* Placeholder-style label until a value is chosen (required fields) */
 .explorer-search-area select.explorer-select:required:invalid {
-  color: #8f8d8c;
+  color: #b5b3b2;
   font-weight: 200;
 }
 
@@ -1273,6 +1273,11 @@ h6.text-primary:not(.text-white),
   min-width: 0;
 }
 
+/* Inner-page hero titles (Coloring Pages, Treasures, FAQ, etc.) */
+.page-header-content .edi-page-title-row h1,
+.page-header-content .edi-page-title-row h2,
+.page-header-content .edi-page-title-row h3,
+.page-header-content .edi-page-title-row h4,
 .edi-page-title-row h1,
 .edi-page-title-row h2,
 .edi-page-title-row h3,
@@ -1280,6 +1285,23 @@ h6.text-primary:not(.text-white),
   margin: 0 !important;
   flex: 0 0 auto;
   max-width: 100%;
+  font-size: var(--edi-h1-size);
+  line-height: 1.25;
+  color: var(--edi-title-color) !important;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: normal;
+}
+
+.page-header-content .edi-page-title-row h1.text-danger,
+.page-header-content .edi-page-title-row h2.text-danger,
+.page-header-content .edi-page-title-row h1.text-primary,
+.page-header-content .edi-page-title-row h2.text-primary,
+.edi-page-title-row h1.text-danger,
+.edi-page-title-row h2.text-danger,
+.edi-page-title-row h1.text-primary,
+.edi-page-title-row h2.text-primary {
+  color: var(--edi-title-color) !important;
 }
 
 .edi-page-title-rule {
@@ -1307,15 +1329,6 @@ h6.text-primary:not(.text-white),
     margin-right: 0;
     margin-left: 0;
   }
-}
-
-/* ----- Blogs listing (The Hidden Den) — full-width 3 columns, header aligns with grid ----- */
-.edi-blogs-page-title-row .edi-blogs-main-title {
-  color: #212121 !important;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
 }
 
 .edi-blogs-categories-lead {
@@ -1546,15 +1559,6 @@ h6.text-primary:not(.text-white),
   max-width: 1140px;
 }
 
-.challenge-details-page .edi-challenge-detail-page-title {
-  color: #212121 !important;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
-  margin: 0 !important;
-}
-
 .challenge-details-page .edi-challenge-hero {
   width: 100%;
   max-width: 100%;
@@ -1765,6 +1769,25 @@ h6.text-primary:not(.text-white),
   clear: both;
   overflow: auto;
   padding-bottom: 0.5rem;
+}
+
+/* Trail of Tales page: intro copy between title and testimonial grid */
+.edi-testimonials-intro {
+  margin-top: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.edi-testimonials-intro__text {
+  margin: 0;
+  line-height: 1.65;
+  color: var(--edi-body);
+}
+
+@media (max-width: 767.98px) {
+  .edi-testimonials-intro {
+    margin-top: 2rem;
+    margin-bottom: 2.25rem;
+  }
 }
 
 /* Keep Trail + testimonials block from collapsing into following sections */
@@ -2237,14 +2260,16 @@ h6.text-primary:not(.text-white),
     margin: 0.5rem 0 1rem;
   }
 
-  .edi-page-title-row h1 {
-    font-size: clamp(1.45rem, 5.5vw, 1.85rem) !important;
-    line-height: 1.2;
-  }
-
-  .edi-page-title-row h2 {
-    font-size: clamp(1.3rem, 4.5vw, 1.6rem) !important;
-    line-height: 1.2;
+  .page-header-content .edi-page-title-row h1,
+  .page-header-content .edi-page-title-row h2,
+  .page-header-content .edi-page-title-row h3,
+  .page-header-content .edi-page-title-row h4,
+  .edi-page-title-row h1,
+  .edi-page-title-row h2,
+  .edi-page-title-row h3,
+  .edi-page-title-row h4 {
+    font-size: var(--edi-h1-size);
+    line-height: 1.25;
   }
 
   .page-header-content > .container,

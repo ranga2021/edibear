@@ -110,7 +110,7 @@
                 </ol>
             </nav>
             <div class="edi-page-title-row mt-2 edi-blogs-page-title-row">
-                <h1 class="edi-blogs-main-title">EXCITING THINGS</h1>
+                <h1>EXCITING THINGS</h1>
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>
             <?php

@@ -40,18 +40,18 @@
             </nav>
 
             <div class="edi-page-title-row mt-4">
-                <h1 class="text-danger">TRAIL OF TALES</h1>
+                <h1>TRAIL OF TALES</h1>
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>
 
-            <div class="row mt-4 justify-content-center">
+            <div class="row justify-content-center edi-testimonials-intro">
                 <div class="col-lg-10 col-md-12">
-                <p class="text-justify mb-0">
+                <p class="text-justify edi-testimonials-intro__text">
                 It’s time to see what our early buddies and parents think about Edi’s adventure! In a busy life, it can be hard to meet all your child’s learning and entertainment needs, but I am here to help you every step of the way. Nothing makes me happier than seeing my Little Buddies succeed!</p>
                 </div>
             </div>
 
-            <div class="row justify-content-center mt-4 testimonial-sec">
+            <div class="row justify-content-center testimonial-sec">
 
                 <?php
                     foreach ( $user->fetchAll(array("id","user_id","ratings","one_word","review"), array("testimonials"), array("status"=>1), "id DESC LIMIT 16") as $testimonialArr ) {

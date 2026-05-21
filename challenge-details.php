@@ -78,7 +78,7 @@
             </nav>
 
             <div class="edi-page-title-row mt-2">
-                <h1 class="edi-challenge-detail-page-title">CHALLENGE DETAILS</h1>
+                <h1>CHALLENGE DETAILS</h1>
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>
 

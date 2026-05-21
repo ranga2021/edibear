@@ -101,7 +101,7 @@
         
          <!-- Title + Line -->
         <div class="edi-page-title-row">
-            <h2>CHALLENGES</h2>
+            <h1>CHALLENGES</h1>
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
         

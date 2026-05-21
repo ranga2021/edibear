@@ -40,7 +40,7 @@
             </nav>
            <!-- Title + Line -->
         <div class="edi-page-title-row">
-            <h2>Edi's Story</h2>
+            <h1>Edi's Story</h1>
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
             <div class="row mt-4">
