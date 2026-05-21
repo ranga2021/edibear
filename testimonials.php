@@ -39,12 +39,12 @@
                 </ol>
             </nav>
 
-            <div class="edi-page-title-row mt-2">
+            <div class="edi-page-title-row mt-4">
                 <h1 class="text-danger">TRAIL OF TALES</h1>
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>
 
-            <div class="row mt-3 justify-content-center">
+            <div class="row mt-4 justify-content-center">
                 <div class="col-lg-10 col-md-12">
                 <p class="text-justify mb-0">
                 It’s time to see what our early buddies and parents think about Edi’s adventure! In a busy life, it can be hard to meet all your child’s learning and entertainment needs, but I am here to help you every step of the way. Nothing makes me happier than seeing my Little Buddies succeed!</p>

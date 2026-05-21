@@ -140,9 +140,10 @@ body {
 }
 
 .imageframe{
-  border: #0e5017 !important;
+  border: none !important;
   border-style: solid !important;
-  border-width: 1px !important;
+  border-width: 0px !important;
+  margin: 0 !important;
 }
 
 

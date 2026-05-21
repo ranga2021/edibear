@@ -211,24 +211,29 @@
         <form method="GET" action="product_page.php" id="searchForm" data-edi-explore-taxonomy="<?php echo $ediHomeExploreUsesWs ? 'ws' : 'product'; ?>">
         <div class="row justify-content-center align-items-end">
             <div class="col-md-3 mb-2">
+                <div class="edi-explorer-select-wrap">
                     <select class="explorer-select" name="lang" id="explorer_exp_lang" required>
                         <option value="" disabled selected hidden>Language (Required)</option>
                         <?php foreach ($explorerLanguages as $lr): ?>
                         <option value="<?php echo htmlspecialchars((string) $lr['title'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) $lr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
                         <?php endforeach; ?>
                     </select>
+                </div>
             </div>
 
             <div class="col-md-3 mb-2">
+                <div class="edi-explorer-select-wrap">
                 <select class="explorer-select" name="age" id="explorer_exp_grade" required>
                     <option value="" disabled selected hidden>Grade (Required)</option>
                     <?php foreach ($explorerGrades as $gr): ?>
                     <option value="<?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?>"><?php echo htmlspecialchars((string) $gr['title'], ENT_QUOTES, 'UTF-8'); ?></option>
                     <?php endforeach; ?>
                 </select>
+                </div>
             </div>
 
             <div class="col-md-3 mb-2">
+                <div class="edi-explorer-select-wrap">
                 <?php if ($ediHomeExploreUsesWs) : ?>
                 <select class="explorer-select" name="ws_category_id" id="explorer_exp_cat" required>
                     <option value="" disabled selected hidden>Category (Required)</option>
@@ -244,12 +249,14 @@
                     <?php endforeach; ?>
                 </select>
                 <?php endif; ?>
+                </div>
             </div>
 
             <div class="col-md-3 mb-2">
+                <div class="edi-explorer-select-wrap">
                     <?php if ($ediHomeExploreUsesWs) : ?>
                     <select class="explorer-select" name="ws_subcategory_id" id="explorer_exp_sub" disabled title="Please select a category first to see subcategories.">
-                     <option value="" disabled selected hidden class="edi-exp-sub-need-cat">Subcategory (pick category first)</option>
+                     <option value="" disabled selected hidden class="edi-exp-sub-need-cat">Subcategory</option>
                      <option value="" hidden class="edi-exp-sub-none">Subcategory (optional)</option>
                     <?php foreach ($exploreWsSubcategories as $sub): ?>
                       <option value="<?php echo (int) $sub['id']; ?>" data-ws-category-id="<?php echo (int) $sub['category_id']; ?>">
@@ -259,7 +266,7 @@
                   </select>
                     <?php else : ?>
                     <select class="explorer-select" name="product_subcategory_id" id="explorer_exp_sub" disabled title="Please select a category first to see subcategories.">
-                     <option value="" disabled selected hidden class="edi-exp-sub-need-cat">Subcategory (pick category first)</option>
+                     <option value="" disabled selected hidden class="edi-exp-sub-need-cat">Subcategory </option>
                      <option value="" hidden class="edi-exp-sub-none">Subcategory (optional)</option>
                     <?php foreach ($exploreProductSubcategories as $sub): ?>
                       <option value="<?php echo (int) $sub['id']; ?>" data-product-category-id="<?php echo (int) $sub['product_category_id']; ?>">
@@ -269,6 +276,7 @@
                   </select>
                     <?php endif; ?>
                 </div>
+            </div>
 
         </div>
 
@@ -351,7 +359,7 @@
 </div>
 
 <div class="text-center edi-home-cta-band edi-home-cta-band--products">
-<a href="./product_page.php" class="btn newgreen1-btn edi-home-section-cta">MORE</a>
+<a href="./product_page.php" class="btn mt-3 newgreen1-btn edi-home-section-cta">SEE MORE</a>
 </div>
 
 </div>
