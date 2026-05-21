@@ -553,9 +553,9 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200, 
                     <img class='cursor-pointer img-fluid w-100' src='$imageName' alt='' onclick=location.href='./pdf?id=".$row['id']."'>
                 </div>
                 <div class='bg-white p-2'>
-                    <div class='d-flex mb-2 edi-content-card-tag'>
-    <i class='fa fa-tag fa-sm p-1' aria-hidden='true'></i>
-    <span>". $this->getTitleTag($row['title']) ."</span>
+                    <div class='d-flex align-items-center mb-2 edi-content-card-tag'>
+    <i class='fas fa-tag' aria-hidden='true'></i>
+    <span>". htmlspecialchars($this->getTitleTag($row['title']), ENT_QUOTES, 'UTF-8') ."</span>
 </div>
                     <h5 class='text-primary text-uppercase font-weight-bold mb-0' >".$row['title']."</h5>
                     <hr class='border-warning mt-1 mb-3'>
@@ -587,8 +587,8 @@ public function displaypdfBrief($row, $isHome, $col="col-md-6", $wordCount=200, 
                 </div>
                 <div class='bg-white px-2 pb-3 pt-0'>
                     <div class='d-flex align-items-center mb-1 edi-content-card-tag'>
-                        <i class='fa fa-tag fa-sm p-1' aria-hidden='true'></i>
-                        <span class='text-uppercase'>$cardTag</span>
+                        <i class='fas fa-tag' aria-hidden='true'></i>
+                        <span>$cardTag</span>
                     </div>
                     <h5 class='text-danger text-uppercase font-weight-bold mb-1' style='font-size:1rem; line-height:1.2;'>$safeTitle</h5>
                     <p class='mb-2 text-muted' style='font-size: 13px; line-height:1.35;'>$pdfDescription</p>
