@@ -1344,6 +1344,22 @@ h6.text-primary:not(.text-white),
   margin-top: -0.25rem;
 }
 
+/* Coloring / PDF / worksheet result cards: category tag under thumbnail */
+.edi-content-card-tag {
+  font-size: 12px;
+}
+
+.edi-content-card-tag i,
+.edi-content-card-tag span {
+  color: #f57c00;
+  font-weight: 500;
+}
+
+.edi-content-card-tag span {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
 /* Blog tag strip (Hidden Den + single post): match PDF free-resource topic links */
 .edi-blog-tag-chips {
   font-size: 0.9375rem;
