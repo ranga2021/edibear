@@ -39,7 +39,7 @@
                 </ol>
             </nav>
 
-            <div class="edi-page-title-row mt-4">
+            <div class="edi-page-title-row">
                 <h1>TRAIL OF TALES</h1>
                 <div class="edi-page-title-rule" role="presentation"></div>
             </div>

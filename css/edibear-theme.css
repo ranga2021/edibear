@@ -133,6 +133,13 @@ h4.text-danger {
   font-weight: 200;
 }
 
+/* Selected value only (not placeholder / optional empty subcategory) */
+.explorer-search-area select.explorer-select:required:valid,
+.explorer-search-area select.explorer-select:not(:required):not(:disabled):has(option:checked:not([value=""])) {
+  color: #414140;
+  font-weight: 500;
+}
+
 .explorer-search-area select.explorer-select:hover:not(:disabled) {
   border-color: rgba(51, 166, 117, 0.72);
   box-shadow:
