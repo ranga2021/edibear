@@ -47,36 +47,62 @@
                 <div class="col-12 text-center">
                 <h1 class="text-primary mb-3">HI THERE !</h1>
                 <p class="text-justify px-lg-5 mx-lg-5">
-                "EdiBear" is a super awesome website made just for kids like you! Our goal is to make learning super fun and exciting, and we have a ton of cool stuff for you to explore!
+                You already know who I am, so I don't need to introduce myself again. It’s a joyful moment for all of us, because
+                after a lot of hard work, we’ve finally found a way to stay close and help our little buddies. ''Edibear's World'' has a
+                long history, this isn't the right time to tell it all, but I look forward to the moment I can share that adventure with
+                you. I also want to say a special thank you to the four friends who have stayed by my side through every moment.
                     <br>
                     <br>
-                    Here's what you can find on our website: 
+                I believe that learning shouldn't feel like a chore; it should feel like the most exciting adventure you’ve ever been
+                on! Every kid has their own path, so my mission is to help them become the smartest, bravest, and most creative
+                versions of themselves while having a blast along the way
                     <br>
                     <br>
-                    
-<b>Coloring Pages</b><br>
-Get ready to unleash your creativity with our amazing coloring pages. We have a wide variety of colouring pages in different categories. You can choose from lots of fun themes, characters, and objects to colour and bring them to life with your own unique style.
+                Here is a quick summary of the treasures I’ve hidden inside my world for you:
+                    <br>
+                    <br>
+<b>EXPLORER TRAINING CAMP</b><br>
+This is where the magic happens! In the Training Camp, you can find everything you need to power up your brain.
+It’s home to my Worksheets (your secret maps for studying), Fun Activities (for hands-on creative play), and
+Brain Boosters (to sharpen your memory and thinking skills). Whenever you want to discover something new, just
+head to the camp and pick your path.
 <br><br>
 
-<b>Activity books and Model papers</b><br>
-We have unique activity books and model papers help you to become a super smart student. These activities help you to develop your subject skills and make learning a breeze. And the Model papers are like practice tests that help you to get ready for the exams to score more.
+<b>THE HONEY MARKET</b><br>
+Every great explorer needs the right gear, but the world is a big place, and it’s not always easy to find the best
+things in one spot. That’s why I’ve done the searching for you and gathered the best treasures in The Honey
+Market. I’ve hand-picked these items to ensure my Little Buddies have everything they need to tackle any
+challenge with confidence!
 <br><br>
 
-<b>Study Packs </b><br>
-We know homework can sometimes be tough, but don't worry; we've got your back! Our collection of resources will make your school assignments easier and more enjoyable. We have handy reference materials, study guides, and helpful templates to support you and make your homework super impressive.
+<b>TRAIL OF TALES</b><br>
+I’m not the only one who loves learning! Our "Trail of Tales" section is where moms and dads share their stories.
+They tell us how their little explorers are overcoming challenges and growing stronger every day.
 <br><br>
 
-<b>Fun Activities</b><br>
-Get ready for some serious fun with our awesome activities. We have handpicked the coolest brain teasers, puzzles, arts and crafts projects, and more. These activities are not only super entertaining, but they also help you become a super thinker, problem-solver, and creative genius.
+<b>THE HIDDEN DEN</b><br>
+This is a special place. Step into The Hidden Den, where I share helpful guides, exciting stories, and extra tips to
+spark your curiosity and keep the fun going between your quests.
 <br><br>
 
-We also want to give a huge shout out and say a big "Thank you" to <a href="https://www.freepik.com/" target="_blank">Freepik.com</a>, <a href="https://www.unsplash.com/" target="_blank">Unsplash.com</a>, <a href="https://www.pixabay.com/" target="_blank">Pixabay.com</a>, <a href="https://www.pexels.com/" target="_blank">Pexels.com</a>, and other incredible resources that have helped make our website even more awesome. Their contributions have made our website a truly magical place for you to explore and learn.
+<b>BRAVE HEART CHALLENGE</b><br>
+Are you ready to be brave? The Brave Heart Challenge is where the real action happens! It’s packed with missions
+that help you practice what you’ve learned. It’s tough, it’s fun, and it’s where you prove you’re a true explorer!
 <br><br>
 
-So get ready for an amazing adventure at edibear! We're here to support you on your learning journey and help you become the best version of yourself. Let's have a blast together and make learning the most exciting thing ever!
+<b>JOIN MY FAMILY</b><br>
+It’s family time! Discuss everything related to your kids' education and entertainment, share knowledge, swap
+activity ideas, and get support from other family members.
 <br><br>
 
-Thank you for choosing edibear, where learning is an awesome adventure!
+So, let’s start the journey! Grab your gear and get ready for an amazing adventure. I am here to support you every
+step of the way. Let’s have a blast together and make learning the most exciting thing ever!
+<br><br>
+
+Thank you for choosing Edibear-where learning is an awesome adventure!"
+<br><br>
+
+With love Edi 
 <br> 
 <br>
 
