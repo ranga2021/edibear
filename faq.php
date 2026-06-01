@@ -68,10 +68,12 @@ No. The Honey Market and account creation are strictly intended for adults (pare
 
 <b>What are the payment methods?</b><br>
 At this moment, we accept Cash on Delivery (COD) and Direct Bank Transfers only.
-Ÿ If you choose COD: Full payment must be made in cash to the courier agent at the time of delivery.
-Ÿ If you choose Bank Transfer: Please deposit the amount into our account and send a photo of your receipt via WhatsApp to 075
-5002004. Please clearly mention your Order ID in the payment reference section, or send the Order ID along with your receipt to our
-WhatsApp number. Your goods will be dispatched via courier once the payment is credited to our account.
+<ul>
+<li>If you choose COD: Full payment must be made in cash to the courier agent at the time of delivery.</li>
+<li>If you choose Bank Transfer: Please deposit the amount into our account and send a photo of your receipt via WhatsApp to 075 5002004
+Please clearly mention your Order ID in the payment reference section, or send the Order ID along with your receipt to our
+WhatsApp number. Your goods will be dispatched via courier once the payment is credited to our account.</li>
+</ul>
 <br><br>
 
 <b>How long will it take for my order to arrive?</b><br>
