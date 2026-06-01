@@ -119,6 +119,15 @@ entertainment, share your knowledge, swap creative activity ideas, and get genui
 
 (Please read our Ground Rules area for more details)
 <br><br>
+</p>
+                <div class="px-lg-5 mx-lg-5">
+                    <img class="img-fluid " src="./img/Web pic/aboutpage.jpg" alt="About">
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- About End -->
 
     </div>
     </div>
