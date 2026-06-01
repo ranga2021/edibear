@@ -39,9 +39,9 @@ $widgets = new WIDGETS();
         </div>
 
         <div class="row mt-4">
-                <div class="col-12 text-center">
+                <div class="col-12 text-left" style="text-align: justify;">
                 <h1 class="text-primary mb-3">FREQUENTLY ASKED QUESTIONS</h1>
-                <p class="text-justify px-lg-5 mx-lg-5">
+                <div class="px-lg-5 mx-lg-5">
           
 <b>What is Edibear?</b><br>
 Edibear is an educational and entertainment website that provides everything your children need to learn, play, and grow.
@@ -70,7 +70,7 @@ No. The Honey Market and account creation are strictly intended for adults (pare
 At this moment, we accept Cash on Delivery (COD) and Direct Bank Transfers only.
 <ul>
 <li>If you choose COD: Full payment must be made in cash to the courier agent at the time of delivery.</li>
-<li>If you choose Bank Transfer: Please deposit the amount into our account and send a photo of your receipt via WhatsApp to 075 5002004
+<li>If you choose Bank Transfer: Please deposit the amount into our account and send a photo of your receipt via WhatsApp to 075 5002004.
 Please clearly mention your Order ID in the payment reference section, or send the Order ID along with your receipt to our
 WhatsApp number. Your goods will be dispatched via courier once the payment is credited to our account.</li>
 </ul>
@@ -120,7 +120,7 @@ entertainment, share your knowledge, swap creative activity ideas, and get genui
 (Please read our Ground Rules area for more details)
 <br><br>
 
-
+    </div>
     </div>
 </div>
 
