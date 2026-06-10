@@ -64,6 +64,11 @@ class HEADER {
             "redirect"=>"./bank-details",
             "icon"=>"fas fa-university text-info"
         ),
+        "vouchers"=>array(
+            "name"=>"Vouchers",
+            "redirect"=>"./vouchers",
+            "icon"=>"fas fa-ticket-alt text-success"
+        ),
 
         "add-blog"=>array(
             "name"=>"Add Blog",

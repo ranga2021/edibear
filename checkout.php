@@ -246,9 +246,15 @@ document.addEventListener('DOMContentLoaded', function () {
                         <div class="voucher-block mt-3">
                             <label class="checkout-label">Enter voucher code</label>
                             <div class="input-group">
-                                <input type="text" name="voucher_code" class="form-control checkout-input" placeholder="Enter voucher code">
-                                <button class="btn btn-success" type="button">APPLY</button>
+                                <input type="text" name="voucher_code" id="ediVoucherInput" class="form-control checkout-input" placeholder="Enter voucher code" style="text-transform:uppercase">
+                                <button class="btn btn-success" type="button" id="ediApplyVoucher">APPLY</button>
                             </div>
+                            <div id="ediVoucherMsg" class="mt-1" style="font-size:0.85rem;"></div>
+                        </div>
+
+                        <div id="ediVoucherDiscountRow" class="summary-row mt-2" style="display:none; color:#2dce89;">
+                            <span>Voucher Discount</span>
+                            <span id="ediVoucherDiscountAmt">- Rs. 0.00</span>
                         </div>
 
                         <div class="summary-total-row mt-3">
@@ -291,11 +297,12 @@ document.addEventListener('DOMContentLoaded', function () {
     var sel = document.getElementById('ediCheckoutDistrict');
     var dLine = document.getElementById('ediShipDistrictLine');
     var totEl = document.getElementById('ediCheckoutOrderTotal');
+    var voucherDiscount = 0;
     if (!sel || !dLine || !totEl) return;
     function money(n) {
         return 'Rs. ' + Number(n).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
-    function refresh() {
+    function getDistrictFee() {
         var d = 0;
         if (sel.tagName === 'SELECT') {
             var v = (sel.value || '').trim().toLowerCase();
@@ -303,11 +310,61 @@ document.addEventListener('DOMContentLoaded', function () {
                 d = parseFloat(distFees[v]) || 0;
             }
         }
+        return d;
+    }
+    function refresh() {
+        var d = getDistrictFee();
         dLine.textContent = money(d);
-        totEl.textContent = money(sub + wFee + d);
+        var total = sub + wFee + d - voucherDiscount;
+        if (total < 0) total = 0;
+        totEl.textContent = money(total);
     }
     sel.addEventListener('change', refresh);
     sel.addEventListener('input', refresh);
+
+    // Voucher AJAX
+    var applyBtn = document.getElementById('ediApplyVoucher');
+    var vInput = document.getElementById('ediVoucherInput');
+    var vMsg = document.getElementById('ediVoucherMsg');
+    var vRow = document.getElementById('ediVoucherDiscountRow');
+    var vAmt = document.getElementById('ediVoucherDiscountAmt');
+    if (applyBtn && vInput) {
+        applyBtn.addEventListener('click', function () {
+            var code = vInput.value.trim();
+            if (!code) { vMsg.innerHTML = '<span style="color:#f5365c">Please enter a voucher code.</span>'; return; }
+            applyBtn.disabled = true;
+            applyBtn.textContent = '...';
+            var fd = new FormData();
+            fd.append('voucher_code', code);
+            fd.append('subtotal', sub);
+            fetch('ajax_validate_voucher.php', { method: 'POST', body: fd })
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    if (data.valid) {
+                        voucherDiscount = parseFloat(data.discount) || 0;
+                        vMsg.innerHTML = '<span style="color:#2dce89">Voucher applied! You save ' + money(voucherDiscount) + '</span>';
+                        vRow.style.display = 'flex';
+                        vAmt.textContent = '- ' + money(voucherDiscount);
+                        vInput.readOnly = true;
+                        applyBtn.textContent = 'APPLIED';
+                        applyBtn.classList.remove('btn-success');
+                        applyBtn.classList.add('btn-secondary');
+                    } else {
+                        voucherDiscount = 0;
+                        vMsg.innerHTML = '<span style="color:#f5365c">' + (data.error || 'Invalid voucher.') + '</span>';
+                        vRow.style.display = 'none';
+                        applyBtn.disabled = false;
+                        applyBtn.textContent = 'APPLY';
+                    }
+                    refresh();
+                })
+                .catch(function () {
+                    vMsg.innerHTML = '<span style="color:#f5365c">Could not validate voucher. Please try again.</span>';
+                    applyBtn.disabled = false;
+                    applyBtn.textContent = 'APPLY';
+                });
+        });
+    }
 })();
 
 (function () {

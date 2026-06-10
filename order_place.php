@@ -3,6 +3,7 @@ session_start();
 require_once("./classes/class.user.php");
 require_once("./classes/class.header.php");
 require_once("./classes/edi_shipping.php");
+require_once("./classes/edi_voucher.php");
 
 $user = new USER();
 $userHeader = new HEADER("cart");
@@ -62,7 +63,23 @@ foreach ($cartItems as $item) {
 $pdo = $user->getConnection();
 $shipQuote = EdiShipping::quote($pdo, $totalWeightKg, $district);
 $shipping = $total > 0 ? $shipQuote['shipping_total'] : 0.0;
-$orderTotal = $total + $shipping;
+
+$voucherDiscountAmt = 0.0;
+$appliedVoucherCode = null;
+$appliedVoucherId = null;
+if ($voucherCode !== '' && EdiVoucher::tableReady($pdo)) {
+    $vResult = EdiVoucher::validate($pdo, $voucherCode, $total);
+    if ($vResult['valid']) {
+        $voucherDiscountAmt = $vResult['discount'];
+        $appliedVoucherCode = $vResult['voucher']['code'];
+        $appliedVoucherId = (int) $vResult['voucher']['id'];
+    }
+}
+
+$orderTotal = $total + $shipping - $voucherDiscountAmt;
+if ($orderTotal < 0) {
+    $orderTotal = 0;
+}
 
 $bankDetails = array("account_number" => "", "account_name" => "", "bank_name" => "", "branch_name" => "");
 try {
@@ -81,34 +98,47 @@ $createdAt = date('Y-m-d H:i:s');
 $paymentStatus = 'pending';
 $orderStatus = 'Order Placed';
 
-$orderId = $user->insertTable(
-    "orders",
-    array(
-        "order_number"   => $orderNumber,
-        "session_id"     => $user_id, // We map user_id here to keep consistency with your schema
-        "first_name"     => $firstName,
-        "last_name"      => $lastName,
-        "company_name"   => $companyName,
-        "address_line"   => $addressLine,
-        "city"           => $city,
-        "postal_code"    => $postalCode,
-        "district"       => $district,
-        "email"          => $email,
-        "mobile"         => $mobile,
-        "payment_method" => $paymentMethod,
-        "payment_status" => $paymentStatus,
-        "order_status"   => $orderStatus,
-        "subtotal"       => $total,
-        "shipping"       => $shipping,
-        "total"          => $orderTotal,
-        "created_at"     => $createdAt
-    ),
-    true
+$orderData = array(
+    "order_number"   => $orderNumber,
+    "session_id"     => $user_id,
+    "first_name"     => $firstName,
+    "last_name"      => $lastName,
+    "company_name"   => $companyName,
+    "address_line"   => $addressLine,
+    "city"           => $city,
+    "postal_code"    => $postalCode,
+    "district"       => $district,
+    "email"          => $email,
+    "mobile"         => $mobile,
+    "payment_method" => $paymentMethod,
+    "payment_status" => $paymentStatus,
+    "order_status"   => $orderStatus,
+    "subtotal"       => $total,
+    "shipping"       => $shipping,
+    "total"          => $orderTotal,
+    "created_at"     => $createdAt
 );
+
+$hasVoucherCols = false;
+try {
+    $chk = $pdo->query("SHOW COLUMNS FROM orders LIKE 'voucher_code'");
+    $hasVoucherCols = $chk && $chk->rowCount() > 0;
+} catch (Throwable $e) {}
+
+if ($hasVoucherCols) {
+    $orderData["voucher_code"]     = $appliedVoucherCode;
+    $orderData["voucher_discount"] = $voucherDiscountAmt;
+}
+
+$orderId = $user->insertTable("orders", $orderData, true);
 
 if ($orderId === false) {
     header("Location: checkout.php?uid=" . (int) $user_id . "&error=order");
     exit;
+}
+
+if ($appliedVoucherId !== null) {
+    EdiVoucher::incrementUsage($pdo, $appliedVoucherId);
 }
 
 $orderItemsTable = false;
@@ -271,6 +301,20 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
         <div class="col-lg-4">
             <div class="order-complete-summary">
                 <h5 class="summary-title">YOUR ORDER</h5>
+                <?php if ($voucherDiscountAmt > 0): ?>
+                <div class="summary-row" style="font-size:0.9rem;">
+                    <span>Subtotal</span>
+                    <span>Rs. <?php echo number_format($total, 2); ?></span>
+                </div>
+                <div class="summary-row" style="font-size:0.9rem;">
+                    <span>Shipping</span>
+                    <span>Rs. <?php echo number_format($shipping, 2); ?></span>
+                </div>
+                <div class="summary-row" style="font-size:0.9rem; color:#2dce89;">
+                    <span>Voucher (<?php echo htmlspecialchars($appliedVoucherCode, ENT_QUOTES, 'UTF-8'); ?>)</span>
+                    <span>- Rs. <?php echo number_format($voucherDiscountAmt, 2); ?></span>
+                </div>
+                <?php endif; ?>
                 <div class="summary-total-row">
                     <span>Order Total</span>
                     <span>Rs. <?php echo number_format($orderTotal, 2); ?></span>
