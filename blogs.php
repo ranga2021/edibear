@@ -222,7 +222,7 @@
                                 <summary class="edi-blog-filter-select edi-blog-filter-custom__summary" title="Filter by language">
                                     <?php echo htmlspecialchars($blogLangFilter !== "" ? $blogLangFilter : "Languages", ENT_QUOTES, "UTF-8"); ?>
                                 </summary>
-                                <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Languages">
+                                <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Language">
                                     <a class="edi-blog-filter-custom__opt<?php echo $blogLangFilter === "" ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref("", false), ENT_QUOTES, "UTF-8"); ?>">Language</a>
                                     <?php foreach ($blogLangOptions as $opt) : ?>
                                     <a class="edi-blog-filter-custom__opt<?php echo $blogLangFilter === $opt ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref($opt, false), ENT_QUOTES, "UTF-8"); ?>"><?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?></a>
@@ -239,7 +239,7 @@
                                 <summary class="edi-blog-filter-select edi-blog-filter-custom__summary" title="Filter by grade">
                                     <?php echo htmlspecialchars($blogGradeFilter !== "" ? $blogGradeFilter : "Grades", ENT_QUOTES, "UTF-8"); ?>
                                 </summary>
-                                <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Grades">
+                                <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Grade">
                                     <a class="edi-blog-filter-custom__opt<?php echo $blogGradeFilter === "" ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref(false, ""), ENT_QUOTES, "UTF-8"); ?>">Grade</a>
                                     <?php foreach ($blogGradeOptions as $opt) : ?>
                                     <a class="edi-blog-filter-custom__opt<?php echo $blogGradeFilter === $opt ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref(false, $opt), ENT_QUOTES, "UTF-8"); ?>"><?php echo htmlspecialchars($opt, ENT_QUOTES, "UTF-8"); ?></a>
