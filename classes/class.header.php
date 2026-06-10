@@ -59,6 +59,11 @@ class HEADER {
             "redirect"=>"./shipping-rates",
             "icon"=>"fas fa-truck text-info"
         ),
+        "bank-details"=>array(
+            "name"=>"Bank Details",
+            "redirect"=>"./bank-details",
+            "icon"=>"fas fa-university text-info"
+        ),
 
         "add-blog"=>array(
             "name"=>"Add Blog",

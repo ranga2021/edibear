@@ -49,6 +49,14 @@ foreach ($districtRows as $dr) {
 $districtFeeInitial = 0.0;
 $shipping = $weightShipFee + $districtFeeInitial;
 $orderTotal = $total + $shipping;
+
+$bankDetails = array("account_number" => "", "account_name" => "", "bank_name" => "", "branch_name" => "");
+try {
+    $bdRow = $pdo->query("SELECT * FROM edi_bank_details LIMIT 1")->fetch();
+    if ($bdRow) {
+        $bankDetails = $bdRow;
+    }
+} catch (Throwable $e) {}
 ?>
 
 <!DOCTYPE html>
@@ -200,6 +208,14 @@ document.addEventListener('DOMContentLoaded', function () {
                             I have read and agree to the website terms and conditions.
                         </label>
                     </div>
+
+                    <div id="bankDetailsBlock" class="bank-details-block mt-3" style="display:none;">
+                        <h6 class="checkout-label mb-2">Bank Details</h6>
+                        <p class="mb-1"><span lang="si">ගිණුම් අංකය</span> / <span lang="ta">கணக்கு எண்</span> / Account Number : <strong><?php echo htmlspecialchars($bankDetails['account_number'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                        <p class="mb-1"><span lang="si">ගිණුම් හිමියාගේ නම</span> / <span lang="ta">கணக்கு பெயர்</span> / Account Name : <strong><?php echo htmlspecialchars($bankDetails['account_name'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                        <p class="mb-1"><span lang="si">බැංකුව</span> / <span lang="ta">வங்கி</span> / Bank : <strong><?php echo htmlspecialchars($bankDetails['bank_name'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                        <p class="mb-0"><span lang="si">ශාඛාව</span> / <span lang="ta">கிளை</span> / Branch : <strong><?php echo htmlspecialchars($bankDetails['branch_name'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                    </div>
                 </div>
 
                 <div class="col-lg-4">
@@ -250,12 +266,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </label>
                             </div>
 
-                            <div id="bankDetailsBlock" class="bank-details-block mt-3" style="display:none;">
-                                <p class="mb-1"><span lang="si">ගිණුම් අංකය</span> / <span lang="ta">கணக்கு எண்</span> / Account Number : <strong>1000400531</strong></p>
-                                <p class="mb-1"><span lang="si">ගිණුම් හිමියාගේ නම</span> / <span lang="ta">கணக்கு பெயர்</span> / Account Name : <strong>EDIBEAR (PRIVATE) LIMITED</strong></p>
-                                <p class="mb-1"><span lang="si">බැංකුව</span> / <span lang="ta">வங்கி</span> / Bank : <strong>COMMERCIAL BANK</strong></p>
-                                <p class="mb-0"><span lang="si">ශාඛාව</span> / <span lang="ta">கிளை</span> / Branch : <strong>GAMPAHA BRANCH</strong></p>
-                            </div>
                         </div>
 
                         <button class="btn btn-success btn-block mt-4" type="submit">CHECKOUT</button>

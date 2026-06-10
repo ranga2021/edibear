@@ -64,6 +64,14 @@ $shipQuote = EdiShipping::quote($pdo, $totalWeightKg, $district);
 $shipping = $total > 0 ? $shipQuote['shipping_total'] : 0.0;
 $orderTotal = $total + $shipping;
 
+$bankDetails = array("account_number" => "", "account_name" => "", "bank_name" => "", "branch_name" => "");
+try {
+    $bdRow = $pdo->query("SELECT * FROM edi_bank_details LIMIT 1")->fetch();
+    if ($bdRow) {
+        $bankDetails = $bdRow;
+    }
+} catch (Throwable $e) {}
+
 // Generate order number
 $prefix = $paymentMethod === 'bank_transfer' ? 'B#' : 'C#';
 $orderNumber = $prefix . date('ymdHis');
@@ -244,6 +252,14 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
                             <p class="order-note-lang mb-0" lang="en">When making a bank transfer, please deposit the amount to the account mentioned below and send the relevant receipt via WhatsApp to 075 5002004. When making the payment, clearly mention the Order ID in the reference section, or send the receipt along with the Order ID to the above phone number. Goods will be dispatched by courier only after the payment has been credited to our account.</p>
                         </li>
                     </ul>
+                    <?php if ($bankDetails['account_number'] !== ''): ?>
+                    <div class="bank-details-block mt-3">
+                        <p class="mb-1"><span lang="si">ගිණුම් අංකය</span> / <span lang="ta">கணக்கு எண்</span> / Account Number : <strong><?php echo htmlspecialchars($bankDetails['account_number'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                        <p class="mb-1"><span lang="si">ගිණුම් හිමියාගේ නම</span> / <span lang="ta">கணக்கு பெயர்</span> / Account Name : <strong><?php echo htmlspecialchars($bankDetails['account_name'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                        <p class="mb-1"><span lang="si">බැංකුව</span> / <span lang="ta">வங்கி</span> / Bank : <strong><?php echo htmlspecialchars($bankDetails['bank_name'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                        <p class="mb-0"><span lang="si">ශාඛාව</span> / <span lang="ta">கிளை</span> / Branch : <strong><?php echo htmlspecialchars($bankDetails['branch_name'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
+                    </div>
+                    <?php endif; ?>
                 <?php else: ?>
                     <p class="mb-0">
                         Your order will be delivered to your address. Please make sure someone is available to receive the package and pay the amount in cash upon delivery.
@@ -265,14 +281,6 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
                     <div class="order-thankyou-icon">&#10003;</div>
                     <p class="mb-1"><strong>THANK YOU.</strong></p>
                     <p class="mb-0">YOUR ORDER HAS BEEN RECEIVED</p>
-                    <?php if ($paymentMethod === 'bank_transfer'): ?>
-                    <div class="order-note-bank order-note-bank--in-summary text-left mt-3 pt-3">
-                        <p class="mb-1"><span class="order-note-bank-label" lang="si">ගිණුම් අංකය</span> / <span lang="ta">கணக்கு எண்</span> / <span lang="en">Account Number</span>: <strong>1000400531</strong></p>
-                        <p class="mb-1"><span class="order-note-bank-label" lang="si">ගිණුම් හිමියාගේ නම</span> / <span lang="ta">கணக்கு பெயர்</span> / <span lang="en">Account Name</span>: <strong>EDIBEAR (PRIVATE) LIMITED</strong></p>
-                        <p class="mb-1"><span class="order-note-bank-label" lang="si">බැංකුව</span> / <span lang="ta">வங்கி</span> / <span lang="en">Bank</span>: <strong>COMMERCIAL BANK</strong></p>
-                        <p class="mb-0"><span class="order-note-bank-label" lang="si">ශාඛාව</span> / <span lang="ta">கிளை</span> / <span lang="en">Branch</span>: <strong>GAMPAHA BRANCH</strong></p>
-                    </div>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>
