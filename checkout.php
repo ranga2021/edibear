@@ -208,7 +208,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             I have read and agree to the website terms and conditions.
                         </label>
                     </div>
-
+                    <div class="order-note-item">
+                            <p class="checkout-label mb-1" lang="si">Bank transfer හරහා සිදු කිරීමේදී අපගේ පහත සඳහන් ගිණුම වෙත මුදල් බැර කොට අදාළ රිසිට් පත 075 5002004 දුරකථන අංකයට Whatsapp කරන්න. මුදල් ගෙවීමේදී Order ID එක පැහැදිලිව reference යටතේ සඳහන් කරන්න හෝ ඉහත දුරකථන අංකයට රිසිට්පත සමග ලැබී
+                            <p class="order-note-lang mb-1" lang="ta">வங்கி பரிமாற்றம் செய்வதற்கு, கீழே குறிப்பிடப்பட்டுள்ள எங்கள் கணக்கில் தொகையை செலுத்தவும், சம்பந்தப்பட்ட ரசீதை 075 5002004 என்ற எண்ணுக்கு WhatsApp மூலம் அனுப்பவும். பணம் செலுத்தும் போது Order ID ஐ reference பகுதியில் தெளிவாக குறிப்பிடவும் அல்லது ரசீதுடன் மேலே குறிப்பிடப்பட்ட தொலைபேசி எண்ணுக்கு அனுப்பவும். பணம் எங்கள் கணக்கில் வரவு செய்யப்பட்ட பின்னரே பொருட்கள் குரியர் மூலம் அனுப்பப்படும்.</p>
+                            <p class="order-note-lang mb-0" lang="en">When making a bank transfer, please deposit the amount to the account mentioned below and send the relevant receipt via WhatsApp to 075 5002004. When making the payment, clearly mention the Order ID in the reference section, or send the receipt along with the Order ID to the above phone number. Goods will be dispatched by courier only after the payment has been credited to our account.</p>
+                    </div>
                     <div id="bankDetailsBlock" class="bank-details-block mt-3" style="display:none;">
                         <h6 class="checkout-label mb-2">Bank Details</h6>
                         <p class="mb-1"><span lang="si">ගිණුම් අංකය</span> / <span lang="ta">கணக்கு எண்</span> / Account Number : <strong><?php echo htmlspecialchars($bankDetails['account_number'], ENT_QUOTES, 'UTF-8'); ?></strong></p>
