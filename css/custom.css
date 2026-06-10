@@ -718,10 +718,9 @@ animation: cartBounce .4s;
 }
 
 .bank-details-block{
-    background:#f8f9fa;
-    border:1px solid #33a675;
+    background:#f8f9fa00;
     border-radius:6px;
-    padding:14px 16px;
+    padding:15px 0px;
     font-size:13px;
     line-height:1.6;
 }
@@ -850,5 +849,7 @@ animation: cartBounce .4s;
     justify-content:center;
     margin-bottom:6px;
 }
-
+.order-thankyou-icon p{
+    text-align: center;
+}
 /* Inner-page banner + content offset: see css/edibear-theme.css (.page-header-bg, .page-header-content) */
