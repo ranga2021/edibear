@@ -59,6 +59,7 @@
 <head>
     <?php echo $userHeader->printUserHeader() ?>
     <link rel="stylesheet" href="css/product_details.css">
+    <link rel="stylesheet" href="css/product_style.css">
     
     <style>
         .challenge-header-title { color: #555; font-weight: 700; border-bottom: 2px solid #f1c40f; display: inline-block; padding-bottom: 5px; }
@@ -66,7 +67,7 @@
         .event-container { margin-bottom: 50px; }
         .event-banner { 
             width: 100%; 
-            border-radius: 5px; 
+            border-radius: 0;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
             display: block;
             min-height: 150px; /* Ensures space is reserved if image loads slow */
@@ -78,11 +79,9 @@
         .status-completed { color: #f65247; } 
         
         .event-title { font-weight: 800; text-transform: uppercase; margin-top: 10px; margin-bottom: 2px; }
-        .category-tag { color: #f39c12; font-size: 0.9rem; font-weight: bold; }
+        .category-tag { color: #f39c12; font-size: 0.9rem; font-weight: 400; }
         .category-tag i { margin-right: 5px; }
 
-        .pagination .page-item.active .page-link { background-color: #e74c3c; border-color: #e74c3c; }
-        .pagination .page-link { color: #333; }
     </style>
 </head>
 <body class="index">
@@ -150,21 +149,31 @@
         }
         $chPgPrefix = './challenges.php' . ($chPgQ === array() ? '?' : '?' . http_build_query($chPgQ, '', '&', PHP_QUERY_RFC3986) . '&');
         ?>
-        <nav class="mt-5">
-            <ul class="pagination justify-content-center">
-                <li class="page-item <?php if($page <= 1) echo 'disabled'; ?>">
-                    <a class="page-link" href="<?php echo htmlspecialchars($chPgPrefix . 'page=' . ($page - 1), ENT_QUOTES, 'UTF-8'); ?>">&laquo;</a>
-                </li>
+        <nav class="edi-explorer-pager--compact mt-5">
+            <div class="edi-explorer-pager__track">
+                <?php if ($page > 1): ?>
+                    <a class="edi-explorer-pager__cell edi-explorer-pager__cell--nav" href="<?php echo htmlspecialchars($chPgPrefix . 'page=' . ($page - 1), ENT_QUOTES, 'UTF-8'); ?>" aria-label="Previous page"><span aria-hidden="true">&laquo;</span></a>
+                <?php else: ?>
+                    <span role="button" tabindex="-1" class="edi-explorer-pager__cell edi-explorer-pager__cell--nav edi-explorer-pager__cell--disabled" aria-disabled="true" aria-label="Previous page, unavailable">&laquo;</span>
+                <?php endif; ?>
                 <?php for($i = 1; $i <= $totalPages; $i++): ?>
-                    <li class="page-item <?php if($page == $i) echo 'active'; ?>">
-                        <a class="page-link" href="<?php echo htmlspecialchars($chPgPrefix . 'page=' . $i, ENT_QUOTES, 'UTF-8'); ?>"><?php echo $i; ?></a>
-                    </li>
+                    <?php if ($page == $i): ?>
+                        <span class="edi-explorer-pager__cell edi-explorer-pager__cell--current" aria-current="page"><?php echo $i; ?></span>
+                    <?php else: ?>
+                        <a class="edi-explorer-pager__cell edi-explorer-pager__cell--nav" href="<?php echo htmlspecialchars($chPgPrefix . 'page=' . $i, ENT_QUOTES, 'UTF-8'); ?>"><?php echo $i; ?></a>
+                    <?php endif; ?>
                 <?php endfor; ?>
-                <li class="page-item <?php if($page >= $totalPages) echo 'disabled'; ?>">
-                    <a class="page-link" href="<?php echo htmlspecialchars($chPgPrefix . 'page=' . ($page + 1), ENT_QUOTES, 'UTF-8'); ?>">&raquo;</a>
-                </li>
-            </ul>
+                <?php if ($page < $totalPages): ?>
+                    <a class="edi-explorer-pager__cell edi-explorer-pager__cell--nav" href="<?php echo htmlspecialchars($chPgPrefix . 'page=' . ($page + 1), ENT_QUOTES, 'UTF-8'); ?>" aria-label="Next page"><span aria-hidden="true">&raquo;</span></a>
+                <?php else: ?>
+                    <span role="button" tabindex="-1" class="edi-explorer-pager__cell edi-explorer-pager__cell--nav edi-explorer-pager__cell--disabled" aria-disabled="true" aria-label="Next page, unavailable">&raquo;</span>
+                <?php endif; ?>
+            </div>
         </nav>
+        <p class="text-center text-muted small mt-2 mb-0">
+            Page <?php echo (int) $page; ?> of <?php echo (int) $totalPages; ?>
+            (<?php echo (int) $totalEvents; ?> challenges)
+        </p>
     </div>
 
 

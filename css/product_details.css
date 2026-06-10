@@ -389,12 +389,12 @@ img[style*="position: fixed"] {
   width: 15%;
   font-weight: 600;
   color: #444;
-  background: #f8fafc;
+  background: transparent;
 }
 
 .edi-treasure-meta-table td {
   color: #555;
-  background: #fff;
+  background: transparent;
 }
 
 .edi-wishlist-btn {
