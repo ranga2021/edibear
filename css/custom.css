@@ -420,14 +420,17 @@ animation: cartBounce .4s;
     justify-content:center;
     gap:6px 8px;
     row-gap:6px;
-    font-size:0.875rem;
+    font-size:1.05rem;
     line-height:1.35;
+    padding-left:12px;
+    padding-right:12px;
+    margin-bottom:18px;
 }
 
 .honey-cart-steps .step{
     font-weight:600;
     color:#777;
-    padding:4px 10px;
+    padding:6px 16px;
     white-space:nowrap;
     flex:0 0 auto;
 }
@@ -603,7 +606,7 @@ animation: cartBounce .4s;
 .honey-cart-summary{
     background:#fff;
     border-radius:6px;
-    padding:18px 20px;
+    padding: 0px 20px;
     box-shadow:0 2px 4px rgba(0,0,0,0.03);
 }
 
@@ -624,6 +627,8 @@ animation: cartBounce .4s;
     font-weight:700;
     font-size:16px;
     margin-top:10px;
+    padding-top:10px;
+    border-top:2px solid #33a675;
 }
 
 .honey-cart-summary .summary-note{
@@ -691,16 +696,34 @@ animation: cartBounce .4s;
     font-size:14px;
 }
 
+.checkout-summary .voucher-block .input-group{
+    align-items:stretch;
+}
+
 .checkout-summary .voucher-block .input-group .checkout-input{
     border-right:none;
+    height:auto;
 }
 
 .checkout-summary .voucher-block .input-group .btn{
     border-radius:0 4px 4px 0;
+    padding-top:0;
+    padding-bottom:0;
+    line-height:1;
+    align-self:stretch;
 }
 
 .payment-options .form-check-label{
     font-size:14px;
+}
+
+.bank-details-block{
+    background:#f8f9fa;
+    border:1px solid #33a675;
+    border-radius:6px;
+    padding:14px 16px;
+    font-size:13px;
+    line-height:1.6;
 }
 
 /* ORDER COMPLETE PAGE */

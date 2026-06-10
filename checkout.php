@@ -249,6 +249,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                     Direct bank transfer <small class="text-muted d-block">Make your payment directly into our bank account.</small>
                                 </label>
                             </div>
+
+                            <div id="bankDetailsBlock" class="bank-details-block mt-3" style="display:none;">
+                                <p class="mb-1"><span lang="si">ගිණුම් අංකය</span> / <span lang="ta">கணக்கு எண்</span> / Account Number : <strong>1000400531</strong></p>
+                                <p class="mb-1"><span lang="si">ගිණුම් හිමියාගේ නම</span> / <span lang="ta">கணக்கு பெயர்</span> / Account Name : <strong>EDIBEAR (PRIVATE) LIMITED</strong></p>
+                                <p class="mb-1"><span lang="si">බැංකුව</span> / <span lang="ta">வங்கி</span> / Bank : <strong>COMMERCIAL BANK</strong></p>
+                                <p class="mb-0"><span lang="si">ශාඛාව</span> / <span lang="ta">கிளை</span> / Branch : <strong>GAMPAHA BRANCH</strong></p>
+                            </div>
                         </div>
 
                         <button class="btn btn-success btn-block mt-4" type="submit">CHECKOUT</button>
@@ -286,6 +293,18 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     sel.addEventListener('change', refresh);
     sel.addEventListener('input', refresh);
+})();
+
+(function () {
+    var codRadio = document.getElementById('codOption');
+    var bankRadio = document.getElementById('bankOption');
+    var bankDetails = document.getElementById('bankDetailsBlock');
+    if (!codRadio || !bankRadio || !bankDetails) return;
+    function toggle() {
+        bankDetails.style.display = bankRadio.checked ? 'block' : 'none';
+    }
+    codRadio.addEventListener('change', toggle);
+    bankRadio.addEventListener('change', toggle);
 })();
 </script>
 <?php endif; ?>
