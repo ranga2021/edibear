@@ -220,7 +220,7 @@
                         <div class="edi-blog-filter-dd__control">
                             <details class="edi-blog-filter-custom" aria-labelledby="edi-blog-lang-filter-label">
                                 <summary class="edi-blog-filter-select edi-blog-filter-custom__summary" title="Filter by language">
-                                    <?php echo htmlspecialchars($blogLangFilter !== "" ? $blogLangFilter : "Languages", ENT_QUOTES, "UTF-8"); ?>
+                                    <?php echo htmlspecialchars($blogLangFilter !== "" ? $blogLangFilter : "Language", ENT_QUOTES, "UTF-8"); ?>
                                 </summary>
                                 <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Language">
                                     <a class="edi-blog-filter-custom__opt<?php echo $blogLangFilter === "" ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref("", false), ENT_QUOTES, "UTF-8"); ?>">Language</a>
@@ -237,7 +237,7 @@
                         <div class="edi-blog-filter-dd__control">
                             <details class="edi-blog-filter-custom" aria-labelledby="edi-blog-grade-filter-label">
                                 <summary class="edi-blog-filter-select edi-blog-filter-custom__summary" title="Filter by grade">
-                                    <?php echo htmlspecialchars($blogGradeFilter !== "" ? $blogGradeFilter : "Grades", ENT_QUOTES, "UTF-8"); ?>
+                                    <?php echo htmlspecialchars($blogGradeFilter !== "" ? $blogGradeFilter : "Grade", ENT_QUOTES, "UTF-8"); ?>
                                 </summary>
                                 <div class="edi-blog-filter-custom__panel" role="listbox" aria-label="Grade">
                                     <a class="edi-blog-filter-custom__opt<?php echo $blogGradeFilter === "" ? " is-selected" : ""; ?>" role="option" href="<?php echo htmlspecialchars($ediBlogFilterHref(false, ""), ENT_QUOTES, "UTF-8"); ?>">Grade</a>

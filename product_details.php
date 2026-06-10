@@ -106,7 +106,7 @@ if ($totalReviews > 0) {
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
 
-        <div class="row edi-treasure-detail-main justify-content-between">
+        <div class="row edi-treasure-detail-main">
             <div class="col-lg-5 mb-4 mb-lg-0">
                 <div class="edi-treasure-gallery">
                     <div class="edi-treasure-gallery-main">
