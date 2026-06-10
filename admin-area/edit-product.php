@@ -178,7 +178,7 @@ if (isset($_POST["btn-update-product"])) {
     if ($hasGalleryImages) {
         $slots = EdiProductAdmin::gallerySlotsFromDb((string) ($product["gallery_images"] ?? ""));
         $imgDir = dirname(__DIR__) . "/img/products";
-        for ($g = 1; $g <= 3; $g++) {
+        for ($g = 1; $g <= EdiProductAdmin::GALLERY_SLOTS; $g++) {
             $fk = "gallery_" . $g;
             $newFn = EdiProductAdmin::saveUploadedProductImage(isset($_FILES[$fk]) ? $_FILES[$fk] : null, $imgDir);
             if ($newFn !== "") {
@@ -255,7 +255,7 @@ if (isset($_POST["btn-update-product"])) {
     }
 }
 
-$galSlots = $hasGalleryImages ? EdiProductAdmin::gallerySlotsFromDb((string) ($product["gallery_images"] ?? "")) : array("", "", "");
+$galSlots = $hasGalleryImages ? EdiProductAdmin::gallerySlotsFromDb((string) ($product["gallery_images"] ?? "")) : array_fill(0, EdiProductAdmin::GALLERY_SLOTS, "");
 $decodedExtraOpts = array();
 if ($hasOptionsExtra) {
     if (!empty($product["options_extra"])) {
@@ -494,8 +494,8 @@ if ($hasOptionsExtra) {
                   </div>
                   <?php if ($hasGalleryImages): ?>
                   <div class="col-lg-6 mb-3">
-                    <label>Other images (3)</label>
-                    <?php for ($gi = 1; $gi <= 3; $gi++):
+                    <label>Other images (<?php echo EdiProductAdmin::GALLERY_SLOTS; ?>)</label>
+                    <?php for ($gi = 1; $gi <= EdiProductAdmin::GALLERY_SLOTS; $gi++):
                         $slotFn = $galSlots[$gi - 1] ?? "";
                         ?>
                     <input type="hidden" name="gallery_keep_<?php echo $gi; ?>" value="<?php echo htmlspecialchars($slotFn, ENT_QUOTES, "UTF-8"); ?>">
@@ -636,7 +636,7 @@ if ($hasOptionsExtra) {
             });
         }
         bindPreview("main_image_input", "main_image_preview");
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= <?php echo EdiProductAdmin::GALLERY_SLOTS; ?>; i++) {
             bindPreview("gallery_" + i + "_input", "gallery_preview_" + i);
         }
         const addOpt = document.getElementById("edi-add-opt-row");

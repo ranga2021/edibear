@@ -368,11 +368,20 @@ img[style*="position: fixed"] {
 .edi-treasure-thumb {
   flex: 1 1 22%;
   max-width: 98px;
-  /*border: 1px solid #e5e7eb;
-  border-radius: 8px;*/
+  border: 2px solid transparent;
+  border-radius: 8px;
   padding: 6px;
   background: #fafafa;
-  cursor: default;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.edi-treasure-thumb:hover {
+  border-color: #ccc;
+}
+
+.edi-treasure-thumb.active {
+  border-color: #33a675;
 }
 
 .edi-treasure-thumb img {

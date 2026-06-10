@@ -5,6 +5,7 @@ require_once("./classes/class.header.php");
 require_once("./classes/class.widgets.php");
 require_once("./classes/edi_discount_badge.php");
 require_once("./classes/edi_shipping.php");
+require_once("./classes/edi_product_admin.php");
 
 $userHeader = new HEADER("shop");
 $user = new USER();
@@ -120,9 +121,17 @@ if ($totalReviews > 0) {
                     </div>
                     <div class="edi-treasure-gallery-thumbs" aria-hidden="true">
                         <?php
-                        $thumbSrc = "./img/products/" . htmlspecialchars((string) $product['image'], ENT_QUOTES, 'UTF-8');
-                        for ($ti = 0; $ti < 4; $ti++) {
-                            echo '<div class="edi-treasure-thumb"><img src="' . $thumbSrc . '" class="img-fluid" alt=""></div>';
+                        $mainSrc = "./img/products/" . htmlspecialchars((string) $product['image'], ENT_QUOTES, 'UTF-8');
+                        $galSlotsFe = EdiProductAdmin::gallerySlotsFromDb((string) ($product['gallery_images'] ?? ''));
+                        $allImages = array($mainSrc);
+                        foreach ($galSlotsFe as $gs) {
+                            if ($gs !== '') {
+                                $allImages[] = "./img/products/" . htmlspecialchars($gs, ENT_QUOTES, 'UTF-8');
+                            }
+                        }
+                        foreach ($allImages as $ti => $imgSrc) {
+                            $active = $ti === 0 ? ' active' : '';
+                            echo '<div class="edi-treasure-thumb' . $active . '" data-full="' . $imgSrc . '"><img src="' . $imgSrc . '" class="img-fluid" alt=""></div>';
                         }
                         ?>
                     </div>
@@ -438,6 +447,16 @@ if ($totalReviews > 0) {
         });
     </script>
     <script>
+document.querySelectorAll('.edi-treasure-thumb').forEach(function(thumb) {
+    thumb.addEventListener('click', function() {
+        var src = this.getAttribute('data-full');
+        if (!src) return;
+        var main = document.querySelector('.main-product-image');
+        if (main) main.src = src;
+        document.querySelectorAll('.edi-treasure-thumb').forEach(function(t) { t.classList.remove('active'); });
+        this.classList.add('active');
+    });
+});
 function showTab(tab) {
     document.querySelectorAll('.tab-content').forEach(function (el) { el.classList.remove('active'); });
     document.querySelectorAll('.tab-btn').forEach(function (el) { el.classList.remove('active'); });

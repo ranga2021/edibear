@@ -116,9 +116,9 @@
 
           $galleryEnc = null;
           if ($hasGalleryImages) {
-              $slots = array("", "", "");
+              $slots = array_fill(0, EdiProductAdmin::GALLERY_SLOTS, "");
               $imgDir = dirname(__DIR__) . "/img/products";
-              for ($g = 1; $g <= 3; $g++) {
+              for ($g = 1; $g <= EdiProductAdmin::GALLERY_SLOTS; $g++) {
                   $fk = "gallery_" . $g;
                   $fn = EdiProductAdmin::saveUploadedProductImage(isset($_FILES[$fk]) ? $_FILES[$fk] : null, $imgDir);
                   if ($fn !== "") {
@@ -367,8 +367,8 @@
                   </div>
                   <?php if ($hasGalleryImages): ?>
                   <div class="col-lg-6 mb-3">
-                    <label>Other images (3)</label>
-                    <?php for ($gi = 1; $gi <= 3; $gi++): ?>
+                    <label>Other images (<?php echo EdiProductAdmin::GALLERY_SLOTS; ?>)</label>
+                    <?php for ($gi = 1; $gi <= EdiProductAdmin::GALLERY_SLOTS; $gi++): ?>
                     <div class="d-flex flex-wrap align-items-start mb-2" style="gap:10px;">
                       <div style="flex:1;min-width:180px;max-width:280px;">
                         <input type="file" name="gallery_<?php echo $gi; ?>" id="gallery_<?php echo $gi; ?>_input" class="form-control" accept="image/*">
@@ -497,7 +497,7 @@
             });
         }
         bindPreview("main_image_input", "main_image_preview");
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= <?php echo EdiProductAdmin::GALLERY_SLOTS; ?>; i++) {
             bindPreview("gallery_" + i + "_input", "gallery_preview_" + i);
         }
         const addOpt = document.getElementById("edi-add-opt-row");

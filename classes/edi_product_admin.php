@@ -5,45 +5,48 @@
  */
 class EdiProductAdmin
 {
+    const GALLERY_SLOTS = 4;
+
     /**
-     * @return array{0:string,1:string,2:string}
+     * @return string[]
      */
     public static function gallerySlotsFromDb($raw)
     {
+        $n = self::GALLERY_SLOTS;
         $raw = trim((string) $raw);
         if ($raw === '') {
-            return array('', '', '');
+            return array_fill(0, $n, '');
         }
         if ($raw[0] === '[') {
             $d = json_decode($raw, true);
             if (is_array($d)) {
-                $out = array('', '', '');
-                for ($i = 0; $i < 3; $i++) {
+                $out = array_fill(0, $n, '');
+                for ($i = 0; $i < $n; $i++) {
                     $out[$i] = isset($d[$i]) ? trim((string) $d[$i]) : '';
                 }
                 return $out;
             }
         }
         $parts = preg_split('/\s*,\s*/', $raw);
-        $out = array('', '', '');
-        for ($i = 0; $i < 3; $i++) {
+        $out = array_fill(0, $n, '');
+        for ($i = 0; $i < $n; $i++) {
             $out[$i] = isset($parts[$i]) ? trim((string) $parts[$i]) : '';
         }
         return $out;
     }
 
-    /**
-     * @param array{0:string,1:string,2:string} $slots
-     */
     public static function encodeGallerySlots(array $slots)
     {
-        $a = isset($slots[0]) ? (string) $slots[0] : '';
-        $b = isset($slots[1]) ? (string) $slots[1] : '';
-        $c = isset($slots[2]) ? (string) $slots[2] : '';
-        if ($a === '' && $b === '' && $c === '') {
-            return null;
+        $n = self::GALLERY_SLOTS;
+        $out = array_fill(0, $n, '');
+        $hasAny = false;
+        for ($i = 0; $i < $n; $i++) {
+            $out[$i] = isset($slots[$i]) ? (string) $slots[$i] : '';
+            if ($out[$i] !== '') {
+                $hasAny = true;
+            }
         }
-        return json_encode(array($a, $b, $c), JSON_UNESCAPED_UNICODE);
+        return $hasAny ? json_encode($out, JSON_UNESCAPED_UNICODE) : null;
     }
 
     /**
