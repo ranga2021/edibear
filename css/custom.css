@@ -850,6 +850,6 @@ animation: cartBounce .4s;
     margin-bottom:6px;
 }
 .order-thankyou-icon p{
-    text-align: center;
+    text-align: center !important;
 }
 /* Inner-page banner + content offset: see css/edibear-theme.css (.page-header-bg, .page-header-content) */
