@@ -13,16 +13,35 @@ class HEADER {
             "redirect"=>"./home-page",
             "icon"=>"fas fa-home text-secondary"
         ),
-        
+        "manage-ws-categories"=>array(
+            "name"=>"Worksheets Categories",
+            "redirect"=>"./manage-ws-categories",
+            "icon"=>"fas fa-folder-open text-info"
+        ),
+        "manage-ws-subcategories"=>array(
+            "name"=>"Worksheets Subcategories",
+            "redirect"=>"./manage-ws-subcategories",
+            "icon"=>"fas fa-folder text-info"
+        ),
         "add-worksheet"=>array(
             "name"=>"Add Worksheet",
             "redirect"=>"./add-pdf",
             "icon"=>"fas fa-pen-square text-warning"
         ),
         "worksheet"=>array(
-            "name"=>"Worksheet",
+            "name"=>"Worksheets",
             "redirect"=>"./worksheet",
             "icon"=>"fas fa-clipboard-list text-danger"
+        ),
+        "manage-product-categories"=>array(
+            "name"=>"Products Categories",
+            "redirect"=>"./manage-product-categories",
+            "icon"=>"fas fa-tags text-info"
+        ),
+        "manage-product-subcategories"=>array(
+            "name"=>"Products Subcategories",
+            "redirect"=>"./manage-product-subcategories",
+            "icon"=>"fas fa-sitemap text-info"
         ),
         "add-product"=>array(
             "name"=>"Add Product",
@@ -34,92 +53,50 @@ class HEADER {
             "redirect"=>"./products",
             "icon"=>"fas fa-box-open text-danger"
         ),
-        "manage-product-categories"=>array(
-            "name"=>"Product categories",
-            "redirect"=>"./manage-product-categories",
-            "icon"=>"fas fa-tags text-info"
-        ),
-        "manage-product-subcategories"=>array(
-            "name"=>"Product subcategories",
-            "redirect"=>"./manage-product-subcategories",
-            "icon"=>"fas fa-sitemap text-info"
-        ),
-        "manage-ws-categories"=>array(
-            "name"=>"Worksheet categories",
-            "redirect"=>"./manage-ws-categories",
-            "icon"=>"fas fa-folder-open text-info"
-        ),
-        "manage-ws-subcategories"=>array(
-            "name"=>"Worksheet subcategories",
-            "redirect"=>"./manage-ws-subcategories",
-            "icon"=>"fas fa-folder text-info"
-        ),
         "shipping-rates"=>array(
-            "name"=>"Shipping rates",
+            "name"=>"Shipping Rates",
             "redirect"=>"./shipping-rates",
             "icon"=>"fas fa-truck text-info"
         ),
-        "bank-details"=>array(
-            "name"=>"Bank Details",
-            "redirect"=>"./bank-details",
-            "icon"=>"fas fa-university text-info"
-        ),
         "vouchers"=>array(
-            "name"=>"Vouchers",
+            "name"=>"Add vouchers",
             "redirect"=>"./vouchers",
             "icon"=>"fas fa-ticket-alt text-success"
-        ),
-
-        "add-blog"=>array(
-            "name"=>"Add Blog",
-            "redirect"=>"./add-blog",
-            "icon"=>"fas fa-pen text-warning"
-        ),
-        "blogs"=>array(
-            "name"=>"Blogs",
-            "redirect"=>"./blogs",
-            "icon"=>"fas fa-newspaper text-danger"
-        ),
-        "add-event"=>array(
-            "name"=>"Add Brave Heart challenge",
-            "redirect"=>"./add-event",
-            "icon"=>"fas fa-flag text-warning"
-        ),
-        "event"=>array(
-            "name"=>"Brave Heart challenges",
-            "redirect"=>"./event",
-            "icon"=>"fas fa-calendar-alt text-warning"
-        ),
-        "add-ad1"=>array(
-            "name"=>"Add Home Ad 1",
-            "redirect"=>"./add-ad1",
-            "icon"=>"fas fa-ad text-warning"
-        ),
-        "ad1"=>array(
-            "name"=>"Home Ad 1",
-            "redirect"=>"./ad1",
-            "icon"=>"fas fa-image text-danger"
-        ),
-        "add-ad2"=>array(
-            "name"=>"Add Home Ad 2",
-            "redirect"=>"./add-ad2",
-            "icon"=>"fas fa-ad text-warning"
-        ),
-        "ad2"=>array(
-            "name"=>"Home Ad 2",
-            "redirect"=>"./ad2",
-            "icon"=>"fas fa-image text-danger"
-        ),
-        
-        "testimonials"=>array(
-            "name"=>"Testimonials",
-            "redirect"=>"./testimonials",
-            "icon"=>"fas fa-comments text-primary"
         ),
         "orders"=>array(
             "name"=>"Orders",
             "redirect"=>"./order",
             "icon"=>"fas fa-shopping-cart text-primary"
+        ),
+        "add-ad1"=>array(
+            "name"=>"Add Hidden Den",
+            "redirect"=>"./add-ad1",
+            "icon"=>"fas fa-ad text-warning"
+        ),
+        "ad1"=>array(
+            "name"=>"Hidden Den",
+            "redirect"=>"./ad1",
+            "icon"=>"fas fa-image text-danger"
+        ),
+        "add-event"=>array(
+            "name"=>"Add Brave Heart Challenge",
+            "redirect"=>"./add-event",
+            "icon"=>"fas fa-flag text-warning"
+        ),
+        "event"=>array(
+            "name"=>"Brave Heart Challenges",
+            "redirect"=>"./event",
+            "icon"=>"fas fa-calendar-alt text-warning"
+        ),
+        "testimonials"=>array(
+            "name"=>"Testimonials",
+            "redirect"=>"./testimonials",
+            "icon"=>"fas fa-comments text-primary"
+        ),
+        "bank-details"=>array(
+            "name"=>"Bank Details",
+            "redirect"=>"./bank-details",
+            "icon"=>"fas fa-university text-info"
         ),
         "manage-users"=>array(
             "name"=>"Manage Users",
