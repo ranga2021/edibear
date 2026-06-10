@@ -309,9 +309,9 @@ img[style*="position: fixed"] {
 
 /* —— Treasure detail (single product) layout —— */
 .edi-treasure-detail-main {
-  padding-left: 30px;
-  padding-right: 30px;
-  gap: 20px;
+  padding-left: 0;
+  padding-right: 0;
+  gap: 10px;
 }
 
 

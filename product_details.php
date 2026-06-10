@@ -106,7 +106,7 @@ if ($totalReviews > 0) {
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
 
-        <div class="row edi-treasure-detail-main">
+        <div class="row edi-treasure-detail-main justify-content-center">
             <div class="col-lg-5 mb-4 mb-lg-0">
                 <div class="edi-treasure-gallery">
                     <div class="edi-treasure-gallery-main">
@@ -128,7 +128,7 @@ if ($totalReviews > 0) {
                     </div>
                 </div>
             </div>
-            <div class="col-lg-7 text-left product-details-info">
+            <div class="col-lg-6 text-left product-details-info">
                 <h2 class="edi-treasure-product-title"><?= strtoupper(htmlspecialchars((string) $product['product_name'], ENT_QUOTES, 'UTF-8')) ?></h2>
                 <div class="price-box edi-treasure-price-row mb-3">
                     <?php if ((float) $product['discounted_price'] > 0): ?>
