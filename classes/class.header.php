@@ -68,15 +68,15 @@ class HEADER {
             "redirect"=>"./order",
             "icon"=>"fas fa-shopping-cart text-primary"
         ),
-        "add-ad1"=>array(
+        "add-blog"=>array(
             "name"=>"Add Hidden Den",
-            "redirect"=>"./add-ad1",
-            "icon"=>"fas fa-ad text-warning"
+            "redirect"=>"./add-blog",
+            "icon"=>"fas fa-pen text-warning"
         ),
-        "ad1"=>array(
+        "blogs"=>array(
             "name"=>"Hidden Den",
-            "redirect"=>"./ad1",
-            "icon"=>"fas fa-image text-danger"
+            "redirect"=>"./blogs",
+            "icon"=>"fas fa-newspaper text-danger"
         ),
         "add-event"=>array(
             "name"=>"Add Brave Heart Challenge",
