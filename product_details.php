@@ -191,6 +191,18 @@ if ($totalReviews > 0) {
                 } elseif ($kgForMeta > 0) {
                     $metaRows[] = array('Weight', rtrim(rtrim(sprintf('%.4f', $kgForMeta), '0'), '.') . ' kg');
                 }
+                if (!empty($product['options_extra'])) {
+                    $extraOpts = json_decode((string) $product['options_extra'], true);
+                    if (is_array($extraOpts)) {
+                        foreach ($extraOpts as $ex) {
+                            $ek = trim((string) ($ex['k'] ?? ''));
+                            $ev = trim((string) ($ex['v'] ?? ''));
+                            if ($ek !== '' && $ev !== '') {
+                                $metaRows[] = array($ek, $ev);
+                            }
+                        }
+                    }
+                }
                 ?>
                 <?php if (count($metaRows) > 0): ?>
                 <table class="table table-borderless edi-treasure-meta-table mb-4">
@@ -421,9 +433,10 @@ if ($totalReviews > 0) {
                                     alert("Failed to add to cart");
                                     return;
                                 }
+                                var addedQty = data.quantity || 1;
                                 var count = localStorage.getItem("cart_count");
                                 count = count ? parseInt(count, 10) : 0;
-                                localStorage.setItem("cart_count", String(count + 1));
+                                localStorage.setItem("cart_count", String(count + addedQty));
                                 if (typeof window.edibearSyncCartBadge === "function") {
                                     window.edibearSyncCartBadge();
                                 }

@@ -9,6 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['product_id']) || !is
 
 $product_id = (int) $_POST['product_id'];
 $user_id = (int) $_POST['uid'];
+$addQty = isset($_POST['quantity']) ? max(1, (int) $_POST['quantity']) : 1;
 
 if ($product_id <= 0 || $user_id <= 0) {
     exit();
@@ -28,7 +29,7 @@ if (!empty($existingCart)) {
 
     // ✅ UPDATE QUANTITY
     $cart_id = (int) $existingCart[0]['id'];
-    $newQty = (int) $existingCart[0]['quantity'] + 1;
+    $newQty = (int) $existingCart[0]['quantity'] + $addQty;
 
     $user->updateTable(
         "cart",
@@ -44,7 +45,7 @@ if (!empty($existingCart)) {
         array(
             "user_id" => $user_id,
             "product_id" => $product_id,
-            "quantity" => 1
+            "quantity" => $addQty
         )
     );
 }
@@ -55,7 +56,8 @@ echo json_encode([
     'success' => true,
     'status' => 'success',
     'user_id' => $user_id,
-    'product_id' => $product_id
+    'product_id' => $product_id,
+    'quantity' => $addQty
 ]);
 exit();
 ?>
