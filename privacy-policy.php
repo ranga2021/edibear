@@ -43,9 +43,9 @@ $widgets = new WIDGETS();
             
 
             <div class="row mt-4">
-                <div class="col-12 text-center">
-                <h1 class="text-primary mb-3">HI THERE !</h1>
-                <p class="text-justify px-lg-5 mx-lg-5">
+                <div class="col-12">
+                <h1 class="text-primary mb-3 text-center">HI THERE !</h1>
+                <div class="text-justify px-lg-5 mx-lg-5" style="text-align: left;">
                 Effective Date: May 24, 2026
                     <br>
                     <br>
@@ -164,7 +164,7 @@ Edi's support crew:
     </ul>
 <br><br>
 
-                </p>
+                </div>
                 <div class="px-lg-5 mx-lg-5">
                     <img class="img-fluid " src="./img/Web pic/aboutpage.jpg" alt="About">
                 </div>
