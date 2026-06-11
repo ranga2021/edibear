@@ -857,12 +857,6 @@ animation: cartBounce .4s;
 /* ── Global mobile alignment fix ── */
 @media (max-width:767.98px){
 
-    /* Ensure every .container has comfortable side gutters */
-    .container{
-        padding-left:18px !important;
-        padding-right:18px !important;
-    }
-
     /* Content container-fluids that wrap page sections (not carousel/full-bleed) */
     .page-header-content.container-fluid,
     .container-fluid.footer,
@@ -870,18 +864,18 @@ animation: cartBounce .4s;
     .container-fluid.py-5,
     .container-fluid.pt-2,
     .container-fluid.pt-5{
-        padding-left:18px !important;
-        padding-right:18px !important;
+        padding-left:24px !important;
+        padding-right:24px !important;
     }
 
     /* Blog/challenge outer wrappers use px-0; restore gutters */
     .edi-blog-single-outer,
     .edi-challenge-detail-outer{
-        padding-left:18px !important;
-        padding-right:18px !important;
+        padding-left:24px !important;
+        padding-right:24px !important;
     }
 
-    /* When outer container-fluid already provides 18px gutters, nested .container shouldn't double up */
+    /* When outer container-fluid already provides gutters, nested .container shouldn't double up */
     .page-header-content.container-fluid > .container,
     .container-fluid.footer > .container{
         padding-left:0 !important;
@@ -915,7 +909,7 @@ animation: cartBounce .4s;
 
     /* Copyright bar */
     .container-fluid[style*="background-color:#004924"]{
-        padding-left:18px !important;
-        padding-right:18px !important;
+        padding-left:24px !important;
+        padding-right:24px !important;
     }
 }

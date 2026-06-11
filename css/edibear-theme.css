@@ -432,6 +432,14 @@ body.index #learn-section .edi-learn-cards-row {
 }
 
 @media (max-width: 767.98px) {
+  body.index {
+    --edi-home-section-gap: 40px;
+  }
+
+  #header-carousel .carousel-caption {
+    padding-bottom: 15% !important;
+  }
+
   body.index #learn-section .edi-learn-intro-row {
     margin-top: 0 !important;
     margin-bottom: 0.75rem !important;
@@ -2228,8 +2236,8 @@ h6.text-primary:not(.text-white),
   .edi-trail-tales-wrap > .container,
   .edi-hidden-den-section > .container,
   #challenge-section > .container {
-    padding-left: 18px !important;
-    padding-right: 18px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
   }
 
   /* Move floating up button away from reading area */
@@ -2262,8 +2270,8 @@ h6.text-primary:not(.text-white),
 
   /* Ensure equal mobile gutters on Treasure Details header */
   .edi-treasure-detail-outer {
-    padding-left: 18px !important;
-    padding-right: 18px !important;
+    padding-left: 24px !important;
+    padding-right: 24px !important;
   }
 
   .edi-treasure-detail-outer > .container.edi-treasure-detail {
@@ -2296,8 +2304,8 @@ h6.text-primary:not(.text-white),
   }
 
   .page-header-content.container {
-    padding-left: 18px;
-    padding-right: 18px;
+    padding-left: 24px;
+    padding-right: 24px;
   }
 
   .edi-breadcrumb {
