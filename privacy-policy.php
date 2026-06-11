@@ -44,7 +44,6 @@ $widgets = new WIDGETS();
 
             <div class="row mt-4">
                 <div class="col-12">
-                <h1 class="text-primary mb-3 text-center">HI THERE !</h1>
                 <div class="text-justify px-lg-5 mx-lg-5" style="text-align: left;">
                 Effective Date: May 24, 2026
                     <br>
@@ -98,7 +97,7 @@ Tales" community areas.</li>
         </ul>
     </li>
 </ol>
-<br><br>
+<br><
 
 <b>4. Lawful Basis and Purpose of Processing</b><br>
 In strict compliance with the Sri Lankan PDPA, your data is processed only under clear, lawful justifications:
@@ -112,7 +111,7 @@ In strict compliance with the Sri Lankan PDPA, your data is processed only under
         <li>Legal Compliance: To preserve sales records and transaction receipts for tax and business compliance under Sri Lankan
         commercial laws.</li>
     </ul>
-<br><br>
+<br>
 
 <b>5. Third-Party Sharing & Data Transfers</b><br>
 We love our family, and we never sell, rent, or trade your personal information to outside marketers. We share your information only with
@@ -126,7 +125,7 @@ trusted partners required to run Edibear's World:
         <li>Analytics Providers: Google LLC (via Google Analytics) to help us see which worksheets and categories are the most popular.</li>
         <li>Communication Platforms: Secure tools used to deliver your transactional emails, WhatsApp order updates, and newsletters.</li>
     </ul>
-<br><br>
+<br>
 
 <b>6. Data Security & Retention Timeline</b><br>
 We use standard encryption protocols (HTTPS/SSL) to secure your online checkout journey and keep your account details locked safe from
@@ -147,7 +146,7 @@ emailing us:
         <li>Right to Object/Withdraw Consent: Instantly opt out of receiving marketing emails or worksheets by clicking the "Unsubscribe"
         link at the bottom of any newsletter.</li>
     </ul>
-<br><br>
+<br>
 
 
 <b>8. Changes to this Privacy Policy</b><br>
