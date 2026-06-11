@@ -853,3 +853,69 @@ animation: cartBounce .4s;
     text-align: center !important;
 }
 /* Inner-page banner + content offset: see css/edibear-theme.css (.page-header-bg, .page-header-content) */
+
+/* ── Global mobile alignment fix ── */
+@media (max-width:767.98px){
+
+    /* Ensure every .container has comfortable side gutters */
+    .container{
+        padding-left:18px !important;
+        padding-right:18px !important;
+    }
+
+    /* Content container-fluids that wrap page sections (not carousel/full-bleed) */
+    .page-header-content.container-fluid,
+    .container-fluid.footer,
+    .container-fluid.py-3,
+    .container-fluid.py-5,
+    .container-fluid.pt-2,
+    .container-fluid.pt-5{
+        padding-left:18px !important;
+        padding-right:18px !important;
+    }
+
+    /* Blog/challenge outer wrappers use px-0; restore gutters */
+    .edi-blog-single-outer,
+    .edi-challenge-detail-outer{
+        padding-left:18px !important;
+        padding-right:18px !important;
+    }
+
+    /* When outer container-fluid already provides 18px gutters, nested .container shouldn't double up */
+    .page-header-content.container-fluid > .container,
+    .container-fluid.footer > .container{
+        padding-left:0 !important;
+        padding-right:0 !important;
+    }
+
+    /* Strip desktop-only spacing helpers so they don't push content on mobile */
+    .px-lg-5{
+        padding-left:0 !important;
+        padding-right:0 !important;
+    }
+    .mx-lg-5{
+        margin-left:0 !important;
+        margin-right:0 !important;
+    }
+    .px-lg-4{
+        padding-left:0 !important;
+        padding-right:0 !important;
+    }
+
+    /* Lists: reduce default browser indent so they align with body text */
+    ol, ul:not(.navbar-nav):not(.breadcrumb):not(.dropdown-menu):not(.edibear-menu){
+        padding-left:20px;
+    }
+
+    /* Footer columns: no extra col padding since parent provides gutters */
+    .footer-overlap-row [class*="col-"]{
+        padding-left:0 !important;
+        padding-right:0 !important;
+    }
+
+    /* Copyright bar */
+    .container-fluid[style*="background-color:#004924"]{
+        padding-left:18px !important;
+        padding-right:18px !important;
+    }
+}

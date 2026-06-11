@@ -2295,11 +2295,9 @@ h6.text-primary:not(.text-white),
     line-height: 1.25;
   }
 
-  .page-header-content > .container,
-  .page-header-content.container-fluid > .container,
   .page-header-content.container {
-    padding-left: clamp(14px, 4vw, 18px);
-    padding-right: clamp(14px, 4vw, 18px);
+    padding-left: 18px;
+    padding-right: 18px;
   }
 
   .edi-breadcrumb {

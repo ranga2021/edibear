@@ -40,7 +40,7 @@ $widgets = new WIDGETS();
 
         <!-- EMPTY CONTENT AREA -->
         <div style="min-height:400px;">
-            
+
 
             <div class="row mt-4">
                 <div class="col-12">
@@ -97,7 +97,7 @@ Tales" community areas.</li>
         </ul>
     </li>
 </ol>
-<br><
+<br>
 
 <b>4. Lawful Basis and Purpose of Processing</b><br>
 In strict compliance with the Sri Lankan PDPA, your data is processed only under clear, lawful justifications:
