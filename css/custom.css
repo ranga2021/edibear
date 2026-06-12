@@ -836,6 +836,7 @@ animation: cartBounce .4s;
     border:1px dashed #4caf50;
     border-radius:6px;
     padding:14px 10px;
+    text-align:center;
 }
 
 .order-thankyou-icon{

@@ -2327,7 +2327,7 @@ h6.text-primary:not(.text-white),
 
 .edi-policy-heading {
   font-weight: 700 !important;
-  color: var(--edi-title-color) !important;
+  color: var(--edi-body) !important;
   margin-top: 1.75rem !important;
   margin-bottom: 0.5rem !important;
 }
