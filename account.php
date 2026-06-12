@@ -85,6 +85,24 @@ if ($touristID > 0 && $user->CountRows("tourists", array("id"=>$touristID)) == 1
     }
 }
 
+// HANDLE PROFILE UPDATE
+if (isset($_POST['updateProfileSubmit'])) {
+    if ($touristID <= 0 || !$touristArr) {
+        header("Location: ./login.php");
+        exit;
+    }
+    $newName = trim($_POST['profileName'] ?? '');
+    $newEmail = trim($_POST['profileEmail'] ?? '');
+    $newCountry = trim($_POST['profileCountry'] ?? '');
+
+    $conn = $user->getConnection();
+    $stmt = $conn->prepare("UPDATE tourists SET name=?, email=?, country=? WHERE id=?");
+    $stmt->execute([$newName, $newEmail, $newCountry, $touristID]);
+
+    header("Location: ./account?uid=$touristID");
+    exit;
+}
+
 // 🔥 HANDLE DELETE TESTIMONIAL
 if (isset($_POST['deleteTestimonialConfirm'])) {
     if ($touristID <= 0 || !$touristArr) {
@@ -294,16 +312,47 @@ if (userSession && !uid) {
 
             <div class="card border-0 shadow-sm mb-3" id="edi-account-profile">
                 <div class="card-body py-3">
-                    <h5 class="font-weight-bold mb-2">Your profile</h5>
-                    <p class="mb-1"><strong>Email:</strong> <?php echo htmlspecialchars($touristEmail, ENT_QUOTES, 'UTF-8'); ?></p>
-                    <p class="mb-1"><strong>Username:</strong> <?php echo htmlspecialchars($touristUsername, ENT_QUOTES, 'UTF-8'); ?></p>
-                    <?php if ($touristName !== ''): ?>
-                    <p class="mb-1"><strong>Display name:</strong> <?php echo htmlspecialchars($touristName, ENT_QUOTES, 'UTF-8'); ?></p>
-                    <?php endif; ?>
-                    <p class="mb-1"><strong>Country:</strong> <?php echo htmlspecialchars($touristCountry, ENT_QUOTES, 'UTF-8'); ?></p>
-                    <?php if ($touristMemberSince !== ''): ?>
-                    <p class="mb-1"><strong>Member since:</strong> <?php echo htmlspecialchars($touristMemberSince, ENT_QUOTES, 'UTF-8'); ?></p>
-                    <?php endif; ?>
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="font-weight-bold mb-0">Your profile</h5>
+                        <button type="button" class="btn btn-outline-success btn-sm" id="ediProfileEditBtn" onclick="toggleProfileEdit()">
+                            <i class="fa fa-pencil"></i> Edit
+                        </button>
+                    </div>
+
+                    <div id="ediProfileView">
+                        <p class="mb-1"><strong>Email:</strong> <?php echo htmlspecialchars($touristEmail, ENT_QUOTES, 'UTF-8'); ?></p>
+                        <p class="mb-1"><strong>Username:</strong> <?php echo htmlspecialchars($touristUsername, ENT_QUOTES, 'UTF-8'); ?></p>
+                        <?php if ($touristName !== ''): ?>
+                        <p class="mb-1"><strong>Display name:</strong> <?php echo htmlspecialchars($touristName, ENT_QUOTES, 'UTF-8'); ?></p>
+                        <?php endif; ?>
+                        <p class="mb-1"><strong>Country:</strong> <?php echo htmlspecialchars($touristCountry, ENT_QUOTES, 'UTF-8'); ?></p>
+                        <?php if ($touristMemberSince !== ''): ?>
+                        <p class="mb-1"><strong>Member since:</strong> <?php echo htmlspecialchars($touristMemberSince, ENT_QUOTES, 'UTF-8'); ?></p>
+                        <?php endif; ?>
+                    </div>
+
+                    <form id="ediProfileForm" method="post" action="" style="display:none;">
+                        <div class="form-group mb-2">
+                            <label class="small font-weight-bold mb-1">Display name</label>
+                            <input type="text" class="form-control form-control-sm" name="profileName" value="<?php echo htmlspecialchars($touristName, ENT_QUOTES, 'UTF-8'); ?>">
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="small font-weight-bold mb-1">Email</label>
+                            <input type="email" class="form-control form-control-sm" name="profileEmail" value="<?php echo htmlspecialchars($touristEmail, ENT_QUOTES, 'UTF-8'); ?>" required>
+                        </div>
+                        <div class="form-group mb-2">
+                            <label class="small font-weight-bold mb-1">Country</label>
+                            <input mbsc-input id="profile-country-picker" name="profileCountry" data-dropdown="true" data-input-style="box" data-label-style="stacked" placeholder="Please select..." value="<?php echo htmlspecialchars($touristCountry, ENT_QUOTES, 'UTF-8'); ?>"/>
+                        </div>
+                        <p class="mb-2 text-muted small"><strong>Username:</strong> <?php echo htmlspecialchars($touristUsername, ENT_QUOTES, 'UTF-8'); ?> <span class="text-muted">(cannot be changed)</span></p>
+                        <?php if ($touristMemberSince !== ''): ?>
+                        <p class="mb-2 text-muted small"><strong>Member since:</strong> <?php echo htmlspecialchars($touristMemberSince, ENT_QUOTES, 'UTF-8'); ?></p>
+                        <?php endif; ?>
+                        <div class="mt-2">
+                            <button type="submit" name="updateProfileSubmit" class="btn btn-success btn-sm px-3 mr-2">Save</button>
+                            <button type="button" class="btn btn-secondary btn-sm px-3" onclick="toggleProfileEdit()">Cancel</button>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -526,7 +575,7 @@ if (userSession && !uid) {
         echo $userHeader->printUserFooter();
         if ($touristArr) {
             $countryJs = json_encode($touristCountry, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT);
-            echo "<script>$(function(){ $('input[name=inputTouristCountry]').val(" . $countryJs . "); });</script>";
+            echo "<script>$(function(){ $('input[name=inputTouristCountry]').val(" . $countryJs . "); $('input[name=profileCountry]').val(" . $countryJs . "); });</script>";
         }
     ?>
     <script>
@@ -534,15 +583,22 @@ if (userSession && !uid) {
             theme: 'ios',
             themeVariant: 'light'
         });
+        var countryRenderItem = function (item) {
+            return '<div class="md-country-picker-item">' +
+                '<img class="md-country-picker-flag" src="https://img.mobiscroll.com/demos/flags/' + item.data.value + '.png" />' +
+                item.display + '</div>';
+        };
         var inst = mobiscroll.select('#demo-country-picker', {
             display: 'anchored',
             filter: true,
             itemHeight: 40,
-            renderItem: function (item) {
-                return '<div class="md-country-picker-item">' +
-                    '<img class="md-country-picker-flag" src="https://img.mobiscroll.com/demos/flags/' + item.data.value + '.png" />' +
-                    item.display + '</div>';
-            }
+            renderItem: countryRenderItem
+        });
+        var profileCountryInst = mobiscroll.select('#profile-country-picker', {
+            display: 'anchored',
+            filter: true,
+            itemHeight: 40,
+            renderItem: countryRenderItem
         });
         mobiscroll.util.http.getJson('https://trial.mobiscroll.com/content/countries.json', function (resp) {
             var countries = [];
@@ -551,6 +607,7 @@ if (userSession && !uid) {
                 countries.push({ text: country.text, value: country.value });
             }
             inst.setOptions({ data: countries });
+            profileCountryInst.setOptions({ data: countries });
         });
         $(".inputRatingStar").click(function (event){
             var starNumber = event['target']['id'].substr(4,1);
@@ -632,6 +689,21 @@ if (userSession && !uid) {
             }); 
         }
         
+        function toggleProfileEdit() {
+            var view = document.getElementById('ediProfileView');
+            var form = document.getElementById('ediProfileForm');
+            var btn = document.getElementById('ediProfileEditBtn');
+            if (form.style.display === 'none') {
+                view.style.display = 'none';
+                form.style.display = 'block';
+                btn.style.display = 'none';
+            } else {
+                view.style.display = 'block';
+                form.style.display = 'none';
+                btn.style.display = '';
+            }
+        }
+
         function clearImageSlot(id) {
     // Clears the file selection
     document.getElementById('inputImage' + id).value = "";

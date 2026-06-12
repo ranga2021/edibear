@@ -2349,11 +2349,17 @@ h6.text-primary:not(.text-white),
 
 /* Long-form copy: comfortable line height inside main content shells */
 
+/* ----- Account page: badge overrides ----- */
+.edi-account-orders-table .badge-warning {
+  background-color: #f0ad4e;
+  color: #fff;
+}
+
 /* ----- Account page: sidebar + quick links layout ----- */
 .edi-account-layout {
   display: flex;
   gap: 1.5rem;
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .edi-account-sidebar {
@@ -2364,8 +2370,6 @@ h6.text-primary:not(.text-white),
   border-radius: 10px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
   padding: 1.25rem 0;
-  position: sticky;
-  top: 100px;
 }
 
 .edi-account-sidebar-logo {
@@ -2383,6 +2387,8 @@ h6.text-primary:not(.text-white),
 .edi-account-sidebar-nav {
   display: flex;
   flex-direction: column;
+  position: sticky;
+  top: 100px;
 }
 
 .edi-account-nav-item {
