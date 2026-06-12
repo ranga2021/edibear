@@ -241,11 +241,6 @@ if (userSession && !uid) {
             <h1>Account</h1>
             <div class="edi-page-title-rule" role="presentation"></div>
         </div>
-            <div class="text-right mb-3">
-                <a href="./logout.php" class="btn btn-danger">
-                    <i class="fa fa-sign-out"></i> Logout
-                </a>
-            </div>
         </div>
     </div>
     <div class="container-fluid pt-2 pb-4">
@@ -256,39 +251,63 @@ if (userSession && !uid) {
             </div>
             <?php else: ?>
 
-            <div class="row mb-3">
-                <div class="col-lg-5 mb-3 mb-lg-0">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body py-3">
-                            <h5 class="font-weight-bold mb-2">Your profile</h5>
-                            <p class="mb-1"><strong>Email:</strong> <?php echo htmlspecialchars($touristEmail, ENT_QUOTES, 'UTF-8'); ?></p>
-                            <p class="mb-1"><strong>Username:</strong> <?php echo htmlspecialchars($touristUsername, ENT_QUOTES, 'UTF-8'); ?></p>
-                            <?php if ($touristName !== ''): ?>
-                            <p class="mb-1"><strong>Display name:</strong> <?php echo htmlspecialchars($touristName, ENT_QUOTES, 'UTF-8'); ?></p>
-                            <?php endif; ?>
-                            <p class="mb-1"><strong>Country:</strong> <?php echo htmlspecialchars($touristCountry, ENT_QUOTES, 'UTF-8'); ?></p>
-                            <?php if ($touristMemberSince !== ''): ?>
-                            <p class="mb-3"><strong>Member since:</strong> <?php echo htmlspecialchars($touristMemberSince, ENT_QUOTES, 'UTF-8'); ?></p>
-                            <?php endif; ?>
-                            <a class="btn btn-outline-success btn-sm mr-2 mb-2" href="product_page.php">Continue shopping</a>
-                            <a class="btn btn-success btn-sm mb-2" href="cart.php?uid=<?php echo (int) $touristID; ?>">Honey cart</a>
+            <div class="edi-account-layout">
+                <aside class="edi-account-sidebar">
+                    <div class="edi-account-sidebar-logo">
+                        <a href="./">
+                            <img src="./img/Logo.png" alt="edibear">
+                        </a>
+                    </div>
+                    <nav class="edi-account-sidebar-nav">
+                        <a href="#edi-account-profile" class="edi-account-nav-item active" data-section="profile">
+                            <i class="fa fa-tachometer"></i>
+                            <span>Dashboard</span>
+                        </a>
+                        <a href="#edi-account-orders" class="edi-account-nav-item" data-section="orders">
+                            <i class="fa fa-shopping-bag"></i>
+                            <span>Orders</span>
+                        </a>
+                        <a href="#edi-account-reviews" class="edi-account-nav-item" data-section="reviews">
+                            <i class="fa fa-star"></i>
+                            <span>Reviews</span>
+                        </a>
+                        <a href="./account?uid=<?php echo (int) $touristID; ?>#edi-account-testimonial-form" class="edi-account-nav-item" data-section="edit-profile">
+                            <i class="fa fa-user-circle"></i>
+                            <span>Edit Profile</span>
+                        </a>
+                        <a href="./logout.php" class="edi-account-nav-item">
+                            <i class="fa fa-sign-out"></i>
+                            <span>Logout</span>
+                        </a>
+                    </nav>
+                </aside>
+
+                <div class="edi-account-main">
+                    <div class="edi-account-quicklinks">
+                        <span class="edi-account-quicklinks-label">Quick Link</span>
+                        <div class="edi-account-quicklinks-list">
+                            <a href="product_page.php" class="edi-account-quicklink-btn">Continue Shopping</a>
+                            <a href="cart.php?uid=<?php echo (int) $touristID; ?>" class="edi-account-quicklink-btn">Honey Cart</a>
+                            <a href="testimonials" class="edi-account-quicklink-btn">Community</a>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-7">
-                    <div class="card border-0 shadow-sm h-100">
-                        <div class="card-body py-3">
-                            <h5 class="font-weight-bold mb-2">Quick links</h5>
-                            <ul class="mb-0 pl-3">
-                                <li><a href="cart.php?uid=<?php echo (int) $touristID; ?>">View honey cart</a></li>
-                                <li><a href="checkout.php?uid=<?php echo (int) $touristID; ?>">Checkout</a> (when your cart has items)</li>
-                            </ul>
-                        </div>
-                    </div>
+
+            <div class="card border-0 shadow-sm mb-3" id="edi-account-profile">
+                <div class="card-body py-3">
+                    <h5 class="font-weight-bold mb-2">Your profile</h5>
+                    <p class="mb-1"><strong>Email:</strong> <?php echo htmlspecialchars($touristEmail, ENT_QUOTES, 'UTF-8'); ?></p>
+                    <p class="mb-1"><strong>Username:</strong> <?php echo htmlspecialchars($touristUsername, ENT_QUOTES, 'UTF-8'); ?></p>
+                    <?php if ($touristName !== ''): ?>
+                    <p class="mb-1"><strong>Display name:</strong> <?php echo htmlspecialchars($touristName, ENT_QUOTES, 'UTF-8'); ?></p>
+                    <?php endif; ?>
+                    <p class="mb-1"><strong>Country:</strong> <?php echo htmlspecialchars($touristCountry, ENT_QUOTES, 'UTF-8'); ?></p>
+                    <?php if ($touristMemberSince !== ''): ?>
+                    <p class="mb-1"><strong>Member since:</strong> <?php echo htmlspecialchars($touristMemberSince, ENT_QUOTES, 'UTF-8'); ?></p>
+                    <?php endif; ?>
                 </div>
             </div>
 
-            <div class="card border-0 shadow-sm mb-3">
+            <div class="card border-0 shadow-sm mb-3" id="edi-account-orders">
                 <div class="card-body py-3">
                     <h5 class="font-weight-bold mb-2">Order history</h5>
                     <?php if (empty($userOrders)): ?>
@@ -392,7 +411,7 @@ if (userSession && !uid) {
             </div>
 
             <?php if ( $user->CountRows("testimonials", array("user_id"=>$touristID)) > 0 ) { ?>
-            <div class="row mb-3">
+            <div class="row mb-3" id="edi-account-reviews">
                 <div class="card col-12">
                     <div class="card-body">
                         <h5 class="font-weight-bold">Your Testimonials</h5>
@@ -443,7 +462,7 @@ if (userSession && !uid) {
                 </div>
             </div>
             <?php } ?>
-            <div class="row">
+            <div class="row" id="edi-account-testimonial-form">
                 <div class="card col-12">
                     <div class="card-body">
                         <h5 class="font-weight-bold" id="addEditTestimonialHeading">Add Testimonial</h5>
@@ -495,6 +514,8 @@ if (userSession && !uid) {
                     </div>
                 </div>
             </div>
+                </div><!-- /.edi-account-main -->
+            </div><!-- /.edi-account-layout -->
             <?php endif; ?>
         </div>
     </div>
@@ -641,6 +662,22 @@ function editTestimonial(testimonialID) {
         scrollTop: $("#addEditTestimonialHeading").offset().top
     });
 }
+
+    // Sidebar nav: smooth scroll + active state
+    $(document).ready(function() {
+        $('.edi-account-nav-item[data-section]').on('click', function(e) {
+            var target = $(this).attr('href');
+            if (target && target.charAt(0) === '#') {
+                e.preventDefault();
+                var $el = $(target);
+                if ($el.length) {
+                    $('html, body').animate({ scrollTop: $el.offset().top - 90 }, 400);
+                }
+                $('.edi-account-nav-item').removeClass('active');
+                $(this).addClass('active');
+            }
+        });
+    });
     </script>
 </body>
 
