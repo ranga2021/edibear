@@ -273,23 +273,23 @@ if (userSession && !uid) {
                 <aside class="edi-account-sidebar">
                     <nav class="edi-account-sidebar-nav">
                         <a href="#edi-account-profile" class="edi-account-nav-item active" data-section="profile">
-                            <i class="fa fa-tachometer"></i>
+                            <i class="fas fa-th-large"></i>
                             <span>Dashboard</span>
                         </a>
                         <a href="#edi-account-profile" class="edi-account-nav-item" data-section="edit-profile" data-edit-profile="true">
-                            <i class="fa fa-user-circle"></i>
+                            <i class="fas fa-user-edit"></i>
                             <span>Edit Profile</span>
                         </a>
                         <a href="#edi-account-orders" class="edi-account-nav-item" data-section="orders">
-                            <i class="fa fa-shopping-bag"></i>
+                            <i class="fas fa-shopping-bag"></i>
                             <span>Orders</span>
                         </a>
                         <a href="#edi-account-testimonial-form" class="edi-account-nav-item" data-section="reviews">
-                            <i class="fa fa-star"></i>
+                            <i class="fas fa-star"></i>
                             <span>Reviews</span>
-                        </a>                     
-                        <a href="./logout.php" class="edi-account-nav-item">
-                            <i class="fa fa-sign-out"></i>
+                        </a>
+                        <a href="javascript:void(0)" class="edi-account-nav-item" onclick="localStorage.removeItem('user_session'); window.location.href='./logout';">
+                            <i class="fas fa-sign-out-alt"></i>
                             <span>Logout</span>
                         </a>
                     </nav>
