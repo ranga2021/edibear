@@ -856,63 +856,35 @@ animation: cartBounce .4s;
 /* Inner-page banner + content offset: see css/edibear-theme.css (.page-header-bg, .page-header-content) */
 
 /* ── Global mobile alignment fix ── */
-:root {
-    --edi-mobile-gutter: 24px;
-}
-
 @media (max-width:767.98px){
 
-    /*
-     * Text / content containers get uniform 24px gutters.
-     * Full-bleed sections (carousel, banners, bg images) stay edge-to-edge.
-     */
-
-    /* Standalone .container (most inner-page content) */
-    .container{
-        padding-left:var(--edi-mobile-gutter) !important;
-        padding-right:var(--edi-mobile-gutter) !important;
-    }
-
-    /* Content container-fluids (text sections, not full-bleed) */
+    /* Content container-fluids that wrap page sections (not carousel/full-bleed) */
     .page-header-content.container-fluid,
     .container-fluid.footer,
-    .container-fluid.edi-intro-section,
-    .container-fluid.edi-learn-section,
-    .container-fluid.edi-hidden-den-section,
-    .container-fluid[id="honey-market-section"],
-    .container-fluid[id="challenge-section"],
     .container-fluid.py-3,
     .container-fluid.py-5,
     .container-fluid.pt-2,
     .container-fluid.pt-5{
-        padding-left:var(--edi-mobile-gutter) !important;
-        padding-right:var(--edi-mobile-gutter) !important;
+        padding-left:24px !important;
+        padding-right:24px !important;
     }
 
-    /* Full-bleed sections: NO gutters (carousel, banners, trail-tales outer) */
-    .container-fluid.HomeCarousel,
-    .container-fluid.p-0,
-    .container-fluid.px-0{
-        padding-left:0 !important;
-        padding-right:0 !important;
-    }
-
-    /* Nested .container inside container-fluid: no double padding */
-    .container-fluid > .container{
-        padding-left:0 !important;
-        padding-right:0 !important;
-        max-width:100% !important;
-    }
-
-    /* Blog/challenge outer wrappers (have px-0 in HTML, restore gutters for text) */
+    /* Blog/challenge outer wrappers use px-0; restore gutters */
     .edi-blog-single-outer,
     .edi-challenge-detail-outer{
-        padding-left:var(--edi-mobile-gutter) !important;
-        padding-right:var(--edi-mobile-gutter) !important;
+        padding-left:24px !important;
+        padding-right:24px !important;
+    }
+
+    /* When outer container-fluid already provides gutters, nested .container shouldn't double up */
+    .page-header-content.container-fluid > .container,
+    .container-fluid.footer > .container{
+        padding-left:0 !important;
+        padding-right:0 !important;
     }
 
     /* Strip desktop-only spacing helpers so they don't push content on mobile */
-    .px-lg-5, .px-lg-4{
+    .px-lg-5{
         padding-left:0 !important;
         padding-right:0 !important;
     }
@@ -920,10 +892,7 @@ animation: cartBounce .4s;
         margin-left:0 !important;
         margin-right:0 !important;
     }
-
-    /* Bootstrap utility overrides: px-3 is too narrow on mobile */
-    .footer .px-3,
-    .footerEmailCustom.px-3{
+    .px-lg-4{
         padding-left:0 !important;
         padding-right:0 !important;
     }
@@ -941,14 +910,7 @@ animation: cartBounce .4s;
 
     /* Copyright bar */
     .container-fluid[style*="background-color:#004924"]{
-        padding-left:var(--edi-mobile-gutter) !important;
-        padding-right:var(--edi-mobile-gutter) !important;
-    }
-
-    /* Row negative margins inside content containers */
-    .page-header-content > .row,
-    .container > .row{
-        margin-left:0 !important;
-        margin-right:0 !important;
+        padding-left:24px !important;
+        padding-right:24px !important;
     }
 }
