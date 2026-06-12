@@ -902,10 +902,31 @@ animation: cartBounce .4s;
         padding-left:20px;
     }
 
+    /* Footer: override Bootstrap pl-3/pr-3 utilities on mobile */
+    .container-fluid.footer{
+        padding-left:24px !important;
+        padding-right:24px !important;
+    }
+
+    .container-fluid.footer > .container{
+        padding-left:0 !important;
+        padding-right:0 !important;
+    }
+
+    .footer .footercontentwidth{
+        padding-left:0 !important;
+        padding-right:0 !important;
+    }
+
     /* Footer columns: no extra col padding since parent provides gutters */
     .footer-overlap-row [class*="col-"]{
         padding-left:0 !important;
         padding-right:0 !important;
+    }
+
+    .footer-overlap-row{
+        margin-left:0 !important;
+        margin-right:0 !important;
     }
 
     /* Copyright bar */
