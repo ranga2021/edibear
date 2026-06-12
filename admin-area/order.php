@@ -383,11 +383,11 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-md-6">
-              <p class="modal-detail-label">Customer Name</p>
+              <p class="modal-detail-label">Customer Details</p>
               <p id="modal_customer_name" class="modal-detail-value"></p>
-              <p class="modal-detail-label">Contact Details</p>
+              <!--p class="modal-detail-label">Contact Details</p--->
               <p id="modal_contact" class="modal-detail-value"></p>
-              <p class="modal-detail-label">Shipping Address</p>
+              <!----p class="modal-detail-label">Shipping Address</p---->
               <p id="modal_address" class="modal-detail-value"></p>
             </div>
             <div class="col-md-6">
