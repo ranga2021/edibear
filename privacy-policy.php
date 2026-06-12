@@ -43,7 +43,7 @@ $widgets = new WIDGETS();
 
             <div class="row mt-4">
                 <div class="col-12">
-                <div class="edi-policy-content">
+                <div class="edi-policy-content px-lg-5 mx-lg-5">
 
                     <p class="edi-policy-date">Effective Date: May 24, 2026</p>
 
@@ -119,7 +119,7 @@ $widgets = new WIDGETS();
                     </ul>
 
                 </div>
-                <div class="edi-policy-content mt-4">
+                <div class="edi-policy-content px-lg-5 mx-lg-5 mt-4">
                     <img class="img-fluid" src="./img/Web pic/aboutpage.jpg" alt="About">
                 </div>
                 </div>
