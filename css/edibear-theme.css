@@ -2317,7 +2317,6 @@ h6.text-primary:not(.text-white),
 /* ----- Privacy Policy / Jungle Rules: consistent long-form layout ----- */
 .edi-policy-content {
   text-align: left;
-  max-width: 900px;
 }
 
 .edi-policy-date {
