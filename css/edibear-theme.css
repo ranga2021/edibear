@@ -1838,8 +1838,8 @@ h6.text-primary:not(.text-white),
 /* Home testimonial section mobile polish to match compact stacked-card layout */
 @media (max-width: 767.98px) {
   .testimonial-bg .container {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .testimonial-sec > [class*="col-"] {
@@ -1969,8 +1969,8 @@ h6.text-primary:not(.text-white),
   }
 
   .footerEmailCustom {
-    padding-left: 0.75rem !important;
-    padding-right: 0.75rem !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   .footerEmailCustom h1.text-danger {
@@ -2236,8 +2236,8 @@ h6.text-primary:not(.text-white),
   .edi-trail-tales-wrap > .container,
   .edi-hidden-den-section > .container,
   #challenge-section > .container {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
+    padding-left: var(--edi-mobile-gutter) !important;
+    padding-right: var(--edi-mobile-gutter) !important;
   }
 
   /* Move floating up button away from reading area */
@@ -2270,8 +2270,8 @@ h6.text-primary:not(.text-white),
 
   /* Ensure equal mobile gutters on Treasure Details header */
   .edi-treasure-detail-outer {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
+    padding-left: var(--edi-mobile-gutter) !important;
+    padding-right: var(--edi-mobile-gutter) !important;
   }
 
   .edi-treasure-detail-outer > .container.edi-treasure-detail {
@@ -2304,8 +2304,8 @@ h6.text-primary:not(.text-white),
   }
 
   .page-header-content.container {
-    padding-left: 24px;
-    padding-right: 24px;
+    padding-left: var(--edi-mobile-gutter);
+    padding-right: var(--edi-mobile-gutter);
   }
 
   .edi-breadcrumb {

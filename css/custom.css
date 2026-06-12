@@ -856,35 +856,40 @@ animation: cartBounce .4s;
 /* Inner-page banner + content offset: see css/edibear-theme.css (.page-header-bg, .page-header-content) */
 
 /* ── Global mobile alignment fix ── */
+:root {
+    --edi-mobile-gutter: 24px;
+}
+
 @media (max-width:767.98px){
 
-    /* Content container-fluids that wrap page sections (not carousel/full-bleed) */
-    .page-header-content.container-fluid,
-    .container-fluid.footer,
-    .container-fluid.py-3,
-    .container-fluid.py-5,
-    .container-fluid.pt-2,
-    .container-fluid.pt-5{
-        padding-left:24px !important;
-        padding-right:24px !important;
+    /* All container-fluid wrappers get uniform gutters */
+    .container-fluid{
+        padding-left:var(--edi-mobile-gutter) !important;
+        padding-right:var(--edi-mobile-gutter) !important;
     }
 
-    /* Blog/challenge outer wrappers use px-0; restore gutters */
-    .edi-blog-single-outer,
-    .edi-challenge-detail-outer{
-        padding-left:24px !important;
-        padding-right:24px !important;
-    }
-
-    /* When outer container-fluid already provides gutters, nested .container shouldn't double up */
-    .page-header-content.container-fluid > .container,
-    .container-fluid.footer > .container{
+    /* Nested .container inside container-fluid: no double padding */
+    .container-fluid > .container{
         padding-left:0 !important;
         padding-right:0 !important;
+        max-width:100% !important;
+    }
+
+    /* Standalone .container pages */
+    .container{
+        padding-left:var(--edi-mobile-gutter) !important;
+        padding-right:var(--edi-mobile-gutter) !important;
+    }
+
+    /* Blog/challenge outer wrappers */
+    .edi-blog-single-outer,
+    .edi-challenge-detail-outer{
+        padding-left:var(--edi-mobile-gutter) !important;
+        padding-right:var(--edi-mobile-gutter) !important;
     }
 
     /* Strip desktop-only spacing helpers so they don't push content on mobile */
-    .px-lg-5{
+    .px-lg-5, .px-lg-4{
         padding-left:0 !important;
         padding-right:0 !important;
     }
@@ -892,7 +897,10 @@ animation: cartBounce .4s;
         margin-left:0 !important;
         margin-right:0 !important;
     }
-    .px-lg-4{
+
+    /* Bootstrap utility overrides: px-3 is too narrow on mobile */
+    .footer .px-3,
+    .footerEmailCustom.px-3{
         padding-left:0 !important;
         padding-right:0 !important;
     }
@@ -910,7 +918,14 @@ animation: cartBounce .4s;
 
     /* Copyright bar */
     .container-fluid[style*="background-color:#004924"]{
-        padding-left:24px !important;
-        padding-right:24px !important;
+        padding-left:var(--edi-mobile-gutter) !important;
+        padding-right:var(--edi-mobile-gutter) !important;
+    }
+
+    /* Row negative margins: don't exceed gutter */
+    .container-fluid > .row,
+    .container > .row{
+        margin-left:0 !important;
+        margin-right:0 !important;
     }
 }
