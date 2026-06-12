@@ -2372,18 +2372,6 @@ h6.text-primary:not(.text-white),
   padding: 1.25rem 0;
 }
 
-.edi-account-sidebar-logo {
-  text-align: center;
-  padding: 0 1rem 1rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  margin-bottom: 0.5rem;
-}
-
-.edi-account-sidebar-logo img {
-  max-width: 80px;
-  height: auto;
-}
-
 .edi-account-sidebar-nav {
   display: flex;
   flex-direction: column;
@@ -2421,6 +2409,13 @@ h6.text-primary:not(.text-white),
   width: 18px;
   text-align: center;
   font-size: 0.95rem;
+  color: inherit;
+  opacity: 0.7;
+}
+
+.edi-account-nav-item:hover i,
+.edi-account-nav-item.active i {
+  opacity: 1;
 }
 
 .edi-account-main {
@@ -2480,10 +2475,6 @@ h6.text-primary:not(.text-white),
     position: static;
     border-radius: 8px;
     padding: 1rem 0;
-  }
-
-  .edi-account-sidebar-logo {
-    display: none;
   }
 
   .edi-account-sidebar-nav {

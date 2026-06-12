@@ -271,28 +271,23 @@ if (userSession && !uid) {
 
             <div class="edi-account-layout">
                 <aside class="edi-account-sidebar">
-                    <div class="edi-account-sidebar-logo">
-                        <a href="./">
-                            <img src="./img/Logo.png" alt="edibear">
-                        </a>
-                    </div>
                     <nav class="edi-account-sidebar-nav">
                         <a href="#edi-account-profile" class="edi-account-nav-item active" data-section="profile">
                             <i class="fa fa-tachometer"></i>
                             <span>Dashboard</span>
                         </a>
+                        <a href="#edi-account-profile" class="edi-account-nav-item" data-section="edit-profile" data-edit-profile="true">
+                            <i class="fa fa-user-circle"></i>
+                            <span>Edit Profile</span>
+                        </a>
                         <a href="#edi-account-orders" class="edi-account-nav-item" data-section="orders">
                             <i class="fa fa-shopping-bag"></i>
                             <span>Orders</span>
                         </a>
-                        <a href="#edi-account-reviews" class="edi-account-nav-item" data-section="reviews">
+                        <a href="#edi-account-testimonial-form" class="edi-account-nav-item" data-section="reviews">
                             <i class="fa fa-star"></i>
                             <span>Reviews</span>
-                        </a>
-                        <a href="./account?uid=<?php echo (int) $touristID; ?>#edi-account-testimonial-form" class="edi-account-nav-item" data-section="edit-profile">
-                            <i class="fa fa-user-circle"></i>
-                            <span>Edit Profile</span>
-                        </a>
+                        </a>                     
                         <a href="./logout.php" class="edi-account-nav-item">
                             <i class="fa fa-sign-out"></i>
                             <span>Logout</span>
@@ -747,6 +742,13 @@ function editTestimonial(testimonialID) {
                 }
                 $('.edi-account-nav-item').removeClass('active');
                 $(this).addClass('active');
+
+                if ($(this).data('edit-profile')) {
+                    var form = document.getElementById('ediProfileForm');
+                    if (form && form.style.display === 'none') {
+                        toggleProfileEdit();
+                    }
+                }
             }
         });
     });
