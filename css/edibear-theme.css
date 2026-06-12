@@ -2314,6 +2314,40 @@ h6.text-primary:not(.text-white),
   }
 }
 
+/* ----- Privacy Policy / Jungle Rules: consistent long-form layout ----- */
+.edi-policy-content {
+  text-align: left;
+  max-width: 900px;
+}
+
+.edi-policy-date {
+  font-weight: 500;
+  color: var(--edi-body);
+  margin-bottom: 1.5rem;
+}
+
+.edi-policy-heading {
+  font-weight: 700 !important;
+  color: var(--edi-title-color) !important;
+  margin-top: 1.75rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.edi-policy-content p {
+  margin-bottom: 0.75rem;
+  text-align: left;
+}
+
+.edi-policy-content ol,
+.edi-policy-content ul {
+  margin-top: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.edi-policy-content li {
+  margin-bottom: 0.35rem;
+}
+
 /* Long-form copy: comfortable line height inside main content shells */
 
 /* ----- Cart: login required modal (injected from class.header.php) ----- */
