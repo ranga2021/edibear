@@ -3,10 +3,22 @@ session_start();
 
 require_once("../classes/class.user.php");
 require_once("../classes/class.widgets.php");
+require_once("../classes/edi_taxonomy.php");
 
 $user = new USER();
 $widgets = new WIDGETS();
 
+
+/* ================= ADD GRADE ================= */
+
+if (isset($_POST['ediAddGrade'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    $title = isset($_POST['ediAddGrade']) ? trim((string) $_POST['ediAddGrade']) : '';
+    $conn = $user->getConnection();
+    $result = EdiTaxonomy::addGrade($conn, $title);
+    echo json_encode($result);
+    exit;
+}
 
 /* ================= BASIC ================= */
 

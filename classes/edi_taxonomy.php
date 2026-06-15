@@ -65,7 +65,7 @@ class EdiTaxonomy
         return false;
     }
 
-    public static function loadGrades(PDO $conn)
+    public static function loadGrades(PDO $conn, $adminAll = false)
     {
         $rows = array();
         try {
@@ -91,10 +91,29 @@ class EdiTaxonomy
             }
             return $ka <=> $kb;
         });
-        $rows = array_values(array_filter($rows, function ($r) {
-            return !self::isNumericGradeAboveFive($r["title"] ?? "");
-        }));
+        if (!$adminAll) {
+            $rows = array_values(array_filter($rows, function ($r) {
+                return !self::isNumericGradeAboveFive($r["title"] ?? "");
+            }));
+        }
         return $rows;
+    }
+
+    public static function addGrade(PDO $conn, $title)
+    {
+        $title = trim((string) $title);
+        if ($title === "") {
+            return array("ok" => false, "error" => "Grade title is required.");
+        }
+        $st = $conn->prepare("SELECT id FROM grades WHERE title = :t LIMIT 1");
+        $st->execute(array(":t" => $title));
+        if ($st->fetch()) {
+            return array("ok" => false, "error" => "A grade with that name already exists.");
+        }
+        $ins = $conn->prepare("INSERT INTO grades (title) VALUES (:t)");
+        $ins->execute(array(":t" => $title));
+        $newId = (int) $conn->lastInsertId();
+        return array("ok" => true, "id" => $newId, "title" => $title);
     }
 
     public static function allowedTitles($rows)

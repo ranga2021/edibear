@@ -9,7 +9,7 @@
   $adminHeader = new HEADER("add-product"); // Set active page for sidebar
   $user = new USER();
   $ediLanguages = EdiTaxonomy::loadLanguages($user->getConnection());
-  $ediGrades = EdiTaxonomy::loadGrades($user->getConnection());
+  $ediGrades = EdiTaxonomy::loadGrades($user->getConnection(), true);
 
   $product_subcategories = [];
   try {

@@ -9,7 +9,7 @@ require_once("../classes/class.header.php");
 $adminHeader = new HEADER("products");
 $user = new USER();
 $ediLanguages = EdiTaxonomy::loadLanguages($user->getConnection());
-$ediGrades = EdiTaxonomy::loadGrades($user->getConnection());
+$ediGrades = EdiTaxonomy::loadGrades($user->getConnection(), true);
 
 $id = isset($_GET["id"]) ? (int) $_GET["id"] : 0;
 if ($id < 1) {
