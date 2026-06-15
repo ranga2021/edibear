@@ -116,6 +116,22 @@ class EdiTaxonomy
         return array("ok" => true, "id" => $newId, "title" => $title);
     }
 
+    public static function deleteGrade(PDO $conn, $id)
+    {
+        $id = (int) $id;
+        if ($id <= 0) {
+            return array("ok" => false, "error" => "Invalid grade ID.");
+        }
+        $st = $conn->prepare("SELECT id FROM grades WHERE id = :id LIMIT 1");
+        $st->execute(array(":id" => $id));
+        if (!$st->fetch()) {
+            return array("ok" => false, "error" => "Grade not found.");
+        }
+        $del = $conn->prepare("DELETE FROM grades WHERE id = :id");
+        $del->execute(array(":id" => $id));
+        return array("ok" => true, "id" => $id);
+    }
+
     public static function allowedTitles($rows)
     {
         $out = array();

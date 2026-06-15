@@ -69,6 +69,7 @@ $ediShowShopProductCategory = $ediHasPcat && !$ediHasWsTaxonomy;
           <?php endforeach; ?>
         </select>
         <button type="button" class="btn btn-sm btn-outline-primary" id="ediAddGradeBtn" title="Add new grade" style="white-space:nowrap;height:calc(1.5em + .75rem + 2px);line-height:1">+</button>
+        <button type="button" class="btn btn-sm btn-outline-danger" id="ediDeleteGradeBtn" title="Delete selected grade" style="white-space:nowrap;height:calc(1.5em + .75rem + 2px);line-height:1">&minus;</button>
       </div>
     </div>
   </div>
@@ -265,6 +266,8 @@ $ediShowShopProductCategory = $ediHasPcat && !$ediHasWsTaxonomy;
 (function () {
   var btn = document.getElementById("ediAddGradeBtn");
   if (!btn) return;
+
+  /* ---------- ADD GRADE ---------- */
   btn.addEventListener("click", function (e) {
     e.preventDefault();
     var errEl = document.getElementById("ediAddGradeError");
@@ -286,7 +289,13 @@ $ediShowShopProductCategory = $ediHasPcat && !$ediHasWsTaxonomy;
     var fd = new FormData();
     fd.append("ediAddGrade", title);
     fetch("./ajax.php", { method: "POST", body: fd })
-      .then(function (r) { return r.json(); })
+      .then(function (r) {
+        if (!r.ok) throw new Error("Server error (" + r.status + ")");
+        return r.text();
+      })
+      .then(function (text) {
+        try { return JSON.parse(text); } catch (e) { throw new Error("Invalid response from server"); }
+      })
       .then(function (data) {
         if (data.ok) {
           var sel = document.getElementById("content_grade_id");
@@ -301,8 +310,8 @@ $ediShowShopProductCategory = $ediHasPcat && !$ediHasWsTaxonomy;
           errEl.style.display = "block";
         }
       })
-      .catch(function () {
-        errEl.textContent = "Network error. Please try again.";
+      .catch(function (err) {
+        errEl.textContent = err.message || "Network error. Please try again.";
         errEl.style.display = "block";
       })
       .finally(function () {
@@ -313,6 +322,42 @@ $ediShowShopProductCategory = $ediHasPcat && !$ediHasWsTaxonomy;
   document.getElementById("ediNewGradeTitle").addEventListener("keydown", function (e) {
     if (e.key === "Enter") { e.preventDefault(); document.getElementById("ediAddGradeSave").click(); }
   });
+
+  /* ---------- DELETE GRADE ---------- */
+  var delBtn = document.getElementById("ediDeleteGradeBtn");
+  if (delBtn) {
+    delBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var sel = document.getElementById("content_grade_id");
+      var id = sel.value;
+      if (!id) { alert("Please select a grade to delete."); return; }
+      var name = sel.options[sel.selectedIndex].textContent.trim();
+      if (!confirm('Delete grade "' + name + '"? This cannot be undone.')) return;
+      delBtn.disabled = true;
+      var fd = new FormData();
+      fd.append("ediDeleteGrade", id);
+      fetch("./ajax.php", { method: "POST", body: fd })
+        .then(function (r) {
+          if (!r.ok) throw new Error("Server error (" + r.status + ")");
+          return r.text();
+        })
+        .then(function (text) {
+          try { return JSON.parse(text); } catch (e) { throw new Error("Invalid response from server"); }
+        })
+        .then(function (data) {
+          if (data.ok) {
+            for (var i = 0; i < sel.options.length; i++) {
+              if (sel.options[i].value == data.id) { sel.remove(i); break; }
+            }
+            sel.value = "";
+          } else {
+            alert(data.error || "Failed to delete grade.");
+          }
+        })
+        .catch(function (err) { alert(err.message || "Network error. Please try again."); })
+        .finally(function () { delBtn.disabled = false; });
+    });
+  }
 })();
 </script>
 <?php endif; ?>

@@ -13,10 +13,29 @@ $widgets = new WIDGETS();
 
 if (isset($_POST['ediAddGrade'])) {
     header('Content-Type: application/json; charset=utf-8');
-    $title = isset($_POST['ediAddGrade']) ? trim((string) $_POST['ediAddGrade']) : '';
-    $conn = $user->getConnection();
-    $result = EdiTaxonomy::addGrade($conn, $title);
-    echo json_encode($result);
+    try {
+        $title = trim((string) $_POST['ediAddGrade']);
+        $conn = $user->getConnection();
+        $result = EdiTaxonomy::addGrade($conn, $title);
+        echo json_encode($result);
+    } catch (Exception $e) {
+        echo json_encode(array("ok" => false, "error" => $e->getMessage()));
+    }
+    exit;
+}
+
+/* ================= DELETE GRADE ================= */
+
+if (isset($_POST['ediDeleteGrade'])) {
+    header('Content-Type: application/json; charset=utf-8');
+    try {
+        $id = (int) $_POST['ediDeleteGrade'];
+        $conn = $user->getConnection();
+        $result = EdiTaxonomy::deleteGrade($conn, $id);
+        echo json_encode($result);
+    } catch (Exception $e) {
+        echo json_encode(array("ok" => false, "error" => $e->getMessage()));
+    }
     exit;
 }
 
