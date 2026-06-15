@@ -110,15 +110,10 @@ class EdiTaxonomy
         if ($st->fetch()) {
             return array("ok" => false, "error" => "A grade with that name already exists.");
         }
-        // Ensure id column has AUTO_INCREMENT
-        try {
-            $conn->exec("ALTER TABLE grades MODIFY id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY");
-        } catch (PDOException $e) {
-            // already set or no permission — ignore
-        }
-        $ins = $conn->prepare("INSERT INTO grades (title) VALUES (:t)");
-        $ins->execute(array(":t" => $title));
-        $newId = (int) $conn->lastInsertId();
+        $maxSt = $conn->query("SELECT COALESCE(MAX(id), 0) + 1 AS next_id FROM grades");
+        $newId = (int) $maxSt->fetch()['next_id'];
+        $ins = $conn->prepare("INSERT INTO grades (id, title) VALUES (:id, :t)");
+        $ins->execute(array(":id" => $newId, ":t" => $title));
         return array("ok" => true, "id" => $newId, "title" => $title);
     }
 
