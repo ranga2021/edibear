@@ -898,15 +898,7 @@ CREATE TABLE `tourists` (
 --
 
 INSERT INTO `tourists` (`id`, `username`, `name`, `profile_pic`, `password`, `email`, `country`, `status`, `delete_status`, `timestamp`) VALUES
-(1, 'kcranasinghe', '\r\n', '1.jpg', 'pass$2y$10$YlJ7CJAFdezhKp7qdFkJluB/ld.bzEITAOVURZNtu4HyYOnoDiXrK', 'kcranasinghe13@gmail.coms', 'Ethiopia', 0, 1, '2022-11-30 22:24:29'),
-(3, 'choisan', 'choisan', '4.jpg', 'pass$2y$10$MW3CHrHoMjdTfJNa58rOsuPUsSAs7FwG1zDxrC.R4xbQJv1YmWm/O', 'woosan@gmail.com', 'Sri Lanka', 1, 0, '2023-06-13 06:17:45'),
-(4, 'chulanivimukthi', '\r\n', '3.jpg', 'pass$2y$10$CWL8EKNp7hpZJwhQdU22DON9atP7a.90WWVm2JYuePRzYrQicp2ea', 'chulanivimukthi@gmail.com', 'United Kingdom', 0, 1, '2023-06-13 06:21:40'),
-(5, 'kiwito', '\r\n', '2.jpg', 'pass$2y$10$RwIJFqpIbNsaUDFW2h5cvu..mFqeyNn07d8U/xNPs/craMkTIRg4q', 'kiwito0323@gmail.com', 'Korea', 0, 1, '2023-06-13 06:24:19'),
-(6, 'Test', 'Simon', '6.png', 'pass$2y$10$/f7a2uLXxj.yKhYtXq7aAOKJgef0RV..mv9ujDHBZ2AJ64Jjv33w.', 'test123@gmail.com', 'France', 1, 0, '2023-08-02 18:50:42'),
-(7, 'VP', 'VP', '7.jpg', 'pass$2y$10$y3N1LlUwsozPNg9Z8yAFkuJOWr7D4Y4s7iPCVKgkJHF2J2XaNeqNS', 'test123@gmail.com', 'China', 1, 0, '2023-08-02 19:01:06'),
-(8, 'Sampath ', 'Thilina ', '8.jpg', 'pass$2y$10$rtPDkMDYNYAGLkoQ3FDp6e.OXdYRF5qIMNXU7.36PYUuczZJ.hN1m', 'fastadlanka@gmail.com', 'Sri Lanka', 1, 0, '2024-02-20 01:49:16'),
-(9, 'Nilakshi ', 'Nilakshi ', '9.PNG', 'pass$2y$10$KApMyKOYOcvSTOQNt/THF..dWd6FGEK58hoK/pWfESnKl5ZVEdJwi', 'thiliniranasinghe27@gmail.com', 'Sri Lanka', 1, 0, '2024-02-20 02:10:25'),
-(10, 'Sash', 'Sash', '10.jpeg', 'pass$2y$10$pIKRXtXAWCnHK7xUcQn5EefA4xUqhInS9Dj40bj8t6FJ790ePx1SK', 'tharukajayakody@gmail.com', 'Sri Lanka', 1, 0, '2024-02-20 02:21:40');
+(1, 'kcranasinghe', '\r\n', '1.jpg', 'pass$2y$10$YlJ7CJAFdezhKp7qdFkJluB/ld.bzEITAOVURZNtu4HyYOnoDiXrK', 'kcranasinghe13@gmail.coms', 'Ethiopia', 0, 1, '2022-11-30 22:24:29');
 
 -- --------------------------------------------------------
 
@@ -1533,3 +1525,307 @@ CREATE TABLE IF NOT EXISTS ws_products (
 CREATE INDEX idx_ws_subcategories_category ON ws_subcategories (category_id);
 CREATE INDEX idx_ws_products_category ON ws_products (category_id);
 CREATE INDEX idx_ws_products_subcategory ON ws_products (subcategory_id);
+
+
+-- ================================================================
+-- MIGRATIONS (from sql/ directory)
+-- ================================================================
+
+-- --------------------------------------------------------
+-- sql/add_orders_order_status.sql
+-- --------------------------------------------------------
+ALTER TABLE `orders`
+  ADD COLUMN `order_status` varchar(50) NOT NULL DEFAULT 'Order Placed' AFTER `payment_status`;
+
+-- --------------------------------------------------------
+-- sql/add_product_subcategories.sql
+-- --------------------------------------------------------
+SET NAMES utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `product_subcategories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_category_id` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` varchar(200) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_psc_product_category` (`product_category_id`),
+  CONSTRAINT `fk_psc_product_categories`
+    FOREIGN KEY (`product_category_id`) REFERENCES `product_categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `products`
+  ADD COLUMN `product_subcategory_id` int(11) DEFAULT NULL AFTER `sub_category_id`;
+
+ALTER TABLE `products`
+  ADD CONSTRAINT `fk_products_product_subcategory`
+    FOREIGN KEY (`product_subcategory_id`) REFERENCES `product_subcategories` (`id`) ON DELETE SET NULL;
+
+-- --------------------------------------------------------
+-- sql/add_products_weight.sql
+-- --------------------------------------------------------
+ALTER TABLE `products` ADD COLUMN `isbn` varchar(64) DEFAULT NULL;
+ALTER TABLE `products` ADD COLUMN `weight` varchar(64) DEFAULT NULL;
+
+-- --------------------------------------------------------
+-- sql/add_test_admin_user.sql
+-- --------------------------------------------------------
+INSERT INTO `user_table` (`id`, `first_name`, `last_name`, `login_email`, `password`, `mobile_number`, `register_timestamp`, `delete_status`) VALUES (6, 'Test', 'Admin', 'test@gmail.com', 'pass$2y$10$L8zmqpx/1aqB0u1e.fwD2e7Ivv9NKeOHPsyjYw261iWmqCZZdHGhq', '', CURRENT_TIMESTAMP, 0);
+
+-- --------------------------------------------------------
+-- sql/add_tourist_password_reset.sql
+-- --------------------------------------------------------
+ALTER TABLE `tourists`
+  ADD COLUMN `password_reset_token` varchar(64) DEFAULT NULL,
+  ADD COLUMN `password_reset_expires` datetime DEFAULT NULL;
+
+-- --------------------------------------------------------
+-- sql/alter_tourists_signup_columns.sql
+-- --------------------------------------------------------
+ALTER TABLE `tourists`
+  MODIFY `username` VARCHAR(191) NOT NULL,
+  MODIFY `email` VARCHAR(191) NOT NULL,
+  MODIFY `country` VARCHAR(100) NOT NULL;
+
+-- --------------------------------------------------------
+-- sql/clear_all_data.sql
+-- --------------------------------------------------------
+-- SET NAMES utf8mb4;
+-- SET FOREIGN_KEY_CHECKS = 0;
+-- TRUNCATE TABLE `cart`;
+-- TRUNCATE TABLE `orders`;
+-- TRUNCATE TABLE `products`;
+-- TRUNCATE TABLE `product_subcategories`;
+-- TRUNCATE TABLE `product_categories`;
+-- TRUNCATE TABLE `ad1_descriptions`;
+-- TRUNCATE TABLE `ad1_details`;
+-- TRUNCATE TABLE `ad2_descriptions`;
+-- TRUNCATE TABLE `ad2_details`;
+-- TRUNCATE TABLE `blog_descriptions`;
+-- TRUNCATE TABLE `blog_details`;
+-- TRUNCATE TABLE `books_descriptions`;
+-- TRUNCATE TABLE `books_details`;
+-- TRUNCATE TABLE `homework_descriptions`;
+-- TRUNCATE TABLE `homework_details`;
+-- TRUNCATE TABLE `pdf_descriptions`;
+-- TRUNCATE TABLE `pdf_details`;
+-- TRUNCATE TABLE `carousel`;
+-- TRUNCATE TABLE `grades`;
+-- TRUNCATE TABLE `languages`;
+-- TRUNCATE TABLE `main_category`;
+-- TRUNCATE TABLE `sub_category`;
+-- TRUNCATE TABLE `newsletter`;
+-- TRUNCATE TABLE `testimonials`;
+-- TRUNCATE TABLE `testimonials_images`;
+-- TRUNCATE TABLE `tourists`;
+-- TRUNCATE TABLE `tour_day_details`;
+-- TRUNCATE TABLE `tour_sub_images`;
+-- TRUNCATE TABLE `tour_details`;
+-- TRUNCATE TABLE `braveheart_winners`;
+-- TRUNCATE TABLE `braveheart_events`;
+-- TRUNCATE TABLE `braveheart_categories`;
+-- TRUNCATE TABLE `user_table`;
+-- SET FOREIGN_KEY_CHECKS = 1;
+
+-- --------------------------------------------------------
+-- sql/create_product_review.sql
+-- --------------------------------------------------------
+SET NAMES utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `product_review` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `product_id` int(11) NOT NULL,
+  `name` varchar(150) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `rating` tinyint(4) NOT NULL DEFAULT 0,
+  `review` text,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_product_review_product` (`product_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- sql/link_free_content_to_product_categories.sql
+-- --------------------------------------------------------
+ALTER TABLE `pdf_details`
+  ADD COLUMN `product_category_id` int(11) DEFAULT NULL COMMENT 'shop category' AFTER `sub_cat_id`,
+  ADD COLUMN `product_subcategory_id` int(11) DEFAULT NULL COMMENT 'shop subcategory' AFTER `product_category_id`;
+
+ALTER TABLE `books_details`
+  ADD COLUMN `product_category_id` int(11) DEFAULT NULL COMMENT 'shop category' AFTER `sub_cat_id`,
+  ADD COLUMN `product_subcategory_id` int(11) DEFAULT NULL COMMENT 'shop subcategory' AFTER `product_category_id`;
+
+ALTER TABLE `homework_details`
+  ADD COLUMN `product_category_id` int(11) DEFAULT NULL COMMENT 'shop category' AFTER `sub_cat_id`,
+  ADD COLUMN `product_subcategory_id` int(11) DEFAULT NULL COMMENT 'shop subcategory' AFTER `product_category_id`;
+
+-- --------------------------------------------------------
+-- sql/migration_blog_extra_media.sql
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `blog_extra_media` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `blog_id` int(11) NOT NULL,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  `media_type` varchar(20) NOT NULL DEFAULT 'image',
+  `path` varchar(512) NOT NULL DEFAULT '',
+  `caption` varchar(255) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `idx_blog_extra_media_blog` (`blog_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- sql/migration_blog_tag_triple.sql
+-- --------------------------------------------------------
+ALTER TABLE `blog_details`
+  MODIFY COLUMN `tag` VARCHAR(255) NOT NULL;
+
+-- --------------------------------------------------------
+-- sql/migration_home_section_backgrounds.sql
+-- --------------------------------------------------------
+ALTER TABLE `carousel` MODIFY `type` VARCHAR(32) NOT NULL COMMENT 'img, video, main, explore_bg, testimonial_bg, footer_bg, ...';
+
+-- --------------------------------------------------------
+-- sql/migration_order_items.sql
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `order_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `product_name` varchar(255) NOT NULL,
+  `quantity` int(11) NOT NULL DEFAULT 1,
+  `unit_price` decimal(10,2) NOT NULL,
+  `line_total` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_order_items_order` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+-- sql/migration_product_gallery_and_options.sql
+-- --------------------------------------------------------
+ALTER TABLE `products`
+  ADD COLUMN `gallery_images` TEXT NULL DEFAULT NULL COMMENT 'JSON: up to 3 filenames in img/products/' AFTER `image`;
+
+ALTER TABLE `products`
+  ADD COLUMN `options_extra` TEXT NULL DEFAULT NULL COMMENT 'JSON array of {k,v} from admin extra option rows' AFTER `description`;
+
+-- --------------------------------------------------------
+-- sql/migration_shipping_and_weight_kg.sql
+-- --------------------------------------------------------
+ALTER TABLE `products`
+  ADD COLUMN `weight_kg` DECIMAL(12,4) NULL DEFAULT NULL COMMENT 'Unit weight in kg for shipping' AFTER `weight`;
+
+CREATE TABLE IF NOT EXISTS `edi_shipping_weight_tiers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `max_weight_kg` DECIMAL(12,4) DEFAULT NULL COMMENT 'Cart total kg up to and including this; NULL = unlimited (catch-all)',
+  `fee_lkr` DECIMAL(12,2) NOT NULL DEFAULT 0.00,
+  `sort_order` int(11) NOT NULL DEFAULT 0,
+  PRIMARY KEY (`id`),
+  KEY `idx_sort` (`sort_order`),
+  KEY `idx_max` (`max_weight_kg`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `edi_shipping_districts` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `fee_lkr` DECIMAL(12,2) NOT NULL DEFAULT 0.00 COMMENT 'Added on top of weight-tier fee; match is case-insensitive on name',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_name` (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+INSERT INTO `edi_shipping_weight_tiers` (`max_weight_kg`, `fee_lkr`, `sort_order`) VALUES
+  (1.0000, 300.00, 10),
+  (5.0000, 450.00, 20),
+  (NULL, 650.00, 90);
+
+INSERT IGNORE INTO `edi_shipping_districts` (`name`, `fee_lkr`) VALUES
+  ('Colombo', 0.00),
+  ('Gampaha', 50.00),
+  ('Kandy', 100.00),
+  ('Other / not listed', 0.00);
+
+-- --------------------------------------------------------
+-- sql/migration_user_table_admin_ui.sql
+-- --------------------------------------------------------
+ALTER TABLE `user_table`
+  ADD COLUMN `admin_role` varchar(32) NOT NULL DEFAULT 'administrator' AFTER `mobile_number`;
+
+ALTER TABLE `user_table`
+  ADD COLUMN `city_country` varchar(100) NOT NULL DEFAULT '' AFTER `admin_role`;
+
+ALTER TABLE `user_table`
+  ADD COLUMN `admin_status` tinyint(1) NOT NULL DEFAULT 1 AFTER `city_country`;
+
+ALTER TABLE `user_table`
+  ADD COLUMN `profile_pic` varchar(255) NOT NULL DEFAULT 'default.jpg' AFTER `admin_status`;
+
+-- --------------------------------------------------------
+-- sql/seed_languages_grades.sql
+-- --------------------------------------------------------
+SET NAMES utf8mb4;
+
+INSERT INTO `languages` (`id`, `title`) VALUES
+  (1, 'Sinhala'),
+  (2, 'English'),
+  (3, 'Tamil')
+ON DUPLICATE KEY UPDATE `title` = VALUES(`title`);
+
+INSERT INTO `grades` (`id`, `title`) VALUES
+  (1, 'Pre School'),
+  (2, 'Grade 1'),
+  (3, 'Grade 2'),
+  (4, 'Grade 3'),
+  (5, 'Grade 4'),
+  (6, 'Grade 5')
+ON DUPLICATE KEY UPDATE `title` = VALUES(`title`);
+
+-- --------------------------------------------------------
+-- sql/migration_bank_details.sql
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `edi_bank_details` (
+    `id`             INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `account_number` VARCHAR(50)  NOT NULL DEFAULT '',
+    `account_name`   VARCHAR(150) NOT NULL DEFAULT '',
+    `bank_name`      VARCHAR(150) NOT NULL DEFAULT '',
+    `branch_name`    VARCHAR(150) NOT NULL DEFAULT '',
+    `updated_at`     TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `edi_bank_details` (`account_number`, `account_name`, `bank_name`, `branch_name`)
+SELECT '1000400531', 'EDIBEAR (PRIVATE) LIMITED', 'COMMERCIAL BANK', 'GAMPAHA BRANCH'
+FROM DUAL
+WHERE NOT EXISTS (SELECT 1 FROM `edi_bank_details` LIMIT 1);
+
+-- --------------------------------------------------------
+-- sql/migration_vouchers.sql
+-- --------------------------------------------------------
+CREATE TABLE IF NOT EXISTS `edi_vouchers` (
+  `id`              INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `code`            VARCHAR(50)  NOT NULL,
+  `description`     VARCHAR(255) NOT NULL DEFAULT '',
+  `discount_type`   ENUM('percentage','fixed') NOT NULL DEFAULT 'percentage',
+  `discount_value`  DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `min_order_total`  DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `max_uses`        INT UNSIGNED NOT NULL DEFAULT 0 COMMENT '0 = unlimited',
+  `used_count`      INT UNSIGNED NOT NULL DEFAULT 0,
+  `status`          TINYINT(1) NOT NULL DEFAULT 1 COMMENT '1=active, 0=inactive',
+  `starts_at`       DATE DEFAULT NULL,
+  `expires_at`      DATE DEFAULT NULL,
+  `created_at`      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY `uq_voucher_code` (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DELIMITER $$
+DROP PROCEDURE IF EXISTS _edi_add_voucher_cols$$
+CREATE PROCEDURE _edi_add_voucher_cols()
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND COLUMN_NAME = 'voucher_code') THEN
+    ALTER TABLE `orders` ADD COLUMN `voucher_code` VARCHAR(50) DEFAULT NULL;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'orders' AND COLUMN_NAME = 'voucher_discount') THEN
+    ALTER TABLE `orders` ADD COLUMN `voucher_discount` DECIMAL(10,2) NOT NULL DEFAULT 0.00;
+  END IF;
+END$$
+DELIMITER ;
+CALL _edi_add_voucher_cols();
+DROP PROCEDURE IF EXISTS _edi_add_voucher_cols;
