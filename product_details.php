@@ -313,15 +313,13 @@ if ($totalReviews > 0) {
                     </div>
                 </div>
 
-                <div class="form-row mb-3">
-                    <div class="col-md-4">
-                        <label for="name" class="form-label">Name (required)</label>
-                        <input type="text" name="name" id="name" class="form-input" required>
-                    </div>
-                    <div class="col-md-8">
-                        <label for="email" class="form-label">E-mail (required)</label>
-                        <input type="email" name="email" id="email" class="form-input" required>
-                    </div>
+                <div class="form-group mb-3">
+                    <label for="name" class="form-label">Name (required)</label>
+                    <input type="text" name="name" id="name" class="form-input" required>
+                </div>
+                <div class="form-group mb-3">
+                    <label for="email" class="form-label">E-mail (required)</label>
+                    <input type="email" name="email" id="email" class="form-input" required>
                 </div>
 
                 <div class="form-group mb-2">
