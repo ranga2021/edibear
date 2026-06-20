@@ -1838,12 +1838,12 @@ h6.text-primary:not(.text-white),
 /* Home testimonial section mobile polish to match compact stacked-card layout */
 @media (max-width: 767.98px) {
   .testimonial-bg .container {
-    padding-left: 0.75rem;
-    padding-right: 0.75rem;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   .testimonial-sec > [class*="col-"] {
-    max-width: 86%;
+    max-width: 100%;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 0.85rem;
@@ -2232,7 +2232,18 @@ h6.text-primary:not(.text-white),
     -webkit-line-clamp: 5;
   }
 
-  /* Keep equal left/right gutters in ALL home content sections */
+  /* Consistent 24px mobile gutters on ALL home sections (outer gets padding, inner container zeroed) */
+  #learn-section,
+  #honey-market-section,
+  .explorer-search-area,
+  .edi-trail-tales-wrap,
+  .testimonial-bg,
+  .edi-hidden-den-section,
+  #challenge-section {
+    padding-left: 24px !important;
+    padding-right: 24px !important;
+  }
+
   #learn-section > .container,
   #honey-market-section > .container,
   .explorer-search-area > .container,
@@ -2240,8 +2251,8 @@ h6.text-primary:not(.text-white),
   .testimonial-bg > .container,
   .edi-hidden-den-section > .container,
   #challenge-section > .container {
-    padding-left: 24px !important;
-    padding-right: 24px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   /* Move floating up button away from reading area */
