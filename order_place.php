@@ -255,8 +255,8 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
             <div class="order-special-note mt-4">
                 <h5>SPECIAL NOTE</h5>
                 <?php if ($paymentMethod === 'bank_transfer'): ?>
-                    <!---ul class="order-note-list list-unstyled pl-0 mb-0">
-                        <li class="order-note-item">
+                    <ul class="order-note-list list-unstyled pl-0 mb-0">
+                        <!---li class="order-note-item">
                             <p class="order-note-lang mb-1" lang="si">ඔබගේ තොරතුරු නිවැරදිව ඇතුළත් කොට තිබේදැයි පරීක්ෂා කර බලන්න. (නම/ලිපිනය/දුරකථන අංකය)</p>
                             <p class="order-note-lang mb-1" lang="ta">வாடிக்கையாளர் ஆர்டர் செய்த பிறகு, கொடுக்கப்பட்ட முகவரிக்கு பொருள் விநியோகிக்கப்படும். (மாவட்டம் / பிரதேசம் / நகரம் குறிப்பிட வேண்டும்)</p>
                             <p class="order-note-lang mb-0" lang="en">After placing an order, the product will be delivered to the provided address. (Please mention district / area / city clearly.)</p>
@@ -276,12 +276,15 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
                             <p class="order-note-lang mb-1" lang="ta">ஆர்டர் செய்த நாளிலிருந்து 3-5 வேலை நாட்களுக்குள் பொருள் விநியோகிக்கப்படும். விசேஷ சூழ்நிலைகளில் தாமதம் ஏற்படலாம்.</p>
                             <p class="order-note-lang mb-0" lang="en">Delivery will be completed within 3–5 working days from the order date. Delays may occur due to special circumstances.</p>
                         </li>
-                        <!---li class="order-note-item">
+                        <li class="order-note-item">
                             <p class="order-note-lang mb-1" lang="si">Bank transfer හරහා සිදු කිරීමේදී අපගේ පහත සඳහන් ගිණුම වෙත මුදල් බැර කොට අදාළ රිසිට් පත 075 5002004 දුරකථන අංකයට Whatsapp කරන්න. මුදල් ගෙවීමේදී Order ID එක පැහැදිලිව reference යටතේ සඳහන් කරන්න හෝ ඉහත දුරකථන අංකයට රිසිට්පත සමග ලැබීමට සලස්වන්න. මුදල් අපගේ ගිණුමට බැර වූ පසු පමණක් භාණ්ඩ කුරියර් කරනු ලැබේ.</p>
                             <p class="order-note-lang mb-1" lang="ta">வங்கி பரிமாற்றம் செய்வதற்கு, கீழே குறிப்பிடப்பட்டுள்ள எங்கள் கணக்கில் தொகையை செலுத்தவும், சம்பந்தப்பட்ட ரசீதை 075 5002004 என்ற எண்ணுக்கு WhatsApp மூலம் அனுப்பவும். பணம் செலுத்தும் போது Order ID ஐ reference பகுதியில் தெளிவாக குறிப்பிடவும் அல்லது ரசீதுடன் மேலே குறிப்பிடப்பட்ட தொலைபேசி எண்ணுக்கு அனுப்பவும். பணம் எங்கள் கணக்கில் வரவு செய்யப்பட்ட பின்னரே பொருட்கள் குரியர் மூலம் அனுப்பப்படும்.</p>
                             <p class="order-note-lang mb-0" lang="en">When making a bank transfer, please deposit the amount to the account mentioned below and send the relevant receipt via WhatsApp to 075 5002004. When making the payment, clearly mention the Order ID in the reference section, or send the receipt along with the Order ID to the above phone number. Goods will be dispatched by courier only after the payment has been credited to our account.</p>
                         </li---->
-                    </ul---->
+                        <p class="mb-0">
+                        Your order will be delivered to your address. Please make sure someone is available to receive the package and pay the amount in cash upon delivery. Delivery will be completed within 3–5 working days from the order date. Delays may occur due to special circumstances.
+                    </p>
+                    </ul>
                    
                 <?php else: ?>
                     <p class="mb-0">
