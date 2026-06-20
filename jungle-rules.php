@@ -43,7 +43,8 @@ $widgets = new WIDGETS();
 
         <!-- Content -->
         <div class="row mt-4">
-            <div class="col-12 edi-policy-content px-lg-5 mx-lg-5">
+            <div class="col-12">
+            <div class="edi-policy-content px-lg-5 mx-lg-5">
                 <p class="edi-policy-date">Effective Date: May 24, 2026</p>
                 <p>Welcome to the jungle, Explorer! Edibear's World (accessible via edibear.com) is an adventurous, educational ecosystem designed to help little buddies learn, play, and grow.</p>
                 <p>These Jungle Rules govern your use of our website, the free learning resource search engine, the community areas, and your purchases from The Honey Market. By browsing our paths, downloading our resources, or securing gear from our shop, you (the "Explorer" or "Parent") agree to follow these rules. If you do not agree to the Jungle Rules, please do not step onto the trail!</p>
@@ -110,6 +111,7 @@ $widgets = new WIDGETS();
                     <li>Email: <a href="mailto:info.edibear@gmail.com">info.edibear@gmail.com</a></li>
                     <li>WhatsApp Support: 075 5002004</li>
                 </ul>
+            </div>
             </div>
         </div>
 

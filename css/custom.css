@@ -213,6 +213,17 @@
     }
 }
 
+@media (max-width:767.98px){
+    .edi-intro-section{
+        padding-left:24px;
+        padding-right:24px;
+    }
+    .edi-intro-section .row > [class*="col-"]{
+        padding-left:0;
+        padding-right:0;
+    }
+}
+
 @media (min-width:992px){
     .edi-intro-text{
         margin-right:-100px !important;
