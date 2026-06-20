@@ -255,7 +255,7 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
             <div class="order-special-note mt-4">
                 <h5>SPECIAL NOTE</h5>
                 <?php if ($paymentMethod === 'bank_transfer'): ?>
-                    <ul class="order-note-list list-unstyled pl-0 mb-0">
+                    <!---ul class="order-note-list list-unstyled pl-0 mb-0">
                         <li class="order-note-item">
                             <p class="order-note-lang mb-1" lang="si">ඔබගේ තොරතුරු නිවැරදිව ඇතුළත් කොට තිබේදැයි පරීක්ෂා කර බලන්න. (නම/ලිපිනය/දුරකථන අංකය)</p>
                             <p class="order-note-lang mb-1" lang="ta">வாடிக்கையாளர் ஆர்டர் செய்த பிறகு, கொடுக்கப்பட்ட முகவரிக்கு பொருள் விநியோகிக்கப்படும். (மாவட்டம் / பிரதேசம் / நகரம் குறிப்பிட வேண்டும்)</p>
@@ -281,7 +281,7 @@ $user->deleteTableRow("cart", array("user_id" => $user_id));
                             <p class="order-note-lang mb-1" lang="ta">வங்கி பரிமாற்றம் செய்வதற்கு, கீழே குறிப்பிடப்பட்டுள்ள எங்கள் கணக்கில் தொகையை செலுத்தவும், சம்பந்தப்பட்ட ரசீதை 075 5002004 என்ற எண்ணுக்கு WhatsApp மூலம் அனுப்பவும். பணம் செலுத்தும் போது Order ID ஐ reference பகுதியில் தெளிவாக குறிப்பிடவும் அல்லது ரசீதுடன் மேலே குறிப்பிடப்பட்ட தொலைபேசி எண்ணுக்கு அனுப்பவும். பணம் எங்கள் கணக்கில் வரவு செய்யப்பட்ட பின்னரே பொருட்கள் குரியர் மூலம் அனுப்பப்படும்.</p>
                             <p class="order-note-lang mb-0" lang="en">When making a bank transfer, please deposit the amount to the account mentioned below and send the relevant receipt via WhatsApp to 075 5002004. When making the payment, clearly mention the Order ID in the reference section, or send the receipt along with the Order ID to the above phone number. Goods will be dispatched by courier only after the payment has been credited to our account.</p>
                         </li---->
-                    </ul>
+                    </ul---->
                    
                 <?php else: ?>
                     <p class="mb-0">

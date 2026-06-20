@@ -2262,10 +2262,21 @@ h6.text-primary:not(.text-white),
 }
 
 @media (max-width: 767.98px) {
-  /* Justified blocks are hard to read on narrow screens */
+  /* Keep paragraphs justified on mobile */
   p.text-justify,
   .text-justify {
-    text-align: left !important;
+    text-align: justify !important;
+  }
+
+  /* Policy / footer-link pages: justify on mobile */
+  .edi-policy-content,
+  .edi-policy-content p {
+    text-align: justify !important;
+  }
+
+  /* About page: override text-center parent so paragraphs stay justified */
+  .page-header-content .text-center p {
+    text-align: justify !important;
   }
 
   /* Ensure equal mobile gutters on Treasure Details header */
